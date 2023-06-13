@@ -18,7 +18,7 @@
       },
       "then": {
         "properties": {
-          "GRU_project": {
+          "GRU_general use": {
             "type": "string",
             "description": "Data use is allowed for general research use"
 		}
