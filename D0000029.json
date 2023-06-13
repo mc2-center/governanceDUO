@@ -19,7 +19,7 @@
         "properties": {
           "RTN_return": {
             "type": "string",
-            "description": "Derived/enriched research assets must be returned to Synapse"
+            "description": "Derived/enriched data must be returned to Synapse"
 		}
 	}
 }
