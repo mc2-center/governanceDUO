@@ -1,4 +1,4 @@
-},
+{
     "ebispot.duo-D0000027": {
       "$schema": "http://json-schema.org/draft-07/schema",
       "properties": {
@@ -21,3 +21,8 @@
           "PS_project": {
             "type": "string",
             "description": "Intended Data Use statement required"
+
+			}
+		}
+	}
+}
