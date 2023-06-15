@@ -1,7 +1,6 @@
 {
+ "ebispot.duo-D0000020": {	
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "ebispot.duo-D0000020",
-	"title": "collaboration required",
 	"properties": {
 		"COL": {
 			"type": "boolean",
@@ -9,6 +8,7 @@
 			"default": "false"
 		}
 	},
+	"title": "collaboration required",
 	"if": {
 		"properties": {
 			"COL": {
@@ -24,4 +24,5 @@
 			}
 		}
 	}
+ },
 }
