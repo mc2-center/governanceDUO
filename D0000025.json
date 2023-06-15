@@ -1,16 +1,16 @@
-
 {
+ "ebispot.duo-D0000025": {
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"$id": "ebispot.duo-D0000025",
-	"title": "time limit on use",
 	"properties": {
 		"TS": {
 			"type": "boolean",
-			"description": "This data use modifier indicates that use is approved for a specific number of months.",
+			"description": "Data use is approved for a specific number of months.",
 			"default": "false"
 		}
 	},
-	"if": {
+	"title": "time limit on use",
+	 "if": {
 		"properties": {
 			"TS": {
 				"const": true
@@ -25,4 +25,4 @@
 			}
 		}
 	}
-}
+},
