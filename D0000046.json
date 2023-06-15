@@ -1,0 +1,12 @@
+{
+"ebispot.duo-D0000046": {
+	"$schema": "http://json-schema.org/draft-07/schema"
+	"properties": {
+		"NCU": {
+			"type": "boolean",
+			"description": "Data use is limited to not-for-profit use. This indicates that data can be used by commercial organisations for research purposes, but not commercial purposes.",
+			"default": "false"
+		}
+	},
+	"title": "non-commercial use only",
+},
