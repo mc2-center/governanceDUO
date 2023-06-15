@@ -1,0 +1,27 @@
+{
+"ebispot.duo-D0000022": {
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"properties": {
+		"GS": {
+			"type": "boolean",
+			"description": "Data use is limited to within a specific geographic region.",
+			"title": "Data use is limited to within a specific geographic region.",
+			"default": "false"
+		}
+	},
+	"if": {
+		"properties": {
+			"GS": {
+				"const": true
+			}
+		}
+	},
+	"then": {
+		"properties": {
+			"GS_location": {
+				"$ref": "#/$defs/ISO3661",
+				"title": "Geographical location (country) of restriction:"
+			}
+		}
+	}
+}
