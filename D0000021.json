@@ -1,0 +1,12 @@
+{
+ "ebispot.duo-D0000021": {
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"properties": {
+		"IRB": {
+			"type": "boolean",
+			"description": "For data use, the requestor must provide documentation of local IRB/ERB approval.",
+			"title": "For data use, the requestor must provide documentation of local IRB/ERB approval.",
+			"default": "false"
+		}
+	}
+ },
