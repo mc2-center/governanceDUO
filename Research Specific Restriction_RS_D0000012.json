@@ -20,11 +20,14 @@
 		"properties": {
 			"RS_research_type": {
 				"type": "string",
-				"description": "...",
+				"description": "Data use is limited to research related to:.",
 				"enum": [
 					"cancer",
+					"alzheimer",
+					"long and healthy life",
+					"..."
 				]
 			}
 		}
 	}
-},
+}
