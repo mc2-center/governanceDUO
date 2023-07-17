@@ -20,18 +20,13 @@
 		"properties": {
 			"DS_disease": {
 				"type": "string",
-				"description": "Allowable disease domain:",
-				"enum": [
-					"MONDO:0021061",
-					"MONDO:0019875",
-					"MONDO:0007039"
-				],
+				"description": "DUO recommends MONDO be used, to provide the basis for automated evaluation. For more information see https://github.com/EBISPOT/DUO/blob/master/MONDO_Overview.md",
 				"enumNames": [
-					"Neurofibromatosis (all types)",
-             				"Neurofibromatosis type 1",
-              				"Neurofibromatosis type 2"
+					"cancer",
+             				"alzheimer",
+              				"..."
            			 ]
 			}
 		}
 	}
-},
+}
