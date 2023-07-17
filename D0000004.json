@@ -1,11 +1,28 @@
 {
  "ebispot.duo-D0000004": {
 	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "ebispot.duo-D0000004",
 	"properties": {
 		"NRES": {
 			"type": "boolean",
 			"description": "There is no restriction on use.",
-            "title": "There is no restriction on use of the data.",
 			"default": "false"
 		}
+	},
+	"title": "no restriction",
+	 "if": {
+		"properties": {
+			"NRES": {
+				"const": true
+			}
+		}
+	},
+	"then": {
+		"properties": {
+			"NRES_no_restriction": {
+				"type": "string",
+				"description": "There is no restriction on use of the data."
+			}
+		}
 	}
+}
