@@ -9,7 +9,8 @@
         }
       },
       "title": "Return derived/enriched data to the database or resource",
-	"properties": {
+	"if": {
+	    "properties": {
 	    "RTN": {
             "const": true
           }
