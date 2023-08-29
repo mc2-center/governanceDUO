@@ -18,7 +18,7 @@
 	},
 	"then": {
 		"properties": {
-			"NCU": {
+			"NCU_noncommercial": {
 				"type": "string",
 				"description": "Data use is limited to not-for-profit use."
 			}
