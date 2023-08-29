@@ -1,4 +1,4 @@
-# governanceDUO
+# governanceDUOextension
 
 Extension:
   PI Name;
