@@ -1,5 +1,5 @@
 {
-	 "ebispot.duo-D0000028": {
+      "ebispot.duo-D0000028": {
       "$schema": "http://json-schema.org/draft-07/schema",
       "properties": {
         "IS": {
@@ -21,7 +21,7 @@
           "IS_institution": {
             "type": "string",
             "description": "Allowable institution(s)" 
-			}
+	   		}
 		}
 	}
 }
