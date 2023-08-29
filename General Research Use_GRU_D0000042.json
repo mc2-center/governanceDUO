@@ -20,7 +20,7 @@
         "properties": {
           "GRU_general use": {
             "type": "string",
-            "description": "Data use is allowed for general research use"
+            "description": "Data use is allowed for general research use."
 		}
 	}
 }
