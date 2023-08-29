@@ -1,0 +1,25 @@
+{
+      "ebispot.duo-D0000026": {
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "properties": {
+        "US": {
+          "type": "boolean",
+          "description": "Use is limited to use by approved users.",
+          "default": false
+        }
+      },
+      "title": "user specific restriction",
+	"properties": {
+	    "US": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "US_users": {
+            "type": "string",
+            "description": "Use is limited to use by approved users."
+		}
+	}
+}
