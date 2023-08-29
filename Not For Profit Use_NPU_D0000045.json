@@ -8,7 +8,7 @@
           "default": false
         }
       },
-      "title": "not for profit organisation use onlyn",
+      "title": "not for profit organisation use only",
       "if": {
         "properties": {
           "NPU": {
