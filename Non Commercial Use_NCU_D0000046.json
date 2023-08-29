@@ -9,4 +9,19 @@
 		}
 	},
 	"title": "non-commercial use only",
-},
+	"if": {
+		"properties": {
+			"NCU": {
+				"const": true
+			}
+		}
+	},
+	"then": {
+		"properties": {
+			"NCU": {
+				"type": "string",
+				"description": "Data use is limited to not-for-profit use."
+			}
+		}
+	}
+}
