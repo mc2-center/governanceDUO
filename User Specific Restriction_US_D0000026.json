@@ -9,7 +9,8 @@
         }
       },
       "title": "user specific restriction",
-	"properties": {
+	"if": {
+	    "properties": {
 	    "US": {
             "const": true
           }
