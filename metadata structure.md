@@ -4,13 +4,13 @@ The metadata required for each dataset will vary based on the governance framewo
 | --- | --- | --- | --- | --- | --- |
 | DUO_0000043 | CC | Clinical Care Use | Boolean | 
 | DUO_0000020 | COL | Collaboration Required | String | PI Contact information required |
-| DUO_0000007 | DS | Disease Specific Research | String | Provide detail [DOID] | User must describe disease-specific research use in IDU statement |
+| DUO_0000007 | DS | Disease Specific Research | String | Provide detail [DOID] or [MONDO] | User must describe disease-specific research use in IDU statement |
 | DUO_0000021 | IRB | Ethics Approval Required | Boolean |  | User prompted to provide IRB/IEC approval |
 | DUO_0000042 | GRU | General Research Use | Boolean | 
 | DUO_0000016 | GSO | Genetic Studies Only | Boolean | 
 | DUO_0000022 | GS | Geographical Restriction | String | Provide country restriction [ISO 3166⍺2] |
 | DUO_0000006 | HMB | Health or Medical or Biomedical Research | Boolean | 
-| DUO_0000028 | IS | Institution Specific Restriction | String | Name Institution |
+| DUO_0000028 | IS | Institution Specific Restriction | String | Name Institution [ror.org] |
 | DUO_0000015 | NMDS | No General Methods Research | Boolean | 
 | DUO_0000004 | NRES | No Restriction | Boolean | 
 | DUO_0000018 | NPUNCU | Not-for-Profit, Non-Commercial Use Only | Boolean | 
