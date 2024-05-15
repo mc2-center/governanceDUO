@@ -26,7 +26,9 @@ The metadata required for each dataset will vary based on the governance framewo
 | DUO_0000025 | TS | Time Limit on Use | String | Provide date [ISO 8601] | User prompted to renew access every _x_ days with current evidence |
 | DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to join a Synapse Team
 |  | DUOplus1 | Source Geography | List of Strings | List data generating country(ies) [ISO 3166⍺2] | 
-|  | DUOplus2 | Data Permission | List of Strings | Data sharing enforced by: Agreement, Attestation, Award, Other [Identifier?] |
-|  | DUOplus3 | Data Tier | List of Strings | Anonymous, Open (aka Registered), Controlled, Private |
-|  | DUOplus4 | License | List of Strings | CC BY, CC BY-SA, CC BY-NC, CC BY-NC-SA |
-|  | DUOplus5 | Attribution | String | Provide attribution/acknowledgement statement |
+|  | DUOplus2 | Study Size | Integer | "n" | 
+|  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identifation (TBD) | 
+|  | DUOplus4 | Data Permission | List of Strings | Data sharing enforced by: Agreement, Attestation, Award, Other [Identifier?] |
+|  | DUOplus5 | Data Tier | List of Strings | Anonymous, Open (aka Registered), Controlled, Private |
+|  | DUOplus6 | License | List of Strings | CC BY, CC BY-SA, CC BY-NC, CC BY-NC-SA |
+|  | DUOplus7 | Attribution | String | Provide attribution/acknowledgement statement |
