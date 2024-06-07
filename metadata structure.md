@@ -24,7 +24,7 @@ The metadata required for each dataset will vary based on the governance framewo
 | DUO_0000012 | RS | Research Specific Restrictions | String | Provide detail | User must describe research use in IDU statement |
 | DUO_0000029 | RTN | Return to Database or Resource | Boolean |  
 | DUO_0000025 | TS | Time Limit on Use | String | Provide date [ISO 8601] | User prompted to renew access every _x_ days with current evidence |
-| DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to join a Synapse Team
+| DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to join a Synapse Team or have a specific authentication, e.g., 2FA or RAS
 |  | DUOplus1 | Source Geography | List of Strings | List data generating country(ies) [ISO 3166⍺2] | 
 |  | DUOplus2 | Study Size | Integer | "n" | 
 |  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identifation (TBD) | 
