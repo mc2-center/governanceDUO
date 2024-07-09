@@ -8,10 +8,12 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 
 # Resources
+ - [GA4GH Products](https://www.ga4gh.org/product/data-use-ontology-duo/)
  - [EBISPOT DUO](https://github.com/EBISPOT/DUO/blob/master/README.md)
  - [Extension of Data Access Management](https://sagebionetworks.jira.com/wiki/spaces/PLFM/pages/2597617665/API+Changes+to+support+Extension+of+Data+Access+Management+to+Users+outside+of+Sage+ACT)
 
 
 # Publications
+ - https://doi.org/10.1016/j.xgen.2021.100028
  - https://doi.org/10.1016/j.xgen.2023.100381
  - https://www.semantic-web-journal.net/system/files/swj3583.pdf
