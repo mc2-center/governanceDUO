@@ -1,4 +1,12 @@
 The metadata required for each dataset will vary based on the governance framework established on a project-by-project basis.
+Moreover, it is expected that each Synapse project will include:
+ - Principal Investigator (PI) Name
+ - PI Institution Name (e.g., research organization registry)
+ - Study Name
+ - Grant number (as applicable)
+ - Data source (e.g., human, nonhuman)
+ - Data type(s) (e.g., genomic, assay, clinical, imaging, recordings, unstructured, etc)
+ - Contributor Synapse Username
 
 | OBO | Shorthand | Modifier | Type | Description (from Contributor) | Evidence (from Consumer) |
 | --- | --- | --- | --- | --- | --- |
