@@ -14,7 +14,8 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
  - [Extension of Data Access Management](https://sagebionetworks.jira.com/wiki/spaces/PLFM/pages/2597617665/API+Changes+to+support+Extension+of+Data+Access+Management+to+Users+outside+of+Sage+ACT)
 
 
-# Publications
+# Related Publications
  - https://doi.org/10.1016/j.xgen.2021.100028
  - https://doi.org/10.1016/j.xgen.2023.100381
- - https://www.semantic-web-journal.net/system/files/swj3583.pdf
+ - https://doi.org/10.3233/SW-243583
+ - https://doi.org/10.1038/s41597-024-03280-6
