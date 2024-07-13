@@ -34,7 +34,7 @@ Moreover, it is expected that each Synapse project will include:
 | DUO_0000025 | TS | Time Limit on Use | String | Provide date [ISO 8601] | User prompted to renew access every _x_ days |
 | DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to join a Synapse Team or have a specific authentication, e.g., 2FA or RAS
 |  | DUOplus1 | Source Geography | List of Strings | List data generating country(ies) [ISO 3166⍺2] | 
-|  | DUOplus2 | Study Population | List of Strings | Description of cohort, e.g., study size, vulnerable populations, special categories of data, rare diseases, etc. | 
+|  | DUOplus2 | Study Population | String | Description of cohort, e.g., study size, vulnerable populations, special categories of data, rare diseases, etc. | 
 |  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identification | 
 |  | DUOplus4 | Data Permission | List of Strings | Data sharing enforced by: Agreement, Attestation, Award, Other (TBD) |
 |  | DUOplus5 | Data Tier | List of Strings | Anonymous, Open (aka Registered), Controlled, Private |
