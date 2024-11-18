@@ -11,7 +11,7 @@ Moreover, it is expected that each Synapse project will include:
 | OBO | Shorthand | Modifier | Type | Description (from Contributor) | Evidence (from Consumer) |
 | --- | --- | --- | --- | --- | --- |
 | DUO_0000043 | CC | Clinical Care Use | Boolean | 
-| DUO_0000020 | COL | Collaboration Required | String | PI Contact information required | Agree to terms |
+| DUO_0000020 | COL | Collaboration Required | String | PI Contact information required | Agree to terms &/or signed agreement |
 | DUO_0000007 | DS | Disease Specific Research | String | Provide detail [DOID] or [MONDO] | User must describe disease-specific research use in IDU statement |
 | DUO_0000021 | IRB | Ethics Approval Required | Boolean |  | User prompted to provide IRB/IEC approval |
 | DUO_0000042 | GRU | General Research Use | Boolean | | Agree to terms |
@@ -32,7 +32,7 @@ Moreover, it is expected that each Synapse project will include:
 | DUO_0000012 | RS | Research Specific Restrictions | String | Provide detail | User must describe research use in IDU statement |
 | DUO_0000029 | RTN | Return to Database or Resource | Boolean | | Agree to terms |
 | DUO_0000025 | TS | Time Limit on Use | String | Provide date [ISO 8601] | User prompted to renew access every _x_ days |
-| DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to join a Synapse Team or have a specific authentication, e.g., 2FA or RAS
+| DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to register, enhance their profile, join a Synapse Team, or have a specific authentication, e.g., 2FA or RAS
 |  | DUOplus1 | Source Geography | List of Strings | List data generating country(ies) [ISO 3166⍺2] | 
 |  | DUOplus2 | Study Population | String | Description of cohort, e.g., study size, vulnerable populations, special categories of data, rare diseases, etc. | 
 |  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identification | 
