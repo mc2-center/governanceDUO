@@ -11,7 +11,7 @@ Moreover, it is expected that each Synapse project will include:
 | OBO | Shorthand | Modifier | Type | Description (from Contributor) | Evidence (from Consumer) |
 | --- | --- | --- | --- | --- | --- |
 | DUO_0000043 | CC | Clinical Care Use | Boolean | 
-| DUO_0000020 | COL | Collaboration Required | String | PI Contact information required | Agree to terms &/or signed agreement |
+| DUO_0000020 | COL | Collaboration Required | String | PI Contact information required | Agree to terms &/or execute an agreement |
 | DUO_0000007 | DS | Disease Specific Research | String | Provide detail [DOID] or [MONDO] | User must describe disease-specific research use in IDU statement |
 | DUO_0000021 | IRB | Ethics Approval Required | Boolean |  | User prompted to provide IRB/IEC approval |
 | DUO_0000042 | GRU | General Research Use | Boolean | | Agree to terms |
