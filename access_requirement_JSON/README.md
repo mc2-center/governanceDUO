@@ -1,6 +1,7 @@
 # Data Dictionaries for managing Access Restrictions through Synapse Annotations
 
-## Basic dictionary format
+## Access Restriction Dictionary format
+Stored as a CSV under `access_requirement_JSON/{DCC name}`
 
 | **dataUseModifiers** | **accessRequirementId** | **activatedByAttribute** | **activationValue** | **grantNumber** | **dataType** | **entityIdList** | 
 | -------------------  | ----------------------- | ------------------------ | ------------------- | --------------- | ------------ | ---------------- |
@@ -24,7 +25,8 @@
     - `activationValue`: The value of Synapse annotation recorded under `activatedByAttribute` that will be applied to entities released under this AR to indicate the AR should be active
   
 </details>
-  
+
+<n></n>
 
 <details>
 
@@ -34,15 +36,18 @@
   	- `grantNumber`: The value of annotation `grantNumber` that will be applied to Synapse entities released under this AR
   	- `dataType`: The value of annotation `dataType` that will be applied to Synapse entities released under this AR
 
-</details>
+</details>  
 
-## Auto-generated JSON examples
+<n></n>  
+<n></n>  
 
-Generated using [`generate_duo_schema.py`](https://github.com/mc2-center/mc2-center-dcc/blob/add-ARjson-build-script/utils/generate_duo_schema.py) (WIP)
+## Creating a JSON schema from table contents
+
+JSON schemas can be auto-generated with [`generate_duo_schema.py`](https://github.com/mc2-center/mc2-center-dcc/blob/add-ARjson-build-script/utils/generate_duo_schema.py) (WIP)
 
 <details>
 
-<summary>Usage</summary>
+<summary><b>Script usage</b></summary>
 
 ```
 Generate DUO JSON Schema from Data Dictionary CSV
@@ -69,7 +74,7 @@ options:
   Grant number to select conditions for from reference table  
 
   -m, --multi_condition  
-  Generate schema with multiple conditions defined in the CSV
+  Boolean. Generate schema with multiple conditions defined in the CSV
 ```
 </details>  
 
@@ -86,7 +91,7 @@ Generated JSON schema file name:
 `Project.AccessRequirement-CA000002-v4.0.0-schema.json` 
 
 Output:
-```
+```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "title": "AccessRequirementSchema",
@@ -172,7 +177,7 @@ Generated JSON schema file name:
 `Project.AccessRequirement-Project-v3.0.1-schema.json` 
 
 Output:
-```
+```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "title": "AccessRequirementSchema",
@@ -380,7 +385,7 @@ Generated JSON schema file name:
 `Project.AccessRequirement-Project-v3.0.1-schema.json`  
 
 Output:
-```
+```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "title": "AccessRequirementSchema",
