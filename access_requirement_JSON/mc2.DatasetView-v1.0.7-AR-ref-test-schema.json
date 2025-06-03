@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://example.com/DatasetView_AR_ref_test_v1.0.5",
-  "title": "DatasetView_AR_ref_test_v1.0.5",
-  "allOf": [{"$ref": "MultiConsortiaCoordinatingCenter-AccessRequirementProject-3.0.1"},
+  "$id": "http://example.com/DatasetView_AR_ref_test_v1.0.7",
+  "title": "DatasetView_AR_ref_test_v1.0.7",
+  "allOf": [{"$ref": "MultiConsortiaCoordinatingCenter-AccessRequirementCA000002study01imagingLevel2Mousemc-2.1.4"},
   {
     "type": "object",
     "properties": {
