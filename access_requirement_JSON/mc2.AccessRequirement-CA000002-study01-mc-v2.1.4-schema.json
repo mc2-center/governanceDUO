@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "AccessRequirementSchema",
+  "$id": "mc2-CA000002-study01-mc-AccessRequirementSchema-v2.1.4",
+  "description": "Auto-generated schema defining DUO-based access restrictions.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": "NPU"
+            }
+          },
+          "activateRequirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": "True"
+            }
+          },
+          "grantNumber": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": "CA000002"
+            }
+          },
+          "studyKey": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": "study01"
+            }
+          },
+          "dataType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": "imagingLevel2Mouse"
+            }
+          }
+        },
+        "required": [
+          "dataUseModifiers",
+          "activateRequirements",
+          "grantNumber",
+          "studyKey",
+          "dataType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "_accessRequirementIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "contains": {
+              "const": 1000002
+            }
+          }
+        }
+      }
+    }
+  ]
+}
