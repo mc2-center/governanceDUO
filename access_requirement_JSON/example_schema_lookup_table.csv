@@ -1,0 +1,3 @@
+project_id,json_file,registered_schema_id,includes_access_requirements
+MC2,Project.AccessRequirement-CA000002-study01-imagingLevel2-Mouse-mc-v2.1.4-schema.json,Project-AccessRequirementCA000002study01imagingLevel2Mousemc-2.1.4,1000002
+MC2,mc2.AccessRequirement-Project-study03-mc-v2.1.4-schema.json,MultiConsortiaCoordinatingCenter-AccessRequirementProjectstudy03mc-2.1.4,"1000004, 1000006"
