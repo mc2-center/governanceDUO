@@ -3,11 +3,11 @@
 ## Access Restriction Dictionary format
 Stored as a CSV under `access_requirement_JSON/{DCC name}`
 
-| **dataUseModifiers** | **accessRequirementId** | **activatedByAttribute** | **activationValue** | **grantNumber** | **dataType** | **entityIdList** | 
-| -------------------  | ----------------------- | ------------------------ | ------------------- | --------------- | ------------ | ---------------- |
-| IRB | 1000001 | activateRequirements | True | CA000001 | sequencingLevel1Human | syn66638835 |  
-| NPU | 1000002 | activateRequirements | True | CA000002 | imagingLevel2Mouse | syn66638836 |  
-| HMB | 1000003 | activateRequirements | True | CA000003 | proteomicsLevel2Human | syn66638837 |  
+| **dataUseModifiers** | **accessRequirementId** | **activatedByAttribute** | **activationValue** | **grantNumber** | **dataType** | **speciesType** | **entityIdList** | 
+| -------------------  | ----------------------- | ------------------------ | ------------------- | --------------- | ------------ | --------------- | ---------------- |
+| IRB | 1000001 | activateRequirements | True | CA000001 | sequencingLevel1 | Human | syn66638835 |  
+| NPU | 1000002 | activateRequirements | True | CA000002 | imagingLevel2 | Mouse | syn66638836 |  
+| HMB | 1000003 | activateRequirements | True | CA000003 | proteomicsLevel2 | Human | syn66638837 |  
 
 ## Column Descriptions
 
@@ -31,10 +31,16 @@ Stored as a CSV under `access_requirement_JSON/{DCC name}`
 <details>
 
 <summary><b>Configurable columns</b></summary>
-
+  
   - Column names can be modified to fit annotations used by the Project
+  
+  - Column names will be integrated into JSON schemas as an annotation key; column entries will be integrated as values
+  
+  - Default configurable columns:
   	- `grantNumber`: The value of annotation `grantNumber` that will be applied to Synapse entities released under this AR
+    - `studyKey`: The value of annotation `studyKey` that will be applied to Synapse entities released under this AR
   	- `dataType`: The value of annotation `dataType` that will be applied to Synapse entities released under this AR
+    - `speciesType`: The value of annotation `speciesType` that will be applied to Synapse entities released under this AR
 
 </details>  
 
@@ -51,30 +57,52 @@ JSON schemas can be auto-generated with [`generate_duo_schema.py`](https://githu
 
 ```
 Generate DUO JSON Schema from Data Dictionary CSV
-usage: generate_duo_schema.py [-h] [-t TITLE] [-v VERSION] [-o ORG_ID] [-g GRANT_ID] [-m] csv_path output_path
+usage: generate_duo_schema.py [-h] [-t TITLE] [-v VERSION] [-o ORG_ID] [-g GRANT_ID] [-m] [-gc GRANT_COL] [-s STUDY_ID] [-sc STUDY_COL] [-d DATA_TYPE] [-dc DATA_COL] [-p SPECIES_TYPE] [-pc SPECIES_COL] csv_path output_path
 
 positional arguments:
-  csv_path              Path to the data_dictionary.csv
-  output_path           Path to output directory for the JSON schema
+  csv_path: Path to the data_dictionary.csv
+  output_path: Path to output directory for the JSON schema
 
 options:
   -h, --help  
   show this help message and exit  
 
   -t TITLE, --title TITLE  
-  Schema title  
+  Schema title. Default: "AccessRequirementSchema"
 
   -v VERSION, --version VERSION  
-  Schema version  
+  Schema version. Default: "v1.0.0"
 
   -o ORG_ID, --org_id ORG_ID  
-  Organization ID for $id field  
+  Organization ID for $id field. Default: "mc2"
 
   -g GRANT_ID, --grant_id GRANT_ID  
-  Grant number to select conditions for from reference table  
+  Grant number to select conditions for from reference table. If nothing is provided, the JSON schema will include all conditions listed in the input table. Default: "Project"
 
   -m, --multi_condition  
   Boolean. Generate schema with multiple conditions defined in the CSV
+
+  -gc, --grant_col  
+  Name of the column in the DCC AR data dictionary that will contain the identifier for the grant. Default: "grantNumber"
+
+  -s, --study_id  
+  Study ID to select conditions for from reference table. If nothing is provided, the JSON schema will include all applicable studies listed in the input table. Default: None
+
+  -sc, --study_col
+  Name of the column in the DCC AR data dictionary that will contain the identifier for the study. Default: "studyKey"
+
+  -d, --data_type
+  Data type to select conditions for from reference table. If nothing is provided, the JSON schema will include all applicable data types listed in the input table. Default: None
+  
+  -dc, --data_col
+  Name of the column in the DCC AR data dictionary that will contain the identifier for the data type. Default: "dataType"
+
+  -p, --species_type
+  Species to select conditions for from reference table. If nothing is provided, the JSON schema will include all applicable species listed in the input table. Default: None
+  
+  -pc, --species_col
+  Name of the column in the DCC AR data dictionary that will contain the identifier for the species. Default: "speciesType"
+
 ```
 </details>  
 
@@ -88,7 +116,7 @@ Command:
 `python generate_duo_schema.py example_annotation_AR_reference.csv output_folder -o Project -g CA000002 -v v4.0.0 -m`
 
 Generated JSON schema file name:  
-`Project.AccessRequirement-CA000002-v4.0.0-schema.json` 
+`Project.AccessRequirement-CA000002-mc-v4.0.0-schema.json` 
 
 Output:
 ```json
@@ -174,7 +202,7 @@ Command:
 `python generate_duo_schema.py example_annotation_AR_reference.csv output_folder -o Project -v v3.0.1 -m`  
 
 Generated JSON schema file name:  
-`Project.AccessRequirement-Project-v3.0.1-schema.json` 
+`Project.AccessRequirement-Project-mc-v3.0.1-schema.json` 
 
 Output:
 ```json
