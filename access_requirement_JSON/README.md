@@ -74,7 +74,7 @@ options:
   Schema version. Default: "v1.0.0"
 
   -o ORG_ID, --org_id ORG_ID  
-  Organization ID for $id field. Default: "mc2"
+  Organization ID for $id field. Default: "Project"
 
   -g GRANT_ID, --grant_id GRANT_ID  
   Grant number to select conditions for from reference table. If nothing is provided, the JSON schema will include all conditions listed in the input table. Default: "Project"
