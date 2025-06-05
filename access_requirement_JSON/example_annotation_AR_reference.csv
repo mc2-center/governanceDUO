@@ -1,0 +1,8 @@
+dataUseModifiers,accessRequirementId,activatedByAttribute,activationValue,grantNumber,studyKey,dataType,speciesType,entityIdList
+"IRB",1000001,activateRequirements,True,CA000001,study01,sequencingLevel1,Human,syn66638835
+"NPU",1000002,activateRequirements,True,CA000002,study01,imagingLevel2,Mouse,syn66638836
+"HMB",1000003,activateRequirements,True,CA000003,study01,proteomicsLevel2,Human,syn66638837
+HMB,1000003,activateRequirements,True,CA000003,study02,proteomicsLevel2,Human,
+NPU,1000004,activateRequirements,True,CA000003,study03,imagingLevel2,Mouse,
+IRB,1000005,,,CA000003,,sequencingLevel1,Human,
+IRB,1000006,,,CA000003,study03,sequencingLevel1,Human,
