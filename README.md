@@ -15,7 +15,7 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 
 # Related Publications
- - https://doi.org/10.1016/j.xgen.2021.100028
- - https://doi.org/10.1016/j.xgen.2023.100381
- - https://doi.org/10.3233/SW-243583
- - https://doi.org/10.1038/s41597-024-03280-6
+ - The Data Use Ontology to streamline responsible access to human biomedical datasets. Lawson, Jonathan et al., Cell Genomics, Volume 1, Issue 2, 100028, doi: https://doi.org/10.1016/j.xgen.2021.100028
+ - Aligning NIH’s existing data use restrictions to the GA4GH DUO standard. Lawson, Jonathan et al., Cell Genomics, Volume 3, Issue 9, 100381, doi: https://doi.org/10.1016/j.xgen.2023.100381
+ - Enhancing Data Use Ontology (DUO) for health-data sharing by extending it with ODRL and DPV. Pandit HJ, Esteves B., Semantic Web. 2024;15(4):1473-1498, doi: https://doi.org/10.3233/SW-243583
+ - Getting your DUCs in a row - standardising the representation of Digital Use Conditions. Jeanson, F., Gibson, S.J., Alper, P. et al., Sci Data 11, 464 (2024), doi: https://doi.org/10.1038/s41597-024-03280-6
