@@ -35,7 +35,7 @@ Moreover, it is expected that each Synapse project will include:
 | DUO_0000026 | US | User Specific Restriction | String | Provide detail | User may be required to register, enhance their profile, join a Synapse Team, or have a specific authentication, e.g., 2FA or RAS
 |  | DUOplus1 | Source Geography | List of Strings | List data generating country(ies) [ISO 3166⍺2] | 
 |  | DUOplus2 | Study Population | String | Description of cohort, e.g., study size, vulnerable populations, special categories of data, rare diseases, etc. | 
-|  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identification | 
+|  | DUOplus3 | Deidentifcation | List of Strings | Method for de-identification (HIPAA LDS, Safe Harbor, Expert Determination, Pseudonymized, Anonymized, Other) | 
 |  | DUOplus4 | Data Permission | List of Strings | Data sharing enforced by: Agreement, Attestation, Award, Other (TBD) |
 |  | DUOplus5 | Data Tier | List of Strings | Anonymous, Open (aka Registered), Controlled, Private |
 |  | DUOplus6 | License | List of Strings | CC BY, CC BY-SA, CC BY-NC, CC BY-NC-SA |
