@@ -1,0 +1,1071 @@
+id: https://w3id.org/sageGovernance/ar-dictionary-schema
+name: ar-dictionary-schema
+title: ar-dictionary-schema
+description: |-
+  Specification for the ar-dictionary-schema.
+license: Apache-2.0
+see_also:
+  - https://github.com/Sage-Bionetworks/governanceDUO/blob/main/access_requirement_JSON/README.md
+
+prefixes:
+  syngov: https://w3id.org/sageGovernance/ar-dictionary-schema
+  duo: http://purl.obolibrary.org/obo/DUO_
+  doid: http://purl.obolibrary.org/obo/DOID_
+  mondo: http://purl.obolibrary.org/obo/MONDO_
+  ccid: https://en.wikipedia.org/wiki/ISO_3166-2:
+  ror: https://ror.org/
+  linkml: https://w3id.org/linkml/
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  schema: http://schema.org/
+default_prefix: syngov
+default_range: string
+
+imports:
+  - linkml:types
+
+types:
+  disease_term:
+    description: >-
+      A term representing a disease, disorder, or health condition.
+    typeof: uriorcurie
+    id_prefixes:
+      - doid
+      - mondo
+  geographical_term:
+    description: >-
+      A term representing a geographical location or region.
+    typeof: uriorcurie
+    id_prefixes:
+      - ccid
+  institution_term:
+    description: >-
+      A term representing an institution, such as a university or research center.
+    typeof: uriorcurie
+    id_prefixes:
+      - ror
+
+classes:
+
+  NamedThing:
+    description: >-
+      A generic class applicable to any entity
+    slots:
+      - id
+      - type
+      - name
+      - description
+    class_uri: schema:Thing
+
+  AccessRequirement:
+    is_a: NamedThing
+    description: >-
+      A class for access requirements, which are used to describe
+      the conditions under which data can be accessed.
+    slots:
+      - arIdentifier
+      - contributorName
+      - contributionDate
+      - usedInProject
+      - dataUseModifiers
+      - collaborationRequired
+      - diseaseSpecificResearch
+      - geographicalRestriction
+      - institutionSpecificRestriction
+      - publicationMoratorium
+      - researchSpecificRestrictions
+      - timeLimitOnUse
+      - userSpecificRestriction
+      - sourceGeography
+      - studyPopulation
+      - deidentificationType
+      - dataPermission
+      - dataTier
+      - license
+      - attribution
+      - schemaUrl
+    rules:
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: COL
+        postconditions:
+          collaborationRequired:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DS
+        postconditions:
+          diseaseSpecificResearch:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: GS
+        postconditions:
+          geographicalRestriction:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: IS
+        postconditions:
+          institutionSpecificRestriction:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: MOR
+        postconditions:
+          publicationMoratorium:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: RS
+        postconditions:
+          researchSpecificRestrictions:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: TS
+        postconditions:
+          timeLimitOnUse:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: US
+        postconditions:
+          userSpecificRestriction:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus1
+        postconditions:
+          sourceGeography:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus2
+        postconditions:
+          studyPopulation:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus3
+        postconditions:
+          deidentificationType:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus4
+        postconditions:
+          dataPermission:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus5
+        postconditions:
+          dataTier:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus6
+        postconditions:
+          license:
+            is_required: true
+      - preconditions:
+        slot_conditions:
+          dataUseModifiers:
+            has_member: DUOPlus7
+        postconditions:
+          attribution:
+            is_required: true
+
+    class_uri: syngov:AccessRequirement
+
+slots:
+  
+  node_property:
+    description: >-
+      A grouping for any property that holds
+      between a node and a value.
+    domain: NamedThing
+  
+  id:
+    identifier: true
+    slot_uri: schema:identifier
+    range: uriorcurie
+    description: A unique identifier for a thing.
+    required: true
+  
+  type:
+    description: >-
+      A generic slot for any label corresponding to the label
+      for an entity type associated to the class.
+    domain: NamedThing
+  
+  name:
+    slot_uri: schema:name
+    description: A human-readable name for a thing.
+    range: string
+  
+  description:
+    slot_uri: schema:description
+    description: A human-readable description for a thing.
+    range: string
+  
+  arIdentifier:
+    is_a: node_property
+    range: integer
+    description: >-
+      A unique identifier for the access requirement.
+      This should be the numeric identifier of the access requirement
+    required: true
+    examples:
+      - value: 9876543
+  
+  contributorName:
+    is_a: node_property
+    range: string
+    description: The name of the person who added this node.
+    required: true
+
+  contributionDate:
+    is_a: node_property
+    range: date  # Date in ISO 8601 format
+    description: The date on which the node was added.
+    required: true
+    examples:
+      - value: "2023-03-20"
+
+  usedInProject:
+    is_a: node_property
+    description: >-
+      The identifier of the project in which this node is used.
+      required: true
+    domain: NamedThing
+    range: projectIdEnum
+  
+  dataUseModifiers:
+    is_a: node_property
+    range: duoEnum
+    description: >-
+      A list of data use modifiers that apply to the access requirement.
+      Examples include "GRU", "IRB", etc.
+    required: true
+    multivalued: true
+
+  collaborationRequired:
+    is_a: node_property
+    range: uriorcurie
+    description: >-
+      If collaboration is required for the access requirement, provide the PI email address.
+    required_if: 
+  
+  diseaseSpecificResearch:
+    is_a: node_property
+    range: disease_term
+    values_from:
+      - doid
+      - mondo
+    description: >-
+      Indicates whether the access requirement is specific to disease-related research.
+  
+  geographicalRestriction:
+    is_a: node_property
+    range: countryEnum
+    multivalued: true
+    description: >-
+      Indicates whether there are geographical restrictions associated with the access requirement.
+  
+  institutionSpecificRestriction:
+    is_a: node_property
+    range: institution_term
+    values_from:
+      - ror
+    description: >-
+      Indicates whether there are institution-specific restrictions associated with the access requirement.
+  
+  publicationMoratorium:
+    is_a: node_property
+    range: date
+    description: >-
+      Indicates whether there is a publication moratorium associated with the access requirement.
+  
+  researchSpecificRestrictions:
+    is_a: node_property
+    range: string
+    description: >-
+      Indicates whether there are research-specific restrictions associated with the access requirement.
+  
+  timeLimitOnUse:
+    is_a: node_property
+    range: date
+    description: >-
+      Indicates whether there is a time limit on the use of the data associated with the access requirement.
+
+  userSpecificRestriction:
+    is_a: node_property
+    range: string
+    description: >-
+      Indicates whether there are user-specific restrictions associated with the access requirement.
+  
+  sourceGeography:
+    is_a: node_property
+    range: countryEnum
+    multivalued: true
+    description: >-
+      The geographical source of the data associated with the access requirement.
+    synonyms:
+      - DUOPlus1
+  
+  studyPopulation:
+    is_a: node_property
+    range: string
+    description: >-
+      The population studied in the research associated with the access requirement.
+    synonyms:
+      - DUOPlus2
+
+  deidentificationType:
+    is_a: node_property
+    range: deidentificationEnum
+    multivalued: true
+    description: >-
+      The type of de-identification applied to the data associated with the access requirement.
+    synonyms:
+      - DUOPlus3
+  
+  dataPermission:
+    is_a: node_property
+    range: permissionEnum
+    multivalued: true
+    description: >-
+      The permissions associated with the data under the access requirement.
+    synonyms:
+      - DUOPlus4
+
+  dataTier:
+    is_a: node_property
+    range: tierEnum
+    multivalued: true
+    description: >-
+      The tier of data access associated with the access requirement.
+    synonyms:
+      - DUOPlus5
+  
+  license:
+    is_a: node_property
+    range: licenseEnum
+    description: >-
+      The license under which the data associated with the access requirement is shared.
+    synonyms:
+      - DUOPlus6
+  
+  attribution:
+    is_a: node_property
+    range: string
+    description: >-
+      The attribution statement for the data associated with the access requirement.
+    synonyms:
+      - DUOPlus7
+  
+  schemaUrl:
+    is_a: node_property
+    range: uriorcurie
+    description: >-
+      URL associated with the access requirement schema.
+
+enums:
+  
+  projectIdEnum:
+    description: >-
+      An enumeration of project identifiers that can be used in the
+      `used_in_project` slot.
+    permissable_values:
+      ADKP:
+        description: >-
+          The project identifier for the AD Knowledge Portal.
+      ELITE:
+        description: >-
+          The project identifier for the ELITE project.
+      HTAN2:
+        description: >-
+          The project identifier for the HTAN2 project.
+      MC2:
+        description: >-
+          The project identifier for the MC2 project.
+      None:
+        description: >-
+          No specific project identifier is associated.
+
+  duoEnum:
+    description: >-
+      An enumeration of Data Use Modifiers (DUMs) that can be used in the
+      `dataUseModifiers` slot.
+    permissable_values:
+      IRB:
+        description: >-
+          This data use modifier indicates that the requestor must provide documentation of local IRB/ERB approval.
+      HMB:
+        description: >-
+          This data use permission indicates that use is allowed for health/medical/biomedical purposes; does not include the study of population origins or ancestry.
+      PUB:
+        description: >-
+          This data use modifier indicates that requestor agrees to make results of studies using the data available to the larger scientific community.
+      US:
+        description: >-
+          This data use modifier indicates that use is limited to use by approved users.
+      NPOA:
+        description: >-
+          This data use modifier indicates use for purposes of population, origin, or ancestry research is prohibited.
+      COL:
+        description: >-
+          This data use modifier indicates that the requestor must agree to collaboration with the primary study investigator(s).
+      NCU:
+        description: >-
+          This data use modifier indicates that use of the data is limited to not-for-profit use.
+      NPUNCU:
+        description: >-
+          This data use modifier indicates that use of the data is limited to not-for-profit organizations and not-for-profit use, non-commercial use.
+      RS:
+        description: >-
+          This data use modifier indicates that use is limited to studies of a certain research type.
+      TS:
+        description: >-
+          This data use modifier indicates that use is approved for a specific number of months.
+      NRES:
+        description: >-
+          This data use permission indicates there is no restriction on use.
+      NPU:
+        description: >-
+          This data use modifier indicates that use of the data is limited to not-for-profit organizations.
+      DUM:
+        description: >-
+          Data use modifiers indicate additional conditions for use.
+      POA:
+        description: >-
+          This data use permission indicates that use of the data is limited to the study of population origins or ancestry.
+      MOR:
+        description: >-
+          This data use modifier indicates that requestor agrees not to publish results of studies until a specific date.
+      GSO:
+        description: >-
+          This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)
+      RTN:
+        description: >-
+          This data use modifier indicates that the requestor must return derived/enriched data to the database/resource.
+      CC:
+        description: >-
+          This data use modifier indicates that use is allowed for clinical use and care.
+      NMDS:
+        description: >-
+          This data use modifier indicates that use does not allow methods development research (e.g., development of software or algorithms).
+      IS:
+        description: >-
+          This data use modifier indicates that use is limited to use within an approved institution.
+      GS:
+        description: >-
+          This data use modifier indicates that use is limited to within a specific geographic region.
+      DS:
+        description: >-
+          This data use permission indicates that use is allowed provided it is related to the specified disease.
+      GRU:
+        description: >-
+          This data use permission indicates that use is allowed for general research use for any research purpose.
+      PS:
+        description: >-
+          This data use modifier indicates that use is limited to use within an approved project.
+      DUOPlus1:
+        description: >-
+          This data use modifier indicates that the source geography of the data is provided.
+      DUOPlus2:
+        description: >-
+          This data use modifier indicates that the study population is provided.
+      DUOPlus3:
+        description: >-
+          This data use modifier indicates that the de-identification type is provided.
+      DUOPlus4:
+        description: >-
+          This data use modifier indicates that the data permission is provided.
+      DUOPlus5:
+        description: >-
+          This data use modifier indicates that the data tier is provided.
+      DUOPlus6:
+        description: >-
+          This data use modifier indicates that the license is provided.
+      DUOPlus7:
+        description: >-
+          This data use modifier indicates that the attribution statement is provided.
+  
+  countryEnum:
+    is_a: geographical_term
+    description: >-
+      An enumeration of country codes that can be used in the
+      `geographicalRestriction` and `sourceGeography` slots.
+    permissable_values:
+      AD:
+        description: Andorra
+      AE:
+        description: United Arab Emirates (the)
+      AF:
+        description: Afghanistan
+      AG:
+        description: Antigua and Barbuda
+      AI:
+        description: Anguilla
+      AL:
+        description: Albania
+      AM:
+        description: Armenia
+      AO:
+        description: Angola
+      AQ:
+        description: Antarctica
+      AR:
+        description: Argentina
+      AS:
+        description: American Samoa
+      AT:
+        description: Austria
+      AU:
+        description: Australia
+      AW:
+        description: Aruba
+      AX:
+        description: Åland Islands
+      AZ:
+        description: Azerbaijan
+      BA:
+        description: Bosnia and Herzegovina
+      BB:
+        description: Barbados
+      BD:
+        description: Bangladesh
+      BE:
+        description: Belgium
+      BF:
+        description: Burkina Faso
+      BG:
+        description: Bulgaria
+      BH:
+        description: Bahrain
+      BI:
+        description: Burundi
+      BJ:
+        description: Benin
+      BL:
+        description: Saint Barthélemy
+      BM:
+        description: Bermuda
+      BN:
+        description: Brunei Darussalam
+      BO:
+        description: Bolivia (Plurinational State of)
+      BQ:
+        description: Bonaire, Sint Eustatius and Saba
+      BR:
+        description: Brazil
+      BS:
+        description: Bahamas (the)
+      BT:
+        description: Bhutan
+      BV:
+        description: Bouvet Island
+      BW:
+        description: Botswana
+      BY:
+        description: Belarus
+      BZ:
+        description: Belize
+      CA:
+        description: Canada
+      CC:
+        description: Cocos (Keeling) Islands (the)
+      CD:
+        description: Congo (the Democratic Republic of the)
+      CF:
+        description: Central African Republic (the)
+      CG:
+        description: Congo (the)
+      CH:
+        description: Switzerland
+      CI:
+        description: Côte d'Ivoire
+      CK:
+        description: Cook Islands (the)
+      CL:
+        description: Chile
+      CM:
+        description: Cameroon
+      CN:
+        description: China
+      CO:
+        description: Colombia
+      CR:
+        description: Costa Rica
+      CU:
+        description: Cuba
+      CV:
+        description: Cabo Verde
+      CW:
+        description: Curaçao
+      CX:
+        description: Christmas Island
+      CY:
+        description: Cyprus
+      CZ:
+        description: Czechia
+      DE:
+        description: Germany
+      DJ:
+        description: Djibouti
+      DK:
+        description: Denmark
+      DM:
+        description: Dominica
+      DO:
+        description: Dominican Republic (the)
+      DZ:
+        description: Algeria
+      EC:
+        description: Ecuador
+      EE:
+        description: Estonia
+      EG:
+        description: Egypt
+      EH:
+        description: Western Sahara*
+      ER:
+        description: Eritrea
+      ES:
+        description: Spain
+      ET:
+        description: Ethiopia
+      FI:
+        description: Finland
+      FJ:
+        description: Fiji
+      FK:
+        description: Falkland Islands (the) [Malvinas]
+      FM:
+        description: Micronesia (Federated States of)
+      FO:
+        description: Faroe Islands (the)
+      FR:
+        description: France
+      GA:
+        description: Gabon
+      GB:
+        description: United Kingdom of Great Britain and Northern Ireland (the)
+      GD:
+        description: Grenada
+      GE:
+        description: Georgia
+      GF:
+        description: French Guiana
+      GG:
+        description: Guernsey
+      GH:
+        description: Ghana
+      GI:
+        description: Gibraltar
+      GL:
+        description: Greenland
+      GM:
+        description: Gambia (the)
+      GN:
+        description: Guinea
+      GP:
+        description: Guadeloupe
+      GQ:
+        description: Equatorial Guinea
+      GR:
+        description: Greece
+      GS:
+        description: South Georgia and the South Sandwich Islands
+      GT:
+        description: Guatemala
+      GU:
+        description: Guam
+      GW:
+        description: Guinea-Bissau
+      GY:
+        description: Guyana
+      HK:
+        description: Hong Kong
+      HM:
+        description: Heard Island and McDonald Islands
+      HN:
+        description: Honduras
+      HR:
+        description: Croatia
+      HT:
+        description: Haiti
+      HU:
+        description: Hungary
+      ID:
+        description: Indonesia
+      IE:
+        description: Ireland
+      IL:
+        description: Israel
+      IM:
+        description: Isle of Man
+      IN:
+        description: India
+      IO:
+        description: British Indian Ocean Territory (the)
+      IQ:
+        description: Iraq
+      IR:
+        description: Iran (Islamic Republic of)
+      IS:
+        description: Iceland
+      IT:
+        description: Italy
+      JE:
+        description: Jersey
+      JM:
+        description: Jamaica
+      JO:
+        description: Jordan
+      JP:
+        description: Japan
+      KE:
+        description: Kenya
+      KG:
+        description: Kyrgyzstan
+      KH:
+        description: Cambodia
+      KI:
+        description: Kiribati
+      KM:
+        description: Comoros (the)
+      KN:
+        description: Saint Kitts and Nevis
+      KP:
+        description: Korea (the Democratic People's Republic of)
+      KR:
+        description: Korea (the Republic of)
+      KW:
+        description: Kuwait
+      KY:
+        description: Cayman Islands (the)
+      KZ:
+        description: Kazakhstan
+      LA:
+        description: Lao People's Democratic Republic (the)
+      LB:
+        description: Lebanon
+      LC:
+        description: Saint Lucia
+      LI:
+        description: Liechtenstein
+      LK:
+        description: Sri Lanka
+      LR:
+        description: Liberia
+      LS:
+        description: Lesotho
+      LT:
+        description: Lithuania
+      LU:
+        description: Luxembourg
+      LV:
+        description: Latvia
+      LY:
+        description: Libya
+      MA:
+        description: Morocco
+      MC:
+        description: Monaco
+      MD:
+        description: Moldova (the Republic of)
+      ME:
+        description: Montenegro
+      MF:
+        description: Saint Martin (French part)
+      MG:
+        description: Madagascar
+      MH:
+        description: Marshall Islands (the)
+      MK:
+        description: North Macedonia
+      ML:
+        description: Mali
+      MM:
+        description: Myanmar
+      MN:
+        description: Mongolia
+      MO:
+        description: Macao
+      MP:
+        description: Northern Mariana Islands (the)
+      MQ:
+        description: Martinique
+      MR:
+        description: Mauritania
+      MS:
+        description: Montserrat
+      MT:
+        description: Malta
+      MU:
+        description: Mauritius
+      MV:
+        description: Maldives
+      MW:
+        description: Malawi
+      MX:
+        description: Mexico
+      MY:
+        description: Malaysia
+      MZ:
+        description: Mozambique
+      NA:
+        description: Namibia
+      NC:
+        description: New Caledonia
+      NE:
+        description: Niger (the)
+      NF:
+        description: Norfolk Island
+      NG:
+        description: Nigeria
+      NI:
+        description: Nicaragua
+      NL:
+        description: Netherlands (Kingdom of the)
+      NO:
+        description: Norway
+      NP:
+        description: Nepal
+      NR:
+        description: Nauru
+      NU:
+        description: Niue
+      NZ:
+        description: New Zealand
+      OM:
+        description: Oman
+      PA:
+        description: Panama
+      PE:
+        description: Peru
+      PF:
+        description: French Polynesia
+      PG:
+        description: Papua New Guinea
+      PH:
+        description: Philippines (the)
+      PK:
+        description: Pakistan
+      PL:
+        description: Poland
+      PM:
+        description: Saint Pierre and Miquelon
+      PN:
+        description: Pitcairn
+      PR:
+        description: Puerto Rico
+      PS:
+        description: Palestine, State of
+      PT:
+        description: Portugal
+      PW:
+        description: Palau
+      PY:
+        description: Paraguay
+      QA:
+        description: Qatar
+      RE:
+        description: Réunion
+      RO:
+        description: Romania
+      RS:
+        description: Serbia
+      RU:
+        description: Russian Federation (the)
+      RW:
+        description: Rwanda
+      SA:
+        description: Saudi Arabia
+      SB:
+        description: Solomon Islands
+      SC:
+        description: Seychelles
+      SD:
+        description: Sudan (the)
+      SE:
+        description: Sweden
+      SG:
+        description: Singapore
+      SH:
+        description: Saint Helena, Ascension and Tristan da Cunha
+      SI:
+        description: Slovenia
+      SJ:
+        description: Svalbard and Jan Mayen
+      SK:
+        description: Slovakia
+      SL:
+        description: Sierra Leone
+      SM:
+        description: San Marino
+      SN:
+        description: Senegal
+      SO:
+        description: Somalia
+      SR:
+        description: Suriname
+      SS:
+        description: South Sudan
+      ST:
+        description: Sao Tome and Principe
+      SV:
+        description: El Salvador
+      SX:
+        description: Sint Maarten (Dutch part)
+      SY:
+        description: Syrian Arab Republic (the)
+      SZ:
+        description: Eswatini
+      TC:
+        description: Turks and Caicos Islands (the)
+      TD:
+        description: Chad
+      TF:
+        description: French Southern Territories (the)
+      TG:
+        description: Togo
+      TH:
+        description: Thailand
+      TJ:
+        description: Tajikistan
+      TK:
+        description: Tokelau
+      TL:
+        description: Timor-Leste
+      TM:
+        description: Turkmenistan
+      TN:
+        description: Tunisia
+      TO:
+        description: Tonga
+      TR:
+        description: Türkiye
+      TT:
+        description: Trinidad and Tobago
+      TV:
+        description: Tuvalu
+      TW:
+        description: Taiwan (Province of China)
+      TZ:
+        description: Tanzania, the United Republic of
+      UA:
+        description: Ukraine
+      UG:
+        description: Uganda
+      UM:
+        description: United States Minor Outlying Islands (the)
+      US:
+        description: United States of America (the)
+      UY:
+        description: Uruguay
+      UZ:
+        description: Uzbekistan
+      VA:
+        description: Holy See (the)
+      VC:
+        description: Saint Vincent and the Grenadines
+      VE:
+        description: Venezuela (Bolivarian Republic of)
+      VG:
+        description: Virgin Islands (British)
+      VI:
+        description: Virgin Islands (U.S.)
+      VN:
+        description: Viet Nam
+      VU:
+        description: Vanuatu
+      WF:
+        description: Wallis and Futuna
+      WS:
+        description: Samoa
+      YE:
+        description: Yemen
+      YT:
+        description: Mayotte
+      ZA:
+        description: South Africa
+      ZM:
+        description: Zambia
+      ZW:
+        description: Zimbabwe
+
+  deidentificationEnum:
+    description: >-
+      An enumeration of de-identification types that can be used in the
+      `deidentificationType` slot.
+    permissable_values:
+      HIPPA_LDS
+      SafeHarbor
+      ExpertDetermination
+      Pseudonymized
+      Anonymized
+      Other
+  
+  permissionEnum:
+    description: >-
+      An enumeration of data permissions that can be used in the
+      `dataPermission` slot.
+    permissable_values:
+      Agreement
+      Attestation
+      Award
+      Other
+  
+  tierEnum:
+    description: >-
+      An enumeration of data tiers that can be used in the
+      `dataTier` slot.
+    permissable_values:
+      Anonymous:
+        description: >-
+          Data can be viewed and downloaded anonymously by anyone on the internet.
+      Open:
+        description: >-
+          Users must have a Synapse account to download data.
+      Controlled:
+        description: >-
+          Users must have a Synapse account and satisfy access conditions to download data.
+      Private:
+        description: >-
+          Users must be provided access to data in Synapse by a project administrator.
+  
+  licenseEnum:
+    description: >-
+      An enumeration of licenses that can be used in the
+      `license` slot.
+    permissable_values:
+      CC0
+      CC_BY
+      CC_BY_NC
+      CC_BY_ND
+      CC_BY_SA
+      CC_BY_NC_ND
+      CC_BY_NC_SA
+      Apache_2.0
+      MIT
+      GPL_3.0
+      BSD_3_Clause
+
