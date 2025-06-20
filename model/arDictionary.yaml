@@ -12,7 +12,7 @@ prefixes:
   duo: http://purl.obolibrary.org/obo/DUO_
   doid: http://purl.obolibrary.org/obo/DOID_
   mondo: http://purl.obolibrary.org/obo/MONDO_
-  ccid: https://en.wikipedia.org/wiki/ISO_3166-2:
+  ccid: https://en.wikipedia.org/wiki/ISO_3166-2
   ror: https://ror.org/
   linkml: https://w3id.org/linkml/
   rdfs: http://www.w3.org/2000/01/rdf-schema#
@@ -23,7 +23,7 @@ default_range: string
 imports:
   - linkml:types
 
-types:
+types:  # need to create enums to reflect types
   disease_term:
     description: >-
       A term representing a disease, disorder, or health condition.
@@ -85,110 +85,140 @@ classes:
       - schemaUrl
     rules:
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: COL
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: COL
         postconditions:
-          collaborationRequired:
-            is_required: true
+          slot_conditions:
+            collaborationRequired:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DS
+          slot_conditions:
+            dataUseModifiers:
+              has_member: 
+                equals_string: DS
         postconditions:
-          diseaseSpecificResearch:
-            is_required: true
+          slot_conditions:
+            diseaseSpecificResearch:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: GS
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: GS
         postconditions:
-          geographicalRestriction:
-            is_required: true
+          slot_conditions:
+            geographicalRestriction:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: IS
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: IS
         postconditions:
-          institutionSpecificRestriction:
-            is_required: true
+          slot_conditions:
+            institutionSpecificRestriction:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: MOR
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: MOR
         postconditions:
-          publicationMoratorium:
-            is_required: true
+          slot_conditions:
+            publicationMoratorium:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: RS
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: RS
         postconditions:
-          researchSpecificRestrictions:
-            is_required: true
+          slot_conditions:
+            researchSpecificRestrictions:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: TS
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: TS
         postconditions:
-          timeLimitOnUse:
-            is_required: true
+          slot_conditions:
+            timeLimitOnUse:
+             required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: US
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: US
         postconditions:
-          userSpecificRestriction:
-            is_required: true
+          slot_conditions:
+            userSpecificRestriction:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus1
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus1
         postconditions:
-          sourceGeography:
-            is_required: true
+          slot_conditions:
+            sourceGeography:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus2
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus2
         postconditions:
-          studyPopulation:
-            is_required: true
+          slot_conditions:
+            studyPopulation:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus3
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus3
         postconditions:
-          deidentificationType:
-            is_required: true
+          slot_conditions:
+            deidentificationType:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus4
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus4
         postconditions:
-          dataPermission:
-            is_required: true
+          slot_conditions:
+            dataPermission:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus5
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus5
         postconditions:
-          dataTier:
-            is_required: true
+          slot_conditions:
+            dataTier:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus6
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus6
         postconditions:
-          license:
-            is_required: true
+          slot_conditions:
+            license:
+              required: true
       - preconditions:
-        slot_conditions:
-          dataUseModifiers:
-            has_member: DUOPlus7
+          slot_conditions:
+            dataUseModifiers:
+              has_member:
+                equals_string: DUOPlus7
         postconditions:
-          attribution:
-            is_required: true
+          slot_conditions:
+            attribution:
+              required: true
 
     class_uri: syngov:AccessRequirement
 
@@ -230,8 +260,6 @@ slots:
       A unique identifier for the access requirement.
       This should be the numeric identifier of the access requirement
     required: true
-    examples:
-      - value: 9876543
   
   contributorName:
     is_a: node_property
@@ -269,7 +297,6 @@ slots:
     range: uriorcurie
     description: >-
       If collaboration is required for the access requirement, provide the PI email address.
-    required_if: 
   
   diseaseSpecificResearch:
     is_a: node_property
@@ -290,6 +317,7 @@ slots:
   institutionSpecificRestriction:
     is_a: node_property
     range: institution_term
+    multivalued: true
     values_from:
       - ror
     description: >-
@@ -325,7 +353,7 @@ slots:
     multivalued: true
     description: >-
       The geographical source of the data associated with the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus1
   
   studyPopulation:
@@ -333,7 +361,7 @@ slots:
     range: string
     description: >-
       The population studied in the research associated with the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus2
 
   deidentificationType:
@@ -342,7 +370,7 @@ slots:
     multivalued: true
     description: >-
       The type of de-identification applied to the data associated with the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus3
   
   dataPermission:
@@ -351,7 +379,7 @@ slots:
     multivalued: true
     description: >-
       The permissions associated with the data under the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus4
 
   dataTier:
@@ -360,7 +388,7 @@ slots:
     multivalued: true
     description: >-
       The tier of data access associated with the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus5
   
   license:
@@ -368,7 +396,7 @@ slots:
     range: licenseEnum
     description: >-
       The license under which the data associated with the access requirement is shared.
-    synonyms:
+    exact_mappings:
       - DUOPlus6
   
   attribution:
@@ -376,7 +404,7 @@ slots:
     range: string
     description: >-
       The attribution statement for the data associated with the access requirement.
-    synonyms:
+    exact_mappings:
       - DUOPlus7
   
   schemaUrl:
@@ -391,7 +419,7 @@ enums:
     description: >-
       An enumeration of project identifiers that can be used in the
       `used_in_project` slot.
-    permissable_values:
+    permissible_values:
       ADKP:
         description: >-
           The project identifier for the AD Knowledge Portal.
@@ -412,7 +440,7 @@ enums:
     description: >-
       An enumeration of Data Use Modifiers (DUMs) that can be used in the
       `dataUseModifiers` slot.
-    permissable_values:
+    permissible_values:
       IRB:
         description: >-
           This data use modifier indicates that the requestor must provide documentation of local IRB/ERB approval.
@@ -512,7 +540,7 @@ enums:
     description: >-
       An enumeration of country codes that can be used in the
       `geographicalRestriction` and `sourceGeography` slots.
-    permissable_values:
+    permissible_values:
       AD:
         description: Andorra
       AE:
@@ -1016,29 +1044,49 @@ enums:
     description: >-
       An enumeration of de-identification types that can be used in the
       `deidentificationType` slot.
-    permissable_values:
-      HIPPA_LDS
-      SafeHarbor
-      ExpertDetermination
-      Pseudonymized
-      Anonymized
-      Other
-  
+    permissible_values:
+      HIPPA_LDS:
+        description: >-
+          Data is de-identified according to the HIPAA Limited Data Set (LDS) standard.
+      SafeHarbor:
+        description: >-
+          Data is de-identified according to the Safe Harbor standard.
+      ExpertDetermination:
+        description: >-
+          Data is de-identified according to the Expert Determination standard.
+      Pseudonymized:
+        description: >-
+          Data is pseudonymized, meaning that identifying information has been removed or replaced with pseudonyms.
+      Anonymized:
+        description: >-
+          Data is anonymized, meaning that it cannot be used to identify individuals.
+      Other:
+        description: >-
+          Data is de-identified according to a different standard.
+
   permissionEnum:
     description: >-
       An enumeration of data permissions that can be used in the
       `dataPermission` slot.
-    permissable_values:
-      Agreement
-      Attestation
-      Award
-      Other
-  
+    permissible_values:
+      Agreement:
+        description: >-
+          Data use conditions are derived from a Data Use Agreement.
+      Attestation:
+        description: >-
+          Data use conditions are derived from an Attestation.
+      Award:
+        description: >-
+          Data use conditions are derived from an Award.
+      Other:
+        description: >-
+          Other permissions may apply to the data access.
+
   tierEnum:
     description: >-
       An enumeration of data tiers that can be used in the
       `dataTier` slot.
-    permissable_values:
+    permissible_values:
       Anonymous:
         description: >-
           Data can be viewed and downloaded anonymously by anyone on the internet.
@@ -1056,16 +1104,38 @@ enums:
     description: >-
       An enumeration of licenses that can be used in the
       `license` slot.
-    permissable_values:
-      CC0
-      CC_BY
-      CC_BY_NC
-      CC_BY_ND
-      CC_BY_SA
-      CC_BY_NC_ND
-      CC_BY_NC_SA
-      Apache_2.0
-      MIT
-      GPL_3.0
-      BSD_3_Clause
+    permissible_values:
+      CC0:
+        description: >-
+          Creative Commons Zero license, allowing for the free use of the data.
+      CC_BY:
+        description: >-
+          Creative Commons Attribution license, requiring attribution to the original source.
+      CC_BY_NC:
+        description: >-
+          Creative Commons Attribution-NonCommercial license, allowing for non-commercial use with attribution.
+      CC_BY_ND:
+        description: >-
+          Creative Commons Attribution-NoDerivatives license, allowing for redistribution with attribution but no modifications.
+      CC_BY_SA:
+        description: >-
+          Creative Commons Attribution-ShareAlike license, allowing for modifications with attribution and sharing under the same license.
+      CC_BY_NC_ND:
+        description: >-
+          Creative Commons Attribution-NonCommercial-NoDerivatives license, allowing for non-commercial use with attribution but no modifications.
+      CC_BY_NC_SA:
+        description: >-
+          Creative Commons Attribution-NonCommercial-ShareAlike license, allowing for non-commercial modifications with attribution and sharing under the same license.
+      Apache_2.0:
+        description: >-
+          Apache License 2.0, a permissive license allowing for use, modification, and distribution.
+      MIT:
+        description: >-
+          MIT License, a permissive license allowing for use, modification, and distribution.
+      GPL_3.0:
+        description: >-
+          GNU General Public License v3.0, a copyleft license requiring derivative works to be licensed under the same terms.
+      BSD_3_Clause:
+        description: >-
+          BSD 3-Clause License, a permissive license allowing for use, modification, and distribution with attribution.
 
