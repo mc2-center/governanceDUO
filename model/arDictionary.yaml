@@ -62,7 +62,7 @@ classes:
       A class for access requirements, which are used to describe
       the conditions under which data can be accessed.
     slots:
-      - arIdentifier
+      - accessRequirementId
       - contributorName
       - contributionDate
       - usedInProject
@@ -223,7 +223,7 @@ slots:
     description: A human-readable description for a thing.
     range: string
   
-  arIdentifier:
+  accessRequirementId:
     is_a: node_property
     range: integer
     description: >-
