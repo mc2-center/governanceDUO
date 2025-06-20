@@ -235,7 +235,6 @@ slots:
     slot_uri: schema:identifier
     range: uriorcurie
     description: A unique identifier for a thing.
-    required: true
   
   type:
     description: >-
