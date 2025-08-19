@@ -1,5 +1,5 @@
 accessRequirementId,contributorName,contributionDate,usedInProject,dataUseModifiers,collaborationRequired,diseaseSpecificResearch,geographicalRestriction,institutionSpecificRestriction,publicationMoratorium,researchSpecificRestrictions,timeLimitOnUse,userSpecificRestriction,sourceGeography,studyPopulation,deidentificationType,dataPermission,dataTier,license,attribution,schemaUrl,activatedByAttribute,activationValue,grantNumber,studyKey,dataType,speciesType,entityIdList
-1000001,Orion Banks,2025-06-20,None,"IRB",,,,,,,,,,,,,,,,,activateRequirements,True,CA000001,study01,sequencingLevel1,Human,syn66638835
+1000001,Orion Banks,2025-06-20,None,"IRB, DS",,TNBC,,,,,,,,,,,,,,,activateRequirements,True,CA000001,study01,sequencingLevel1,Human,syn66638835
 1000002,Orion Banks,2025-06-20,None,NPU,,,,,,,,,,,,,,,,,activateRequirements,True,CA000002,study01,imagingLevel2,Mouse,syn66638836
 1000003,Orion Banks,2025-06-20,None,HMB,,,,,,,,,,,,,,,,,activateRequirements,True,CA000003,study01,proteomicsLevel2,Human,syn66638837
 1000003,Orion Banks,2025-06-20,None,HMB,,,,,,,,,,,,,,,,,activateRequirements,True,CA000003,study02,proteomicsLevel2,Human,
