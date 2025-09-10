@@ -23,27 +23,6 @@ default_range: string
 imports:
   - linkml:types
 
-types:  # need to create enums to reflect types
-  disease_term:
-    description: >-
-      A term representing a disease, disorder, or health condition.
-    typeof: uriorcurie
-    id_prefixes:
-      - doid
-      - mondo
-  geographical_term:
-    description: >-
-      A term representing a geographical location or region.
-    typeof: uriorcurie
-    id_prefixes:
-      - ccid
-  institution_term:
-    description: >-
-      A term representing an institution, such as a university or research center.
-    typeof: uriorcurie
-    id_prefixes:
-      - ror
-
 classes:
 
   NamedThing:
@@ -89,7 +68,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: COL
-        postconditions:
+      - postconditions:
           slot_conditions:
             collaborationRequired:
               required: true
@@ -98,7 +77,7 @@ classes:
             dataUseModifiers:
               has_member: 
                 equals_string: DS
-        postconditions:
+      - postconditions:
           slot_conditions:
             diseaseSpecificResearch:
               required: true
@@ -107,7 +86,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: GS
-        postconditions:
+      - postconditions:
           slot_conditions:
             geographicalRestriction:
               required: true
@@ -116,7 +95,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: IS
-        postconditions:
+      - postconditions:
           slot_conditions:
             institutionSpecificRestriction:
               required: true
@@ -125,7 +104,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: MOR
-        postconditions:
+      - postconditions:
           slot_conditions:
             publicationMoratorium:
               required: true
@@ -134,7 +113,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: RS
-        postconditions:
+      - postconditions:
           slot_conditions:
             researchSpecificRestrictions:
               required: true
@@ -143,7 +122,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: TS
-        postconditions:
+      - postconditions:
           slot_conditions:
             timeLimitOnUse:
              required: true
@@ -152,7 +131,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: US
-        postconditions:
+      - postconditions:
           slot_conditions:
             userSpecificRestriction:
               required: true
@@ -161,7 +140,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus1
-        postconditions:
+      - postconditions:
           slot_conditions:
             sourceGeography:
               required: true
@@ -170,7 +149,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus2
-        postconditions:
+      - postconditions:
           slot_conditions:
             studyPopulation:
               required: true
@@ -179,7 +158,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus3
-        postconditions:
+      - postconditions:
           slot_conditions:
             deidentificationType:
               required: true
@@ -188,7 +167,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus4
-        postconditions:
+      - postconditions:
           slot_conditions:
             dataPermission:
               required: true
@@ -197,7 +176,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus5
-        postconditions:
+      - postconditions:
           slot_conditions:
             dataTier:
               required: true
@@ -206,7 +185,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus6
-        postconditions:
+      - postconditions:
           slot_conditions:
             license:
               required: true
@@ -215,7 +194,7 @@ classes:
             dataUseModifiers:
               has_member:
                 equals_string: DUOPlus7
-        postconditions:
+      - postconditions:
           slot_conditions:
             attribution:
               required: true
@@ -231,7 +210,6 @@ slots:
     domain: NamedThing
   
   id:
-    identifier: true
     slot_uri: schema:identifier
     range: uriorcurie
     description: A unique identifier for a thing.
@@ -278,7 +256,7 @@ slots:
     is_a: node_property
     description: >-
       The identifier of the project in which this node is used.
-      required: true
+    required: true
     domain: NamedThing
     range: projectIdEnum
   
@@ -296,13 +274,10 @@ slots:
     range: uriorcurie
     description: >-
       If collaboration is required for the access requirement, provide the PI email address.
-  
+
   diseaseSpecificResearch:
     is_a: node_property
     range: disease_term
-    values_from:
-      - doid
-      - mondo
     description: >-
       Indicates whether the access requirement is specific to disease-related research.
   
@@ -317,8 +292,6 @@ slots:
     is_a: node_property
     range: institution_term
     multivalued: true
-    values_from:
-      - ror
     description: >-
       Indicates whether there are institution-specific restrictions associated with the access requirement.
   
@@ -354,7 +327,7 @@ slots:
       The geographical source of the data associated with the access requirement.
     exact_mappings:
       - DUOPlus1
-  
+
   studyPopulation:
     is_a: node_property
     range: string
@@ -414,6 +387,31 @@ slots:
 
 enums:
   
+  diseaseEnum: # adjust to get permissible values from domains at prefixes
+    description: >-
+      A term representing a disease, disorder, or health condition.
+    permissible_values:
+      typeof: uriorcurie
+      #id_prefixes:
+       # - doid
+       # - mondo
+  
+  geographical_term:
+    description: >-
+      A term representing a geographical location or region.
+    permissible_values:
+      typeof: uriorcurie
+      #id_prefixes:
+       # - ccid
+  
+  institution_term:
+    description: >-
+      A term representing an institution, such as a university or research center.
+    permissible_values:
+      typeof: uriorcurie
+      #id_prefixes:
+       # - ror
+
   projectIdEnum:
     description: >-
       An enumeration of project identifiers that can be used in the
