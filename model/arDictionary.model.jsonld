@@ -86,7 +86,7 @@
                     "@id": "bts:SourceGeography"
                 },
                 {
-                    "@id": "bts:StudyPopulation"
+                    "@id": "bts:PopulationType"
                 },
                 {
                     "@id": "bts:DeidentificationType"
@@ -2036,23 +2036,23 @@
             ]
         },
         {
-            "@id": "bts:StudyPopulation",
+            "@id": "bts:PopulationType",
             "@type": "rdfs:Class",
-            "rdfs:comment": "The population(s) associated with data shared through this study.",
-            "rdfs:label": "StudyPopulation",
+            "rdfs:comment": "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2",
+            "rdfs:label": "PopulationType",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:Study"
+                    "@id": "bts:AccessRequirement"
                 }
             ],
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
             "sms:columnType": "string",
-            "sms:displayName": "studyPopulation",
+            "sms:displayName": "populationType",
             "sms:required": "sms:false",
             "sms:validationRules": [
-                "str"
+                "list like"
             ]
         },
         {
@@ -8124,109 +8124,6 @@
             "sms:validationRules": []
         },
         {
-            "@id": "bts:Study",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "Studies associated with a grant",
-            "rdfs:label": "Study",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:Thing"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "Study",
-            "sms:required": "sms:false",
-            "sms:requiresDependency": [
-                {
-                    "@id": "bts:Component"
-                },
-                {
-                    "@id": "bts:StudyId"
-                },
-                {
-                    "@id": "bts:GrantNumber"
-                },
-                {
-                    "@id": "bts:StudyName"
-                },
-                {
-                    "@id": "bts:StudyDescription"
-                },
-                {
-                    "@id": "bts:StudyInvestigator"
-                },
-                {
-                    "@id": "bts:StudyAttribution"
-                },
-                {
-                    "@id": "bts:StudyParticipantNumber"
-                },
-                {
-                    "@id": "bts:StudyDeidentificationType"
-                },
-                {
-                    "@id": "bts:StudyDeidentificationMethodDescription"
-                },
-                {
-                    "@id": "bts:StudyDeidentificationMethodSoftware"
-                },
-                {
-                    "@id": "bts:StudyDbgapAccessionId"
-                },
-                {
-                    "@id": "bts:StudyLicense"
-                },
-                {
-                    "@id": "bts:StudyDataUseModifiers"
-                },
-                {
-                    "@id": "bts:StudyIndexDate"
-                },
-                {
-                    "@id": "bts:StudySourceGeography"
-                },
-                {
-                    "@id": "bts:StudyDataPermission"
-                },
-                {
-                    "@id": "bts:StudyDataTier"
-                },
-                {
-                    "@id": "bts:StudySampleNumber"
-                },
-                {
-                    "@id": "bts:StudyCollaborationRequired"
-                },
-                {
-                    "@id": "bts:StudyDiseaseSpecificResearch"
-                },
-                {
-                    "@id": "bts:StudyGeographicalRestriction"
-                },
-                {
-                    "@id": "bts:StudyInstitutionSpecificRestriction"
-                },
-                {
-                    "@id": "bts:StudyPublicationMoratorium"
-                },
-                {
-                    "@id": "bts:StudyResearchSpecificRestrictions"
-                },
-                {
-                    "@id": "bts:StudyTimeLimitOnUse"
-                },
-                {
-                    "@id": "bts:StudyUserSpecificRestriction"
-                },
-                {
-                    "@id": "bts:StudyPopulation"
-                }
-            ],
-            "sms:validationRules": []
-        },
-        {
             "@id": "bts:HIPPALDS",
             "@type": "rdfs:Class",
             "rdfs:comment": "TBD",
@@ -8846,6 +8743,129 @@
             },
             "sms:displayName": "DUO:0000007",
             "sms:required": "sms:false",
+            "sms:validationRules": []
+        },
+        {
+            "@id": "bts:StudyPopulation",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "The population(s) associated with data shared through this study.",
+            "rdfs:label": "StudyPopulation",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Study"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:columnType": "string",
+            "sms:displayName": "studyPopulation",
+            "sms:required": "sms:false",
+            "sms:validationRules": [
+                "str"
+            ]
+        },
+        {
+            "@id": "bts:Study",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "Studies associated with a grant",
+            "rdfs:label": "Study",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Thing"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "Study",
+            "sms:required": "sms:false",
+            "sms:requiresDependency": [
+                {
+                    "@id": "bts:Component"
+                },
+                {
+                    "@id": "bts:StudyId"
+                },
+                {
+                    "@id": "bts:GrantNumber"
+                },
+                {
+                    "@id": "bts:StudyName"
+                },
+                {
+                    "@id": "bts:StudyDescription"
+                },
+                {
+                    "@id": "bts:StudyInvestigator"
+                },
+                {
+                    "@id": "bts:StudyAttribution"
+                },
+                {
+                    "@id": "bts:StudyParticipantNumber"
+                },
+                {
+                    "@id": "bts:StudyDeidentificationType"
+                },
+                {
+                    "@id": "bts:StudyDeidentificationMethodDescription"
+                },
+                {
+                    "@id": "bts:StudyDeidentificationMethodSoftware"
+                },
+                {
+                    "@id": "bts:StudyDbgapAccessionId"
+                },
+                {
+                    "@id": "bts:StudyLicense"
+                },
+                {
+                    "@id": "bts:StudyDataUseModifiers"
+                },
+                {
+                    "@id": "bts:StudyIndexDate"
+                },
+                {
+                    "@id": "bts:StudySourceGeography"
+                },
+                {
+                    "@id": "bts:StudyDataPermission"
+                },
+                {
+                    "@id": "bts:StudyDataTier"
+                },
+                {
+                    "@id": "bts:StudySampleNumber"
+                },
+                {
+                    "@id": "bts:StudyCollaborationRequired"
+                },
+                {
+                    "@id": "bts:StudyDiseaseSpecificResearch"
+                },
+                {
+                    "@id": "bts:StudyGeographicalRestriction"
+                },
+                {
+                    "@id": "bts:StudyInstitutionSpecificRestriction"
+                },
+                {
+                    "@id": "bts:StudyPublicationMoratorium"
+                },
+                {
+                    "@id": "bts:StudyResearchSpecificRestrictions"
+                },
+                {
+                    "@id": "bts:StudyTimeLimitOnUse"
+                },
+                {
+                    "@id": "bts:StudyUserSpecificRestriction"
+                },
+                {
+                    "@id": "bts:StudyPopulation"
+                }
+            ],
             "sms:validationRules": []
         },
         {
