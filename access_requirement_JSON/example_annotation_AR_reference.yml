@@ -1,0 +1,30 @@
+accessRequirementId: 1000001
+contributorName: Orion Banks
+contributionDate: "2025-06-20"
+usedInProject: None
+dataUseModifiers:
+  - DS
+  - MOR
+collaborationRequired: 
+diseaseSpecificResearch: doid:TNBC
+geographicalRestriction:
+institutionSpecificRestriction:
+publicationMoratorium:
+researchSpecificRestrictions:
+timeLimitOnUse:
+userSpecificRestriction:
+sourceGeography:
+studyPopulation:
+deidentificationType:
+dataPermission:
+dataTier:
+license: Apache_2.0
+attribution:
+schemaUrl:
+activatedByAttribute: activateRequirements
+activationValue: True
+grantNumber: CA000001
+studyKey: study01
+dataType: sequencingLevel1
+speciesType: Human
+entityIdList: syn66638835
