@@ -1,0 +1,1688 @@
+{
+  "$id": "http://example.com/AccessRequirement",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "RS"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "researchSpecificRestrictions": {}
+        },
+        "required": [
+          "researchSpecificRestrictions"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus5"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "dataTier": {
+            "items": {
+              "enum": [
+                "Open",
+                "Controlled",
+                "Private",
+                "Anonymous",
+                ""
+              ]
+            },
+            "maxItems": 4,
+            "type": "array"
+          }
+        },
+        "required": [
+          "dataTier"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "COL"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "collaborationRequired": {}
+        },
+        "required": [
+          "collaborationRequired"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DS"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "diseaseSpecificResearch": {}
+        },
+        "required": [
+          "diseaseSpecificResearch"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus7"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "attribution": {}
+        },
+        "required": [
+          "attribution"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus1"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sourceGeography": {
+            "items": {
+              "enum": [
+                "BT",
+                "MX",
+                "AZ",
+                "FO",
+                "GL",
+                "GA",
+                "MT",
+                "IO",
+                "SX",
+                "AD",
+                "CF",
+                "PN",
+                "YT",
+                "EE",
+                "KI",
+                "CG",
+                "SY",
+                "TR",
+                "FM",
+                "CI",
+                "LK",
+                "CW",
+                "AR",
+                "CV",
+                "LA",
+                "IR",
+                "TV",
+                "NA",
+                "FJ",
+                "SI",
+                "ZM",
+                "WF",
+                "SG",
+                "RW",
+                "NI",
+                "SE",
+                "SS",
+                "TD",
+                "TW",
+                "LC",
+                "MH",
+                "IM",
+                "HT",
+                "CY",
+                "GM",
+                "RE",
+                "TM",
+                "KM",
+                "BV",
+                "KH",
+                "GE",
+                "LR",
+                "SK",
+                "GD",
+                "AL",
+                "BR",
+                "PW",
+                "CZ",
+                "PH",
+                "CK",
+                "VN",
+                "SA",
+                "BJ",
+                "AI",
+                "RS",
+                "AQ",
+                "UA",
+                "BI",
+                "BZ",
+                "MC",
+                "IL",
+                "AE",
+                "GS",
+                "HM",
+                "MD",
+                "KW",
+                "KG",
+                "KE",
+                "DZ",
+                "SL",
+                "ID",
+                "IQ",
+                "SR",
+                "CH",
+                "HN",
+                "TT",
+                "MF",
+                "VE",
+                "PE",
+                "IT",
+                "YE",
+                "BO",
+                "MY",
+                "KY",
+                "BN",
+                "SC",
+                "DK",
+                "MA",
+                "MU",
+                "CD",
+                "MN",
+                "PS",
+                "SZ",
+                "HK",
+                "AM",
+                "ET",
+                "IE",
+                "PG",
+                "MM",
+                "CX",
+                "CC",
+                "PM",
+                "RO",
+                "GB",
+                "CA",
+                "LY",
+                "JM",
+                "NE",
+                "AX",
+                "AG",
+                "BQ",
+                "MV",
+                "FK",
+                "FI",
+                "BE",
+                "GH",
+                "HR",
+                "MR",
+                "SJ",
+                "LU",
+                "GW",
+                "QA",
+                "VI",
+                "GG",
+                "GR",
+                "NZ",
+                "AS",
+                "ME",
+                "DJ",
+                "DM",
+                "IS",
+                "AT",
+                "BM",
+                "CL",
+                "TH",
+                "GT",
+                "NF",
+                "MS",
+                "CM",
+                "BF",
+                "ES",
+                "GI",
+                "NG",
+                "PY",
+                "SN",
+                "NU",
+                "TN",
+                "NO",
+                "GF",
+                "UG",
+                "TK",
+                "AU",
+                "GU",
+                "JE",
+                "AO",
+                "UY",
+                "BW",
+                "BH",
+                "ZW",
+                "MZ",
+                "PL",
+                "TJ",
+                "ZA",
+                "VU",
+                "GN",
+                "BD",
+                "MW",
+                "TL",
+                "TZ",
+                "VG",
+                "SO",
+                "PR",
+                "TO",
+                "UZ",
+                "LV",
+                "NR",
+                "DO",
+                "LT",
+                "MG",
+                "CO",
+                "CR",
+                "SD",
+                "PA",
+                "BB",
+                "AF",
+                "LS",
+                "MK",
+                "SB",
+                "CN",
+                "TG",
+                "VA",
+                "BY",
+                "NP",
+                "ER",
+                "KR",
+                "US",
+                "IN",
+                "BS",
+                "KN",
+                "KP",
+                "SM",
+                "BG",
+                "CU",
+                "BL",
+                "FR",
+                "ML",
+                "EH",
+                "PF",
+                "SV",
+                "AW",
+                "MQ",
+                "JP",
+                "GY",
+                "LI",
+                "WS",
+                "NL",
+                "PT",
+                "UM",
+                "ST",
+                "PK",
+                "KZ",
+                "JO",
+                "LB",
+                "VC",
+                "HU",
+                "TF",
+                "EG",
+                "MP",
+                "NC",
+                "RU",
+                "DE",
+                "OM",
+                "SH",
+                "GQ",
+                "EC",
+                "GP",
+                "BA",
+                "TC",
+                "MO",
+                ""
+              ]
+            },
+            "maxItems": 249,
+            "type": "array"
+          }
+        },
+        "required": [
+          "sourceGeography"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "GSR"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "geographicalRestriction": {
+            "items": {
+              "enum": [
+                "BT",
+                "MX",
+                "AZ",
+                "FO",
+                "GL",
+                "GA",
+                "MT",
+                "IO",
+                "SX",
+                "AD",
+                "CF",
+                "PN",
+                "YT",
+                "EE",
+                "KI",
+                "CG",
+                "SY",
+                "TR",
+                "FM",
+                "CI",
+                "LK",
+                "CW",
+                "AR",
+                "CV",
+                "LA",
+                "IR",
+                "TV",
+                "NA",
+                "FJ",
+                "SI",
+                "ZM",
+                "WF",
+                "SG",
+                "RW",
+                "NI",
+                "SE",
+                "SS",
+                "TD",
+                "TW",
+                "LC",
+                "MH",
+                "IM",
+                "HT",
+                "CY",
+                "GM",
+                "RE",
+                "TM",
+                "KM",
+                "BV",
+                "KH",
+                "GE",
+                "LR",
+                "SK",
+                "GD",
+                "AL",
+                "BR",
+                "PW",
+                "CZ",
+                "PH",
+                "CK",
+                "VN",
+                "SA",
+                "BJ",
+                "AI",
+                "RS",
+                "AQ",
+                "UA",
+                "BI",
+                "BZ",
+                "MC",
+                "IL",
+                "AE",
+                "GS",
+                "HM",
+                "MD",
+                "KW",
+                "KG",
+                "KE",
+                "DZ",
+                "SL",
+                "ID",
+                "IQ",
+                "SR",
+                "CH",
+                "HN",
+                "TT",
+                "MF",
+                "VE",
+                "PE",
+                "IT",
+                "YE",
+                "BO",
+                "MY",
+                "KY",
+                "BN",
+                "SC",
+                "DK",
+                "MA",
+                "MU",
+                "CD",
+                "MN",
+                "PS",
+                "SZ",
+                "HK",
+                "AM",
+                "ET",
+                "IE",
+                "PG",
+                "MM",
+                "CX",
+                "CC",
+                "PM",
+                "RO",
+                "GB",
+                "CA",
+                "LY",
+                "JM",
+                "NE",
+                "AX",
+                "AG",
+                "BQ",
+                "MV",
+                "FK",
+                "FI",
+                "BE",
+                "GH",
+                "HR",
+                "MR",
+                "SJ",
+                "LU",
+                "GW",
+                "QA",
+                "VI",
+                "GG",
+                "GR",
+                "NZ",
+                "AS",
+                "ME",
+                "DJ",
+                "DM",
+                "IS",
+                "AT",
+                "BM",
+                "CL",
+                "TH",
+                "GT",
+                "NF",
+                "MS",
+                "CM",
+                "BF",
+                "ES",
+                "GI",
+                "NG",
+                "PY",
+                "SN",
+                "NU",
+                "TN",
+                "NO",
+                "GF",
+                "UG",
+                "TK",
+                "AU",
+                "GU",
+                "JE",
+                "AO",
+                "UY",
+                "BW",
+                "BH",
+                "ZW",
+                "MZ",
+                "PL",
+                "TJ",
+                "ZA",
+                "VU",
+                "GN",
+                "BD",
+                "MW",
+                "TL",
+                "TZ",
+                "VG",
+                "SO",
+                "PR",
+                "TO",
+                "UZ",
+                "LV",
+                "NR",
+                "DO",
+                "LT",
+                "MG",
+                "CO",
+                "CR",
+                "SD",
+                "PA",
+                "BB",
+                "AF",
+                "LS",
+                "MK",
+                "SB",
+                "CN",
+                "TG",
+                "VA",
+                "BY",
+                "NP",
+                "ER",
+                "KR",
+                "US",
+                "IN",
+                "BS",
+                "KN",
+                "KP",
+                "SM",
+                "BG",
+                "CU",
+                "BL",
+                "FR",
+                "ML",
+                "EH",
+                "PF",
+                "SV",
+                "AW",
+                "MQ",
+                "JP",
+                "GY",
+                "LI",
+                "WS",
+                "NL",
+                "PT",
+                "UM",
+                "ST",
+                "PK",
+                "KZ",
+                "JO",
+                "LB",
+                "VC",
+                "HU",
+                "TF",
+                "EG",
+                "MP",
+                "NC",
+                "RU",
+                "DE",
+                "OM",
+                "SH",
+                "GQ",
+                "EC",
+                "GP",
+                "BA",
+                "TC",
+                "MO",
+                ""
+              ]
+            },
+            "maxItems": 249,
+            "type": "array"
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "IS"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "institutionSpecificRestriction": {}
+        },
+        "required": [
+          "institutionSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "IS"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "institutionSpecificRestriction": {}
+        },
+        "required": [
+          "institutionSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "IS"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "institutionSpecificRestriction": {}
+        },
+        "required": [
+          "institutionSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus6"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "license": {
+            "items": {
+              "enum": [
+                "CC_BY_NC",
+                "CC0",
+                "Apache_2.0",
+                "BSD_3_Clause",
+                "CC_BY_SA",
+                "GPL_3.0",
+                "CC_BY_NC_SA",
+                "CC_BY_NC_ND",
+                "MIT",
+                "CC_BY",
+                "CC_BY_ND",
+                ""
+              ]
+            },
+            "maxItems": 11,
+            "type": "array"
+          }
+        },
+        "required": [
+          "license"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "MOR"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "publicationMoratorium": {}
+        },
+        "required": [
+          "publicationMoratorium"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus3"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "deidentificationType": {
+            "items": {
+              "enum": [
+                "HIPPA_LDS",
+                "ExpertDetermination",
+                "Anonymized",
+                "Pseudonymized",
+                "Other",
+                "SafeHarbor",
+                ""
+              ]
+            },
+            "maxItems": 6,
+            "type": "array"
+          }
+        },
+        "required": [
+          "deidentificationType"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "US"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "userSpecificRestriction": {}
+        },
+        "required": [
+          "userSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "US"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "userSpecificRestriction": {}
+        },
+        "required": [
+          "userSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographicalRestriction": {
+            "enum": [
+              "US"
+            ]
+          }
+        },
+        "required": [
+          "geographicalRestriction"
+        ]
+      },
+      "then": {
+        "properties": {
+          "userSpecificRestriction": {}
+        },
+        "required": [
+          "userSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "TS"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "timeLimitOnUse": {}
+        },
+        "required": [
+          "timeLimitOnUse"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus2"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "populationType": {}
+        },
+        "required": [
+          "populationType"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "enum": [
+              "DUOPlus4"
+            ]
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "dataPermission": {
+            "items": {
+              "enum": [
+                "Attestation",
+                "Award",
+                "Other",
+                "Agreement",
+                ""
+              ]
+            },
+            "maxItems": 4,
+            "type": "array"
+          }
+        },
+        "required": [
+          "dataPermission"
+        ]
+      }
+    }
+  ],
+  "properties": {
+    "AccessRequirement_id": {
+      "minLength": 1,
+      "not": {
+        "type": "null"
+      }
+    },
+    "Component": {
+      "minLength": 1,
+      "not": {
+        "type": "null"
+      }
+    },
+    "activatedByAttribute": {},
+    "activationValue": {},
+    "attribution": {},
+    "collaborationRequired": {},
+    "contributionDate": {
+      "minLength": 1,
+      "not": {
+        "type": "null"
+      }
+    },
+    "contributorName": {
+      "minLength": 1,
+      "not": {
+        "type": "null"
+      }
+    },
+    "dataPermission": {
+      "items": {
+        "enum": [
+          "Attestation",
+          "Award",
+          "Other",
+          "Agreement",
+          ""
+        ]
+      },
+      "maxItems": 4,
+      "type": "array"
+    },
+    "dataTier": {
+      "items": {
+        "enum": [
+          "Open",
+          "Controlled",
+          "Private",
+          "Anonymous",
+          ""
+        ]
+      },
+      "maxItems": 4,
+      "type": "array"
+    },
+    "dataTypeKey": {},
+    "dataTypeValue": {},
+    "dataUseModifiers": {
+      "items": {
+        "enum": [
+          "NCU",
+          "RS",
+          "DUOPlus5",
+          "COL",
+          "DS",
+          "DUOPlus7",
+          "DUOPlus1",
+          "GSR",
+          "IS",
+          "DUOPlus6",
+          "MOR",
+          "DUOPlus3",
+          "GRU",
+          "US",
+          "GSO",
+          "PUB",
+          "TS",
+          "Pending Annotation",
+          "NPU",
+          "NMDS",
+          "DUM",
+          "PS",
+          "DUOPlus2",
+          "DUOPlus4",
+          "POA",
+          "NRES",
+          "CC",
+          "IRB",
+          "NPOA",
+          "HMB",
+          "RTN",
+          "NPUNCU",
+          ""
+        ]
+      },
+      "maxItems": 32,
+      "type": "array"
+    },
+    "deidentificationType": {
+      "items": {
+        "enum": [
+          "HIPPA_LDS",
+          "ExpertDetermination",
+          "Anonymized",
+          "Pseudonymized",
+          "Other",
+          "SafeHarbor",
+          ""
+        ]
+      },
+      "maxItems": 6,
+      "type": "array"
+    },
+    "diseaseSpecificResearch": {},
+    "entityIdList": {},
+    "geographicalRestriction": {
+      "items": {
+        "enum": [
+          "BT",
+          "MX",
+          "AZ",
+          "FO",
+          "GL",
+          "GA",
+          "MT",
+          "IO",
+          "SX",
+          "AD",
+          "CF",
+          "PN",
+          "YT",
+          "EE",
+          "KI",
+          "CG",
+          "SY",
+          "TR",
+          "FM",
+          "CI",
+          "LK",
+          "CW",
+          "AR",
+          "CV",
+          "LA",
+          "IR",
+          "TV",
+          "NA",
+          "FJ",
+          "SI",
+          "ZM",
+          "WF",
+          "SG",
+          "RW",
+          "NI",
+          "SE",
+          "SS",
+          "TD",
+          "TW",
+          "LC",
+          "MH",
+          "IM",
+          "HT",
+          "CY",
+          "GM",
+          "RE",
+          "TM",
+          "KM",
+          "BV",
+          "KH",
+          "GE",
+          "LR",
+          "SK",
+          "GD",
+          "AL",
+          "BR",
+          "PW",
+          "CZ",
+          "PH",
+          "CK",
+          "VN",
+          "SA",
+          "BJ",
+          "AI",
+          "RS",
+          "AQ",
+          "UA",
+          "BI",
+          "BZ",
+          "MC",
+          "IL",
+          "AE",
+          "GS",
+          "HM",
+          "MD",
+          "KW",
+          "KG",
+          "KE",
+          "DZ",
+          "SL",
+          "ID",
+          "IQ",
+          "SR",
+          "CH",
+          "HN",
+          "TT",
+          "MF",
+          "VE",
+          "PE",
+          "IT",
+          "YE",
+          "BO",
+          "MY",
+          "KY",
+          "BN",
+          "SC",
+          "DK",
+          "MA",
+          "MU",
+          "CD",
+          "MN",
+          "PS",
+          "SZ",
+          "HK",
+          "AM",
+          "ET",
+          "IE",
+          "PG",
+          "MM",
+          "CX",
+          "CC",
+          "PM",
+          "RO",
+          "GB",
+          "CA",
+          "LY",
+          "JM",
+          "NE",
+          "AX",
+          "AG",
+          "BQ",
+          "MV",
+          "FK",
+          "FI",
+          "BE",
+          "GH",
+          "HR",
+          "MR",
+          "SJ",
+          "LU",
+          "GW",
+          "QA",
+          "VI",
+          "GG",
+          "GR",
+          "NZ",
+          "AS",
+          "ME",
+          "DJ",
+          "DM",
+          "IS",
+          "AT",
+          "BM",
+          "CL",
+          "TH",
+          "GT",
+          "NF",
+          "MS",
+          "CM",
+          "BF",
+          "ES",
+          "GI",
+          "NG",
+          "PY",
+          "SN",
+          "NU",
+          "TN",
+          "NO",
+          "GF",
+          "UG",
+          "TK",
+          "AU",
+          "GU",
+          "JE",
+          "AO",
+          "UY",
+          "BW",
+          "BH",
+          "ZW",
+          "MZ",
+          "PL",
+          "TJ",
+          "ZA",
+          "VU",
+          "GN",
+          "BD",
+          "MW",
+          "TL",
+          "TZ",
+          "VG",
+          "SO",
+          "PR",
+          "TO",
+          "UZ",
+          "LV",
+          "NR",
+          "DO",
+          "LT",
+          "MG",
+          "CO",
+          "CR",
+          "SD",
+          "PA",
+          "BB",
+          "AF",
+          "LS",
+          "MK",
+          "SB",
+          "CN",
+          "TG",
+          "VA",
+          "BY",
+          "NP",
+          "ER",
+          "KR",
+          "US",
+          "IN",
+          "BS",
+          "KN",
+          "KP",
+          "SM",
+          "BG",
+          "CU",
+          "BL",
+          "FR",
+          "ML",
+          "EH",
+          "PF",
+          "SV",
+          "AW",
+          "MQ",
+          "JP",
+          "GY",
+          "LI",
+          "WS",
+          "NL",
+          "PT",
+          "UM",
+          "ST",
+          "PK",
+          "KZ",
+          "JO",
+          "LB",
+          "VC",
+          "HU",
+          "TF",
+          "EG",
+          "MP",
+          "NC",
+          "RU",
+          "DE",
+          "OM",
+          "SH",
+          "GQ",
+          "EC",
+          "GP",
+          "BA",
+          "TC",
+          "MO",
+          ""
+        ]
+      },
+      "maxItems": 249,
+      "type": "array"
+    },
+    "grantAnnotationKey": {},
+    "grantAnnotationValue": {},
+    "institutionSpecificRestriction": {},
+    "license": {
+      "items": {
+        "enum": [
+          "CC_BY_NC",
+          "CC0",
+          "Apache_2.0",
+          "BSD_3_Clause",
+          "CC_BY_SA",
+          "GPL_3.0",
+          "CC_BY_NC_SA",
+          "CC_BY_NC_ND",
+          "MIT",
+          "CC_BY",
+          "CC_BY_ND",
+          ""
+        ]
+      },
+      "maxItems": 11,
+      "type": "array"
+    },
+    "populationType": {},
+    "publicationMoratorium": {},
+    "researchSpecificRestrictions": {},
+    "schemaUrl": {
+      "minLength": 1,
+      "not": {
+        "type": "null"
+      }
+    },
+    "sourceGeography": {
+      "items": {
+        "enum": [
+          "BT",
+          "MX",
+          "AZ",
+          "FO",
+          "GL",
+          "GA",
+          "MT",
+          "IO",
+          "SX",
+          "AD",
+          "CF",
+          "PN",
+          "YT",
+          "EE",
+          "KI",
+          "CG",
+          "SY",
+          "TR",
+          "FM",
+          "CI",
+          "LK",
+          "CW",
+          "AR",
+          "CV",
+          "LA",
+          "IR",
+          "TV",
+          "NA",
+          "FJ",
+          "SI",
+          "ZM",
+          "WF",
+          "SG",
+          "RW",
+          "NI",
+          "SE",
+          "SS",
+          "TD",
+          "TW",
+          "LC",
+          "MH",
+          "IM",
+          "HT",
+          "CY",
+          "GM",
+          "RE",
+          "TM",
+          "KM",
+          "BV",
+          "KH",
+          "GE",
+          "LR",
+          "SK",
+          "GD",
+          "AL",
+          "BR",
+          "PW",
+          "CZ",
+          "PH",
+          "CK",
+          "VN",
+          "SA",
+          "BJ",
+          "AI",
+          "RS",
+          "AQ",
+          "UA",
+          "BI",
+          "BZ",
+          "MC",
+          "IL",
+          "AE",
+          "GS",
+          "HM",
+          "MD",
+          "KW",
+          "KG",
+          "KE",
+          "DZ",
+          "SL",
+          "ID",
+          "IQ",
+          "SR",
+          "CH",
+          "HN",
+          "TT",
+          "MF",
+          "VE",
+          "PE",
+          "IT",
+          "YE",
+          "BO",
+          "MY",
+          "KY",
+          "BN",
+          "SC",
+          "DK",
+          "MA",
+          "MU",
+          "CD",
+          "MN",
+          "PS",
+          "SZ",
+          "HK",
+          "AM",
+          "ET",
+          "IE",
+          "PG",
+          "MM",
+          "CX",
+          "CC",
+          "PM",
+          "RO",
+          "GB",
+          "CA",
+          "LY",
+          "JM",
+          "NE",
+          "AX",
+          "AG",
+          "BQ",
+          "MV",
+          "FK",
+          "FI",
+          "BE",
+          "GH",
+          "HR",
+          "MR",
+          "SJ",
+          "LU",
+          "GW",
+          "QA",
+          "VI",
+          "GG",
+          "GR",
+          "NZ",
+          "AS",
+          "ME",
+          "DJ",
+          "DM",
+          "IS",
+          "AT",
+          "BM",
+          "CL",
+          "TH",
+          "GT",
+          "NF",
+          "MS",
+          "CM",
+          "BF",
+          "ES",
+          "GI",
+          "NG",
+          "PY",
+          "SN",
+          "NU",
+          "TN",
+          "NO",
+          "GF",
+          "UG",
+          "TK",
+          "AU",
+          "GU",
+          "JE",
+          "AO",
+          "UY",
+          "BW",
+          "BH",
+          "ZW",
+          "MZ",
+          "PL",
+          "TJ",
+          "ZA",
+          "VU",
+          "GN",
+          "BD",
+          "MW",
+          "TL",
+          "TZ",
+          "VG",
+          "SO",
+          "PR",
+          "TO",
+          "UZ",
+          "LV",
+          "NR",
+          "DO",
+          "LT",
+          "MG",
+          "CO",
+          "CR",
+          "SD",
+          "PA",
+          "BB",
+          "AF",
+          "LS",
+          "MK",
+          "SB",
+          "CN",
+          "TG",
+          "VA",
+          "BY",
+          "NP",
+          "ER",
+          "KR",
+          "US",
+          "IN",
+          "BS",
+          "KN",
+          "KP",
+          "SM",
+          "BG",
+          "CU",
+          "BL",
+          "FR",
+          "ML",
+          "EH",
+          "PF",
+          "SV",
+          "AW",
+          "MQ",
+          "JP",
+          "GY",
+          "LI",
+          "WS",
+          "NL",
+          "PT",
+          "UM",
+          "ST",
+          "PK",
+          "KZ",
+          "JO",
+          "LB",
+          "VC",
+          "HU",
+          "TF",
+          "EG",
+          "MP",
+          "NC",
+          "RU",
+          "DE",
+          "OM",
+          "SH",
+          "GQ",
+          "EC",
+          "GP",
+          "BA",
+          "TC",
+          "MO",
+          ""
+        ]
+      },
+      "maxItems": 249,
+      "type": "array"
+    },
+    "speciesTypeKey": {},
+    "speciesTypeValue": {},
+    "studyAnnotationKey": {},
+    "studyAnnotationValue": {},
+    "timeLimitOnUse": {},
+    "usedInProject": {
+      "items": {
+        "enum": [
+          "ELITE",
+          "None",
+          "ADKP",
+          "HTAN2",
+          "MC2",
+          ""
+        ]
+      },
+      "maxItems": 5,
+      "type": "array"
+    },
+    "userSpecificRestriction": {}
+  },
+  "required": [
+    "AccessRequirement_id",
+    "contributionDate",
+    "schemaUrl",
+    "Component",
+    "contributorName"
+  ],
+  "title": "AccessRequirement",
+  "type": "object"
+}
