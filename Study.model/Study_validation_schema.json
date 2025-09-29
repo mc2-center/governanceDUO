@@ -1,11 +1,11 @@
 {
-  "$id": "http://example.com/AccessRequirement_validation",
+  "$id": "http://example.com/Study_validation",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "COL"
             ]
@@ -14,21 +14,21 @@
       },
       "then": {
         "properties": {
-          "CollaborationRequired": {
+          "StudyCollaborationRequired": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "CollaborationRequired"
+          "StudyCollaborationRequired"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DSR"
             ]
@@ -37,21 +37,21 @@
       },
       "then": {
         "properties": {
-          "DiseaseSpecificResearch": {
+          "StudyDiseaseSpecificResearch": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "DiseaseSpecificResearch"
+          "StudyDiseaseSpecificResearch"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus1"
             ]
@@ -60,21 +60,21 @@
       },
       "then": {
         "properties": {
-          "SourceGeography": {
+          "StudySourceGeography": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "SourceGeography"
+          "StudySourceGeography"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus2"
             ]
@@ -83,44 +83,21 @@
       },
       "then": {
         "properties": {
-          "PopulationType": {
+          "StudyPopulation": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "PopulationType"
+          "StudyPopulation"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
-            "enum": [
-              "DUOPlus3"
-            ]
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "DeidentificationType": {
-            "not": {
-              "type": "null"
-            }
-          }
-        },
-        "required": [
-          "DeidentificationType"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus4"
             ]
@@ -129,21 +106,21 @@
       },
       "then": {
         "properties": {
-          "DataPermission": {
+          "StudyDataPermission": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "DataPermission"
+          "StudyDataPermission"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus5"
             ]
@@ -152,21 +129,21 @@
       },
       "then": {
         "properties": {
-          "DataTier": {
+          "StudyDataTier": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "DataTier"
+          "StudyDataTier"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus6"
             ]
@@ -175,21 +152,21 @@
       },
       "then": {
         "properties": {
-          "License": {
+          "StudyLicense": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "License"
+          "StudyLicense"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "DUOPlus7"
             ]
@@ -198,21 +175,21 @@
       },
       "then": {
         "properties": {
-          "Attribution": {
+          "StudyAttribution": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "Attribution"
+          "StudyAttribution"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "GSR"
             ]
@@ -221,21 +198,21 @@
       },
       "then": {
         "properties": {
-          "GeographicalRestriction": {
+          "StudyGeographicalRestriction": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "GeographicalRestriction"
+          "StudyGeographicalRestriction"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "IST"
             ]
@@ -244,21 +221,21 @@
       },
       "then": {
         "properties": {
-          "InstitutionSpecificRestriction": {
+          "StudyInstitutionSpecificRestriction": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "InstitutionSpecificRestriction"
+          "StudyInstitutionSpecificRestriction"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "MOR"
             ]
@@ -267,21 +244,21 @@
       },
       "then": {
         "properties": {
-          "PublicationMoratorium": {
+          "StudyPublicationMoratorium": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "PublicationMoratorium"
+          "StudyPublicationMoratorium"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "RST"
             ]
@@ -290,21 +267,21 @@
       },
       "then": {
         "properties": {
-          "ResearchSpecificRestrictions": {
+          "StudyResearchSpecificRestrictions": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "ResearchSpecificRestrictions"
+          "StudyResearchSpecificRestrictions"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "TSM"
             ]
@@ -313,21 +290,21 @@
       },
       "then": {
         "properties": {
-          "TimeLimitOnUse": {
+          "StudyTimeLimitOnUse": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "TimeLimitOnUse"
+          "StudyTimeLimitOnUse"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "DataUseModifiers": {
+          "StudyDataUseModifiers": {
             "enum": [
               "USE"
             ]
@@ -336,27 +313,22 @@
       },
       "then": {
         "properties": {
-          "UserSpecificRestriction": {
+          "StudyUserSpecificRestriction": {
             "not": {
               "type": "null"
             }
           }
         },
         "required": [
-          "UserSpecificRestriction"
+          "StudyUserSpecificRestriction"
         ]
       }
     }
   ],
-  "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
+  "description": "Studies associated with a grant",
   "properties": {
-    "AccessRequirementId": {
-      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
-      "title": "AccessRequirement_id",
-      "type": "string"
-    },
-    "ActivatedByAttribute": {
-      "description": "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.",
+    "AccessRequirementKey": {
+      "description": "The Access Requirement id(s) associated with this study. Provide multiple values as a comma-separated list.",
       "oneOf": [
         {
           "title": "string",
@@ -367,68 +339,60 @@
           "type": "null"
         }
       ],
-      "title": "activatedByAttribute"
-    },
-    "ActivationValue": {
-      "description": "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "activationValue"
-    },
-    "Attribution": {
-      "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "attribution"
-    },
-    "CollaborationRequired": {
-      "description": "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "collaborationRequired"
+      "title": "AccessRequirementKey"
     },
     "Component": {
       "description": "Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",
       "title": "Component",
       "type": "string"
     },
-    "ContributionDate": {
-      "description": "The date on which the access requirement was added.",
-      "format": "date",
-      "title": "contributionDate",
-      "type": "string"
+    "GrantNumber": {
+      "description": "The identifier associated with the award funding this study.",
+      "oneOf": [
+        {
+          "title": "array",
+          "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "grantNumber"
     },
-    "ContributorName": {
-      "description": "The name of the person who added this access requirement.",
-      "title": "contributorName",
-      "type": "string"
+    "StudyAttribution": {
+      "description": "The funder-, contributor-, patient-, etc., derived content that includes terms, conditions, or statements associated with accessing and reusing the resource(s). Maps to DUOplus7.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyAttribution"
     },
-    "DataPermission": {
-      "description": "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4.",
+    "StudyCollaborationRequired": {
+      "description": "Boolean. Collaboration is required to reuse data from this study.",
+      "oneOf": [
+        {
+          "enum": [
+            "False",
+            "True"
+          ],
+          "title": "enum"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyCollaborationRequired"
+    },
+    "StudyDataPermission": {
+      "description": "The list of entities or objects that define or enforce data sharing permissions. Maps to DUOplus4.",
       "oneOf": [
         {
           "items": {
@@ -447,10 +411,10 @@
           "type": "null"
         }
       ],
-      "title": "dataPermission"
+      "title": "studyDataPermission"
     },
-    "DataTier": {
-      "description": "The tier of data access associated with the access requirement. Equivalent to DUOPlus5.",
+    "StudyDataTier": {
+      "description": "The access tier(s) associated with the data in this study. Maps to DUOplus5.",
       "oneOf": [
         {
           "items": {
@@ -469,38 +433,10 @@
           "type": "null"
         }
       ],
-      "title": "dataTier"
+      "title": "studyDataTier"
     },
-    "DataTypeKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a data type identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "dataTypeKey"
-    },
-    "DataTypeValue": {
-      "description": "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "dataTypeValue"
-    },
-    "DataUseModifiers": {
-      "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
+    "StudyDataUseModifiers": {
+      "description": "DUO code - A data item that is used to indicate consent permissions for datasets and/or materials and relates to the purposes for which datasets and/or material might be removed, stored, or used.",
       "oneOf": [
         {
           "items": {
@@ -547,10 +483,52 @@
           "type": "null"
         }
       ],
-      "title": "dataUseModifiers"
+      "title": "studyDataUseModifiers"
     },
-    "DeidentificationType": {
-      "description": "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3.",
+    "StudyDbgapAccessionId": {
+      "description": "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyDbgapAccessionId"
+    },
+    "StudyDeidentificationMethodDescription": {
+      "description": "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyDeidentificationMethodDescription"
+    },
+    "StudyDeidentificationMethodSoftware": {
+      "description": "Software that was used to de-identify the data (if used)",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyDeidentificationMethodSoftware"
+    },
+    "StudyDeidentificationType": {
+      "description": "General description of the de-identification method. Maps to DUOplus3.",
       "oneOf": [
         {
           "items": {
@@ -565,16 +543,17 @@
           },
           "title": "array",
           "type": "array"
-        },
-        {
-          "title": "null",
-          "type": "null"
         }
       ],
-      "title": "deidentificationType"
+      "title": "studyDeidentificationType"
     },
-    "DiseaseSpecificResearch": {
-      "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
+    "StudyDescription": {
+      "description": "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",
+      "title": "studyDescription",
+      "type": "string"
+    },
+    "StudyDiseaseSpecificResearch": {
+      "description": "The list of diseases where data shared through this study is allowed to be reused.",
       "oneOf": [
         {
           "title": "string",
@@ -585,24 +564,10 @@
           "type": "null"
         }
       ],
-      "title": "diseaseSpecificResearch"
+      "title": "studyDiseaseSpecificResearch"
     },
-    "EntityIdList": {
-      "description": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "entityIdList"
-    },
-    "GeographicalRestriction": {
-      "description": "Geographical regions with restrictions associated with the access requirement.",
+    "StudyGeographicalRestriction": {
+      "description": "The list of countries where this data is not allowed to be accessed.",
       "oneOf": [
         {
           "items": {
@@ -866,10 +831,37 @@
           "type": "null"
         }
       ],
-      "title": "geographicalRestriction"
+      "title": "studyGeographicalRestriction"
     },
-    "GrantAnnotationKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a grant identifier.",
+    "StudyId": {
+      "description": "A unique primary key that enables record updates using schematic.",
+      "title": "Study_id",
+      "type": "string"
+    },
+    "StudyIndexDate": {
+      "description": "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.",
+      "oneOf": [
+        {
+          "items": {
+            "enum": [
+              "Birth Date",
+              "Collection Date",
+              "Diagnosis Date",
+              "Enrollment Date"
+            ]
+          },
+          "title": "array",
+          "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyIndexDate"
+    },
+    "StudyInstitutionSpecificRestriction": {
+      "description": "The list of institutions where access to this data is restricted.",
       "oneOf": [
         {
           "title": "string",
@@ -880,38 +872,20 @@
           "type": "null"
         }
       ],
-      "title": "grantAnnotationKey"
+      "title": "studyInstitutionSpecificRestriction"
     },
-    "GrantAnnotationValue": {
-      "description": "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.",
+    "StudyInvestigator": {
+      "description": "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list.",
       "oneOf": [
         {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
+          "title": "array",
+          "type": "array"
         }
       ],
-      "title": "grantAnnotationValue"
+      "title": "studyInvestigator"
     },
-    "InstitutionSpecificRestriction": {
-      "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "institutionSpecificRestriction"
-    },
-    "License": {
-      "description": "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6.",
+    "StudyLicense": {
+      "description": "Official or legal permission to do or own a specified thing. Studies with data that will be submitted to CDS are required to provide a license. Maps to DUOplus6.",
       "oneOf": [
         {
           "items": {
@@ -937,10 +911,20 @@
           "type": "null"
         }
       ],
-      "title": "license"
+      "title": "studyLicense"
     },
-    "PopulationType": {
-      "description": "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2",
+    "StudyName": {
+      "description": "Name of the study",
+      "title": "studyName",
+      "type": "string"
+    },
+    "StudyParticipantNumber": {
+      "description": "The number of participant instances associated with systematic investigation into a subject.",
+      "title": "studyParticipantNumber",
+      "type": "integer"
+    },
+    "StudyPopulation": {
+      "description": "The population(s) associated with data shared through this study.",
       "oneOf": [
         {
           "title": "string",
@@ -951,10 +935,10 @@
           "type": "null"
         }
       ],
-      "title": "populationType"
+      "title": "studyPopulation"
     },
-    "PublicationMoratorium": {
-      "description": "End date of the publication moratorium associated with the access requirement.",
+    "StudyPublicationMoratorium": {
+      "description": "The date after which publications using data from this study are allowed to be published.",
       "format": "date",
       "oneOf": [
         {
@@ -966,10 +950,10 @@
           "type": "null"
         }
       ],
-      "title": "publicationMoratorium"
+      "title": "studyPublicationMoratorium"
     },
-    "ResearchSpecificRestrictions": {
-      "description": "Research-specific restrictions associated with the access requirement.",
+    "StudyResearchSpecificRestrictions": {
+      "description": "The list of research types in which reuse of this data is allowed.",
       "oneOf": [
         {
           "title": "string",
@@ -980,15 +964,10 @@
           "type": "null"
         }
       ],
-      "title": "researchSpecificRestrictions"
+      "title": "studyResearchSpecificRestrictions"
     },
-    "SchemaUrl": {
-      "description": "URL associated with the access requirement schema.",
-      "title": "schemaUrl",
-      "type": "string"
-    },
-    "SourceGeography": {
-      "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
+    "StudySourceGeography": {
+      "description": "The list of country(ies) where the data associated with this study was generated. Maps to DUOplus1.",
       "oneOf": [
         {
           "items": {
@@ -1252,10 +1231,24 @@
           "type": "null"
         }
       ],
-      "title": "sourceGeography"
+      "title": "studySourceGeography"
     },
-    "SpeciesTypeKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a species identifier.",
+    "StudyTimeLimitOnUse": {
+      "description": "The amount of time a requestor is allowed access to data associated with this study.",
+      "oneOf": [
+        {
+          "title": "integer",
+          "type": "integer"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyTimeLimitOnUse"
+    },
+    "StudyUserSpecificRestriction": {
+      "description": "User-specific restrictions that must be satisfied before the requestor may access data from this study.",
       "oneOf": [
         {
           "title": "string",
@@ -1266,109 +1259,18 @@
           "type": "null"
         }
       ],
-      "title": "speciesTypeKey"
-    },
-    "SpeciesTypeValue": {
-      "description": "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "speciesTypeValue"
-    },
-    "StudyAnnotationKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a study identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "studyAnnotationKey"
-    },
-    "StudyAnnotationValue": {
-      "description": "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "studyAnnotationValue"
-    },
-    "TimeLimitOnUse": {
-      "description": "Time limit on the use of the data associated with the access requirement.",
-      "oneOf": [
-        {
-          "title": "number",
-          "type": "number"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "timeLimitOnUse"
-    },
-    "UsedInProject": {
-      "description": "The identifier of the project in which this access requirement is used.",
-      "oneOf": [
-        {
-          "items": {
-            "enum": [
-              "ADKP",
-              "ELITE",
-              "HTAN2",
-              "MC2",
-              "None"
-            ]
-          },
-          "title": "array",
-          "type": "array"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "usedInProject"
-    },
-    "UserSpecificRestriction": {
-      "description": "The user-specific restrictions associated with the access requirement.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "userSpecificRestriction"
+      "title": "studyUserSpecificRestriction"
     }
   },
   "required": [
-    "AccessRequirementId",
     "Component",
-    "ContributionDate",
-    "ContributorName",
-    "SchemaUrl"
+    "StudyDeidentificationType",
+    "StudyDescription",
+    "StudyId",
+    "StudyInvestigator",
+    "StudyName",
+    "StudyParticipantNumber"
   ],
-  "title": "AccessRequirement_validation",
+  "title": "Study_validation",
   "type": "object"
 }

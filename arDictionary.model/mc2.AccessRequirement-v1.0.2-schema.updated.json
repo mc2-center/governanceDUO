@@ -6,9 +6,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "COL"
-            ]
+            "contains": {
+              "enum": [
+                "COL"
+              ]
+            }
           }
         }
       },
@@ -29,9 +31,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DSR"
-            ]
+            "contains": {
+              "enum": [
+                "DSR"
+              ]
+            }
           }
         }
       },
@@ -52,9 +56,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus1"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus1"
+              ]
+            }
           }
         }
       },
@@ -75,9 +81,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus2"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus2"
+              ]
+            }
           }
         }
       },
@@ -98,9 +106,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus3"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus3"
+              ]
+            }
           }
         }
       },
@@ -121,9 +131,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus4"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus4"
+              ]
+            }
           }
         }
       },
@@ -144,9 +156,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus5"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus5"
+              ]
+            }
           }
         }
       },
@@ -167,9 +181,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus6"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus6"
+              ]
+            }
           }
         }
       },
@@ -190,9 +206,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "DUOPlus7"
-            ]
+            "contains": {
+              "enum": [
+                "DUOPlus7"
+              ]
+            }
           }
         }
       },
@@ -213,9 +231,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "GSR"
-            ]
+            "contains": {
+              "enum": [
+                "GSR"
+              ]
+            }
           }
         }
       },
@@ -236,9 +256,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "IST"
-            ]
+            "contains": {
+              "enum": [
+                "IST"
+              ]
+            }
           }
         }
       },
@@ -259,9 +281,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "MOR"
-            ]
+            "contains": {
+              "enum": [
+                "MOR"
+              ]
+            }
           }
         }
       },
@@ -282,9 +306,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "RST"
-            ]
+            "contains": {
+              "enum": [
+                "RST"
+              ]
+            }
           }
         }
       },
@@ -305,9 +331,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "TSM"
-            ]
+            "contains": {
+              "enum": [
+                "TSM"
+              ]
+            }
           }
         }
       },
@@ -328,9 +356,11 @@
       "if": {
         "properties": {
           "DataUseModifiers": {
-            "enum": [
-              "USE"
-            ]
+            "contains": {
+              "enum": [
+                "USE"
+              ]
+            }
           }
         }
       },
