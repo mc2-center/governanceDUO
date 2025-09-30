@@ -1,5 +1,5 @@
 Attribute,Description,Valid Values,DependsOn,Required,Properties,Parent,DependsOn Component,Source,Validation Rules,columnType
-AccessRequirement,"Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",,"Component, AccessRequirement_id, contributorName, contributionDate, usedInProject, dataUseModifiers, entityIdList",FALSE,,,,,,
+AccessRequirement,"Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",,"Component, AccessRequirement_id, contributorName, contributionDate, StudyKey, entityIdList, dataUseModifiers",FALSE,,,,,,
 AccessRequirement_id,A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.,,,TRUE,,AccessRequirement,,,unique,string
 contributorName,The name of the person who added this access requirement.,,,TRUE,,AccessRequirement,,,str,string
 contributionDate,The date on which the access requirement was added.,,,TRUE,,AccessRequirement,,,date,
