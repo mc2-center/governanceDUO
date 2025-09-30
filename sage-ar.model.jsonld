@@ -36,13 +36,13 @@
                     "@id": "bts:ContributionDate"
                 },
                 {
-                    "@id": "bts:UsedInProject"
-                },
-                {
-                    "@id": "bts:DataUseModifiers"
+                    "@id": "bts:StudyKey"
                 },
                 {
                     "@id": "bts:EntityIdList"
+                },
+                {
+                    "@id": "bts:DataUseModifiers"
                 }
             ],
             "sms:validationRules": []
@@ -127,10 +127,30 @@
             ]
         },
         {
-            "@id": "bts:UsedInProject",
+            "@id": "bts:StudyKey",
             "@type": "rdfs:Class",
-            "rdfs:comment": "The identifier of the project in which this access requirement is used.",
-            "rdfs:label": "UsedInProject",
+            "rdfs:comment": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
+            "rdfs:label": "StudyKey",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Shared"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:columnType": "string",
+            "sms:displayName": "StudyKey",
+            "sms:required": "sms:false",
+            "sms:validationRules": [
+                "str"
+            ]
+        },
+        {
+            "@id": "bts:EntityIdList",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
+            "rdfs:label": "EntityIdList",
             "rdfs:subClassOf": [
                 {
                     "@id": "bts:AccessRequirement"
@@ -139,27 +159,11 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "schema:rangeIncludes": [
-                {
-                    "@id": "bts:ADKP"
-                },
-                {
-                    "@id": "bts:ELITE"
-                },
-                {
-                    "@id": "bts:HTAN2"
-                },
-                {
-                    "@id": "bts:MC2"
-                },
-                {
-                    "@id": "bts:None"
-                }
-            ],
-            "sms:displayName": "usedInProject",
+            "sms:columnType": "string",
+            "sms:displayName": "entityIdList",
             "sms:required": "sms:false",
             "sms:validationRules": [
-                "list like"
+                "str"
             ]
         },
         {
@@ -280,26 +284,6 @@
             ]
         },
         {
-            "@id": "bts:EntityIdList",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
-            "rdfs:label": "EntityIdList",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:AccessRequirement"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:columnType": "string",
-            "sms:displayName": "entityIdList",
-            "sms:required": "sms:false",
-            "sms:validationRules": [
-                "str"
-            ]
-        },
-        {
             "@id": "bts:Resource",
             "@type": "rdfs:Class",
             "rdfs:comment": "Information that is relevant to resource access conditions.",
@@ -320,6 +304,12 @@
                 },
                 {
                     "@id": "bts:ResourceId"
+                },
+                {
+                    "@id": "bts:StudyKey"
+                },
+                {
+                    "@id": "bts:AccessRequirementKey"
                 },
                 {
                     "@id": "bts:DataUseModifiers"
@@ -363,11 +353,11 @@
         {
             "@id": "bts:ResourceId",
             "@type": "rdfs:Class",
-            "rdfs:comment": "A unique identifier for the resource type. Examples: mc2Res1, adkpRes1, adkpRes2.",
+            "rdfs:comment": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
             "rdfs:label": "ResourceId",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -381,13 +371,33 @@
             ]
         },
         {
+            "@id": "bts:AccessRequirementKey",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
+            "rdfs:label": "AccessRequirementKey",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Study"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:columnType": "string",
+            "sms:displayName": "AccessRequirementKey",
+            "sms:required": "sms:false",
+            "sms:validationRules": [
+                "str"
+            ]
+        },
+        {
             "@id": "bts:GrantAnnotationKey",
             "@type": "rdfs:Class",
             "rdfs:comment": "The annotation key applied to a Synapse entity that contains a grant identifier.",
             "rdfs:label": "GrantAnnotationKey",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -407,7 +417,7 @@
             "rdfs:label": "GrantAnnotationValue",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -427,7 +437,7 @@
             "rdfs:label": "StudyAnnotationKey",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -447,7 +457,7 @@
             "rdfs:label": "StudyAnnotationValue",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -467,7 +477,7 @@
             "rdfs:label": "DataTypeKey",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -487,7 +497,7 @@
             "rdfs:label": "DataTypeValue",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -507,7 +517,7 @@
             "rdfs:label": "SpeciesTypeKey",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -527,7 +537,7 @@
             "rdfs:label": "SpeciesTypeValue",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -547,7 +557,7 @@
             "rdfs:label": "ActivatedByAttribute",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -567,7 +577,7 @@
             "rdfs:label": "ActivationValue",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -587,7 +597,7 @@
             "rdfs:label": "RegisteredSchemaUrl",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Resource"
                 }
             ],
             "schema:isPartOf": {
@@ -623,13 +633,13 @@
                     "@id": "bts:SchemaId"
                 },
                 {
-                    "@id": "bts:UsedInProject"
-                },
-                {
                     "@id": "bts:ResourceKey"
                 },
                 {
                     "@id": "bts:AccessRequirementKey"
+                },
+                {
+                    "@id": "bts:StudyKey"
                 },
                 {
                     "@id": "bts:SchemaUrl"
@@ -644,7 +654,7 @@
             "rdfs:label": "SchemaId",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:Schema"
                 }
             ],
             "schema:isPartOf": {
@@ -674,26 +684,6 @@
             "sms:required": "sms:false",
             "sms:validationRules": [
                 "list like"
-            ]
-        },
-        {
-            "@id": "bts:AccessRequirementKey",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
-            "rdfs:label": "AccessRequirementKey",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:Study"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:columnType": "string",
-            "sms:displayName": "AccessRequirementKey",
-            "sms:required": "sms:false",
-            "sms:validationRules": [
-                "str"
             ]
         },
         {
@@ -737,6 +727,9 @@
                 },
                 {
                     "@id": "bts:StudyId"
+                },
+                {
+                    "@id": "bts:StudyProjectIdentifier"
                 },
                 {
                     "@id": "bts:GrantNumber"
@@ -798,6 +791,42 @@
             "sms:required": "sms:true",
             "sms:validationRules": [
                 "unique"
+            ]
+        },
+        {
+            "@id": "bts:StudyProjectIdentifier",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "The identifier of the project to which this Study is related.",
+            "rdfs:label": "StudyProjectIdentifier",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Study"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "schema:rangeIncludes": [
+                {
+                    "@id": "bts:ADKP"
+                },
+                {
+                    "@id": "bts:ELITE"
+                },
+                {
+                    "@id": "bts:HTAN2"
+                },
+                {
+                    "@id": "bts:MC2"
+                },
+                {
+                    "@id": "bts:None"
+                }
+            ],
+            "sms:displayName": "studyProjectIdentifier",
+            "sms:required": "sms:false",
+            "sms:validationRules": [
+                "list like"
             ]
         },
         {
@@ -1367,7 +1396,7 @@
             "rdfs:label": "ADKP",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:UsedInProject"
+                    "@id": "bts:StudyProjectIdentifier"
                 }
             ],
             "schema:isPartOf": {
@@ -1384,7 +1413,7 @@
             "rdfs:label": "ELITE",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:UsedInProject"
+                    "@id": "bts:StudyProjectIdentifier"
                 }
             ],
             "schema:isPartOf": {
@@ -1401,7 +1430,7 @@
             "rdfs:label": "HTAN2",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:UsedInProject"
+                    "@id": "bts:StudyProjectIdentifier"
                 }
             ],
             "schema:isPartOf": {
@@ -1418,7 +1447,7 @@
             "rdfs:label": "MC2",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:UsedInProject"
+                    "@id": "bts:StudyProjectIdentifier"
                 }
             ],
             "schema:isPartOf": {
@@ -1435,13 +1464,30 @@
             "rdfs:label": "None",
             "rdfs:subClassOf": [
                 {
-                    "@id": "bts:UsedInProject"
+                    "@id": "bts:StudyProjectIdentifier"
                 }
             ],
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "None",
+            "sms:required": "sms:false",
+            "sms:validationRules": []
+        },
+        {
+            "@id": "bts:Shared",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "TBD",
+            "rdfs:label": "Shared",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Thing"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "shared",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
