@@ -46,28 +46,19 @@
       "title": "schemaUrl",
       "type": "string"
     },
-    "UsedInProject": {
-      "description": "The identifier of the project in which this access requirement is used.",
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
       "oneOf": [
         {
-          "items": {
-            "enum": [
-              "ADKP",
-              "ELITE",
-              "HTAN2",
-              "MC2",
-              "None"
-            ]
-          },
-          "title": "array",
-          "type": "array"
+          "title": "string",
+          "type": "string"
         },
         {
           "title": "null",
           "type": "null"
         }
       ],
-      "title": "usedInProject"
+      "title": "StudyKey"
     }
   },
   "required": [

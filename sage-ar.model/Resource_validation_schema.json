@@ -350,6 +350,20 @@
   ],
   "description": "Information that is relevant to resource access conditions.",
   "properties": {
+    "AccessRequirementKey": {
+      "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "AccessRequirementKey"
+    },
     "ActivatedByAttribute": {
       "description": "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.",
       "oneOf": [
@@ -958,7 +972,7 @@
       "title": "researchSpecificRestrictions"
     },
     "ResourceId": {
-      "description": "A unique identifier for the resource type. Examples: mc2Res1, adkpRes1, adkpRes2.",
+      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
       "title": "Resource_id",
       "type": "string"
     },
@@ -1284,6 +1298,20 @@
         }
       ],
       "title": "studyAnnotationValue"
+    },
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "StudyKey"
     },
     "TimeLimitOnUse": {
       "description": "Time limit on the use of the data associated with the access requirement.",

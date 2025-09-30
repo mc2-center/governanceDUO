@@ -1277,6 +1277,29 @@
       "title": "studyParticipantNumber",
       "type": "integer"
     },
+    "StudyProjectIdentifier": {
+      "description": "The identifier of the project to which this Study is related.",
+      "oneOf": [
+        {
+          "items": {
+            "enum": [
+              "ADKP",
+              "ELITE",
+              "HTAN2",
+              "MC2",
+              "None"
+            ]
+          },
+          "title": "array",
+          "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "studyProjectIdentifier"
+    },
     "StudySampleNumber": {
       "description": "The number of specimens associated with systematic investigation into a subject.",
       "title": "studySampleNumber",
