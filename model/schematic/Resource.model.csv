@@ -1,0 +1,15 @@
+Attribute,Description,Valid Values,DependsOn,Required,Properties,Parent,DependsOn Component,Source,Validation Rules,columnType
+Component,"Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",,,TRUE,,,,,str,string
+Resource,"Information that is relevant to resource access conditions.",,"Component, Resource_id, dataUseModifiers, grantAnnotationKey, grantAnnotationValue, studyAnnotationKey, studyAnnotationValue, dataTypeKey, dataTypeValue, speciesTypeKey, speciesTypeValue, activatedByAttribute, activationValue, registeredSchemaUrl",FALSE,,,,,,
+Resource_id,"A unique identifier for the resource type. Examples: mc2Res1, adkpRes1, adkpRes2.",,,TRUE,,AccessRequirement,,,unique,string
+grantAnnotationKey,The annotation key applied to a Synapse entity that contains a grant identifier.,,,FALSE,,AccessRequirement,,,str,string
+grantAnnotationValue,The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
+studyAnnotationKey,The annotation key applied to a Synapse entity that contains a study identifier.,,,FALSE,,AccessRequirement,,,str,string
+studyAnnotationValue,The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
+dataTypeKey,The annotation key applied to a Synapse entity that contains a data type identifier.,,,FALSE,,AccessRequirement,,,str,string
+dataTypeValue,The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
+speciesTypeKey,The annotation key applied to a Synapse entity that contains a species identifier.,,,FALSE,,AccessRequirement,,,str,string
+speciesTypeValue,The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
+activatedByAttribute,The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.,,,FALSE,,AccessRequirement,,,str,string
+activationValue,The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active,,,FALSE,,AccessRequirement,,,str,string
+registeredSchemaUrl,URL associated with the access requirement schema that will be applied to the resource type.,,,TRUE,,AccessRequirement,,,str,string
