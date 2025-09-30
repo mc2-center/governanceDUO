@@ -1,6 +1,6 @@
 CSV := sage-ar.model.csv
 
-all: collate convert
+all: collate convert generate
 
 collate:
 	@echo "Collating module components..."
@@ -9,3 +9,7 @@ collate:
 
 convert:
 	schematic schema convert ${CSV}
+
+generate:
+	schematic schema generate-jsonschema -dms ${CSV} -od .
+	-rm ./*.schema.json
