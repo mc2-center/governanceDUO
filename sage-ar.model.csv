@@ -1,28 +1,27 @@
 Attribute,Description,Valid Values,DependsOn,Required,Properties,Parent,DependsOn Component,Source,Validation Rules,columnType
-AccessRequirement,"Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",,"Component, AccessRequirement_id, contributorName, contributionDate, usedInProject, dataUseModifiers, entityIdList",FALSE,,,,,,
+AccessRequirement,"Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",,"Component, AccessRequirement_id, contributorName, contributionDate, StudyKey, entityIdList, dataUseModifiers",FALSE,,,,,,
 AccessRequirement_id,A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.,,,TRUE,,AccessRequirement,,,unique,string
 contributorName,The name of the person who added this access requirement.,,,TRUE,,AccessRequirement,,,str,string
 contributionDate,The date on which the access requirement was added.,,,TRUE,,AccessRequirement,,,date,
 entityIdList,"Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",,,FALSE,,AccessRequirement,,,str,string
-Component,"Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",,,TRUE,,,,,str,string
-Resource,"Information that is relevant to resource access conditions.",,"Component, Resource_id, dataUseModifiers, grantAnnotationKey, grantAnnotationValue, studyAnnotationKey, studyAnnotationValue, dataTypeKey, dataTypeValue, speciesTypeKey, speciesTypeValue, activatedByAttribute, activationValue, registeredSchemaUrl",FALSE,,,,,,
-Resource_id,"A unique identifier for the resource type. Examples: mc2Res1, adkpRes1, adkpRes2.",,,TRUE,,AccessRequirement,,,unique,string
-grantAnnotationKey,The annotation key applied to a Synapse entity that contains a grant identifier.,,,FALSE,,AccessRequirement,,,str,string
-grantAnnotationValue,The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
-studyAnnotationKey,The annotation key applied to a Synapse entity that contains a study identifier.,,,FALSE,,AccessRequirement,,,str,string
-studyAnnotationValue,The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
-dataTypeKey,The annotation key applied to a Synapse entity that contains a data type identifier.,,,FALSE,,AccessRequirement,,,str,string
-dataTypeValue,The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
-speciesTypeKey,The annotation key applied to a Synapse entity that contains a species identifier.,,,FALSE,,AccessRequirement,,,str,string
-speciesTypeValue,The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,AccessRequirement,,,str,string
-activatedByAttribute,The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.,,,FALSE,,AccessRequirement,,,str,string
-activationValue,The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active,,,FALSE,,AccessRequirement,,,str,string
-registeredSchemaUrl,URL associated with the access requirement schema that will be applied to the resource type.,,,TRUE,,AccessRequirement,,,str,string
-Schema,"Information that is relevant to resource access conditions.",,"Component, Schema_id, usedInProject, ResourceKey, AccessRequirementKey, schemaUrl",FALSE,,,,,,
-Schema_id,"A unique identifier for the schema.",,,TRUE,,AccessRequirement,,,unique,string
+Resource,"Information that is relevant to resource access conditions.",,"Component, Resource_id, StudyKey, AccessRequirementKey, dataUseModifiers, grantAnnotationKey, grantAnnotationValue, studyAnnotationKey, studyAnnotationValue, dataTypeKey, dataTypeValue, speciesTypeKey, speciesTypeValue, activatedByAttribute, activationValue, registeredSchemaUrl",FALSE,,,,,,
+Resource_id,"A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",,,TRUE,,Resource,,,unique,string
+grantAnnotationKey,The annotation key applied to a Synapse entity that contains a grant identifier.,,,FALSE,,Resource,,,str,string
+grantAnnotationValue,The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,Resource,,,str,string
+studyAnnotationKey,The annotation key applied to a Synapse entity that contains a study identifier.,,,FALSE,,Resource,,,str,string
+studyAnnotationValue,The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,Resource,,,str,string
+dataTypeKey,The annotation key applied to a Synapse entity that contains a data type identifier.,,,FALSE,,Resource,,,str,string
+dataTypeValue,The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,Resource,,,str,string
+speciesTypeKey,The annotation key applied to a Synapse entity that contains a species identifier.,,,FALSE,,Resource,,,str,string
+speciesTypeValue,The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.,,,FALSE,,Resource,,,str,string
+activatedByAttribute,The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.,,,FALSE,,Resource,,,str,string
+activationValue,The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active,,,FALSE,,Resource,,,str,string
+registeredSchemaUrl,URL associated with the access requirement schema that will be applied to the resource type.,,,TRUE,,Resource,,,str,string
+Schema,"Information that is relevant to resource access conditions.",,"Component, Schema_id, ResourceKey, AccessRequirementKey, StudyKey, schemaUrl",FALSE,,,,,,
+Schema_id,"A unique identifier for the schema.",,,TRUE,,Schema,,,unique,string
 ResourceKey,"The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list.",,,FALSE,,Schema,,,list like,
 schemaUrl,The registered URL associated with the access requirement JSON schema.,,,TRUE,,Schema,,,str,string
-Study,Studies associated with a grant,,"Component, Study_id, grantNumber, studyName, AccessRequirementKey, studyDescription, studyInvestigator, studyParticipantNumber, studySampleNumber, studyDeidentificationType, studyDeidentificationMethodDescription, studyDeidentificationMethodSoftware, studyDbgapAccessionId, studyIndexDate, dataUseModifiers",FALSE,,,,,,
+Study,Studies associated with a grant,,"Component, Study_id, studyProjectIdentifier, grantNumber, studyName, AccessRequirementKey, studyDescription, studyInvestigator, studyParticipantNumber, studySampleNumber, studyDeidentificationType, studyDeidentificationMethodDescription, studyDeidentificationMethodSoftware, studyDbgapAccessionId, studyIndexDate, dataUseModifiers",FALSE,,,,,,
 grantNumber,The identifier associated with the award funding this study.,,,FALSE,,Study,,,list like,
 studyName,Name of the study,,,TRUE,CDE:11459810,Study,,,str,string
 studyDescription,"Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",,,TRUE,CDE:03444002,Study,,,str,string
@@ -35,9 +34,10 @@ studyDeidentificationMethodSoftware,Software that was used to de-identify the da
 studyDbgapAccessionId,A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.,,,FALSE,CDE:11524544,Study,,CDS/collection,str,string
 studyIndexDate,"The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.","Diagnosis Date , Enrollment Date, Collection Date, Birth Date",,FALSE,,Study,,CDS v5.0.4/Study,list like,
 studySampleNumber,The number of specimens associated with systematic investigation into a subject.,,,TRUE,CDE:11555663,Study,,GC v6.0.2/study.number_of_samples,int,integer
+studyProjectIdentifier,The identifier of the project to which this Study is related.,"ADKP, ELITE, HTAN2, MC2, None",,FALSE,,Study,,,list like,
 Component,"Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",,,TRUE,,,,,str,string
 AccessRequirementKey,The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.,,,False,,Study,,,str,string
-usedInProject,The identifier of the project in which this access requirement is used.,"ADKP, ELITE, HTAN2, MC2, None",,FALSE,,AccessRequirement,,,list like,
+StudyKey,The Study id(s) associated with this object. Provide multiple values as a comma-separated list.,,,False,,shared,,,str,string
 dataUseModifiers,"A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.","IRB, HMB, PUB, USE, NPOA, COL, NCU, NPUNCU, RST, TSM, NRES, NPU, DUM, POA, MOR, GSO, RTN, CC, NMDS, IST, GSR, DSR, GRU, PS, DUOPlus1, DUOPlus2, DUOPlus3, DUOPlus4, DUOPlus5, DUOPlus6, DUOPlus7, Pending Annotation",,FALSE,,AccessRequirement,,,list like,
 collaborationRequired,"If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list.",,,FALSE,,AccessRequirement,,,str,string
 diseaseSpecificResearch,The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.,,,FALSE,,AccessRequirement,,,str,string
