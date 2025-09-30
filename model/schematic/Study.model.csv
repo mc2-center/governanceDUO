@@ -1,5 +1,5 @@
 Attribute,Description,Valid Values,DependsOn,Required,Properties,Parent,DependsOn Component,Source,Validation Rules,columnType
-Study,Studies associated with a grant,,"Component, Study_id, grantNumber, studyName, AccessRequirementKey, studyDescription, studyInvestigator, studyParticipantNumber, studySampleNumber, studyDeidentificationType, studyDeidentificationMethodDescription, studyDeidentificationMethodSoftware, studyDbgapAccessionId, studyIndexDate, dataUseModifiers",FALSE,,,,,,
+Study,Studies associated with a grant,,"Component, Study_id, studyProjectIdentifier, grantNumber, studyName, AccessRequirementKey, studyDescription, studyInvestigator, studyParticipantNumber, studySampleNumber, studyDeidentificationType, studyDeidentificationMethodDescription, studyDeidentificationMethodSoftware, studyDbgapAccessionId, studyIndexDate, dataUseModifiers",FALSE,,,,,,
 grantNumber,The identifier associated with the award funding this study.,,,FALSE,,Study,,,list like,
 studyName,Name of the study,,,TRUE,CDE:11459810,Study,,,str,string
 studyDescription,"Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",,,TRUE,CDE:03444002,Study,,,str,string
@@ -12,3 +12,4 @@ studyDeidentificationMethodSoftware,Software that was used to de-identify the da
 studyDbgapAccessionId,A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.,,,FALSE,CDE:11524544,Study,,CDS/collection,str,string
 studyIndexDate,"The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.","Diagnosis Date , Enrollment Date, Collection Date, Birth Date",,FALSE,,Study,,CDS v5.0.4/Study,list like,
 studySampleNumber,The number of specimens associated with systematic investigation into a subject.,,,TRUE,CDE:11555663,Study,,GC v6.0.2/study.number_of_samples,int,integer
+studyProjectIdentifier,The identifier of the project to which this Study is related.,"ADKP, ELITE, HTAN2, MC2, None",,FALSE,,Study,,,list like,
