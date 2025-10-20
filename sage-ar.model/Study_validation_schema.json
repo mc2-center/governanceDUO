@@ -1221,6 +1221,10 @@
           },
           "title": "array",
           "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
         }
       ],
       "title": "studyDeidentificationType"
@@ -1331,7 +1335,6 @@
   },
   "required": [
     "Component",
-    "StudyDeidentificationType",
     "StudyDescription",
     "StudyId",
     "StudyInvestigator",
