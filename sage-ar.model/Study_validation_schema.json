@@ -1259,13 +1259,8 @@
     },
     "StudyInvestigator": {
       "description": "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "array",
-          "type": "array"
-        }
-      ],
-      "title": "studyInvestigator"
+      "title": "studyInvestigator",
+      "type": "string"
     },
     "StudyName": {
       "description": "Name of the study",
