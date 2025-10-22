@@ -971,10 +971,19 @@
       ],
       "title": "researchSpecificRestrictions"
     },
-    "ResourceId": {
-      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
-      "title": "Resource_id",
-      "type": "string"
+    "SchemaKey": {
+      "description": "The Schema_id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "SchemaKey"
     },
     "SourceGeography": {
       "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
@@ -1340,12 +1349,17 @@
         }
       ],
       "title": "userSpecificRestriction"
+    },
+    "resourceId": {
+      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
+      "title": "Resource_id",
+      "type": "string"
     }
   },
   "required": [
     "Component",
     "RegisteredSchemaUrl",
-    "ResourceId"
+    "resourceId"
   ],
   "title": "Resource_validation",
   "type": "object"

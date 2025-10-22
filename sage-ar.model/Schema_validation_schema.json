@@ -36,11 +36,6 @@
       ],
       "title": "ResourceKey"
     },
-    "SchemaId": {
-      "description": "A unique identifier for the schema.",
-      "title": "Schema_id",
-      "type": "string"
-    },
     "SchemaUrl": {
       "description": "The registered URL associated with the access requirement JSON schema.",
       "title": "schemaUrl",
@@ -59,12 +54,17 @@
         }
       ],
       "title": "StudyKey"
+    },
+    "schemaId": {
+      "description": "A unique identifier for the schema.",
+      "title": "Schema_id",
+      "type": "string"
     }
   },
   "required": [
     "Component",
-    "SchemaId",
-    "SchemaUrl"
+    "SchemaUrl",
+    "schemaId"
   ],
   "title": "Schema_validation",
   "type": "object"

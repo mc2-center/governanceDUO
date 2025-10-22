@@ -1234,11 +1234,6 @@
       "title": "studyDescription",
       "type": "string"
     },
-    "StudyId": {
-      "description": "A unique primary key that enables record updates using schematic.",
-      "title": "Study_id",
-      "type": "string"
-    },
     "StudyIndexDate": {
       "description": "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.",
       "oneOf": [
@@ -1331,16 +1326,21 @@
         }
       ],
       "title": "userSpecificRestriction"
+    },
+    "studyId": {
+      "description": "A unique primary key that enables record updates using schematic.",
+      "title": "Study_id",
+      "type": "string"
     }
   },
   "required": [
     "Component",
     "StudyDescription",
-    "StudyId",
     "StudyInvestigator",
     "StudyName",
     "StudyParticipantNumber",
-    "StudySampleNumber"
+    "StudySampleNumber",
+    "studyId"
   ],
   "title": "Study_validation",
   "type": "object"

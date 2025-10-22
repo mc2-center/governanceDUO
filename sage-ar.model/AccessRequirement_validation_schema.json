@@ -350,11 +350,6 @@
   ],
   "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
   "properties": {
-    "AccessRequirementId": {
-      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
-      "title": "AccessRequirement_id",
-      "type": "string"
-    },
     "Attribution": {
       "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
       "oneOf": [
@@ -1206,13 +1201,18 @@
         }
       ],
       "title": "userSpecificRestriction"
+    },
+    "accessRequirementId": {
+      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
+      "title": "AccessRequirement_id",
+      "type": "string"
     }
   },
   "required": [
-    "AccessRequirementId",
     "Component",
     "ContributionDate",
-    "ContributorName"
+    "ContributorName",
+    "accessRequirementId"
   ],
   "title": "AccessRequirement_validation",
   "type": "object"
