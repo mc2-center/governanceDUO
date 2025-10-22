@@ -27,7 +27,7 @@
                     "@id": "bts:Component"
                 },
                 {
-                    "@id": "bts:AccessRequirementId"
+                    "@id": "bts:accessRequirementId"
                 },
                 {
                     "@id": "bts:ContributorName"
@@ -68,13 +68,13 @@
             ]
         },
         {
-            "@id": "bts:AccessRequirementId",
-            "@type": "rdfs:Class",
+            "@id": "bts:accessRequirementId",
+            "@type": "rdf:Property",
             "rdfs:comment": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
-            "rdfs:label": "AccessRequirementId",
-            "rdfs:subClassOf": [
+            "rdfs:label": "accessRequirementId",
+            "schema:domainIncludes": [
                 {
-                    "@id": "bts:AccessRequirement"
+                    "@id": "bts:AccessRequirementKey"
                 }
             ],
             "schema:isPartOf": {
@@ -284,6 +284,32 @@
             ]
         },
         {
+            "@id": "bts:primaryKey",
+            "@type": "rdf:Property",
+            "rdfs:comment": "TBD",
+            "rdfs:label": "primaryKey",
+            "schema:domainIncludes": [
+                {
+                    "@id": "bts:accessRequirementId"
+                },
+                {
+                    "@id": "bts:resourceId"
+                },
+                {
+                    "@id": "bts:schemaId"
+                },
+                {
+                    "@id": "bts:studyId"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:displayName": "primary_key",
+            "sms:required": "sms:false",
+            "sms:validationRules": []
+        },
+        {
             "@id": "bts:Resource",
             "@type": "rdfs:Class",
             "rdfs:comment": "Information that is relevant to resource access conditions.",
@@ -303,13 +329,16 @@
                     "@id": "bts:Component"
                 },
                 {
-                    "@id": "bts:ResourceId"
+                    "@id": "bts:resourceId"
                 },
                 {
                     "@id": "bts:StudyKey"
                 },
                 {
                     "@id": "bts:AccessRequirementKey"
+                },
+                {
+                    "@id": "bts:SchemaKey"
                 },
                 {
                     "@id": "bts:DataUseModifiers"
@@ -351,13 +380,13 @@
             "sms:validationRules": []
         },
         {
-            "@id": "bts:ResourceId",
-            "@type": "rdfs:Class",
+            "@id": "bts:resourceId",
+            "@type": "rdf:Property",
             "rdfs:comment": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
-            "rdfs:label": "ResourceId",
-            "rdfs:subClassOf": [
+            "rdfs:label": "resourceId",
+            "schema:domainIncludes": [
                 {
-                    "@id": "bts:Resource"
+                    "@id": "bts:ResourceKey"
                 }
             ],
             "schema:isPartOf": {
@@ -388,6 +417,26 @@
             "sms:required": "sms:false",
             "sms:validationRules": [
                 "str"
+            ]
+        },
+        {
+            "@id": "bts:SchemaKey",
+            "@type": "rdfs:Class",
+            "rdfs:comment": "The Schema_id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource.",
+            "rdfs:label": "SchemaKey",
+            "rdfs:subClassOf": [
+                {
+                    "@id": "bts:Resource"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:columnType": "string",
+            "sms:displayName": "SchemaKey",
+            "sms:required": "sms:false",
+            "sms:validationRules": [
+                "unique"
             ]
         },
         {
@@ -611,6 +660,26 @@
             ]
         },
         {
+            "@id": "bts:schemaId",
+            "@type": "rdf:Property",
+            "rdfs:comment": "A unique identifier for the schema.",
+            "rdfs:label": "schemaId",
+            "schema:domainIncludes": [
+                {
+                    "@id": "bts:SchemaKey"
+                }
+            ],
+            "schema:isPartOf": {
+                "@id": "http://schema.biothings.io"
+            },
+            "sms:columnType": "string",
+            "sms:displayName": "Schema_id",
+            "sms:required": "sms:true",
+            "sms:validationRules": [
+                "unique"
+            ]
+        },
+        {
             "@id": "bts:Schema",
             "@type": "rdfs:Class",
             "rdfs:comment": "Information that is relevant to resource access conditions.",
@@ -630,7 +699,7 @@
                     "@id": "bts:Component"
                 },
                 {
-                    "@id": "bts:SchemaId"
+                    "@id": "bts:schemaId"
                 },
                 {
                     "@id": "bts:ResourceKey"
@@ -646,26 +715,6 @@
                 }
             ],
             "sms:validationRules": []
-        },
-        {
-            "@id": "bts:SchemaId",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "A unique identifier for the schema.",
-            "rdfs:label": "SchemaId",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:Schema"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:columnType": "string",
-            "sms:displayName": "Schema_id",
-            "sms:required": "sms:true",
-            "sms:validationRules": [
-                "unique"
-            ]
         },
         {
             "@id": "bts:ResourceKey",
@@ -726,7 +775,7 @@
                     "@id": "bts:Component"
                 },
                 {
-                    "@id": "bts:StudyId"
+                    "@id": "bts:studyId"
                 },
                 {
                     "@id": "bts:StudyProjectIdentifier"
@@ -774,13 +823,13 @@
             "sms:validationRules": []
         },
         {
-            "@id": "bts:StudyId",
-            "@type": "rdfs:Class",
+            "@id": "bts:studyId",
+            "@type": "rdf:Property",
             "rdfs:comment": "A unique primary key that enables record updates using schematic.",
-            "rdfs:label": "StudyId",
-            "rdfs:subClassOf": [
+            "rdfs:label": "studyId",
+            "schema:domainIncludes": [
                 {
-                    "@id": "bts:Study"
+                    "@id": "bts:StudyKey"
                 }
             ],
             "schema:isPartOf": {
@@ -1121,7 +1170,7 @@
             "rdfs:label": "cDE:12960571",
             "schema:domainIncludes": [
                 {
-                    "@id": "bts:StudyId"
+                    "@id": "bts:studyId"
                 }
             ],
             "schema:isPartOf": {
