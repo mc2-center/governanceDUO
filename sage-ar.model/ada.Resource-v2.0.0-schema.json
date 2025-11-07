@@ -1,5 +1,5 @@
 {
-  "$id": "http://example.com/AccessRequirement_validation",
+  "$id": "http://example.com/Resource_validation",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
@@ -378,8 +378,50 @@
       }
     }
   ],
-  "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
+  "description": "Information that is relevant to resource access conditions.",
   "properties": {
+    "AccessRequirementKey": {
+      "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "AccessRequirementKey"
+    },
+    "ActivatedByAttribute": {
+      "description": "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "ActivatedByAttribute"
+    },
+    "ActivationValue": {
+      "description": "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "ActivationValue"
+    },
     "Attribution": {
       "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
       "oneOf": [
@@ -392,7 +434,7 @@
           "type": "null"
         }
       ],
-      "title": "attribution"
+      "title": "Attribution"
     },
     "CollaborationRequired": {
       "description": "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list.",
@@ -406,22 +448,11 @@
           "type": "null"
         }
       ],
-      "title": "collaborationRequired"
+      "title": "CollaborationRequired"
     },
     "Component": {
       "description": "Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",
       "title": "Component",
-      "type": "string"
-    },
-    "ContributionDate": {
-      "description": "The date on which the access requirement was added.",
-      "format": "date",
-      "title": "contributionDate",
-      "type": "string"
-    },
-    "ContributorName": {
-      "description": "The name of the person who added this access requirement.",
-      "title": "contributorName",
       "type": "string"
     },
     "DataPermission": {
@@ -444,7 +475,7 @@
           "type": "null"
         }
       ],
-      "title": "dataPermission"
+      "title": "DataPermission"
     },
     "DataTier": {
       "description": "The tier of data access associated with the access requirement. Equivalent to DUOPlus5.",
@@ -466,7 +497,35 @@
           "type": "null"
         }
       ],
-      "title": "dataTier"
+      "title": "DataTier"
+    },
+    "DataTypeKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a data type identifier.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "DataTypeKey"
+    },
+    "DataTypeValue": {
+      "description": "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "DataTypeValue"
     },
     "DataUseModifiers": {
       "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
@@ -516,7 +575,7 @@
           "type": "null"
         }
       ],
-      "title": "dataUseModifiers"
+      "title": "DataUseModifiers"
     },
     "DeidentificationType": {
       "description": "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3.",
@@ -540,7 +599,7 @@
           "type": "null"
         }
       ],
-      "title": "deidentificationType"
+      "title": "DeidentificationType"
     },
     "DiseaseSpecificResearch": {
       "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
@@ -554,21 +613,7 @@
           "type": "null"
         }
       ],
-      "title": "diseaseSpecificResearch"
-    },
-    "EntityIdList": {
-      "description": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "entityIdList"
+      "title": "DiseaseSpecificResearch"
     },
     "GeographicalRestriction": {
       "description": "Geographical regions with restrictions associated with the access requirement.",
@@ -835,7 +880,35 @@
           "type": "null"
         }
       ],
-      "title": "geographicalRestriction"
+      "title": "GeographicalRestriction"
+    },
+    "GrantAnnotationKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a grant identifier.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "GrantAnnotationKey"
+    },
+    "GrantAnnotationValue": {
+      "description": "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "GrantAnnotationValue"
     },
     "InstitutionSpecificRestriction": {
       "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
@@ -849,7 +922,7 @@
           "type": "null"
         }
       ],
-      "title": "institutionSpecificRestriction"
+      "title": "InstitutionSpecificRestriction"
     },
     "License": {
       "description": "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6.",
@@ -878,7 +951,7 @@
           "type": "null"
         }
       ],
-      "title": "license"
+      "title": "License"
     },
     "PopulationType": {
       "description": "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2",
@@ -892,7 +965,7 @@
           "type": "null"
         }
       ],
-      "title": "populationType"
+      "title": "PopulationType"
     },
     "PublicationMoratorium": {
       "description": "End date of the publication moratorium associated with the access requirement.",
@@ -907,7 +980,12 @@
           "type": "null"
         }
       ],
-      "title": "publicationMoratorium"
+      "title": "PublicationMoratorium"
+    },
+    "RegisteredSchemaUrl": {
+      "description": "URL associated with the access requirement schema that will be applied to the resource type.",
+      "title": "RegisteredSchemaUrl",
+      "type": "string"
     },
     "ResearchSpecificRestrictions": {
       "description": "Research-specific restrictions associated with the access requirement.",
@@ -921,7 +999,21 @@
           "type": "null"
         }
       ],
-      "title": "researchSpecificRestrictions"
+      "title": "ResearchSpecificRestrictions"
+    },
+    "SchemaKey": {
+      "description": "The Schema_id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "SchemaKey"
     },
     "SourceGeography": {
       "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
@@ -1188,7 +1280,63 @@
           "type": "null"
         }
       ],
-      "title": "sourceGeography"
+      "title": "SourceGeography"
+    },
+    "SpeciesTypeKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a species identifier.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "SpeciesTypeKey"
+    },
+    "SpeciesTypeValue": {
+      "description": "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "SpeciesTypeValue"
+    },
+    "StudyAnnotationKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a study identifier.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "StudyAnnotationKey"
+    },
+    "StudyAnnotationValue": {
+      "description": "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "StudyAnnotationValue"
     },
     "StudyKey": {
       "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
@@ -1216,7 +1364,7 @@
           "type": "null"
         }
       ],
-      "title": "timeLimitOnUse"
+      "title": "TimeLimitOnUse"
     },
     "UserSpecificRestriction": {
       "description": "The user-specific restrictions associated with the access requirement.",
@@ -1230,20 +1378,19 @@
           "type": "null"
         }
       ],
-      "title": "userSpecificRestriction"
+      "title": "UserSpecificRestriction"
     },
-    "accessRequirementId": {
-      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
-      "title": "AccessRequirement_id",
+    "resourceId": {
+      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
+      "title": "ResourceId",
       "type": "string"
     }
   },
   "required": [
     "Component",
-    "ContributionDate",
-    "ContributorName",
-    "accessRequirementId"
+    "RegisteredSchemaUrl",
+    "ResourceId"
   ],
-  "title": "AccessRequirement_validation",
+  "title": "Resource_validation",
   "type": "object"
 }

@@ -57,14 +57,14 @@
     },
     "schemaId": {
       "description": "A unique identifier for the schema.",
-      "title": "Schema_id",
+      "title": "SchemaId",
       "type": "string"
     }
   },
   "required": [
     "Component",
     "SchemaUrl",
-    "schemaId"
+    "SchemaId"
   ],
   "title": "Schema_validation",
   "type": "object"

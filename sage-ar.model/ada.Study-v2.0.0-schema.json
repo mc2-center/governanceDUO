@@ -406,7 +406,7 @@
           "type": "null"
         }
       ],
-      "title": "attribution"
+      "title": "Attribution"
     },
     "CollaborationRequired": {
       "description": "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list.",
@@ -420,7 +420,7 @@
           "type": "null"
         }
       ],
-      "title": "collaborationRequired"
+      "title": "CollaborationRequired"
     },
     "Component": {
       "description": "Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",
@@ -447,7 +447,7 @@
           "type": "null"
         }
       ],
-      "title": "dataPermission"
+      "title": "DataPermission"
     },
     "DataTier": {
       "description": "The tier of data access associated with the access requirement. Equivalent to DUOPlus5.",
@@ -469,7 +469,7 @@
           "type": "null"
         }
       ],
-      "title": "dataTier"
+      "title": "DataTier"
     },
     "DataUseModifiers": {
       "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
@@ -519,7 +519,7 @@
           "type": "null"
         }
       ],
-      "title": "dataUseModifiers"
+      "title": "DataUseModifiers"
     },
     "DeidentificationType": {
       "description": "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3.",
@@ -543,7 +543,7 @@
           "type": "null"
         }
       ],
-      "title": "deidentificationType"
+      "title": "DeidentificationType"
     },
     "DiseaseSpecificResearch": {
       "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
@@ -557,7 +557,7 @@
           "type": "null"
         }
       ],
-      "title": "diseaseSpecificResearch"
+      "title": "DiseaseSpecificResearch"
     },
     "GeographicalRestriction": {
       "description": "Geographical regions with restrictions associated with the access requirement.",
@@ -824,7 +824,7 @@
           "type": "null"
         }
       ],
-      "title": "geographicalRestriction"
+      "title": "GeographicalRestriction"
     },
     "GrantNumber": {
       "description": "The identifier associated with the award funding this study.",
@@ -838,7 +838,7 @@
           "type": "null"
         }
       ],
-      "title": "grantNumber"
+      "title": "GrantNumber"
     },
     "InstitutionSpecificRestriction": {
       "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
@@ -852,7 +852,7 @@
           "type": "null"
         }
       ],
-      "title": "institutionSpecificRestriction"
+      "title": "InstitutionSpecificRestriction"
     },
     "License": {
       "description": "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6.",
@@ -881,7 +881,7 @@
           "type": "null"
         }
       ],
-      "title": "license"
+      "title": "License"
     },
     "PopulationType": {
       "description": "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2",
@@ -895,7 +895,7 @@
           "type": "null"
         }
       ],
-      "title": "populationType"
+      "title": "PopulationType"
     },
     "PublicationMoratorium": {
       "description": "End date of the publication moratorium associated with the access requirement.",
@@ -910,7 +910,7 @@
           "type": "null"
         }
       ],
-      "title": "publicationMoratorium"
+      "title": "PublicationMoratorium"
     },
     "ResearchSpecificRestrictions": {
       "description": "Research-specific restrictions associated with the access requirement.",
@@ -924,7 +924,7 @@
           "type": "null"
         }
       ],
-      "title": "researchSpecificRestrictions"
+      "title": "ResearchSpecificRestrictions"
     },
     "SourceGeography": {
       "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
@@ -1191,7 +1191,7 @@
           "type": "null"
         }
       ],
-      "title": "sourceGeography"
+      "title": "SourceGeography"
     },
     "StudyDbgapAccessionId": {
       "description": "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.",
@@ -1205,7 +1205,7 @@
           "type": "null"
         }
       ],
-      "title": "studyDbgapAccessionId"
+      "title": "StudyDbgapAccessionId"
     },
     "StudyDeidentificationMethodDescription": {
       "description": "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place.",
@@ -1219,7 +1219,7 @@
           "type": "null"
         }
       ],
-      "title": "studyDeidentificationMethodDescription"
+      "title": "StudyDeidentificationMethodDescription"
     },
     "StudyDeidentificationMethodSoftware": {
       "description": "Software that was used to de-identify the data (if used)",
@@ -1233,7 +1233,7 @@
           "type": "null"
         }
       ],
-      "title": "studyDeidentificationMethodSoftware"
+      "title": "StudyDeidentificationMethodSoftware"
     },
     "StudyDeidentificationType": {
       "description": "General description of the de-identification method. Maps to DUOplus3.",
@@ -1257,11 +1257,11 @@
           "type": "null"
         }
       ],
-      "title": "studyDeidentificationType"
+      "title": "StudyDeidentificationType"
     },
     "StudyDescription": {
       "description": "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",
-      "title": "studyDescription",
+      "title": "StudyDescription",
       "type": "string"
     },
     "StudyIndexDate": {
@@ -1284,21 +1284,21 @@
           "type": "null"
         }
       ],
-      "title": "studyIndexDate"
+      "title": "StudyIndexDate"
     },
     "StudyInvestigator": {
       "description": "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list.",
-      "title": "studyInvestigator",
+      "title": "StudyInvestigator",
       "type": "string"
     },
     "StudyName": {
       "description": "Name of the study",
-      "title": "studyName",
+      "title": "StudyName",
       "type": "string"
     },
     "StudyParticipantNumber": {
       "description": "The number of participant instances associated with systematic investigation into a subject.",
-      "title": "studyParticipantNumber",
+      "title": "StudyParticipantNumber",
       "type": "integer"
     },
     "StudyProjectIdentifier": {
@@ -1322,11 +1322,11 @@
           "type": "null"
         }
       ],
-      "title": "studyProjectIdentifier"
+      "title": "StudyProjectIdentifier"
     },
     "StudySampleNumber": {
       "description": "The number of specimens associated with systematic investigation into a subject.",
-      "title": "studySampleNumber",
+      "title": "StudySampleNumber",
       "type": "integer"
     },
     "TimeLimitOnUse": {
@@ -1341,7 +1341,7 @@
           "type": "null"
         }
       ],
-      "title": "timeLimitOnUse"
+      "title": "TimeLimitOnUse"
     },
     "UserSpecificRestriction": {
       "description": "The user-specific restrictions associated with the access requirement.",
@@ -1355,11 +1355,11 @@
           "type": "null"
         }
       ],
-      "title": "userSpecificRestriction"
+      "title": "UserSpecificRestriction"
     },
     "studyId": {
       "description": "A unique primary key that enables record updates using schematic.",
-      "title": "Study_id",
+      "title": "StudyId",
       "type": "string"
     }
   },
@@ -1370,7 +1370,7 @@
     "StudyName",
     "StudyParticipantNumber",
     "StudySampleNumber",
-    "studyId"
+    "StudyId"
   ],
   "title": "Study_validation",
   "type": "object"
