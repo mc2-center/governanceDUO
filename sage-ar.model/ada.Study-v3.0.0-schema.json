@@ -1359,7 +1359,7 @@
     },
     "studyId": {
       "description": "A unique primary key that enables record updates using schematic.",
-      "title": "StudyId",
+      "title": "studyId",
       "type": "string"
     }
   },
@@ -1370,7 +1370,7 @@
     "StudyName",
     "StudyParticipantNumber",
     "StudySampleNumber",
-    "StudyId"
+    "studyId"
   ],
   "title": "Study_validation",
   "type": "object"
