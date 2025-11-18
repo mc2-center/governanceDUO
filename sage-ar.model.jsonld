@@ -2240,7 +2240,7 @@
         {
             "@id": "bts:DiseaseSpecificResearch",
             "@type": "rdfs:Class",
-            "rdfs:comment": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
+            "rdfs:comment": "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo",
             "rdfs:label": "DiseaseSpecificResearch",
             "rdfs:subClassOf": [
                 {
@@ -2250,11 +2250,11 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:columnType": "string",
             "sms:displayName": "diseaseSpecificResearch",
             "sms:required": "sms:false",
             "sms:validationRules": [
-                "str"
+                "list like",
+                "regex search MONDO:\\d{7}"
             ]
         },
         {
@@ -7968,7 +7968,7 @@
         {
             "@id": "bts:InstitutionSpecificRestriction",
             "@type": "rdfs:Class",
-            "rdfs:comment": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
+            "rdfs:comment": "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search",
             "rdfs:label": "InstitutionSpecificRestriction",
             "rdfs:subClassOf": [
                 {
@@ -7978,11 +7978,11 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "sms:columnType": "string",
             "sms:displayName": "institutionSpecificRestriction",
             "sms:required": "sms:false",
             "sms:validationRules": [
-                "str"
+                "list like",
+                "regex search ROR:[a-z0-9]{9}"
             ]
         },
         {

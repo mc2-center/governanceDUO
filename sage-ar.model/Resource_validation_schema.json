@@ -572,11 +572,15 @@
       "title": "deidentificationType"
     },
     "DiseaseSpecificResearch": {
-      "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
+      "description": "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo",
       "oneOf": [
         {
-          "title": "string",
-          "type": "string"
+          "items": {
+            "pattern": "MONDO:\\d{7}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
         },
         {
           "title": "null",
@@ -881,11 +885,15 @@
       "title": "grantAnnotationValue"
     },
     "InstitutionSpecificRestriction": {
-      "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
+      "description": "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search",
       "oneOf": [
         {
-          "title": "string",
-          "type": "string"
+          "items": {
+            "pattern": "ROR:[a-z0-9]{9}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
         },
         {
           "title": "null",
