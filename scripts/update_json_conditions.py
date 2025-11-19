@@ -56,10 +56,11 @@ def generate_json_schema(input: str, ar_schema: str) -> None:
         print(f"Conditions updated!")
         if ref_conditions is not None:
             conditions.append(ref_conditions)
-        print(f"Schema reference added!")
+            print(f"Schema reference added!")
 
     for attribute in properties:
         properties[attribute]["title"] = f"{attribute}"
+    print("Attribute titles updated!")
     
     with open(output, 'w') as f:
         json.dump(model, f, indent=2)
