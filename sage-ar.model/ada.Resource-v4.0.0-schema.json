@@ -1,5 +1,5 @@
 {
-  "$id": "http://example.com/Study_validation",
+  "$id": "http://example.com/Resource_validation",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
@@ -378,7 +378,7 @@
       }
     }
   ],
-  "description": "Studies associated with a grant",
+  "description": "Information that is relevant to resource access conditions.",
   "properties": {
     "AccessRequirementKey": {
       "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
@@ -393,6 +393,34 @@
         }
       ],
       "title": "AccessRequirementKey"
+    },
+    "ActivatedByAttribute": {
+      "description": "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "ActivatedByAttribute"
+    },
+    "ActivationValue": {
+      "description": "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "ActivationValue"
     },
     "Attribution": {
       "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
@@ -471,6 +499,34 @@
       ],
       "title": "DataTier"
     },
+    "DataTypeKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a data type identifier.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "DataTypeKey"
+    },
+    "DataTypeValue": {
+      "description": "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "DataTypeValue"
+    },
     "DataUseModifiers": {
       "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
       "oneOf": [
@@ -546,11 +602,15 @@
       "title": "DeidentificationType"
     },
     "DiseaseSpecificResearch": {
-      "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
+      "description": "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo",
       "oneOf": [
         {
-          "title": "string",
-          "type": "string"
+          "items": {
+            "pattern": "MONDO:\\d{7}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
         },
         {
           "title": "null",
@@ -826,26 +886,44 @@
       ],
       "title": "GeographicalRestriction"
     },
-    "GrantNumber": {
-      "description": "The identifier associated with the award funding this study.",
+    "GrantAnnotationKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a grant identifier.",
       "oneOf": [
         {
-          "title": "array",
-          "type": "array"
+          "title": "string",
+          "type": "string"
         },
         {
           "title": "null",
           "type": "null"
         }
       ],
-      "title": "GrantNumber"
+      "title": "GrantAnnotationKey"
     },
-    "InstitutionSpecificRestriction": {
-      "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
+    "GrantAnnotationValue": {
+      "description": "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.",
       "oneOf": [
         {
           "title": "string",
           "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "GrantAnnotationValue"
+    },
+    "InstitutionSpecificRestriction": {
+      "description": "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search",
+      "oneOf": [
+        {
+          "items": {
+            "pattern": "ROR:[a-z0-9]{9}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
         },
         {
           "title": "null",
@@ -912,6 +990,11 @@
       ],
       "title": "PublicationMoratorium"
     },
+    "RegisteredSchemaUrl": {
+      "description": "URL associated with the access requirement schema that will be applied to the resource type.",
+      "title": "RegisteredSchemaUrl",
+      "type": "string"
+    },
     "ResearchSpecificRestrictions": {
       "description": "Research-specific restrictions associated with the access requirement.",
       "oneOf": [
@@ -925,6 +1008,20 @@
         }
       ],
       "title": "ResearchSpecificRestrictions"
+    },
+    "SchemaKey": {
+      "description": "The Schema_id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "SchemaKey"
     },
     "SourceGeography": {
       "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
@@ -1193,8 +1290,8 @@
       ],
       "title": "SourceGeography"
     },
-    "StudyDbgapAccessionId": {
-      "description": "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.",
+    "SpeciesTypeKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a species identifier.",
       "oneOf": [
         {
           "title": "string",
@@ -1205,10 +1302,10 @@
           "type": "null"
         }
       ],
-      "title": "StudyDbgapAccessionId"
+      "title": "SpeciesTypeKey"
     },
-    "StudyDeidentificationMethodDescription": {
-      "description": "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place.",
+    "SpeciesTypeValue": {
+      "description": "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.",
       "oneOf": [
         {
           "title": "string",
@@ -1219,10 +1316,10 @@
           "type": "null"
         }
       ],
-      "title": "StudyDeidentificationMethodDescription"
+      "title": "SpeciesTypeValue"
     },
-    "StudyDeidentificationMethodSoftware": {
-      "description": "Software that was used to de-identify the data (if used)",
+    "StudyAnnotationKey": {
+      "description": "The annotation key applied to a Synapse entity that contains a study identifier.",
       "oneOf": [
         {
           "title": "string",
@@ -1233,101 +1330,35 @@
           "type": "null"
         }
       ],
-      "title": "StudyDeidentificationMethodSoftware"
+      "title": "StudyAnnotationKey"
     },
-    "StudyDeidentificationType": {
-      "description": "General description of the de-identification method. Maps to DUOplus3.",
+    "StudyAnnotationValue": {
+      "description": "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.",
       "oneOf": [
         {
-          "items": {
-            "enum": [
-              "Anonymized",
-              "ExpertDetermination",
-              "HIPPA_LDS",
-              "Other",
-              "Pseudonymized",
-              "SafeHarbor"
-            ]
-          },
-          "title": "array",
-          "type": "array"
+          "title": "string",
+          "type": "string"
         },
         {
           "title": "null",
           "type": "null"
         }
       ],
-      "title": "StudyDeidentificationType"
+      "title": "StudyAnnotationValue"
     },
-    "StudyDescription": {
-      "description": "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",
-      "title": "StudyDescription",
-      "type": "string"
-    },
-    "StudyIndexDate": {
-      "description": "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.",
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
       "oneOf": [
         {
-          "items": {
-            "enum": [
-              "Birth Date",
-              "Collection Date",
-              "Diagnosis Date",
-              "Enrollment Date"
-            ]
-          },
-          "title": "array",
-          "type": "array"
+          "title": "string",
+          "type": "string"
         },
         {
           "title": "null",
           "type": "null"
         }
       ],
-      "title": "StudyIndexDate"
-    },
-    "StudyInvestigator": {
-      "description": "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list.",
-      "title": "StudyInvestigator",
-      "type": "string"
-    },
-    "StudyName": {
-      "description": "Name of the study",
-      "title": "StudyName",
-      "type": "string"
-    },
-    "StudyParticipantNumber": {
-      "description": "The number of participant instances associated with systematic investigation into a subject.",
-      "title": "StudyParticipantNumber",
-      "type": "integer"
-    },
-    "StudyProjectIdentifier": {
-      "description": "The identifier of the project to which this Study is related.",
-      "oneOf": [
-        {
-          "items": {
-            "enum": [
-              "ADKP",
-              "ELITE",
-              "HTAN2",
-              "MC2",
-              "None"
-            ]
-          },
-          "title": "array",
-          "type": "array"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "StudyProjectIdentifier"
-    },
-    "StudySampleNumber": {
-      "description": "The number of specimens associated with systematic investigation into a subject.",
-      "title": "StudySampleNumber",
-      "type": "integer"
+      "title": "StudyKey"
     },
     "TimeLimitOnUse": {
       "description": "Time limit on the use of the data associated with the access requirement.",
@@ -1357,21 +1388,17 @@
       ],
       "title": "UserSpecificRestriction"
     },
-    "studyId": {
-      "description": "A unique primary key that enables record updates using schematic.",
-      "title": "studyId",
+    "resourceId": {
+      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
+      "title": "resourceId",
       "type": "string"
     }
   },
   "required": [
     "Component",
-    "StudyDescription",
-    "StudyInvestigator",
-    "StudyName",
-    "StudyParticipantNumber",
-    "StudySampleNumber",
-    "studyId"
+    "RegisteredSchemaUrl",
+    "resourceId"
   ],
-  "title": "Study_validation",
+  "title": "Resource_validation",
   "type": "object"
 }

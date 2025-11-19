@@ -1,5 +1,5 @@
 {
-  "$id": "http://example.com/Resource_validation",
+  "$id": "http://example.com/AccessRequirement_validation",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
@@ -378,50 +378,8 @@
       }
     }
   ],
-  "description": "Information that is relevant to resource access conditions.",
+  "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
   "properties": {
-    "AccessRequirementKey": {
-      "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "AccessRequirementKey"
-    },
-    "ActivatedByAttribute": {
-      "description": "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "ActivatedByAttribute"
-    },
-    "ActivationValue": {
-      "description": "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "ActivationValue"
-    },
     "Attribution": {
       "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
       "oneOf": [
@@ -453,6 +411,17 @@
     "Component": {
       "description": "Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",
       "title": "Component",
+      "type": "string"
+    },
+    "ContributionDate": {
+      "description": "The date on which the access requirement was added.",
+      "format": "date",
+      "title": "ContributionDate",
+      "type": "string"
+    },
+    "ContributorName": {
+      "description": "The name of the person who added this access requirement.",
+      "title": "ContributorName",
       "type": "string"
     },
     "DataPermission": {
@@ -498,34 +467,6 @@
         }
       ],
       "title": "DataTier"
-    },
-    "DataTypeKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a data type identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "DataTypeKey"
-    },
-    "DataTypeValue": {
-      "description": "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "DataTypeValue"
     },
     "DataUseModifiers": {
       "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
@@ -602,7 +543,25 @@
       "title": "DeidentificationType"
     },
     "DiseaseSpecificResearch": {
-      "description": "The type(s) of disease research allowed by this access requirement. Provide multiple values as a comma-separated list.",
+      "description": "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo",
+      "oneOf": [
+        {
+          "items": {
+            "pattern": "MONDO:\\d{7}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "DiseaseSpecificResearch"
+    },
+    "EntityIdList": {
+      "description": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
       "oneOf": [
         {
           "title": "string",
@@ -613,7 +572,7 @@
           "type": "null"
         }
       ],
-      "title": "DiseaseSpecificResearch"
+      "title": "EntityIdList"
     },
     "GeographicalRestriction": {
       "description": "Geographical regions with restrictions associated with the access requirement.",
@@ -882,40 +841,16 @@
       ],
       "title": "GeographicalRestriction"
     },
-    "GrantAnnotationKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a grant identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "GrantAnnotationKey"
-    },
-    "GrantAnnotationValue": {
-      "description": "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "GrantAnnotationValue"
-    },
     "InstitutionSpecificRestriction": {
-      "description": "Institutions with specific restrictions associated with the access requirement. Provide multiple entries as a comma-separated list.",
+      "description": "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search",
       "oneOf": [
         {
-          "title": "string",
-          "type": "string"
+          "items": {
+            "pattern": "ROR:[a-z0-9]{9}",
+            "type": "string"
+          },
+          "title": "array",
+          "type": "array"
         },
         {
           "title": "null",
@@ -982,11 +917,6 @@
       ],
       "title": "PublicationMoratorium"
     },
-    "RegisteredSchemaUrl": {
-      "description": "URL associated with the access requirement schema that will be applied to the resource type.",
-      "title": "RegisteredSchemaUrl",
-      "type": "string"
-    },
     "ResearchSpecificRestrictions": {
       "description": "Research-specific restrictions associated with the access requirement.",
       "oneOf": [
@@ -1000,20 +930,6 @@
         }
       ],
       "title": "ResearchSpecificRestrictions"
-    },
-    "SchemaKey": {
-      "description": "The Schema_id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "SchemaKey"
     },
     "SourceGeography": {
       "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
@@ -1282,62 +1198,6 @@
       ],
       "title": "SourceGeography"
     },
-    "SpeciesTypeKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a species identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "SpeciesTypeKey"
-    },
-    "SpeciesTypeValue": {
-      "description": "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "SpeciesTypeValue"
-    },
-    "StudyAnnotationKey": {
-      "description": "The annotation key applied to a Synapse entity that contains a study identifier.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "StudyAnnotationKey"
-    },
-    "StudyAnnotationValue": {
-      "description": "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR.",
-      "oneOf": [
-        {
-          "title": "string",
-          "type": "string"
-        },
-        {
-          "title": "null",
-          "type": "null"
-        }
-      ],
-      "title": "StudyAnnotationValue"
-    },
     "StudyKey": {
       "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
       "oneOf": [
@@ -1380,17 +1240,18 @@
       ],
       "title": "UserSpecificRestriction"
     },
-    "resourceId": {
-      "description": "A unique identifier for the resource type. Examples mc2Res1, adkpRes1, adkpRes2.",
-      "title": "ResourceId",
+    "accessRequirementId": {
+      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
+      "title": "accessRequirementId",
       "type": "string"
     }
   },
   "required": [
     "Component",
-    "RegisteredSchemaUrl",
-    "ResourceId"
+    "ContributionDate",
+    "ContributorName",
+    "accessRequirementId"
   ],
-  "title": "Resource_validation",
+  "title": "AccessRequirement_validation",
   "type": "object"
 }
