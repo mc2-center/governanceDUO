@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "AccessRequirementSchema",
+  "$id": "ada-CA123-AccessRequirementSchema-v17.0.0",
+  "description": "Example schema for access conditions.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "type": "array",
+            "items": {
+              "type" : "string"
+              },
+            "contains": {
+              "const": "IRB"
+              }
+            }
+          },
+        "required": ["DataUseModifiers"]
+        },
+      "then": {
+        "properties": {
+          "_accessRequirementIds": {
+            "type": "array",
+            "contains": {
+              "const": 9606676
+            }
+          }
+        }
+      }
+    }
+  ]
+}
