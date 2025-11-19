@@ -1,0 +1,71 @@
+{
+  "$id": "http://example.com/Schema_validation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Information that is relevant to resource access conditions.",
+  "properties": {
+    "AccessRequirementKey": {
+      "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "AccessRequirementKey"
+    },
+    "Component": {
+      "description": "Category of metadata (e.g. Tools, Publications, etc.); provide the same one for all items/rows.",
+      "title": "Component",
+      "type": "string"
+    },
+    "ResourceKey": {
+      "description": "The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "array",
+          "type": "array"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "ResourceKey"
+    },
+    "SchemaUrl": {
+      "description": "The registered URL associated with the access requirement JSON schema.",
+      "title": "schemaUrl",
+      "type": "string"
+    },
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "oneOf": [
+        {
+          "title": "string",
+          "type": "string"
+        },
+        {
+          "title": "null",
+          "type": "null"
+        }
+      ],
+      "title": "StudyKey"
+    },
+    "schemaId": {
+      "description": "A unique identifier for the schema.",
+      "title": "Schema_id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "Component",
+    "SchemaUrl",
+    "schemaId"
+  ],
+  "title": "Schema_validation",
+  "type": "object"
+}
