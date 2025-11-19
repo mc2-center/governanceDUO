@@ -39,22 +39,28 @@ def generate_json_schema(input: str, ar_schema: str) -> None:
     with open(input, 'r') as i:
         model = json.load(i)
 
-    conditions = model["allOf"]
+    try:
+        conditions = model["allOf"]
+    except KeyError as e:
+        print(f"Key: {e} not found - no conditionals detected for model {pathlib.Path(input).stem}")
+        print("Conditions will not be updated.")
+        conditions = None
     properties = model["properties"]
+    ref_conditions = {"$ref": f"{ar_schema}"} if ar_schema is not None else None
 
-    for condition in conditions:
-        for prop in condition["if"]["properties"]:
-            if condition["if"]["properties"][prop]["enum"]:
-                condition["if"]["properties"][prop] = {"contains": condition["if"]["properties"][prop]}
-    
+    if conditions is not None:
+        for condition in conditions:
+            for prop in condition["if"]["properties"]:
+                if condition["if"]["properties"][prop]["enum"]:
+                    condition["if"]["properties"][prop] = {"contains": condition["if"]["properties"][prop]}
+        print(f"Conditions updated!")
+        if ref_conditions is not None:
+            conditions.append(ref_conditions)
+        print(f"Schema reference added!")
+
     for attribute in properties:
         properties[attribute]["title"] = f"{attribute}"
     
-    ref_conditions = {"$ref": f"{ar_schema}"} if ar_schema is not None else None
-
-    if ref_conditions is not None:
-        conditions = conditions.append(ref_conditions)
-
     with open(output, 'w') as f:
         json.dump(model, f, indent=2)
 
