@@ -5,7 +5,8 @@ DATA := AccessRequirement Resource Schema Study
 all: collate convert generate-json build-csv
 
 build-csv:
-	$(foreach d,$(DATA), schematic manifest -c ${CONFIG} get -dt $(d) ;)
+	$(foreach d,$(DATA), schematic manifest -c ${CONFIG} get -dt $(d);)
+	rm *.schema.json
 
 collate:
 	@echo "Collating module components..."
@@ -17,4 +18,5 @@ convert:
 
 generate-json:
 	schematic schema generate-jsonschema -dms ${CSV} -od .
-	-rm ./*.schema.json
+	$(foreach d,$(DATA), python scripts/update_json_conditions.py ./sage-ar.model/$(d)_validation_schema.json;)
+
