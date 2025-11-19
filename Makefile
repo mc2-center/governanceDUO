@@ -1,6 +1,11 @@
 CSV := sage-ar.model.csv
+CONFIG := ar_config.yml
+DATA := AccessRequirement Resource Schema Study
 
-all: collate convert generate
+all: collate convert generate-json build-csv
+
+build-csv:
+	$(foreach d,$(DATA), schematic manifest -c ${CONFIG} get -dt $(d) ;)
 
 collate:
 	@echo "Collating module components..."
@@ -10,6 +15,6 @@ collate:
 convert:
 	schematic schema convert ${CSV}
 
-generate:
+generate-json:
 	schematic schema generate-jsonschema -dms ${CSV} -od .
 	-rm ./*.schema.json
