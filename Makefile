@@ -19,4 +19,5 @@ convert:
 generate-json:
 	schematic schema generate-jsonschema -dms ${CSV} -od .
 	$(foreach d,$(DATA), python scripts/update_json_conditions.py ./sage-ar.model/$(d)_validation_schema.json;)
-
+	$(foreach d,$(DATA), rm ./sage-ar.model/$(d)_validation_schema.json;)
+	rm *.schema.json
