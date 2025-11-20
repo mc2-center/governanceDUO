@@ -1310,17 +1310,12 @@
       "type": "integer"
     },
     "StudyProjectIdentifier": {
-      "description": "The identifier of the project to which this Study is related.",
+      "description": "The Synapse Project identifier (synID) with which this Study is related.",
       "oneOf": [
         {
           "items": {
-            "enum": [
-              "ADKP",
-              "ELITE",
-              "HTAN2",
-              "MC2",
-              "None"
-            ]
+            "pattern": "syn[0-9]+",
+            "type": "string"
           },
           "title": "array",
           "type": "array"

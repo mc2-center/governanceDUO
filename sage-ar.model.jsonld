@@ -845,7 +845,7 @@
         {
             "@id": "bts:StudyProjectIdentifier",
             "@type": "rdfs:Class",
-            "rdfs:comment": "The identifier of the project to which this Study is related.",
+            "rdfs:comment": "The Synapse Project identifier (synID) with which this Study is related.",
             "rdfs:label": "StudyProjectIdentifier",
             "rdfs:subClassOf": [
                 {
@@ -855,27 +855,11 @@
             "schema:isPartOf": {
                 "@id": "http://schema.biothings.io"
             },
-            "schema:rangeIncludes": [
-                {
-                    "@id": "bts:ADKP"
-                },
-                {
-                    "@id": "bts:ELITE"
-                },
-                {
-                    "@id": "bts:HTAN2"
-                },
-                {
-                    "@id": "bts:MC2"
-                },
-                {
-                    "@id": "bts:None"
-                }
-            ],
             "sms:displayName": "studyProjectIdentifier",
             "sms:required": "sms:false",
             "sms:validationRules": [
-                "list like"
+                "list like",
+                "regex search syn[0-9]+"
             ]
         },
         {
@@ -1436,91 +1420,6 @@
                 "@id": "http://schema.biothings.io"
             },
             "sms:displayName": "CDE:11555663",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:ADKP",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "ADKP",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:StudyProjectIdentifier"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "ADKP",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:ELITE",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "ELITE",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:StudyProjectIdentifier"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "ELITE",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:HTAN2",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "HTAN2",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:StudyProjectIdentifier"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "HTAN2",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:MC2",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "MC2",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:StudyProjectIdentifier"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "MC2",
-            "sms:required": "sms:false",
-            "sms:validationRules": []
-        },
-        {
-            "@id": "bts:None",
-            "@type": "rdfs:Class",
-            "rdfs:comment": "TBD",
-            "rdfs:label": "None",
-            "rdfs:subClassOf": [
-                {
-                    "@id": "bts:StudyProjectIdentifier"
-                }
-            ],
-            "schema:isPartOf": {
-                "@id": "http://schema.biothings.io"
-            },
-            "sms:displayName": "None",
             "sms:required": "sms:false",
             "sms:validationRules": []
         },
