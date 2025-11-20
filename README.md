@@ -19,3 +19,112 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
  - Aligning NIH’s existing data use restrictions to the GA4GH DUO standard. Lawson, Jonathan et al., Cell Genomics, Volume 3, Issue 9, 100381, doi: https://doi.org/10.1016/j.xgen.2023.100381
  - Enhancing Data Use Ontology (DUO) for health-data sharing by extending it with ODRL and DPV. Pandit HJ, Esteves B., Semantic Web. 2024;15(4):1473-1498, doi: https://doi.org/10.3233/SW-243583
  - Getting your DUCs in a row - standardising the representation of Digital Use Conditions. Jeanson, F., Gibson, S.J., Alper, P. et al., Sci Data 11, 464 (2024), doi: https://doi.org/10.1038/s41597-024-03280-6
+
+
+# Materials available in this repository
+ - The modular CSV source files are available under `model/schematic`
+ - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
+   ```
+   make CONFIG=path/to/your/config.yml
+   ```
+ - The entirety of the Sage Governance-related metadata model is available in two formats:
+   - [CSV]() (column format compatible with Curator tools / schematic)
+   - [JSON-LD]()
+
+
+ - Empty CSV templates are available for each model type:
+   - [Access Requirement]()
+   - [Resource]()
+   - [Study]()
+   - [Schema]()
+
+
+ - Synapse-compatible JSON schemas are available for each model type. These can be associated or "bound" to a Synapse container and/or used to create views, Record Sets, Curator tasks, and working sessions.
+   - [Access Requirement]()
+   - [Resource]()
+   - [Study]()
+   - [Schema]()
+
+
+## Using schemas to record governance metadata (Study example)
+ - **Note**: It is recommended that separate tables, Record Sets, and/or curation tasks are created within each Synapse Project under consideration.
+ - Implementation options:
+   - <details>
+     <summary>Using Curator to create Record Sets</summary>
+	 
+	 ### Example workflow
+	 
+	 - Bind the selected schema to the folder where you intend to store the associated Record Set
+	 - Create a Record Set and record-based curation task using either the applicable schema URI or a path to a local version of the JSON schema
+	 - Select the curation task from the `Metadata` tab
+	 - Add Study information, one Study per row
+	   - If it isn't clear how to define a Study for your project, the examples in section **What should be considered a Study?** may be helpful.
+	</details>
+   
+   - <details>
+     <summary>Create records externaly and upload to Synapse (via schematic)</summary>
+	 
+	 ### Example workflow
+	 
+	 - Download an empty CSV template, generate your own template, or make a Google sheet template copy, using the following link: [Study v4.0.0](https://docs.google.com/spreadsheets/d/1xPZj6w72yzQeHcwDendcHaWsFc3UBxc679MnsvlFJPU/copy)
+	 - Add Study information, one Study per row, *one sheet per Synapse Project*
+	   - If it isn't clear how to define a Study for your Project(s), the examples in section **What should be considered a Study?** may be helpful.
+	 - If your Study entries aren't already in CSV format, download or convert to CSV
+	 - Validate your Study CSV
+	   - (Suggested) Use schematic: `schematic model -c config.yml validate -mp /path/to/Study.csv -dt Study`
+	 - Upload the validated Study CSV(s) to a folder in your Synapse Project(s)
+	   - (Suggested) Use schematic: `schematic model -c config.yml submit -mp /path/to/Study.csv -d {target folder Synapse Id} -mrt table_and_file -tm upsert -tcn display_name`
+	</details>
+
+<n></n>
+
+## Additional information
+
+<details>
+<summary><b>What should be considered a Study?</b></summary>
+
+>**In this context, a Study can be considered any one grant, publication, data source, or other grouping(s) that apply to resources (files, code, etc.) stored in a Synapse Project.** 
+
+</details>
+
+<n></n>
+   
+  - <details>
+
+    <summary><b>Example 1</b></summary>
+	  
+	  - Synapse Project A has data from lab 1, lab 2, and lab 3
+		- Each lab is supported by the same grant, but each data submission represents a different sub-project within the parent grant
+		- Each lab belongs to an independent institution. 
+	  - Suggested Study grouping: Study entries should be created for each lab (1, 2, and 3), to represent distinct data types or sharing conditions associated with the independent labs
+	  
+	  </details>
+
+<n></n>
+
+  - <details>
+
+    <summary><b>Example 2</b></summary>
+
+      - Synapse Projects B, C, and D have data from lab 4, lab 5, and lab 6, respectively.
+	  - Suggested Study grouping: A Study Record Set should be created in each Project and populated with an entry for the single associated Study.
+	
+	</details>
+
+<n></n>
+  
+  - <details>
+
+    <summary><b>Example 3</b></summary>
+
+	  - Synapse Projects E and F have data from lab 7, lab 8, and lab 9.
+	    - Project E has data from lab 7 and lab 8
+	    - Project F has data from lab 8 and lab 9
+	    - Project E and F store distinct kinds of data
+
+	  - Suggested Study grouping:
+	    - A Study Record Set should be created in each Project
+		- Lab 8 is responsible for data in both Projects, but the data is distinct and intentionally stored separately, so independent Study entries should be captured in both Projects E and F, for the data submitted by lab 8
+		- Study entries for labs 7 and 9 should only be created in Synapse Projects E and F, respectively
+	
+	</details>
