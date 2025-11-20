@@ -85,6 +85,8 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 >**In this context, a Study can be considered any one grant, publication, data source, or other grouping(s) that apply to resources (files, code, etc.) stored in a Synapse Project.** 
 
+**Note**: If you have previously defined Studies within your program (via a Data Landscape/intake process, governance review, etc.), it is recommended that you reuse the same groupings, to ensure consistency between records.  
+
 </details>
 
 <n></n>
