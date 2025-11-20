@@ -12,4 +12,4 @@ studyDeidentificationMethodSoftware,Software that was used to de-identify the da
 studyDbgapAccessionId,A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC.,,,FALSE,CDE:11524544,Study,,CDS/collection,str,string
 studyIndexDate,"The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date.","Diagnosis Date , Enrollment Date, Collection Date, Birth Date",,FALSE,,Study,,CDS v5.0.4/Study,list like,
 studySampleNumber,The number of specimens associated with systematic investigation into a subject.,,,TRUE,CDE:11555663,Study,,GC v6.0.2/study.number_of_samples,int,integer
-studyProjectIdentifier,The identifier of the project to which this Study is related.,"ADKP, ELITE, HTAN2, MC2, None",,FALSE,,Study,,,list like,
+studyProjectIdentifier,The Synapse Project identifier (synID) with which this Study is related.,,,FALSE,,Study,,,list like::regex search syn[0-9]+,
