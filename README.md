@@ -66,7 +66,7 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 	 
 	 ### Example workflow
 	 
-	 - Download an empty CSV template, generate your own template, or make a Google sheet template copy, using the following link: [Study v4.0.0](https://docs.google.com/spreadsheets/d/1xPZj6w72yzQeHcwDendcHaWsFc3UBxc679MnsvlFJPU/copy)
+	 - Download an empty CSV template, generate your own template, or make a Google sheet template copy, using the following link: [Study v4.1.0](https://docs.google.com/spreadsheets/d/1j5-JexPB3p767Vs7ITVuiSGDRWaSR1xDtGPyqn90evE/copy)
 	 - Add Study information, one Study per row, *one sheet per Synapse Project*
 	   - If it isn't clear how to define a Study for your Project(s), the examples in section **What should be considered a Study?** may be helpful.
 	 - If your Study entries aren't already in CSV format, download or convert to CSV
