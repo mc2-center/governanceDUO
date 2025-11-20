@@ -22,7 +22,7 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 
 # Materials available in this repository
- - The modular CSV source files are available under `model/schematic`
+ - The modular data model CSV source files are available under `model/schematic`
  - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
    ```
    make CONFIG=path/to/your/config.yml
@@ -44,6 +44,21 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
    - [Resource]()
    - [Study]()
    - [Schema]()
+
+## Submitting metadata to the database
+- A dedicated [Synapse Project](https://www.synapse.org/Synapse:syn71723047/files/) is available for programs at Sage Bionetworks to contribute Study, Resource, and AR information
+- Records will be stored in the following folders on a per-program basis (one folder per program)
+   - [requirements](https://www.synapse.org/Synapse:syn71723125)
+   - [resources](https://www.synapse.org/Synapse:syn71723130)
+   - [studies](https://www.synapse.org/Synapse:syn71723121)
+   >**Note**: If a subfolder with the name of your program/DCC (e.g., "mc2", "elite") is not present in a folder linked above, please request that a new subfolder is created and configured to store your submissions.
+- Curation tasks associated with your program's records will be listed in the project [Metadata tab](https://www.synapse.org/Synapse:syn71723047/metadata/)
+  - task names will use the format `program.dataType` (e.g., mc2.Study, adkp.Resource)
+  - after accessing a task, provide the requested metadata and allow it to validate
+  - add as many rows as necessary to represent your program records, using the `+ Add` button
+  - once you've finished adding information, select `Apply Changes` to store the entries
+
+- Any conditional JSON schemas generated from your inputs will be stored in the [schemas folder](https://www.synapse.org/Synapse:syn71723124)
 
 
 ## Using schemas to record governance metadata (Study example)
