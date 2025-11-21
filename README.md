@@ -28,22 +28,22 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
    make CONFIG=path/to/your/config.yml
    ```
  - The entirety of the Sage Governance-related metadata model is available in two formats:
-   - [CSV]() (column format compatible with Curator tools / schematic)
-   - [JSON-LD]()
+   - [CSV](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.model.csv) (column format compatible with Curator tools / schematic)
+   - [JSON-LD](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.model.jsonld)
 
 
  - Empty CSV templates are available for each model type:
-   - [Access Requirement]()
-   - [Resource]()
-   - [Study]()
-   - [Schema]()
+   - [Access Requirement](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.AccessRequirement.manifest.csv)
+   - [Resource](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.Resource.manifest.csv)
+   - [Study](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.Study.manifest.csv)
+   - [Schema](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.Schema.manifest.csv)
 
 
- - Synapse-compatible JSON schemas are available for each model type. These can be associated or "bound" to a Synapse container and/or used to create views, Record Sets, Curator tasks, and working sessions.
-   - [Access Requirement]()
-   - [Resource]()
-   - [Study]()
-   - [Schema]()
+ - Synapse-compatible JSON schemas are available for each model type. These can be associated or "bound" to a Synapse container and/or used to create views, Record Sets, Curator tasks, and working sessions. Current versions are linked below and numbered versions are available in the [sage-ar.model folder](https://github.com/mc2-center/governanceDUO/tree/ar-dictionary-schema/sage-ar.model)
+   - [Access Requirement](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/AccessRequirement_validation_schema-updated.json)
+   - [Resource](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/Resource_validation_schema-updated.json)
+   - [Study](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/Study_validation_schema-updated.json)
+   - [Schema](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/Schema_validation_schema-updated.json)
 
 ## Submitting metadata to the database
 - A dedicated [Synapse Project](https://www.synapse.org/Synapse:syn71723047/files/) is available for programs at Sage Bionetworks to contribute Study, Resource, and AR information
@@ -60,6 +60,8 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 - Any conditional JSON schemas generated from your inputs will be stored in the [schemas folder](https://www.synapse.org/Synapse:syn71723124)
 
+## Creating conditional JSON schemas from database records
+:construction: *Content in development* :construction:
 
 ## Using schemas to record governance metadata (Study example)
  - **Note**: It is recommended that separate tables, Record Sets, and/or curation tasks are created within each Synapse Project under consideration.
