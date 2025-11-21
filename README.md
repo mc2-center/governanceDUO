@@ -54,11 +54,14 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
    >**Note**: If a subfolder with the name of your program/DCC (e.g., "mc2", "elite") is not present in a folder linked above, please request that a new subfolder is created and configured to store your submissions.
 - Curation tasks associated with your program's records will be listed in the project [Metadata tab](https://www.synapse.org/Synapse:syn71723047/metadata/)
   - task names will use the format `program.dataType` (e.g., mc2.Study, adkp.Resource)
-  - after accessing a task, provide the requested metadata and allow it to validate
-  - add as many rows as necessary to represent your program records, using the `+ Add` button
+  - after accessing a task, record the requested metadata in the grid and allow it to validate
+    - add as many rows as necessary to represent your program records, using the `+ Add` button
+    - alternatively, document your entries in a CSV and use the `Upload` button to populate the grid
   - once you've finished adding information, select `Apply Changes` to store the entries
 
-- Any conditional JSON schemas generated from your inputs will be stored in the [schemas folder](https://www.synapse.org/Synapse:syn71723124)
+- Any conditional JSON schemas generated from your inputs will be stored in the [schemas folder](https://www.synapse.org/Synapse:syn71723124) and registered in Synapse, where they can be easily accessed via their URI. 
+
+  >**Note**: when binding schemas, derivedAnnotations <u>must</u> be set to TRUE for conditional JSON statements to function in Synapse.
 
 ## Creating conditional JSON schemas from database records
 :construction: *Content in development* :construction:
