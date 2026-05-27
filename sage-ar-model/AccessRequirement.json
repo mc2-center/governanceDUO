@@ -1,0 +1,1115 @@
+{
+  "$id": "http://example.com/AccessRequirement",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "COL"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "CollaborationRequired": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "CollaborationRequired"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DSR"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "DiseaseSpecificResearch": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "DiseaseSpecificResearch"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus1"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "SourceGeography": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "SourceGeography"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus2"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "PopulationType": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "PopulationType"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus3"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "DeidentificationType": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "DeidentificationType"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus4"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "DataPermission": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "DataPermission"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus5"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "DataTier": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "DataTier"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus6"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "License": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "License"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "DUOPlus7"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "Attribution": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "Attribution"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "GSR"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "GeographicalRestriction": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "GeographicalRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "IST"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "InstitutionSpecificRestriction": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "InstitutionSpecificRestriction"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "MOR"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "PublicationMoratorium": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "PublicationMoratorium"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "RST"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "ResearchSpecificRestrictions": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "ResearchSpecificRestrictions"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "TSM"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "TimeLimitOnUse": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "TimeLimitOnUse"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "DataUseModifiers": {
+            "enum": [
+              "USE"
+            ]
+          }
+        },
+        "required": [
+          "DataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "UserSpecificRestriction": {
+            "not": {
+              "type": "null"
+            }
+          }
+        },
+        "required": [
+          "UserSpecificRestriction"
+        ]
+      }
+    }
+  ],
+  "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
+  "properties": {
+    "AccessRequirementId": {
+      "description": "A unique identifier for the access requirement. This should be the numeric identifier of the access requirement.",
+      "not": {
+        "type": "null"
+      },
+      "title": "AccessRequirement_id"
+    },
+    "Attribution": {
+      "description": "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.",
+      "title": "attribution",
+      "type": "string"
+    },
+    "CollaborationRequired": {
+      "description": "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list.",
+      "title": "collaborationRequired",
+      "type": "string"
+    },
+    "ContributionDate": {
+      "description": "The date on which the access requirement was added.",
+      "format": "date",
+      "title": "contributionDate",
+      "type": "string"
+    },
+    "ContributorName": {
+      "description": "The name of the person who added this access requirement.",
+      "title": "contributorName",
+      "type": "string"
+    },
+    "DataPermission": {
+      "description": "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4.",
+      "items": {
+        "enum": [
+          "Agreement",
+          "Attestation",
+          "Award",
+          "Other"
+        ],
+        "type": "string"
+      },
+      "title": "dataPermission",
+      "type": "array"
+    },
+    "DataTier": {
+      "description": "The tier of data access associated with the access requirement. Equivalent to DUOPlus5.",
+      "items": {
+        "enum": [
+          "Anonymous",
+          "Controlled",
+          "Open",
+          "Private"
+        ],
+        "type": "string"
+      },
+      "title": "dataTier",
+      "type": "array"
+    },
+    "DataUseModifiers": {
+      "description": "A list of data use modifiers that apply to the access requirement. Examples include GRU, IRB, etc.",
+      "items": {
+        "enum": [
+          "CC",
+          "COL",
+          "DSR",
+          "DUM",
+          "DUOPlus1",
+          "DUOPlus2",
+          "DUOPlus3",
+          "DUOPlus4",
+          "DUOPlus5",
+          "DUOPlus6",
+          "DUOPlus7",
+          "GRU",
+          "GSO",
+          "GSR",
+          "HMB",
+          "IRB",
+          "IST",
+          "MOR",
+          "NCU",
+          "NMDS",
+          "NPOA",
+          "NPU",
+          "NPUNCU",
+          "NRES",
+          "POA",
+          "PS",
+          "PUB",
+          "PendingAnnotation",
+          "RST",
+          "RTN",
+          "TSM",
+          "USE"
+        ],
+        "type": "string"
+      },
+      "title": "dataUseModifiers",
+      "type": "array"
+    },
+    "DeidentificationType": {
+      "description": "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3.",
+      "items": {
+        "enum": [
+          "Anonymized",
+          "ExpertDetermination",
+          "HIPPALDS",
+          "Other",
+          "Pseudonymized",
+          "SafeHarbor"
+        ],
+        "type": "string"
+      },
+      "title": "deidentificationType",
+      "type": "array"
+    },
+    "DiseaseSpecificResearch": {
+      "description": "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo",
+      "items": {
+        "pattern": "MONDO:\\d{7}",
+        "type": "string"
+      },
+      "pattern": "MONDO:\\d{7}",
+      "title": "diseaseSpecificResearch",
+      "type": "array"
+    },
+    "EntityIdList": {
+      "description": "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list.",
+      "title": "entityIdList",
+      "type": "string"
+    },
+    "GeographicalRestriction": {
+      "description": "The specific geographic region(s) to which use is limited by the access requirement.",
+      "items": {
+        "enum": [
+          "AD",
+          "AE",
+          "AF",
+          "AG",
+          "AI",
+          "AL",
+          "AM",
+          "AO",
+          "AQ",
+          "AR",
+          "AS",
+          "AT",
+          "AU",
+          "AW",
+          "AX",
+          "AZ",
+          "BA",
+          "BB",
+          "BD",
+          "BE",
+          "BF",
+          "BG",
+          "BH",
+          "BI",
+          "BJ",
+          "BL",
+          "BM",
+          "BN",
+          "BO",
+          "BQ",
+          "BR",
+          "BS",
+          "BT",
+          "BV",
+          "BW",
+          "BY",
+          "BZ",
+          "CA",
+          "CC",
+          "CD",
+          "CF",
+          "CG",
+          "CH",
+          "CI",
+          "CK",
+          "CL",
+          "CM",
+          "CN",
+          "CO",
+          "CR",
+          "CU",
+          "CV",
+          "CW",
+          "CX",
+          "CY",
+          "CZ",
+          "DE",
+          "DJ",
+          "DK",
+          "DM",
+          "DO",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "EH",
+          "ER",
+          "ES",
+          "ET",
+          "FI",
+          "FJ",
+          "FK",
+          "FM",
+          "FO",
+          "FR",
+          "GA",
+          "GB",
+          "GD",
+          "GE",
+          "GF",
+          "GG",
+          "GH",
+          "GI",
+          "GL",
+          "GM",
+          "GN",
+          "GP",
+          "GQ",
+          "GR",
+          "GS",
+          "GT",
+          "GU",
+          "GW",
+          "GY",
+          "HK",
+          "HM",
+          "HN",
+          "HR",
+          "HT",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IM",
+          "IN",
+          "IO",
+          "IQ",
+          "IR",
+          "IS",
+          "IT",
+          "JE",
+          "JM",
+          "JO",
+          "JP",
+          "KE",
+          "KG",
+          "KH",
+          "KI",
+          "KM",
+          "KN",
+          "KP",
+          "KR",
+          "KW",
+          "KY",
+          "KZ",
+          "LA",
+          "LB",
+          "LC",
+          "LI",
+          "LK",
+          "LR",
+          "LS",
+          "LT",
+          "LU",
+          "LV",
+          "LY",
+          "MA",
+          "MC",
+          "MD",
+          "ME",
+          "MF",
+          "MG",
+          "MH",
+          "MK",
+          "ML",
+          "MM",
+          "MN",
+          "MO",
+          "MP",
+          "MQ",
+          "MR",
+          "MS",
+          "MT",
+          "MU",
+          "MV",
+          "MW",
+          "MX",
+          "MY",
+          "MZ",
+          "NA",
+          "NC",
+          "NE",
+          "NF",
+          "NG",
+          "NI",
+          "NL",
+          "NO",
+          "NP",
+          "NR",
+          "NU",
+          "NZ",
+          "OM",
+          "PA",
+          "PE",
+          "PF",
+          "PG",
+          "PH",
+          "PK",
+          "PL",
+          "PM",
+          "PN",
+          "PR",
+          "PS",
+          "PT",
+          "PW",
+          "PY",
+          "QA",
+          "RE",
+          "RO",
+          "RS",
+          "RU",
+          "RW",
+          "SA",
+          "SB",
+          "SC",
+          "SD",
+          "SE",
+          "SG",
+          "SH",
+          "SI",
+          "SJ",
+          "SK",
+          "SL",
+          "SM",
+          "SN",
+          "SO",
+          "SR",
+          "SS",
+          "ST",
+          "SV",
+          "SX",
+          "SY",
+          "SZ",
+          "TC",
+          "TD",
+          "TF",
+          "TG",
+          "TH",
+          "TJ",
+          "TK",
+          "TL",
+          "TM",
+          "TN",
+          "TO",
+          "TR",
+          "TT",
+          "TV",
+          "TW",
+          "TZ",
+          "UA",
+          "UG",
+          "UM",
+          "US",
+          "UY",
+          "UZ",
+          "VA",
+          "VC",
+          "VE",
+          "VG",
+          "VI",
+          "VN",
+          "VU",
+          "WF",
+          "WS",
+          "YE",
+          "YT",
+          "ZA",
+          "ZM",
+          "ZW"
+        ],
+        "type": "string"
+      },
+      "title": "geographicalRestriction",
+      "type": "array"
+    },
+    "InstitutionSpecificRestriction": {
+      "description": "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search",
+      "items": {
+        "pattern": "ROR:[a-z0-9]{9}",
+        "type": "string"
+      },
+      "pattern": "ROR:[a-z0-9]{9}",
+      "title": "institutionSpecificRestriction",
+      "type": "array"
+    },
+    "License": {
+      "description": "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6.",
+      "items": {
+        "enum": [
+          "Apache2.0",
+          "BSD3Clause",
+          "CC0",
+          "CCBY",
+          "CCBYNC",
+          "CCBYNCND",
+          "CCBYNCSA",
+          "CCBYND",
+          "CCBYSA",
+          "GPL3.0",
+          "MIT"
+        ],
+        "type": "string"
+      },
+      "title": "license",
+      "type": "array"
+    },
+    "PopulationType": {
+      "description": "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2",
+      "title": "populationType",
+      "type": "string"
+    },
+    "PublicationMoratorium": {
+      "description": "End date of the publication moratorium associated with the access requirement.",
+      "format": "date",
+      "title": "publicationMoratorium",
+      "type": "string"
+    },
+    "ResearchSpecificRestrictions": {
+      "description": "Research-specific restrictions associated with the access requirement.",
+      "title": "researchSpecificRestrictions",
+      "type": "string"
+    },
+    "SourceGeography": {
+      "description": "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1.",
+      "items": {
+        "enum": [
+          "AD",
+          "AE",
+          "AF",
+          "AG",
+          "AI",
+          "AL",
+          "AM",
+          "AO",
+          "AQ",
+          "AR",
+          "AS",
+          "AT",
+          "AU",
+          "AW",
+          "AX",
+          "AZ",
+          "BA",
+          "BB",
+          "BD",
+          "BE",
+          "BF",
+          "BG",
+          "BH",
+          "BI",
+          "BJ",
+          "BL",
+          "BM",
+          "BN",
+          "BO",
+          "BQ",
+          "BR",
+          "BS",
+          "BT",
+          "BV",
+          "BW",
+          "BY",
+          "BZ",
+          "CA",
+          "CC",
+          "CD",
+          "CF",
+          "CG",
+          "CH",
+          "CI",
+          "CK",
+          "CL",
+          "CM",
+          "CN",
+          "CO",
+          "CR",
+          "CU",
+          "CV",
+          "CW",
+          "CX",
+          "CY",
+          "CZ",
+          "DE",
+          "DJ",
+          "DK",
+          "DM",
+          "DO",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "EH",
+          "ER",
+          "ES",
+          "ET",
+          "FI",
+          "FJ",
+          "FK",
+          "FM",
+          "FO",
+          "FR",
+          "GA",
+          "GB",
+          "GD",
+          "GE",
+          "GF",
+          "GG",
+          "GH",
+          "GI",
+          "GL",
+          "GM",
+          "GN",
+          "GP",
+          "GQ",
+          "GR",
+          "GS",
+          "GT",
+          "GU",
+          "GW",
+          "GY",
+          "HK",
+          "HM",
+          "HN",
+          "HR",
+          "HT",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IM",
+          "IN",
+          "IO",
+          "IQ",
+          "IR",
+          "IS",
+          "IT",
+          "JE",
+          "JM",
+          "JO",
+          "JP",
+          "KE",
+          "KG",
+          "KH",
+          "KI",
+          "KM",
+          "KN",
+          "KP",
+          "KR",
+          "KW",
+          "KY",
+          "KZ",
+          "LA",
+          "LB",
+          "LC",
+          "LI",
+          "LK",
+          "LR",
+          "LS",
+          "LT",
+          "LU",
+          "LV",
+          "LY",
+          "MA",
+          "MC",
+          "MD",
+          "ME",
+          "MF",
+          "MG",
+          "MH",
+          "MK",
+          "ML",
+          "MM",
+          "MN",
+          "MO",
+          "MP",
+          "MQ",
+          "MR",
+          "MS",
+          "MT",
+          "MU",
+          "MV",
+          "MW",
+          "MX",
+          "MY",
+          "MZ",
+          "NA",
+          "NC",
+          "NE",
+          "NF",
+          "NG",
+          "NI",
+          "NL",
+          "NO",
+          "NP",
+          "NR",
+          "NU",
+          "NZ",
+          "OM",
+          "PA",
+          "PE",
+          "PF",
+          "PG",
+          "PH",
+          "PK",
+          "PL",
+          "PM",
+          "PN",
+          "PR",
+          "PS",
+          "PT",
+          "PW",
+          "PY",
+          "QA",
+          "RE",
+          "RO",
+          "RS",
+          "RU",
+          "RW",
+          "SA",
+          "SB",
+          "SC",
+          "SD",
+          "SE",
+          "SG",
+          "SH",
+          "SI",
+          "SJ",
+          "SK",
+          "SL",
+          "SM",
+          "SN",
+          "SO",
+          "SR",
+          "SS",
+          "ST",
+          "SV",
+          "SX",
+          "SY",
+          "SZ",
+          "TC",
+          "TD",
+          "TF",
+          "TG",
+          "TH",
+          "TJ",
+          "TK",
+          "TL",
+          "TM",
+          "TN",
+          "TO",
+          "TR",
+          "TT",
+          "TV",
+          "TW",
+          "TZ",
+          "UA",
+          "UG",
+          "UM",
+          "US",
+          "UY",
+          "UZ",
+          "VA",
+          "VC",
+          "VE",
+          "VG",
+          "VI",
+          "VN",
+          "VU",
+          "WF",
+          "WS",
+          "YE",
+          "YT",
+          "ZA",
+          "ZM",
+          "ZW"
+        ],
+        "type": "string"
+      },
+      "title": "sourceGeography",
+      "type": "array"
+    },
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "title": "StudyKey",
+      "type": "string"
+    },
+    "TimeLimitOnUse": {
+      "description": "Time limit on the use of the data associated with the access requirement.",
+      "title": "timeLimitOnUse",
+      "type": "number"
+    },
+    "UserSpecificRestriction": {
+      "description": "The user-specific restrictions associated with the access requirement.",
+      "title": "userSpecificRestriction",
+      "type": "string"
+    }
+  },
+  "required": [
+    "AccessRequirementId",
+    "ContributionDate",
+    "ContributorName"
+  ],
+  "title": "AccessRequirement",
+  "type": "object"
+}
