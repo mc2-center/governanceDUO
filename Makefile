@@ -10,8 +10,8 @@ build-csv:
 
 collate:
 	@echo "Collating module components..."
-	head -1 model/schematic/Study.model.csv > ${CSV}
-	tail -n +2 -q model/schematic/*.model.csv >> ${CSV}
+	head -1 model/Study.model.csv > ${CSV}
+	tail -n +2 -q model/*.model.csv >> ${CSV}
 
 convert:
 	schematic schema convert ${CSV}
