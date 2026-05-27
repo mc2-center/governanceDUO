@@ -1,5 +1,0 @@
-Attribute,Description,Valid Values,DependsOn,Required,Properties,Parent,DependsOn Component,Source,Validation Rules,columnType
-Schema,"Information that is relevant to resource access conditions.",,"Component, Schema_id, ResourceKey, AccessRequirementKey, StudyKey, schemaUrl",FALSE,,,,,,
-Schema_id,"A unique identifier for the schema.",,,TRUE,primary_key,Schema,,,unique,string
-ResourceKey,"The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list.",,,FALSE,Resource_id,Schema,,,list like,
-schemaUrl,The registered URL associated with the access requirement JSON schema.,,,TRUE,,Schema,,,str,string

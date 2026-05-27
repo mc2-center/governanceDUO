@@ -1,0 +1,5 @@
+Attribute,Description,Valid Values,DependsOn,Required,Properties,Validation Rules,columnType,Format,Pattern,Minimum,Maximum,IsTemplate,Source
+Schema,"Information that is relevant to resource access conditions.",,"Schema_id, ResourceKey, AccessRequirementKey, StudyKey, schemaUrl",,,,,,,,,True,
+Schema_id,"A unique identifier for the schema.",,,,primary_key,,string,,,,,,
+ResourceKey,"The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list.",,,,foreign_key,,string_list,,,,,,
+schemaUrl,The registered URL associated with the access requirement JSON schema.,,,,,,string,,,,,,
