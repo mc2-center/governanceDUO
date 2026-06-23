@@ -2,7 +2,7 @@ CSV := sage-ar.model.csv
 CONFIG := ar_config.yml
 DATA := AccessRequirement Resource Study
 
-all: collate convert generate-json build-csv
+all: collate generate-json
 
 build-csv:
 	$(foreach d,$(DATA), schematic manifest -c ${CONFIG} get -dt $(d);)
