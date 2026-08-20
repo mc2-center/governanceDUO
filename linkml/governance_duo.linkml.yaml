@@ -1,0 +1,36 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+name: governance_duo
+description: >-
+  LinkML representation of the Sage Bionetworks governanceDUO data model (Access
+  Requirement, Resource, Schema, Study). Architecturally aligned with
+  SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one
+  file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI
+  discipline). Shaped to interoperate with sagebrain-model
+  (https://github.com/Sage-Bionetworks/sagebrain-model) and the Data Use Ontology
+  (DUO): real DUO terms are reused by IRI via `meaning:` CURIEs rather than
+  re-minted, and the `sagebrain`/`biolink` prefixes below are declared so
+  scripts/build_owl.py's output lines up with sagebrain's own namespaces the moment
+  cross-repo linking is in scope. This is the single entry point — import this file
+  to get the whole model, or import an individual file below for partial use.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+  schema: http://schema.org/
+  dcat: http://www.w3.org/ns/dcat#
+  DUO: http://purl.obolibrary.org/obo/DUO_
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+  ror: https://ror.org/
+  sagebrain: https://w3id.org/synapse/sagebrain#
+  biolink: https://w3id.org/biolink/vocab/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - props
+  - mixins
+  - access_requirement
+  - resource
+  - schema
+  - study

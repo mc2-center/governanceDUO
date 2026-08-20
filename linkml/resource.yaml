@@ -1,0 +1,86 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/resource
+name: governance_duo_resource
+description: LinkML representation of the Resource component.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - mixins
+  - props
+classes:
+  Resource:
+    description: Information that is relevant to resource access conditions.
+    is_a: BaseEntity
+    mixins:
+      - GovernanceMixin
+    tree_root: true
+    slot_usage:
+      id:
+        description: >-
+          A unique identifier for the resource type (schematic source attribute:
+          Resource_id). Examples: mc2Res1, adkpRes1, adkpRes2.
+        pattern: '^resource\.[A-Za-z0-9]+$'
+        examples:
+          - value: resource.mc2Res1
+    slots:
+      - StudyKey
+      - AccessRequirementKey
+      - SchemaKey
+      - grantAnnotationKey
+      - grantAnnotationValue
+      - studyAnnotationKey
+      - studyAnnotationValue
+      - dataTypeKey
+      - dataTypeValue
+      - speciesTypeKey
+      - speciesTypeValue
+      - activatedByAttribute
+      - activationValue
+      - registeredSchemaUrl
+slots:
+  SchemaKey:
+    description: >-
+      The Schema id corresponding to a registered JSON schema that describes the
+      access conditions relevant to this Resource.
+    annotations:
+      foreign_key: true
+  grantAnnotationKey:
+    description: The annotation key applied to a Synapse entity that contains a grant identifier.
+  grantAnnotationValue:
+    description: >-
+      The value that will be assigned to the key provided under grantAnnotationKey.
+      Value should be applied to Synapse entities released with this AR.
+  studyAnnotationKey:
+    description: The annotation key applied to a Synapse entity that contains a study identifier.
+  studyAnnotationValue:
+    description: >-
+      The value that will be assigned to the key provided under studyAnnotationKey.
+      Value should be applied to Synapse entities released with this AR.
+  dataTypeKey:
+    description: The annotation key applied to a Synapse entity that contains a data type identifier.
+  dataTypeValue:
+    description: >-
+      The value that will be assigned to the key provided under dataTypeKey. Value
+      should be applied to Synapse entities released with this AR.
+  speciesTypeKey:
+    description: The annotation key applied to a Synapse entity that contains a species identifier.
+  speciesTypeValue:
+    description: >-
+      The value that will be assigned to the key provided under speciesTypeKey. Value
+      should be applied to Synapse entities released with this AR.
+  activatedByAttribute:
+    description: >-
+      The name of a Synapse annotation key that will be applied to entities released
+      under this AR. Setting this attribute to activationValue designates that the AR
+      should be active.
+  activationValue:
+    description: >-
+      The value of Synapse annotation recorded under activatedByAttribute that will
+      be applied to entities released under this AR to indicate the AR should be
+      active.
+  registeredSchemaUrl:
+    description: URL associated with the annotation schema that will be applied to the resource type.

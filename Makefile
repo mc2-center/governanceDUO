@@ -18,3 +18,23 @@ convert:
 
 generate-json:
 	python scripts/create_json_from_model.py ${DATA}
+
+LINKML_SCHEMA := linkml/governance_duo.linkml.yaml
+
+# --ignore-warnings: this schema deliberately keeps the schematic CSV's camelCase
+# attribute names (e.g. dataUseModifiers, StudyKey) instead of linkml-lint's preferred
+# snake_case, since those names are also live Synapse annotation keys.
+linkml-lint:
+	linkml-lint --ignore-warnings ${LINKML_SCHEMA}
+
+owl:
+	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out governance_duo.owl.ttl
+
+shacl:
+	gen-shacl ${LINKML_SCHEMA} > shapes/governance_duo.shacl.ttl
+
+example-rdf:
+	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
+
+shacl-validate: owl shacl example-rdf
+	python3 scripts/validate_graph.py --data governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/rdf/all_examples.ttl

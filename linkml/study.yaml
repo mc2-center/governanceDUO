@@ -1,0 +1,113 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/study
+name: governance_duo_study
+description: LinkML representation of the Study component.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - mixins
+  - props
+classes:
+  Study:
+    description: Studies associated with a grant.
+    is_a: BaseEntity
+    mixins:
+      - GovernanceMixin
+    tree_root: true
+    slot_usage:
+      id:
+        description: >-
+          A unique primary key that enables record updates using schematic
+          (schematic source attribute: Study_id).
+        pattern: '^study\.[A-Za-z0-9_-]+$'
+        annotations:
+          cde_id: '12960571'
+    slots:
+      - AccessRequirementKey
+      - grantNumber
+      - studyName
+      - studyDescription
+      - studyInvestigator
+      - studyParticipantNumber
+      - studySampleNumber
+      - studyDeidentificationType
+      - studyDeidentificationMethodDescription
+      - studyDeidentificationMethodSoftware
+      - studyDbgapAccessionId
+      - studyIndexDate
+      - studyProjectIdentifier
+slots:
+  grantNumber:
+    description: The identifier associated with the award funding this study.
+    multivalued: true
+  studyName:
+    description: Name of the study.
+    required: true
+    annotations:
+      cde_id: '11459810'
+  studyDescription:
+    description: >-
+      Description of the study, including the types of experimental assays, model
+      systems, types of analysis, description of cohort, associated vulnerable
+      populations, special categories of data, rare diseases, etc. Maps to DUOPlus2.
+    required: true
+    annotations:
+      cde_id: '03444002'
+  studyInvestigator:
+    description: >-
+      Investigator(s) associated with the project. Multiple names should be provided
+      as a comma-separated list.
+    required: true
+  studyParticipantNumber:
+    description: The number of participant instances associated with systematic investigation into a subject.
+    required: true
+    range: float
+    annotations:
+      cde_id: '11555662'
+  studySampleNumber:
+    description: The number of specimens associated with systematic investigation into a subject.
+    required: true
+    range: float
+    annotations:
+      cde_id: '11555663'
+  studyDeidentificationType:
+    description: General description of the de-identification method. Maps to DUOPlus3.
+    multivalued: true
+    range: DeidentificationTypeEnum
+    annotations:
+      cde_id: '14576319'
+  studyDeidentificationMethodDescription:
+    description: >-
+      Description of the process of removing potentially identifying data or data
+      elements to render data into a form that does not identify individuals and
+      where identification is not likely to take place.
+  studyDeidentificationMethodSoftware:
+    description: Software that was used to de-identify the data (if used).
+  studyDbgapAccessionId:
+    description: >-
+      A stable unique alphanumeric identifier assigned to a study and any objects by
+      the database of Genotypes and Phenotypes (dbGaP). Required for controlled
+      access data being submitted to CDS/CRDC.
+    annotations:
+      cde_id: '11524544'
+  studyIndexDate:
+    description: >-
+      The reference event associated with timepoints in this study. One of Diagnosis
+      Date, Enrollment Date, Collection Date, or Birth Date.
+    multivalued: true
+    range: StudyIndexDateEnum
+  studyProjectIdentifier:
+    description: The Synapse Project identifier (synID) with which this Study is related.
+    multivalued: true
+    pattern: 'syn[0-9]+'
+enums:
+  StudyIndexDateEnum:
+    permissible_values:
+      Diagnosis Date: {}
+      Enrollment Date: {}
+      Collection Date: {}
+      Birth Date: {}

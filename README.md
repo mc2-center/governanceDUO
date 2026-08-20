@@ -21,6 +21,78 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
  - Getting your DUCs in a row - standardising the representation of Digital Use Conditions. Jeanson, F., Gibson, S.J., Alper, P. et al., Sci Data 11, 464 (2024), doi: https://doi.org/10.1038/s41597-024-03280-6
 
 
+# LinkML representation
+
+In addition to the schematic CSV model, this repository maintains a
+[LinkML](https://github.com/linkml/linkml-model) representation under `linkml/`,
+entry point `linkml/governance_duo.linkml.yaml`. It is architecturally aligned with
+[SageCommonDataModel](https://github.com/Sage-Bionetworks/SageCommonDataModel): one
+file per entity (`access_requirement.yaml`, `resource.yaml`, `schema.yaml`,
+`study.yaml`), a shared abstract `BaseEntity` + `slot_usage`-narrowed `id` slot
+(`base_entity.yaml`), and cross-cutting concerns factored into `props.yaml`
+(generic cross-class slots/enums) and `mixins.yaml` (`GovernanceMixin` — the DUO data-
+use-modifier vocabulary plus the conditional-requirement rules that enforce it;
+`ContributionMixin` — contributor tracking).
+
+The schematic CSV keeps class-prefixed identifier attribute names
+(`AccessRequirement_id`, `Resource_id`, `Schema_id`, `Study_id`) because schematic's
+model CSV has one flat, global `Attribute` namespace with no per-class scoping — four
+classes can't share a bare `id` attribute there without colliding. The LinkML schema
+uses one shared `id` slot on `BaseEntity`, narrowed per class via `slot_usage`
+(including a `Pattern` also mirrored back onto the corresponding CSV row).
+
+Real Data Use Ontology (DUO) terms are reused by IRI (`meaning: DUO:0000007`, etc.) —
+never re-minted — matching the "reuse external terms by IRI" convention
+[sagebrain-model](https://github.com/Sage-Bionetworks/sagebrain-model) documents for
+its own ontology. `linkml/governance_duo.linkml.yaml` also declares `sagebrain:`
+(`https://w3id.org/synapse/sagebrain#`) and `biolink:` prefixes so generated OWL
+output's namespaces already line up with sagebrain-model's, and
+`scripts/build_owl.py` stamps the same `skos:scopeNote`/`owl:versionInfo` annotations
+on reused external terms that sagebrain-model's own convention uses for classes it
+doesn't mint itself. **No changes have been made to the sagebrain-model or
+SageCommonDataModel repositories in this pass** — these artifacts are shaped to slot
+into sagebrain-model's (currently empty) `ontology/governance/` folder and to
+interoperate with SageCommonDataModel, but that integration is not yet wired up.
+
+Build/validate targets (see `Makefile`; require `pip install -r requirements.txt`):
+```
+make linkml-lint      # lint the schema (--ignore-warnings: the camelCase attribute
+                       # names are intentional, see above)
+make owl              # generate governance_duo.owl.ttl (scripts/build_owl.py)
+make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
+make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
+                       # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
+make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
+                       # individuals against the SHACL shapes, via pyshacl with
+                       # inference disabled and the ontology passed as ont_graph —
+                       # the exact invocation discipline sagebrain-model's own
+                       # tests/validate.py requires, since RDFS entailment on
+                       # rdfs:range would otherwise manufacture the very types
+                       # SHACL's sh:class checks are meant to verify
+```
+Example instances validating the DUO conditional-requirement rules live under
+`linkml/examples/` (e.g. `linkml-validate -s linkml/governance_duo.linkml.yaml -C
+AccessRequirement linkml/examples/access_requirement.example.yaml`). Note that
+`gen-shacl` does not compile those `rules:` conditionals into SHACL — only
+`linkml-validate`'s JSON Schema path enforces them; `make shacl-validate` covers
+everything else (required fields, enum membership, regex patterns, datatypes,
+cardinality) against real instance data, converted via
+`scripts/convert_examples_to_rdf.py`. That script exists because `linkml-convert`'s
+CLI can't mint RDF subject URIs for this schema's dotted, colon-free ids
+(`access_requirement.42`) — its `-P/--prefix` flag can't set the special `"@base"`
+prefix entry the RDF dumper needs, and passing it also hits a real linkml_runtime bug
+(the dumper binds the literal string `"@base"` as a Turtle prefix, which isn't valid
+Turtle and fails to re-parse). `scripts/convert_examples_to_rdf.py` calls the dumper's
+Python API directly and filters that invalid binding out before serializing — see the
+script's docstring for the full explanation.
+
+**Known follow-up, not yet done:**
+- `make convert` and `scripts/create_json_from_model.py` must be re-run (they require
+  `schematic` and an authenticated `synapseclient` session, unavailable in the
+  environment this schema was built in) to refresh `sage-ar.model.jsonld` and the
+  `*_validation_schema-updated.json` files after the `Pattern` additions to
+  `model/*.model.csv`.
+
 # Materials available in this repository
  - The modular data model CSV source files are available under `model/schematic`
  - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 

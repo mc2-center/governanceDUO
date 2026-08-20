@@ -1,0 +1,2890 @@
+@prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+governanceduo:AccessRequirementKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "AccessRequirementKey" ;
+    skos:definition "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:props ;
+    governanceduo:foreign_key true .
+
+governanceduo:ResourceKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "ResourceKey" ;
+    skos:definition "The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:schema ;
+    governanceduo:foreign_key true .
+
+governanceduo:StudyKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "StudyKey" ;
+    skos:definition "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:props ;
+    governanceduo:foreign_key true .
+
+governanceduo:entityIdList a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "entityIdList" ;
+    skos:definition "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:access_requirement .
+
+governanceduo:governance_duo a owl:Ontology ;
+    rdfs:label "governance_duo" ;
+    owl:versionIRI <https://w3id.org/sage-bionetworks/governance-duo/governance_duo/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    skos:definition "LinkML representation of the Sage Bionetworks governanceDUO data model (Access Requirement, Resource, Schema, Study). Architecturally aligned with SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI discipline). Shaped to interoperate with sagebrain-model (https://github.com/Sage-Bionetworks/sagebrain-model) and the Data Use Ontology (DUO): real DUO terms are reused by IRI via `meaning:` CURIEs rather than re-minted, and the `sagebrain`/`biolink` prefixes below are declared so scripts/build_owl.py's output lines up with sagebrain's own namespaces the moment cross-repo linking is in scope. This is the single entry point — import this file to get the whole model, or import an individual file below for partial use." .
+
+governanceduo:grantNumber a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "grantNumber" ;
+    skos:definition "The identifier associated with the award funding this study." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:studyDeidentificationType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyDeidentificationType" ;
+    rdfs:range governanceduo:DeidentificationTypeEnum ;
+    skos:definition "General description of the de-identification method. Maps to DUOPlus3." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "14576319" .
+
+governanceduo:studyIndexDate a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyIndexDate" ;
+    rdfs:range governanceduo:StudyIndexDateEnum ;
+    skos:definition "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:AccessRequirement a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "AccessRequirement" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        governanceduo:BaseEntity,
+        governanceduo:ContributionMixin,
+        governanceduo:GovernanceMixin ;
+    skos:definition "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects." ;
+    skos:inScheme governanceduo:access_requirement .
+
+governanceduo:ContributionMixin a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "ContributionMixin" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:contributionDate ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:contributorName ] ;
+    skos:definition "Contribution/authorship tracking. Only AccessRequirement uses this today, but it is factored out here (rather than inlined) so any class that later needs the same fields reuses it instead of duplicating — mirroring SageCommonDataModel's practice of factoring cross-cutting concerns out of individual entity files even before a second consumer exists." ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:Resource a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "Resource" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:registeredSchemaUrl ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:dataTypeKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:activatedByAttribute ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^resource\\.[A-Za-z0-9]+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:SchemaKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyAnnotationValue ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:activationValue ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyAnnotationKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:grantAnnotationValue ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:speciesTypeValue ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:grantAnnotationKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:dataTypeValue ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:speciesTypeKey ],
+        governanceduo:BaseEntity,
+        governanceduo:GovernanceMixin ;
+    skos:definition "Information that is relevant to resource access conditions." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:Schema a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "Schema" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:schemaUrl ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^schema\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        governanceduo:BaseEntity ;
+    skos:definition "Information that is relevant to resource access conditions." ;
+    skos:inScheme governanceduo:schema .
+
+governanceduo:SchemaKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "SchemaKey" ;
+    skos:definition "The Schema id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource." ;
+    skos:inScheme governanceduo:resource ;
+    governanceduo:foreign_key true .
+
+governanceduo:Study a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "Study" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyParticipantNumber ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyDeidentificationMethodDescription ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studySampleNumber ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyDbgapAccessionId ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyDescription ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyName ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "syn[0-9]+" ] ) ] ;
+            owl:onProperty governanceduo:studyProjectIdentifier ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyInvestigator ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyDeidentificationMethodSoftware ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^study\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        governanceduo:BaseEntity,
+        governanceduo:GovernanceMixin ;
+    skos:definition "Studies associated with a grant." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:activatedByAttribute a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "activatedByAttribute" ;
+    skos:definition "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:activationValue a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "activationValue" ;
+    skos:definition "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:contributionDate a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "contributionDate" ;
+    skos:definition "The date on which the access requirement was added." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "schematic Format: date" .
+
+governanceduo:contributorName a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "contributorName" ;
+    skos:definition "The name of the person who added this access requirement." ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:dataPermission a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataPermission" ;
+    rdfs:range governanceduo:DataPermissionEnum ;
+    skos:definition "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus4 — see GovernanceMixin rules." .
+
+governanceduo:dataTier a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataTier" ;
+    rdfs:range governanceduo:DataTierEnum ;
+    skos:definition "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules." .
+
+governanceduo:dataTypeKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataTypeKey" ;
+    skos:definition "The annotation key applied to a Synapse entity that contains a data type identifier." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:dataTypeValue a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataTypeValue" ;
+    skos:definition "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:deidentificationType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "deidentificationType" ;
+    rdfs:range governanceduo:DeidentificationTypeEnum ;
+    skos:definition "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus3 — see GovernanceMixin rules." .
+
+governanceduo:geographicalRestriction a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "geographicalRestriction" ;
+    rdfs:range governanceduo:GeographicalRegionEnum ;
+    skos:definition "The specific geographic region(s) to which use is limited by the access requirement." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000022 — see GovernanceMixin rules." .
+
+governanceduo:grantAnnotationKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "grantAnnotationKey" ;
+    skos:definition "The annotation key applied to a Synapse entity that contains a grant identifier." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:grantAnnotationValue a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "grantAnnotationValue" ;
+    skos:definition "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:license a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "license" ;
+    rdfs:range governanceduo:LicenseEnum ;
+    skos:definition "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus6 — see GovernanceMixin rules." .
+
+governanceduo:registeredSchemaUrl a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "registeredSchemaUrl" ;
+    skos:definition "URL associated with the annotation schema that will be applied to the resource type." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:schemaUrl a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "schemaUrl" ;
+    skos:definition "The registered URL associated with the access requirement JSON schema." ;
+    skos:inScheme governanceduo:schema .
+
+governanceduo:sourceGeography a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "sourceGeography" ;
+    rdfs:range governanceduo:GeographicalRegionEnum ;
+    skos:definition "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus1 — see GovernanceMixin rules." .
+
+governanceduo:speciesTypeKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "speciesTypeKey" ;
+    skos:definition "The annotation key applied to a Synapse entity that contains a species identifier." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:speciesTypeValue a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "speciesTypeValue" ;
+    skos:definition "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:studyAnnotationKey a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyAnnotationKey" ;
+    skos:definition "The annotation key applied to a Synapse entity that contains a study identifier." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:studyAnnotationValue a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyAnnotationValue" ;
+    skos:definition "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR." ;
+    skos:inScheme governanceduo:resource .
+
+governanceduo:studyDbgapAccessionId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyDbgapAccessionId" ;
+    skos:definition "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "11524544" .
+
+governanceduo:studyDeidentificationMethodDescription a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyDeidentificationMethodDescription" ;
+    skos:definition "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:studyDeidentificationMethodSoftware a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyDeidentificationMethodSoftware" ;
+    skos:definition "Software that was used to de-identify the data (if used)." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:studyDescription a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyDescription" ;
+    skos:definition "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOPlus2." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "03444002" .
+
+governanceduo:studyInvestigator a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyInvestigator" ;
+    skos:definition "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:studyName a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyName" ;
+    skos:definition "Name of the study." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "11459810" .
+
+governanceduo:studyParticipantNumber a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyParticipantNumber" ;
+    rdfs:range linkml:Float ;
+    skos:definition "The number of participant instances associated with systematic investigation into a subject." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "11555662" .
+
+governanceduo:studyProjectIdentifier a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studyProjectIdentifier" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "syn[0-9]+" ] ) ] ;
+    skos:definition "The Synapse Project identifier (synID) with which this Study is related." ;
+    skos:inScheme governanceduo:study .
+
+governanceduo:studySampleNumber a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "studySampleNumber" ;
+    rdfs:range linkml:Float ;
+    skos:definition "The number of specimens associated with systematic investigation into a subject." ;
+    skos:inScheme governanceduo:study ;
+    governanceduo:cde_id "11555663" .
+
+DUO:0000004 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000004" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "No Restriction - This data use permission indicates there is no restriction on use." ;
+    governanceduo:duo_shorthand "NRES" .
+
+DUO:0000006 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000006" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Health or Medical or Biomedical Research - This data use permission indicates that use is allowed for health/medical/biomedical purposes; does not include the study of population origins or ancestry." ;
+    governanceduo:duo_shorthand "HMB" .
+
+DUO:0000007 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000007" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
+    governanceduo:duo_shorthand "DS" .
+
+DUO:0000011 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000011" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Population Origins or Ancestry Research Only - This data use permission indicates that use of the data is limited to the study of population origins or ancestry." ;
+    governanceduo:duo_shorthand "POA" .
+
+DUO:0000012 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000012" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Research Specific Restrictions - This data use modifier indicates that use is limited to studies of a certain research type. If providing this term, please note the research type(s) in column researchSpecificRestrictions." ;
+    governanceduo:duo_shorthand "RS" .
+
+DUO:0000015 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000015" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "No General Methods Research - This data use modifier indicates that use does not allow methods development research (e.g., development of software or algorithms)." ;
+    governanceduo:duo_shorthand "NMDS" .
+
+DUO:0000016 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000016" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Geographical Restriction - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" ;
+    governanceduo:duo_shorthand "GSO" .
+
+DUO:0000017 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000017" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Data use modifiers indicate additional conditions for use." ;
+    governanceduo:duo_shorthand "DUM" .
+
+DUO:0000018 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000018" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Not-for-Profit, Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit organizations and not-for-profit use, non-commercial use." ;
+    governanceduo:duo_shorthand "NPUNCU" .
+
+DUO:0000019 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000019" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Publication Required - This data use modifier indicates that requestor agrees to make results of studies using the data available to the larger scientific community." ;
+    governanceduo:duo_shorthand "PUB" .
+
+DUO:0000020 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000020" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Collaboration Required - This data use modifier indicates that the requestor must agree to collaboration with the primary study investigator(s). If providing this term, please note the contact email in column collaborationRequired." ;
+    governanceduo:duo_shorthand "COL" .
+
+DUO:0000021 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000021" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Ethics Approval Required - This data use modifier indicates that the requestor must provide documentation of local IRB/ERB approval." ;
+    governanceduo:duo_shorthand "IRB" .
+
+DUO:0000022 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000022" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Geographical Restriction - This data use modifier indicates that use is limited to within a specific geographic region. If providing this term, please provide the applicable country code(s) in column geographicalRestriction." ;
+    governanceduo:duo_shorthand "GS" .
+
+DUO:0000024 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000024" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Publication Moratorium - This data use modifier indicates that requestor agrees not to publish results of studies until a specific date. If providing this term, please provide the date in column publicationMoratorium." ;
+    governanceduo:duo_shorthand "MOR" .
+
+DUO:0000025 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000025" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Time Limit on Use - This data use modifier indicates that use is approved for a specific number of months. If providing this term, please provide the number of months in column timeLimitOnUse." ;
+    governanceduo:duo_shorthand "TS" .
+
+DUO:0000026 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000026" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "User Specific Restriction - This data use modifier indicates that use is limited to use by approved users. If providing this term, please describe the restrictions in column userSpecificRestriction." ;
+    governanceduo:duo_shorthand "US" .
+
+DUO:0000027 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000027" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Project Specific Restriction - This data use modifier indicates that use is limited to use within an approved project." ;
+    governanceduo:duo_shorthand "PS" .
+
+DUO:0000028 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000028" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Institution Specific Restriction - This data use modifier indicates that use is limited to use within an approved institution. If providing this term, please provide the institution ROR ID(s) in column institutionSpecificRestriction." ;
+    governanceduo:duo_shorthand "IS" .
+
+DUO:0000029 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000029" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Return to Database or Resource - This data use modifier indicates that the requestor must return derived/enriched data to the database/resource." ;
+    governanceduo:duo_shorthand "RTN" .
+
+DUO:0000042 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000042" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "General Research Use - This data use permission indicates that use is allowed for general research use for any research purpose." ;
+    governanceduo:duo_shorthand "GRU" .
+
+DUO:0000043 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000043" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Clinical Care Use - This data use modifier indicates that use is allowed for clinical use and care." ;
+    governanceduo:duo_shorthand "CC" .
+
+DUO:0000044 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000044" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Population Origins or Ancestry Research Prohibited - This data use modifier indicates use for purposes of population, origin, or ancestry research is prohibited." ;
+    governanceduo:duo_shorthand "NPOA" .
+
+DUO:0000045 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000045" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Not-for-Profit Organisation Use Only - This data use modifier indicates that use of the data is limited to not-for-profit organizations." ;
+    governanceduo:duo_shorthand "NPU" .
+
+DUO:0000046 a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUO:0000046" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit use." ;
+    governanceduo:duo_shorthand "NCU" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Agreement> a owl:Class,
+        governanceduo:DataPermissionEnum ;
+    rdfs:label "Agreement" ;
+    rdfs:subClassOf governanceduo:DataPermissionEnum ;
+    skos:definition "Data use conditions are derived from a Data Use Agreement." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Attestation> a owl:Class,
+        governanceduo:DataPermissionEnum ;
+    rdfs:label "Attestation" ;
+    rdfs:subClassOf governanceduo:DataPermissionEnum ;
+    skos:definition "Data use conditions are derived from an Attestation." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Award> a owl:Class,
+        governanceduo:DataPermissionEnum ;
+    rdfs:label "Award" ;
+    rdfs:subClassOf governanceduo:DataPermissionEnum ;
+    skos:definition "Data use conditions are derived from an Award." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Other> a owl:Class,
+        governanceduo:DataPermissionEnum ;
+    rdfs:label "Other" ;
+    rdfs:subClassOf governanceduo:DataPermissionEnum ;
+    skos:definition "Other permissions may apply to the data access." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Anonymous> a owl:Class,
+        governanceduo:DataTierEnum ;
+    rdfs:label "Anonymous" ;
+    rdfs:subClassOf governanceduo:DataTierEnum ;
+    skos:definition "Data can be viewed and downloaded anonymously by anyone on the internet." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Controlled> a owl:Class,
+        governanceduo:DataTierEnum ;
+    rdfs:label "Controlled" ;
+    rdfs:subClassOf governanceduo:DataTierEnum ;
+    skos:definition "Users must have a Synapse account and satisfy access conditions to download data." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Open> a owl:Class,
+        governanceduo:DataTierEnum ;
+    rdfs:label "Open" ;
+    rdfs:subClassOf governanceduo:DataTierEnum ;
+    skos:definition "Users must have a Synapse account to download data." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Private> a owl:Class,
+        governanceduo:DataTierEnum ;
+    rdfs:label "Private" ;
+    rdfs:subClassOf governanceduo:DataTierEnum ;
+    skos:definition "Users must be provided access to data in Synapse by a project administrator." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus1> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus1" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Source geography is relevant to governance decisions. If providing this term, please provide the applicable country code(s) in column sourceGeography." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus2> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus2" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Study population is relevant to governance decisions. If providing this term, please provide the applicable population type(s) in column populationType." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus3> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus3" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Data deidentification is relevant to governance decisions. If providing this term, please provide the applicable deidentification type(s) in column deidentificationType." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus4> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus4" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "A data permission designation is associated with the Study. If providing this term, please provide the applicable permission type(s) in column dataPermission." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus5> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus5" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "A data tier designation is associated with the Study. If providing this term, please provide the applicable data tier designation(s) in column dataTier." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus6> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus6" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "A license is associated with the Study. If providing this term, please provide the applicable license in column license." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus7> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "DUOPlus7" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "Attribution conditions are associated with this Study. If providing this term, please provide the attribution statement in column attribution." ;
+    governanceduo:sage_extension true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#Pending%20Annotation> a owl:Class,
+        governanceduo:DataUseModifierEnum ;
+    rdfs:label "Pending Annotation" ;
+    rdfs:subClassOf governanceduo:DataUseModifierEnum ;
+    skos:definition "The data use modifier for this record has not yet been annotated." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Anonymized> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "Anonymized" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is anonymized, meaning that it cannot be used to identify individuals." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#ExpertDetermination> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "ExpertDetermination" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is de-identified according to the Expert Determination standard." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#HIPPA_LDS> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "HIPPA_LDS" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is de-identified according to the HIPAA Limited Data Set (LDS) standard." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Other> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "Other" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is de-identified according to a different standard." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Pseudonymized> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "Pseudonymized" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is pseudonymized, meaning that identifying information has been removed or replaced with pseudonyms." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#SafeHarbor> a owl:Class,
+        governanceduo:DeidentificationTypeEnum ;
+    rdfs:label "SafeHarbor" ;
+    rdfs:subClassOf governanceduo:DeidentificationTypeEnum ;
+    skos:definition "Data is de-identified according to the Safe Harbor standard." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Andorra" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "United Arab Emirates (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Afghanistan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Antigua and Barbuda" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Anguilla" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Albania" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Armenia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Angola" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AQ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AQ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Antarctica" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Argentina" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "American Samoa" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Austria" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Australia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Aruba" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AX> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AX" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Åland Islands" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "AZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Azerbaijan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bosnia and Herzegovina" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BB> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BB" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Barbados" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bangladesh" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Belgium" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Burkina Faso" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bulgaria" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bahrain" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Burundi" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BJ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BJ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Benin" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Barthélemy" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bermuda" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Brunei Darussalam" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bolivia (Plurinational State of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BQ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BQ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bonaire, Sint Eustatius and Saba" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Brazil" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bahamas (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bhutan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Bouvet Island" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Botswana" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Belarus" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "BZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Belize" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Canada" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cocos (Keeling) Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Congo (the Democratic Republic of the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Central African Republic (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Congo (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Switzerland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Côte d'Ivoire" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cook Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Chile" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cameroon" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "China" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Colombia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Costa Rica" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cuba" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cabo Verde" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Curaçao" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CX> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CX" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Christmas Island" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cyprus" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "CZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Czechia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Germany" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DJ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DJ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Djibouti" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Denmark" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Dominica" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Dominican Republic (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "DZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Algeria" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "EC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Ecuador" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "EE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Estonia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "EG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Egypt" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "EH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Western Sahara*" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ER> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ER" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Eritrea" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ES> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ES" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Spain" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ET> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ET" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Ethiopia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Finland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FJ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FJ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Fiji" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Falkland Islands (the) [Malvinas]" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Micronesia (Federated States of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Faroe Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "FR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "France" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Gabon" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GB> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GB" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "United Kingdom of Great Britain and Northern Ireland (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Grenada" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Georgia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "French Guiana" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guernsey" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Ghana" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Gibraltar" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Greenland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Gambia (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guinea" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GP> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GP" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guadeloupe" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GQ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GQ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Equatorial Guinea" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Greece" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "South Georgia and the South Sandwich Islands" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guatemala" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guam" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guinea-Bissau" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "GY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Guyana" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Hong Kong" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Heard Island and McDonald Islands" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Honduras" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Croatia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Haiti" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "HU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Hungary" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ID> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ID" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Indonesia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Ireland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Israel" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Isle of Man" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "India" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "British Indian Ocean Territory (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IQ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IQ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Iraq" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Iran (Islamic Republic of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Iceland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "IT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Italy" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "JE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Jersey" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "JM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Jamaica" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "JO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Jordan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JP> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "JP" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Japan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Kenya" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Kyrgyzstan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cambodia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Kiribati" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Comoros (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Kitts and Nevis" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KP> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KP" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Korea (the Democratic People's Republic of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Korea (the Republic of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Kuwait" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Cayman Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "KZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Kazakhstan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Lao People's Democratic Republic (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LB> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LB" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Lebanon" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Lucia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Liechtenstein" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sri Lanka" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Liberia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Lesotho" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Lithuania" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Luxembourg" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Latvia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "LY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Libya" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Morocco" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Monaco" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Moldova (the Republic of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ME> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ME" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Montenegro" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Martin (French part)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Madagascar" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Marshall Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "North Macedonia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ML> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ML" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mali" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Myanmar" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mongolia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Macao" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MP> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MP" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Northern Mariana Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MQ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MQ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Martinique" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mauritania" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Montserrat" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Malta" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mauritius" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Maldives" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Malawi" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MX> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MX" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mexico" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Malaysia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "MZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mozambique" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Namibia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "New Caledonia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Niger (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Norfolk Island" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Nigeria" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Nicaragua" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Netherlands (Kingdom of the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Norway" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NP> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NP" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Nepal" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Nauru" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Niue" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "NZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "New Zealand" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#OM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "OM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Oman" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Panama" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Peru" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "French Polynesia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Papua New Guinea" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Philippines (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Pakistan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Poland" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Pierre and Miquelon" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Pitcairn" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Puerto Rico" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Palestine, State of" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Portugal" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Palau" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "PY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Paraguay" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#QA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "QA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Qatar" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "RE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Réunion" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "RO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Romania" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "RS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Serbia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "RU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Russian Federation (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "RW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Rwanda" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saudi Arabia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SB> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SB" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Solomon Islands" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Seychelles" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sudan (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sweden" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Singapore" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Helena, Ascension and Tristan da Cunha" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Slovenia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SJ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SJ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Svalbard and Jan Mayen" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Slovakia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sierra Leone" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "San Marino" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Senegal" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Somalia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Suriname" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "South Sudan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ST> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ST" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sao Tome and Principe" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "El Salvador" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SX> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SX" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Sint Maarten (Dutch part)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Syrian Arab Republic (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "SZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Eswatini" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Turks and Caicos Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TD> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TD" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Chad" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "French Southern Territories (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Togo" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TH> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TH" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Thailand" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TJ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TJ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tajikistan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TK> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TK" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tokelau" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TL> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TL" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Timor-Leste" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Turkmenistan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tunisia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TO> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TO" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tonga" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TR> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TR" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Türkiye" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Trinidad and Tobago" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TV> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TV" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tuvalu" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Taiwan (Province of China)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "TZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Tanzania, the United Republic of" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "UA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Ukraine" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "UG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Uganda" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "UM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "United States Minor Outlying Islands (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#US> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "US" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "United States of America (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UY> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "UY" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Uruguay" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UZ> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "UZ" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Uzbekistan" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Holy See (the)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VC> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VC" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Saint Vincent and the Grenadines" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Venezuela (Bolivarian Republic of)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VG> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VG" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Virgin Islands (British)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VI> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VI" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Virgin Islands (U.S.)" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VN> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VN" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Viet Nam" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VU> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "VU" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Vanuatu" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WF> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "WF" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Wallis and Futuna" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WS> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "WS" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Samoa" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YE> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "YE" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Yemen" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YT> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "YT" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Mayotte" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZA> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ZA" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "South Africa" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZM> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ZM" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Zambia" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZW> a owl:Class,
+        governanceduo:GeographicalRegionEnum ;
+    rdfs:label "ZW" ;
+    rdfs:subClassOf governanceduo:GeographicalRegionEnum ;
+    skos:definition "Zimbabwe" .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#Apache_2.0> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "Apache_2.0" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Apache License 2.0, a permissive license allowing for use, modification, and distribution." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#BSD_3_Clause> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "BSD_3_Clause" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "BSD 3-Clause License, a permissive license allowing for use, modification, and distribution with attribution." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC0> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC0" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Zero license, allowing for the free use of the data." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution license, requiring attribution to the original source." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY_NC" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution-NonCommercial license, allowing for non-commercial use with attribution." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_ND> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY_NC_ND" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution-NonCommercial-NoDerivatives license, allowing for non-commercial use with attribution but no modifications." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_SA> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY_NC_SA" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution-NonCommercial-ShareAlike license, allowing for non-commercial modifications with attribution and sharing under the same license." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_ND> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY_ND" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution-NoDerivatives license, allowing for redistribution with attribution but no modifications." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_SA> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "CC_BY_SA" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "Creative Commons Attribution-ShareAlike license, allowing for modifications with attribution and sharing under the same license." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#GPL_3.0> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "GPL_3.0" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "GNU General Public License v3.0, a copyleft license requiring derivative works to be licensed under the same terms." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#MIT> a owl:Class,
+        governanceduo:LicenseEnum ;
+    rdfs:label "MIT" ;
+    rdfs:subClassOf governanceduo:LicenseEnum ;
+    skos:definition "MIT License, a permissive license allowing for use, modification, and distribution." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Birth%20Date> a owl:Class,
+        governanceduo:StudyIndexDateEnum ;
+    rdfs:label "Birth Date" ;
+    rdfs:subClassOf governanceduo:StudyIndexDateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Collection%20Date> a owl:Class,
+        governanceduo:StudyIndexDateEnum ;
+    rdfs:label "Collection Date" ;
+    rdfs:subClassOf governanceduo:StudyIndexDateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Diagnosis%20Date> a owl:Class,
+        governanceduo:StudyIndexDateEnum ;
+    rdfs:label "Diagnosis Date" ;
+    rdfs:subClassOf governanceduo:StudyIndexDateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Enrollment%20Date> a owl:Class,
+        governanceduo:StudyIndexDateEnum ;
+    rdfs:label "Enrollment Date" ;
+    rdfs:subClassOf governanceduo:StudyIndexDateEnum .
+
+governanceduo:attribution a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "attribution" ;
+    skos:definition "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus7 — see GovernanceMixin rules." .
+
+governanceduo:collaborationRequired a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "collaborationRequired" ;
+    skos:definition "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000020 — see GovernanceMixin rules." .
+
+governanceduo:diseaseSpecificResearch a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "diseaseSpecificResearch" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "MONDO:\\d{7}" ] ) ] ;
+    skos:definition "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000007 — see GovernanceMixin rules." .
+
+governanceduo:institutionSpecificRestriction a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "institutionSpecificRestriction" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "ROR:[a-z0-9]{9}" ] ) ] ;
+    skos:definition "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000028 — see GovernanceMixin rules." .
+
+governanceduo:populationType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "populationType" ;
+    skos:definition "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUOPlus2 — see GovernanceMixin rules." .
+
+governanceduo:publicationMoratorium a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "publicationMoratorium" ;
+    skos:definition "End date of the publication moratorium associated with the access requirement." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000024 — see GovernanceMixin rules.",
+        "schematic Format: date" .
+
+governanceduo:researchSpecificRestrictions a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "researchSpecificRestrictions" ;
+    skos:definition "Research-specific restrictions associated with the access requirement." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000012 — see GovernanceMixin rules." .
+
+governanceduo:timeLimitOnUse a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "timeLimitOnUse" ;
+    rdfs:range linkml:Float ;
+    skos:definition "Time limit on the use of the data associated with the access requirement." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000025 — see GovernanceMixin rules." .
+
+governanceduo:userSpecificRestriction a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "userSpecificRestriction" ;
+    skos:definition "The user-specific restrictions associated with the access requirement." ;
+    skos:inScheme governanceduo:mixins ;
+    skos:note "Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules." .
+
+governanceduo:BaseEntity a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "BaseEntity" ;
+    rdfs:subClassOf [ owl:unionOf ( governanceduo:AccessRequirement governanceduo:Resource governanceduo:Schema governanceduo:Study ) ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ] ;
+    skos:definition "Abstract root shared by every governanceDUO class." ;
+    skos:inScheme governanceduo:base_entity .
+
+governanceduo:DataPermissionEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "DataPermissionEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Agreement> <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Attestation> <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Award> <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Other> ) ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Agreement>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Attestation>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Award>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Other> .
+
+governanceduo:DataTierEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "DataTierEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Anonymous> <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Open> <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Controlled> <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Private> ) ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Anonymous>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Controlled>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Open>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataTierEnum#Private> .
+
+governanceduo:StudyIndexDateEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "StudyIndexDateEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Diagnosis%20Date> <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Enrollment%20Date> <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Collection%20Date> <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Birth%20Date> ) ;
+    skos:inScheme governanceduo:study ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Birth%20Date>,
+        <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Collection%20Date>,
+        <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Diagnosis%20Date>,
+        <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Enrollment%20Date> .
+
+governanceduo:id a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "id" ;
+    skos:definition "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare \"id\" attribute there without colliding." ;
+    skos:inScheme governanceduo:base_entity .
+
+governanceduo:DeidentificationTypeEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "DeidentificationTypeEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#HIPPA_LDS> <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#SafeHarbor> <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#ExpertDetermination> <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Pseudonymized> <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Anonymized> <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Other> ) ;
+    skos:definition "De-identification method categories. Shared by Study.studyDeidentificationType and the shared/GovernanceMixin deidentificationType slot (DUOPlus3) — the source CSV duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it." ;
+    skos:inScheme governanceduo:props ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Anonymized>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#ExpertDetermination>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#HIPPA_LDS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Other>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Pseudonymized>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#SafeHarbor> .
+
+governanceduo:dataUseModifiers a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataUseModifiers" ;
+    rdfs:range governanceduo:DataUseModifierEnum ;
+    skos:definition "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:GovernanceMixin a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "GovernanceMixin" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:userSpecificRestriction ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:researchSpecificRestrictions ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "MONDO:\\d{7}" ] ) ] ;
+            owl:onProperty governanceduo:diseaseSpecificResearch ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "ROR:[a-z0-9]{9}" ] ) ] ;
+            owl:onProperty governanceduo:institutionSpecificRestriction ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:attribution ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:populationType ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:publicationMoratorium ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:timeLimitOnUse ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:collaborationRequired ] ;
+    skos:definition "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:LicenseEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "LicenseEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC0> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_ND> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_SA> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_ND> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_SA> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#Apache_2.0> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#MIT> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#GPL_3.0> <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#BSD_3_Clause> ) ;
+    skos:definition "model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the standalone CV reference model/valid_values.csv instead documents Apache_2/GPL_3 (no \".0\"/\"3.0\" suffix) for the same two licenses. This enum keeps shared.model.csv's spelling (the attribute's actual schematic Valid Values) and carries the valid_values.csv description over unchanged — the naming mismatch between the two source CSVs is a real data-quality finding, not resolved here." ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#Apache_2.0>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#BSD_3_Clause>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC0>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_ND>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_NC_SA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_ND>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#CC_BY_SA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#GPL_3.0>,
+        <https://w3id.org/sage-bionetworks/governance-duo/LicenseEnum#MIT> .
+
+governanceduo:DataUseModifierEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "DataUseModifierEnum" ;
+    owl:unionOf ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus1> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus2> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus3> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus4> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus5> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus6> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus7> <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#Pending%20Annotation> ) ;
+    skos:definition "Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions (see README) and \"Pending Annotation\". Real DUO terms carry `meaning:` pointing at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model documents for its own external-term reuse)." ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values DUO:0000004,
+        DUO:0000006,
+        DUO:0000007,
+        DUO:0000011,
+        DUO:0000012,
+        DUO:0000015,
+        DUO:0000016,
+        DUO:0000017,
+        DUO:0000018,
+        DUO:0000019,
+        DUO:0000020,
+        DUO:0000021,
+        DUO:0000022,
+        DUO:0000024,
+        DUO:0000025,
+        DUO:0000026,
+        DUO:0000027,
+        DUO:0000028,
+        DUO:0000029,
+        DUO:0000042,
+        DUO:0000043,
+        DUO:0000044,
+        DUO:0000045,
+        DUO:0000046,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus1>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus2>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus3>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus4>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus5>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus6>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#DUOPlus7>,
+        <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#Pending%20Annotation> .
+
+governanceduo:GeographicalRegionEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "GeographicalRegionEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AQ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AX> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BB> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BJ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BQ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CX> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DJ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ER> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ES> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ET> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FJ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GB> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GP> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GQ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ID> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IQ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JP> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KP> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LB> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ME> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ML> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MP> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MQ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MX> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NP> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#OM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#QA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SB> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SJ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ST> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SX> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TD> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TH> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TJ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TK> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TL> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TO> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TR> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TV> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TW> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#US> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UY> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UZ> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VC> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VG> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VI> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VN> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VU> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WF> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WS> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YE> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YT> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZA> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZM> <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZW> ) ;
+    skos:definition "ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the source CSV (model/shared.model.csv) duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it." ;
+    skos:inScheme governanceduo:props ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AQ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AX>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#AZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BB>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BJ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BQ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#BZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CX>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#CZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DJ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#DZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#EH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ER>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ES>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ET>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FJ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#FR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GB>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GP>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GQ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#GY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#HU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ID>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IQ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#IT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#JP>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KP>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#KZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LB>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#LY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ME>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ML>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MP>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MQ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MX>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#MZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NP>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#NZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#OM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#PY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#QA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#RW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SB>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SJ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ST>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SX>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#SZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TH>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TJ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TK>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TL>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TO>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TR>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TV>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TW>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#TZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#US>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UY>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#UZ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VC>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VG>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VI>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VN>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#VU>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WF>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#WS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#YT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZA>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZM>,
+        <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZW> .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:license ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:populationType ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:researchSpecificRestrictions ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:dataTier ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:userSpecificRestriction ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:sourceGeography ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:timeLimitOnUse ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:dataPermission ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:collaborationRequired ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:institutionSpecificRestriction ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:geographicalRestriction ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:diseaseSpecificResearch ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:deidentificationType ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:attribution ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:publicationMoratorium ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+

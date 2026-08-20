@@ -1,0 +1,17 @@
+id: study.mc2-jax-5xfad
+grantNumber:
+  - U54AG079754
+studyName: MC2 Center Pilot Study
+studyDescription: >-
+  Pilot investigation into tumor microenvironment signaling in a genetically
+  engineered mouse model cohort.
+studyInvestigator: Jane Doe
+studyParticipantNumber: 25
+studySampleNumber: 40
+studyDeidentificationType:
+  - SafeHarbor
+studyDbgapAccessionId: phs000123
+dataUseModifiers:
+  - DUOPlus1
+sourceGeography:
+  - US

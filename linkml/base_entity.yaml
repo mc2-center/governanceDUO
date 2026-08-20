@@ -1,0 +1,33 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/base_entity
+name: governance_duo_base_entity
+description: >-
+  Shared abstract root for every governanceDUO class. Mirrors SageCommonDataModel's
+  BaseEntity pattern (https://github.com/Sage-Bionetworks/SageCommonDataModel): one
+  `id` slot, narrowed per class via `slot_usage` rather than a distinct id slot name
+  per class.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+slots:
+  id:
+    description: >-
+      A unique identifier for this record. Narrowed per class via `slot_usage` in
+      access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic CSV
+      source (../model/*.model.csv) keeps class-prefixed attribute names
+      (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's
+      model CSV has one flat, global Attribute namespace with no per-class scoping
+      equivalent to slot_usage, so four classes cannot share a bare "id" attribute
+      there without colliding.
+    identifier: true
+    slot_uri: dcterms:identifier
+classes:
+  BaseEntity:
+    abstract: true
+    description: Abstract root shared by every governanceDUO class.
+    slots:
+      - id

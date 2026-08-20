@@ -1,0 +1,37 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/schema
+name: governance_duo_schema
+description: LinkML representation of the Schema component.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - props
+classes:
+  Schema:
+    description: Information that is relevant to resource access conditions.
+    is_a: BaseEntity
+    tree_root: true
+    slot_usage:
+      id:
+        description: >-
+          A unique identifier for the schema (schematic source attribute: Schema_id).
+        pattern: '^schema\.[A-Za-z0-9_-]+$'
+    slots:
+      - ResourceKey
+      - AccessRequirementKey
+      - StudyKey
+      - schemaUrl
+slots:
+  ResourceKey:
+    description: >-
+      The identifier(s) for the Resource(s) associated with this schema. Provide
+      multiple values as a comma-separated list.
+    multivalued: true
+    annotations:
+      foreign_key: true
+  schemaUrl:
+    description: The registered URL associated with the access requirement JSON schema.

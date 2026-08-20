@@ -1,0 +1,553 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/props
+name: governance_duo_props
+description: >-
+  Cross-class slots and shared enums reused by more than one governanceDUO class.
+  Mirrors SageCommonDataModel's props.yaml: imports only linkml:types, never an entity
+  file, so this file (and mixins.yaml) can never participate in an import cycle.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+slots:
+  AccessRequirementKey:
+    description: >-
+      The Access Requirement id(s) associated with this object. Provide multiple
+      values as a comma-separated list.
+    multivalued: true
+    annotations:
+      foreign_key: true
+  StudyKey:
+    description: >-
+      The Study id(s) associated with this object. Provide multiple values as a
+      comma-separated list.
+    multivalued: true
+    annotations:
+      foreign_key: true
+enums:
+  GeographicalRegionEnum:
+    description: >-
+      ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots
+      geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the
+      source CSV (model/shared.model.csv) duplicated this same value list under both
+      attributes; this schema keeps one enum and points both slots at it.
+    permissible_values:
+      AD:
+        description: "Andorra"
+      AE:
+        description: "United Arab Emirates (the)"
+      AF:
+        description: "Afghanistan"
+      AG:
+        description: "Antigua and Barbuda"
+      AI:
+        description: "Anguilla"
+      AL:
+        description: "Albania"
+      AM:
+        description: "Armenia"
+      AO:
+        description: "Angola"
+      AQ:
+        description: "Antarctica"
+      AR:
+        description: "Argentina"
+      AS:
+        description: "American Samoa"
+      AT:
+        description: "Austria"
+      AU:
+        description: "Australia"
+      AW:
+        description: "Aruba"
+      AX:
+        description: "Åland Islands"
+      AZ:
+        description: "Azerbaijan"
+      BA:
+        description: "Bosnia and Herzegovina"
+      BB:
+        description: "Barbados"
+      BD:
+        description: "Bangladesh"
+      BE:
+        description: "Belgium"
+      BF:
+        description: "Burkina Faso"
+      BG:
+        description: "Bulgaria"
+      BH:
+        description: "Bahrain"
+      BI:
+        description: "Burundi"
+      BJ:
+        description: "Benin"
+      BL:
+        description: "Saint Barthélemy"
+      BM:
+        description: "Bermuda"
+      BN:
+        description: "Brunei Darussalam"
+      BO:
+        description: "Bolivia (Plurinational State of)"
+      BQ:
+        description: "Bonaire, Sint Eustatius and Saba"
+      BR:
+        description: "Brazil"
+      BS:
+        description: "Bahamas (the)"
+      BT:
+        description: "Bhutan"
+      BV:
+        description: "Bouvet Island"
+      BW:
+        description: "Botswana"
+      BY:
+        description: "Belarus"
+      BZ:
+        description: "Belize"
+      CA:
+        description: "Canada"
+      CC:
+        description: "Cocos (Keeling) Islands (the)"
+      CD:
+        description: "Congo (the Democratic Republic of the)"
+      CF:
+        description: "Central African Republic (the)"
+      CG:
+        description: "Congo (the)"
+      CH:
+        description: "Switzerland"
+      CI:
+        description: "Côte d'Ivoire"
+      CK:
+        description: "Cook Islands (the)"
+      CL:
+        description: "Chile"
+      CM:
+        description: "Cameroon"
+      CN:
+        description: "China"
+      CO:
+        description: "Colombia"
+      CR:
+        description: "Costa Rica"
+      CU:
+        description: "Cuba"
+      CV:
+        description: "Cabo Verde"
+      CW:
+        description: "Curaçao"
+      CX:
+        description: "Christmas Island"
+      CY:
+        description: "Cyprus"
+      CZ:
+        description: "Czechia"
+      DE:
+        description: "Germany"
+      DJ:
+        description: "Djibouti"
+      DK:
+        description: "Denmark"
+      DM:
+        description: "Dominica"
+      DO:
+        description: "Dominican Republic (the)"
+      DZ:
+        description: "Algeria"
+      EC:
+        description: "Ecuador"
+      EE:
+        description: "Estonia"
+      EG:
+        description: "Egypt"
+      EH:
+        description: "Western Sahara*"
+      ER:
+        description: "Eritrea"
+      ES:
+        description: "Spain"
+      ET:
+        description: "Ethiopia"
+      FI:
+        description: "Finland"
+      FJ:
+        description: "Fiji"
+      FK:
+        description: "Falkland Islands (the) [Malvinas]"
+      FM:
+        description: "Micronesia (Federated States of)"
+      FO:
+        description: "Faroe Islands (the)"
+      FR:
+        description: "France"
+      GA:
+        description: "Gabon"
+      GB:
+        description: "United Kingdom of Great Britain and Northern Ireland (the)"
+      GD:
+        description: "Grenada"
+      GE:
+        description: "Georgia"
+      GF:
+        description: "French Guiana"
+      GG:
+        description: "Guernsey"
+      GH:
+        description: "Ghana"
+      GI:
+        description: "Gibraltar"
+      GL:
+        description: "Greenland"
+      GM:
+        description: "Gambia (the)"
+      GN:
+        description: "Guinea"
+      GP:
+        description: "Guadeloupe"
+      GQ:
+        description: "Equatorial Guinea"
+      GR:
+        description: "Greece"
+      GS:
+        description: "South Georgia and the South Sandwich Islands"
+      GT:
+        description: "Guatemala"
+      GU:
+        description: "Guam"
+      GW:
+        description: "Guinea-Bissau"
+      GY:
+        description: "Guyana"
+      HK:
+        description: "Hong Kong"
+      HM:
+        description: "Heard Island and McDonald Islands"
+      HN:
+        description: "Honduras"
+      HR:
+        description: "Croatia"
+      HT:
+        description: "Haiti"
+      HU:
+        description: "Hungary"
+      ID:
+        description: "Indonesia"
+      IE:
+        description: "Ireland"
+      IL:
+        description: "Israel"
+      IM:
+        description: "Isle of Man"
+      IN:
+        description: "India"
+      IO:
+        description: "British Indian Ocean Territory (the)"
+      IQ:
+        description: "Iraq"
+      IR:
+        description: "Iran (Islamic Republic of)"
+      IS:
+        description: "Iceland"
+      IT:
+        description: "Italy"
+      JE:
+        description: "Jersey"
+      JM:
+        description: "Jamaica"
+      JO:
+        description: "Jordan"
+      JP:
+        description: "Japan"
+      KE:
+        description: "Kenya"
+      KG:
+        description: "Kyrgyzstan"
+      KH:
+        description: "Cambodia"
+      KI:
+        description: "Kiribati"
+      KM:
+        description: "Comoros (the)"
+      KN:
+        description: "Saint Kitts and Nevis"
+      KP:
+        description: "Korea (the Democratic People's Republic of)"
+      KR:
+        description: "Korea (the Republic of)"
+      KW:
+        description: "Kuwait"
+      KY:
+        description: "Cayman Islands (the)"
+      KZ:
+        description: "Kazakhstan"
+      LA:
+        description: "Lao People's Democratic Republic (the)"
+      LB:
+        description: "Lebanon"
+      LC:
+        description: "Saint Lucia"
+      LI:
+        description: "Liechtenstein"
+      LK:
+        description: "Sri Lanka"
+      LR:
+        description: "Liberia"
+      LS:
+        description: "Lesotho"
+      LT:
+        description: "Lithuania"
+      LU:
+        description: "Luxembourg"
+      LV:
+        description: "Latvia"
+      LY:
+        description: "Libya"
+      MA:
+        description: "Morocco"
+      MC:
+        description: "Monaco"
+      MD:
+        description: "Moldova (the Republic of)"
+      ME:
+        description: "Montenegro"
+      MF:
+        description: "Saint Martin (French part)"
+      MG:
+        description: "Madagascar"
+      MH:
+        description: "Marshall Islands (the)"
+      MK:
+        description: "North Macedonia"
+      ML:
+        description: "Mali"
+      MM:
+        description: "Myanmar"
+      MN:
+        description: "Mongolia"
+      MO:
+        description: "Macao"
+      MP:
+        description: "Northern Mariana Islands (the)"
+      MQ:
+        description: "Martinique"
+      MR:
+        description: "Mauritania"
+      MS:
+        description: "Montserrat"
+      MT:
+        description: "Malta"
+      MU:
+        description: "Mauritius"
+      MV:
+        description: "Maldives"
+      MW:
+        description: "Malawi"
+      MX:
+        description: "Mexico"
+      MY:
+        description: "Malaysia"
+      MZ:
+        description: "Mozambique"
+      NA:
+        description: "Namibia"
+      NC:
+        description: "New Caledonia"
+      NE:
+        description: "Niger (the)"
+      NF:
+        description: "Norfolk Island"
+      NG:
+        description: "Nigeria"
+      NI:
+        description: "Nicaragua"
+      NL:
+        description: "Netherlands (Kingdom of the)"
+      "NO":
+        description: "Norway"
+      NP:
+        description: "Nepal"
+      NR:
+        description: "Nauru"
+      NU:
+        description: "Niue"
+      NZ:
+        description: "New Zealand"
+      OM:
+        description: "Oman"
+      PA:
+        description: "Panama"
+      PE:
+        description: "Peru"
+      PF:
+        description: "French Polynesia"
+      PG:
+        description: "Papua New Guinea"
+      PH:
+        description: "Philippines (the)"
+      PK:
+        description: "Pakistan"
+      PL:
+        description: "Poland"
+      PM:
+        description: "Saint Pierre and Miquelon"
+      PN:
+        description: "Pitcairn"
+      PR:
+        description: "Puerto Rico"
+      PS:
+        description: "Palestine, State of"
+      PT:
+        description: "Portugal"
+      PW:
+        description: "Palau"
+      PY:
+        description: "Paraguay"
+      QA:
+        description: "Qatar"
+      RE:
+        description: "Réunion"
+      RO:
+        description: "Romania"
+      RS:
+        description: "Serbia"
+      RU:
+        description: "Russian Federation (the)"
+      RW:
+        description: "Rwanda"
+      SA:
+        description: "Saudi Arabia"
+      SB:
+        description: "Solomon Islands"
+      SC:
+        description: "Seychelles"
+      SD:
+        description: "Sudan (the)"
+      SE:
+        description: "Sweden"
+      SG:
+        description: "Singapore"
+      SH:
+        description: "Saint Helena, Ascension and Tristan da Cunha"
+      SI:
+        description: "Slovenia"
+      SJ:
+        description: "Svalbard and Jan Mayen"
+      SK:
+        description: "Slovakia"
+      SL:
+        description: "Sierra Leone"
+      SM:
+        description: "San Marino"
+      SN:
+        description: "Senegal"
+      SO:
+        description: "Somalia"
+      SR:
+        description: "Suriname"
+      SS:
+        description: "South Sudan"
+      ST:
+        description: "Sao Tome and Principe"
+      SV:
+        description: "El Salvador"
+      SX:
+        description: "Sint Maarten (Dutch part)"
+      SY:
+        description: "Syrian Arab Republic (the)"
+      SZ:
+        description: "Eswatini"
+      TC:
+        description: "Turks and Caicos Islands (the)"
+      TD:
+        description: "Chad"
+      TF:
+        description: "French Southern Territories (the)"
+      TG:
+        description: "Togo"
+      TH:
+        description: "Thailand"
+      TJ:
+        description: "Tajikistan"
+      TK:
+        description: "Tokelau"
+      TL:
+        description: "Timor-Leste"
+      TM:
+        description: "Turkmenistan"
+      TN:
+        description: "Tunisia"
+      TO:
+        description: "Tonga"
+      TR:
+        description: "Türkiye"
+      TT:
+        description: "Trinidad and Tobago"
+      TV:
+        description: "Tuvalu"
+      TW:
+        description: "Taiwan (Province of China)"
+      TZ:
+        description: "Tanzania, the United Republic of"
+      UA:
+        description: "Ukraine"
+      UG:
+        description: "Uganda"
+      UM:
+        description: "United States Minor Outlying Islands (the)"
+      US:
+        description: "United States of America (the)"
+      UY:
+        description: "Uruguay"
+      UZ:
+        description: "Uzbekistan"
+      VA:
+        description: "Holy See (the)"
+      VC:
+        description: "Saint Vincent and the Grenadines"
+      VE:
+        description: "Venezuela (Bolivarian Republic of)"
+      VG:
+        description: "Virgin Islands (British)"
+      VI:
+        description: "Virgin Islands (U.S.)"
+      VN:
+        description: "Viet Nam"
+      VU:
+        description: "Vanuatu"
+      WF:
+        description: "Wallis and Futuna"
+      WS:
+        description: "Samoa"
+      YE:
+        description: "Yemen"
+      YT:
+        description: "Mayotte"
+      ZA:
+        description: "South Africa"
+      ZM:
+        description: "Zambia"
+      ZW:
+        description: "Zimbabwe"
+  DeidentificationTypeEnum:
+    description: >-
+      De-identification method categories. Shared by Study.studyDeidentificationType
+      and the shared/GovernanceMixin deidentificationType slot (DUOPlus3) — the source
+      CSV duplicated this same value list under both attributes; this schema keeps one
+      enum and points both slots at it.
+    permissible_values:
+      HIPPA_LDS:
+        description: "Data is de-identified according to the HIPAA Limited Data Set (LDS) standard."
+      SafeHarbor:
+        description: "Data is de-identified according to the Safe Harbor standard."
+      ExpertDetermination:
+        description: "Data is de-identified according to the Expert Determination standard."
+      Pseudonymized:
+        description: "Data is pseudonymized, meaning that identifying information has been removed or replaced with pseudonyms."
+      Anonymized:
+        description: "Data is anonymized, meaning that it cannot be used to identify individuals."
+      Other:
+        description: "Data is de-identified according to a different standard."

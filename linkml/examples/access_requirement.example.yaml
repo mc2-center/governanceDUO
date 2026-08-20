@@ -1,0 +1,11 @@
+id: access_requirement.42
+contributorName: Jane Doe
+contributionDate: "2026-01-15"
+StudyKey:
+  - study.mc2-jax-5xfad
+entityIdList:
+  - syn12345678
+dataUseModifiers:
+  - DUO:0000007
+diseaseSpecificResearch:
+  - MONDO:0004975

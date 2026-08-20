@@ -4,7 +4,7 @@ grantNumber,The identifier associated with the award funding this study.,,,,,,st
 studyName,Name of the study,,,True,CDE:11459810,,string,,,,,,
 studyDescription,"Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOplus2.",,,True,CDE:03444002,,string,,,,,,
 studyInvestigator,Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list.,,,True,,,string,,,,,,
-Study_id,A unique primary key that enables record updates using schematic.,,,True,"CDE:12960571, primary_key",,string,,,,,,
+Study_id,A unique primary key that enables record updates using schematic.,,,True,"CDE:12960571, primary_key",,string,,^study\.[A-Za-z0-9_-]+$,,,,
 studyParticipantNumber,The number of participant instances associated with systematic investigation into a subject.,,,True,CDE:11555662,,number,,,,,,
 studyDeidentificationType,General description of the de-identification method. Maps to DUOplus3.,"HIPPA_LDS, SafeHarbor, ExpertDetermination, Pseudonymized, Anonymized, Other",,,CDE:14576319,,string_list,,,,,,
 studyDeidentificationMethodDescription,Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place.,,,,,,string,,,,,,
