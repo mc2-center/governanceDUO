@@ -23,6 +23,11 @@ prefixes:
   ror: https://ror.org/
   sagebrain: https://w3id.org/synapse/sagebrain#
   biolink: https://w3id.org/biolink/vocab/
+  prov: http://www.w3.org/ns/prov#
+  NCIT: http://purl.obolibrary.org/obo/NCIT_
+  T4FS: http://purl.obolibrary.org/obo/T4FS_
+  ebiswo: http://www.ebi.ac.uk/swo/SWO_
+  EVORAO: https://w3id.org/evorao/
 default_prefix: governanceduo
 default_range: string
 imports:

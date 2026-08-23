@@ -4,6 +4,7 @@ description: LinkML representation of the Resource component.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -84,3 +85,9 @@ slots:
       active.
   registeredSchemaUrl:
     description: URL associated with the annotation schema that will be applied to the resource type.
+    exact_mappings:
+      - dcterms:conformsTo
+    comments:
+      - 'dcterms:conformsTo, "An established standard to which the described
+        resource conforms" — exact match: this URL points at the registered JSON
+        schema the resource must conform to.'

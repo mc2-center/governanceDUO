@@ -4,6 +4,7 @@ description: LinkML representation of the Schema component.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -35,3 +36,9 @@ slots:
       foreign_key: true
   schemaUrl:
     description: The registered URL associated with the access requirement JSON schema.
+    exact_mappings:
+      - dcterms:conformsTo
+    comments:
+      - 'dcterms:conformsTo, "An established standard to which the described
+        resource conforms" — see resource.yaml''s registeredSchemaUrl for the same
+        exact mapping and rationale.'

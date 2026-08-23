@@ -54,6 +54,34 @@ SageCommonDataModel repositories in this pass** — these artifacts are shaped t
 into sagebrain-model's (currently empty) `ontology/governance/` folder and to
 interoperate with SageCommonDataModel, but that integration is not yet wired up.
 
+Beyond DUO, several slots carry `exact_mappings`/`close_mappings` to other terms
+found and verified live via the EBI OLS4 API (see the `ols-term-annotator` skill and
+`comments` on each mapped slot for the verification rationale) — `exact_mappings`
+where the concept genuinely matches, `close_mappings` where the shape differs (e.g. a
+literal-valued slot mapped to an object property whose range is an ontology class):
+
+| Slot | Mapping | Term |
+|---|---|---|
+| `ContributionMixin.contributorName` | close | `prov:wasAttributedTo` |
+| `ContributionMixin.contributionDate` | close | `prov:generatedAtTime` |
+| `GovernanceMixin.collaborationRequired` | exact | `NCIT:C221739` (synonyms include "COL", this repo's own DUO:0000020 shorthand) |
+| `GovernanceMixin.dataTier` | exact | `NCIT:C175887` "Open or Controlled Data Access Indicator" |
+| `GovernanceMixin.deidentificationType` / `Study.studyDeidentificationType` | close | `T4FS:0000414` "de-identification" |
+| `GovernanceMixin.attribution` | close | `ebiswo:9000006` "Attribution clause" |
+| `Study.studyInvestigator` | close | `NCIT:C19924` "Principal Investigator" |
+| `Study.studyDbgapAccessionId` | exact | `NCIT:C173940` "dbGaP Accession Number" |
+| `Study.grantNumber` | exact | `EVORAO:grantNumber` |
+| `Resource.registeredSchemaUrl` / `Schema.schemaUrl` | exact | `dcterms:conformsTo` |
+
+Note the `ebiswo:` prefix (`http://www.ebi.ac.uk/swo/SWO_`) is deliberately not
+called `SWO:` — that would collide with the *canonical* OBO Foundry Software
+Ontology namespace (`http://purl.obolibrary.org/obo/SWO_`), which is a different,
+unrelated resolution for the same three letters; `linkml-lint`'s `canonical_prefixes`
+check caught this during review. Slots checked against OLS with no confident match
+(DUO-covered detail fields like `timeLimitOnUse`/`userSpecificRestriction`, Synapse
+annotation-key/value mechanism slots, and `license`/`dataPermission`, whose SPDX/CC
+identifiers aren't OLS ontology terms) were left unmapped rather than forced.
+
 Build/validate targets (see `Makefile`; require `pip install -r requirements.txt`):
 ```
 make linkml-lint      # lint the schema (--ignore-warnings: the camelCase attribute

@@ -14,6 +14,10 @@ prefixes:
   DUO: http://purl.obolibrary.org/obo/DUO_
   MONDO: http://purl.obolibrary.org/obo/MONDO_
   ror: https://ror.org/
+  prov: http://www.w3.org/ns/prov#
+  NCIT: http://purl.obolibrary.org/obo/NCIT_
+  T4FS: http://purl.obolibrary.org/obo/T4FS_
+  ebiswo: http://www.ebi.ac.uk/swo/SWO_
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -31,8 +35,13 @@ slots:
     description: >-
       If collaboration is required for the access requirement, provide the PI email
       address. Provide multiple as a comma-separated list.
+    exact_mappings:
+      - NCIT:C221739
     comments:
       - 'Required when dataUseModifiers contains DUO:0000020 — see GovernanceMixin rules.'
+      - 'NCIT:C221739 "Consent for Use Requires Collaboration Agreement" carries the
+        synonyms "COL"/"Collaboration required", the same shorthand this repo already
+        uses for DUO:0000020 — verified live and non-obsolete via the OLS4 API.'
   diseaseSpecificResearch:
     description: >-
       The type(s) of disease research allowed by this access requirement. Provide the
@@ -97,8 +106,14 @@ slots:
       requirement. Equivalent to DUOPlus3.
     multivalued: true
     range: DeidentificationTypeEnum
+    close_mappings:
+      - T4FS:0000414
     comments:
       - 'Required when dataUseModifiers contains DUOPlus3 — see GovernanceMixin rules.'
+      - 'T4FS:0000414 "de-identification" (Terminology for Food Safety, but the term
+        itself is a generic privacy concept) is a close, not exact, match — this slot
+        names one of a specific set of methods (HIPPA_LDS/SafeHarbor/etc.), the OLS
+        term describes the general technique.'
   dataPermission:
     description: >-
       The permissions associated with the data under the access requirement.
@@ -113,8 +128,14 @@ slots:
       DUOPlus5.
     multivalued: true
     range: DataTierEnum
+    exact_mappings:
+      - NCIT:C175887
     comments:
       - 'Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules.'
+      - 'NCIT:C175887 "Open or Controlled Data Access Indicator" (synonym: "Data
+        Access Level") is defined as "Specifies whether the data in a repository is
+        open access or controlled access" — a direct match for this slot''s
+        Anonymous/Open/Controlled/Private tiers.'
   license:
     description: >-
       The license under which the data associated with the access requirement is
@@ -125,14 +146,30 @@ slots:
       - 'Required when dataUseModifiers contains DUOPlus6 — see GovernanceMixin rules.'
   attribution:
     description: The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7.
+    close_mappings:
+      - ebiswo:9000006
     comments:
       - 'Required when dataUseModifiers contains DUOPlus7 — see GovernanceMixin rules.'
+      - 'SWO:9000006 "Attribution clause" (Software Ontology term, reused via the
+        mcro ontology) — a license-clause-shaped close mapping; this slot instead
+        holds the free-text statement itself, not the clause concept.'
   contributorName:
     description: The name of the person who added this access requirement.
+    close_mappings:
+      - prov:wasAttributedTo
+    comments:
+      - 'prov:wasAttributedTo relates a prov:Entity to a prov:Agent; this slot holds
+        a literal name rather than an Agent reference, so the mapping is close, not
+        exact.'
   contributionDate:
     description: The date on which the access requirement was added.
+    close_mappings:
+      - prov:generatedAtTime
     comments:
       - 'schematic Format: date'
+      - 'prov:generatedAtTime ("The time at which an entity was completely created
+        and is available for use") matches this slot''s semantics closely, treating
+        the AccessRequirement record itself as the generated prov:Entity.'
 enums:
   DataUseModifierEnum:
     description: >-
