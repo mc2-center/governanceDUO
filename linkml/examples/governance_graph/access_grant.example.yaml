@@ -1,0 +1,10 @@
+id: grant.001
+resource: syn10081783
+principal: 9000001
+permission:
+  - DOWNLOAD
+source: Synapse
+bindingType: Direct
+createdOn: 1755100000000
+sourceAclId: 42001
+sourceAclResourceAccessId: 42101
