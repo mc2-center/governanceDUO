@@ -1,0 +1,19 @@
+id: access_requirement.101
+contributorName: Jane Doe
+contributionDate: "2026-01-15"
+StudyKey:
+  - study.mc2-jax-5xfad
+entityIdList:
+  - syn98765432
+dataUseModifiers:
+  - DUO:0000022
+  - DUO:0000028
+geographicalRestriction:
+  - US
+institutionDids:
+  - did:example:best_university
+assetDids:
+  - did:example:asset123
+guardianDataSource: /tmp/asset_data.txt
+trustedIssuerDids:
+  - did:example:sage_bionetworks_issuer

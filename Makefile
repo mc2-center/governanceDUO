@@ -38,3 +38,6 @@ example-rdf:
 
 shacl-validate: owl shacl example-rdf
 	python3 scripts/validate_graph.py --data governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/rdf/all_examples.ttl
+
+policy-fabric:
+	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
