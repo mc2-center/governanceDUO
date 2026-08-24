@@ -1,0 +1,173 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/policy_fabric
+name: governance_duo_policy_fabric
+description: >-
+  Schema for cross-referencing governanceDUO's DUO-based governance model with Policy
+  Fabric (https://github.com/hasan7n/tmp-policies,
+  https://hasan7n.github.io/tmp-policies/ — reference implementation of "A Technical
+  Policy Blueprint for Trustworthy Decentralized AI"). Policy Fabric's `policy_cards/`
+  are authored one per DUO code, each pairing a "Reference Values Schema" (owner-
+  configured values, e.g. allowedCountries) with a set of required Verifiable
+  Credential types/claims. `PolicyCardBinding` records this pairing as verified
+  directly from the real repo's `policy.rego`/`policy_data_schema.json` files — it is
+  a static lookup table (one row per policy_cards/<name>/ folder), not per-record data.
+  See policy_fabric_bindings.yaml for the actual 21 verified rows.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - mixins
+enums:
+  CredentialTypeEnum:
+    description: >-
+      The 14 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
+    permissible_values:
+      AffiliationCredential:
+        description: "Claims: isMemberOf (DID of organization, required), typeOfMembership (string, required)."
+      LocationCredential:
+        description: "Claims: locatedAt (object: street, zipCode, state, country — all string, required)."
+      publicKeyCredential:
+        description: "Claims: key (string, PEM-encoded, required). The requester's channel public key."
+      AgreementCredential:
+        description: "Claims: agreementInfo (object: documentID, documentVersion — both string, required)."
+      ComputeEnvironmentCredential:
+        description: "Claims: hasComputeProfile (object: profile — object, required; claim shape is asset-specific)."
+      EmailCredential:
+        description: "Claims: emailAddress (string, email format, required)."
+      EthicsCommitteeAccreditationCredential:
+        description: "Claims: ResponsibleFor (DID of institution, required)."
+      IRBApprovalCredential:
+        description: "Claims: isApprovedByEthicsCommittee (DID of Ethics Committee, required)."
+      IntendedDataUseCredential:
+        description: >-
+          Claims: useOnlyFor (object: purposes [array of string], diseases [array of
+          MONDO codes] — both required).
+      LegalDesignationCredential:
+        description: "Claims: hasLegalForm (string, ISO 20275:2017 ELF code, required)."
+      ProjectOwnershipCredential:
+        description: "Claims: Owns (DID of project, required)."
+      ScopedAgreementCredential:
+        description: >-
+          Claims: agreementInfo (object: counterParty [DID string], scope [object:
+          obligation, project, dataset — all string, required] — both required).
+      TeamCredential:
+        description: "Claims: MemberOfTeamOf (DID of PI, required)."
+      UserPlatformCredential:
+        description: "Claims: userId, accountType, profileStatus (string) + isUser (boolean) — all required."
+      WalletVerifyingKeyCredential:
+        description: "Claims: verifying_key (string, PEM-encoded, required)."
+classes:
+  CredentialRequirement:
+    description: >-
+      One credential type a Policy Fabric policy_card requires the requester to
+      present, and the specific claim path(s) it checks — verified from the folder's
+      actual policy.rego, not inferred from the credential's schema alone (a
+      credential type can be required without every one of its claims being read by
+      a given policy).
+    slots:
+      - credentialType
+      - requiredClaims
+  ReferenceValueSource:
+    description: >-
+      One (referenceValueKey -> governanceDUO slot) mapping. A single
+      PolicyCardBinding can need more than one of these — e.g. time-limit-on-use
+      needs both requiredDocumentID and notAfter, sourced from two different slots —
+      so this is its own inlined list on PolicyCardBinding rather than one scalar
+      "sourceSlot" field (an earlier version of this schema had exactly that
+      limitation; it could not represent a binding needing 2+ keys from 2+ slots).
+    slots:
+      - referenceValueKey
+      - sourceSlot
+      - keyIsMultivalued
+  PolicyCardBindingCollection:
+    description: >-
+      Container class for policy_fabric_bindings.yaml — a plain list wrapper so the
+      data file has a single root class to validate against.
+    tree_root: true
+    slots:
+      - bindings
+  PolicyCardBinding:
+    description: >-
+      One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code
+      it implements, its Reference Values Schema key(s), which existing (or missing)
+      governanceDUO slot already collects each reference value, and which
+      credentials/claims it requires. A referenceValueKey with no entry in
+      referenceValueSources is intentionally left unmapped (rather than force-fit)
+      wherever governanceDUO has no existing slot of the right shape — see
+      policy_fabric_bindings.yaml's `notes` for any such case.
+    slots:
+      - dataUseModifier
+      - policyCardName
+      - referenceValueKeys
+      - referenceValueSources
+      - requiredCredentials
+      - capabilityOperation
+      - notes
+slots:
+  notes:
+    description: >-
+      Free-text notes — used in particular to record why sourceSlot is left unset
+      (which governanceDUO slot would need to be added, and its required shape) so a
+      gap is documented rather than silently dropped.
+    multivalued: true
+  bindings:
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    range: PolicyCardBinding
+  credentialType:
+    range: CredentialTypeEnum
+    required: true
+  requiredClaims:
+    description: Dot-path claim name(s) this policy_card's Rego logic actually reads, e.g. "locatedAt.country".
+    multivalued: true
+    required: true
+  dataUseModifier:
+    description: The DUO code (or Sage DUOPlus extension) this binding documents.
+    range: DataUseModifierEnum
+    required: true
+  policyCardName:
+    description: The literal tmp-policies policy_cards/<name>/ folder name, e.g. "geographical-restriction".
+    required: true
+  referenceValueKeys:
+    description: >-
+      The policy_data_schema.json key(s) this policy_card's Reference Values Schema
+      defines, e.g. "allowedCountries". Empty for policy_cards with no reference
+      values at all (pure credential-chain checks, e.g. ethics-approval-required).
+    multivalued: true
+  referenceValueKey:
+    description: One of the containing binding's referenceValueKeys, e.g. "allowedCountries".
+    required: true
+  sourceSlot:
+    description: >-
+      The name of the governanceDUO slot (on GovernanceMixin, Study, or the
+      PolicyFabricMixin) that collects the value for the paired referenceValueKey.
+    required: true
+  keyIsMultivalued:
+    description: >-
+      True if this referenceValueKey's own policy_data_schema.json documents it as a
+      list (e.g. "list of strings"); False if it's a single scalar value (e.g.
+      requiredDocumentID, notAfter, datasetID — each documented as "DID of ..."/an
+      ISO-8601 datetime, not a list). This is a property of the Policy Fabric key
+      itself, independent of whether its governanceDUO sourceSlot happens to be
+      multivalued — e.g. datasetID is scalar even though it is sourced from the
+      multivalued assetDids slot (build_policy_fabric.py takes assetDids[0]).
+    range: boolean
+    required: true
+    ifabsent: "true"
+  referenceValueSources:
+    multivalued: true
+    inlined: true
+    range: ReferenceValueSource
+  requiredCredentials:
+    multivalued: true
+    inlined: true
+    range: CredentialRequirement
+  capabilityOperation:
+    description: >-
+      The "name" field of the Capability Granted this policy_card's Rego emits on
+      success (every one of the 21 verified policy_cards emits "do_download" today —
+      Policy Fabric has not yet diversified beyond dataset download).
+    ifabsent: string(do_download)

@@ -35,6 +35,7 @@ imports:
   - base_entity
   - props
   - mixins
+  - policy_fabric
   - access_requirement
   - resource
   - schema
