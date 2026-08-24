@@ -1,9 +1,8 @@
-@base <https://w3id.org/sage-bionetworks/governance-duo/individuals/> .
 @prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<access_requirement.42> a governanceduo:AccessRequirement ;
+governanceduo:access_requirement.42 a governanceduo:AccessRequirement ;
     governanceduo:StudyKey "study.mc2-jax-5xfad" ;
     governanceduo:contributionDate "2026-01-15" ;
     governanceduo:contributorName "Jane Doe" ;
@@ -11,7 +10,7 @@
     governanceduo:diseaseSpecificResearch "MONDO:0004975" ;
     governanceduo:entityIdList "syn12345678" .
 
-<study.mc2-jax-5xfad> a governanceduo:Study ;
+governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
     governanceduo:dataUseModifiers "DUOPlus1" ;
     governanceduo:grantNumber "U54AG079754" ;
     governanceduo:sourceGeography "US" ;
