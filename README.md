@@ -105,14 +105,24 @@ AccessRequirement linkml/examples/access_requirement.example.yaml`). Note that
 `linkml-validate`'s JSON Schema path enforces them; `make shacl-validate` covers
 everything else (required fields, enum membership, regex patterns, datatypes,
 cardinality) against real instance data, converted via
-`scripts/convert_examples_to_rdf.py`. That script exists because `linkml-convert`'s
-CLI can't mint RDF subject URIs for this schema's dotted, colon-free ids
-(`access_requirement.42`) — its `-P/--prefix` flag can't set the special `"@base"`
-prefix entry the RDF dumper needs, and passing it also hits a real linkml_runtime bug
-(the dumper binds the literal string `"@base"` as a Turtle prefix, which isn't valid
-Turtle and fails to re-parse). `scripts/convert_examples_to_rdf.py` calls the dumper's
-Python API directly and filters that invalid binding out before serializing — see the
-script's docstring for the full explanation.
+`scripts/convert_examples_to_rdf.py`. This schema's ids are dotted, colon-free
+strings (`access_requirement.42` — the SageCommonDataModel-style convention this
+schema deliberately follows), and linkml_runtime's RDF dumper can only mint a
+subject URI for such an id via a special `"@base"` namespace entry that has to be
+supplied externally at dump time — the schema's own `prefixes:` block can't declare
+it at all (`Prefix('@base', ...)` is rejected as "not a valid NCName"), and
+`linkml-convert`'s `-P/--prefix` CLI flag hits that same rejection trying to set it.
+Rather than route around this with a made-up `@base` IRI (which also needs a
+second workaround, since the dumper then binds the literal string `"@base"` itself
+as an invalid Turtle prefix), `scripts/convert_examples_to_rdf.py` instead
+temporarily rewrites each loaded instance's id to a real CURIE
+(`governanceduo:access_requirement.42`) only for the dump call — which
+`Namespaces.uri_for()` resolves directly via the schema's own already-declared
+`governanceduo:` prefix, no `@base` involved — then restores the bare id
+afterward. The *stored* id in every example YAML file and every class's
+`slot_usage.id.pattern` are completely unaffected, preserving interoperability with
+SageCommonDataModel's bare-id convention everywhere except this one transient
+export step. See the script's docstring for the full explanation.
 
 **Known follow-up, not yet done:**
 - `make convert` and `scripts/create_json_from_model.py` must be re-run (they require
