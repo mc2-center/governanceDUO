@@ -5,35 +5,42 @@ Converts the instance examples under linkml/examples/*.example.yaml into RDF
 individuals (Turtle), so they can be validated against shapes/governance_duo.shacl.ttl
 with real instance data instead of just the schema-level OWL build.
 
-This exists because `linkml-convert`'s `-P/--prefix` CLI flag cannot set the special
-"@base" prefix map entry that linkml_runtime's RDF dumper needs to mint a subject URI
-for a colon-free identifier (e.g. `access_requirement.42` — the dotted, SageCommonData
-Model-style id this schema uses): the CLI passes every `-P` pair through
-`schema.prefixes[k] = Prefix(k, v)`, and `Prefix()` rejects "@base" as "not a valid
-NCName" before it ever reaches the dumper. The dumper's own `as_rdf_graph()`/`dumps()`
-Python API *does* accept `prefix_map={"@base": ...}` directly (it special-cases that
-key to call `namespaces._base = v`), so this script calls that API directly instead of
-shelling out to the CLI.
+This schema's ids are bare, colon-free dotted strings (e.g. `access_requirement.42`
+— the SageCommonDataModel-style convention this schema deliberately follows).
+linkml_runtime's RDF dumper can only mint a subject URI for such an id via a special
+`"@base"` namespace entry, and that entry can *only* be supplied externally at dump
+time (`prefix_map={"@base": ...}` on the dumper's own Python API) — the schema's own
+`prefixes:` block cannot declare it at all (`Prefix('@base', ...)` raises
+`ValueError: @base: Not a valid NCName`), and the CLI's `-P/--prefix` flag hits that
+same crash trying to register it. An earlier version of this script supplied a
+made-up `@base` IRI this way, which also required a second workaround: the dumper
+binds every namespaces() entry — including the `"@base"` one it was just given — as
+a Turtle `@prefix`, and `@prefix @base: <...> .` isn't valid Turtle, so the raw
+output had to be rebuilt into a fresh graph that skipped that one invalid binding
+before it could be re-parsed.
 
-It also works around a real linkml_runtime bug in that same code path:
-`as_rdf_graph()` iterates every entry in `schemaview.namespaces()` — including the
-special `"@base"` entry it just set — and calls `graph.bind("@base", ...)` on all of
-them. rdflib's Turtle serializer then emits `@prefix @base: <...> .`, which is not
-valid Turtle (`@base` is not a legal PN_PREFIX) and fails to re-parse. This script
-copies the dumped graph's triples into a fresh Graph, binding only namespace prefixes
-that are valid Turtle prefix names, before serializing.
+Both workarounds are unnecessary once an id contains a colon: `Namespaces.uri_for()`
+then resolves it as a real CURIE against the schema's own already-declared
+`governanceduo:` prefix directly — no `@base` involved at all (confirmed directly:
+`sv.namespaces().uri_for("governanceduo:access_requirement.42")` resolves with no
+`@base` entry present, while the bare `"access_requirement.42"` form does not). So
+this script loads each instance exactly as before (its id is validated against the
+class's own bare-dotted `pattern` at load time, unchanged), then temporarily
+rewrites the loaded object's `id` to CURIE form — `governanceduo:access_requirement.42`
+— only for the RDF-dump call, restoring the bare form afterward. The *stored* id in
+every example YAML file, and every class's `slot_usage.id.pattern`, are completely
+unaffected — this preserves interoperability with SageCommonDataModel's own bare-id
+convention everywhere except this one transient export step.
 
 Usage:
     python scripts/convert_examples_to_rdf.py [--schema linkml/governance_duo.linkml.yaml]
                                                [--examples-dir linkml/examples]
                                                [--out-dir linkml/examples/rdf]
-                                               [--base-iri https://w3id.org/sage-bionetworks/governance-duo/individuals/]
 
 author: orion.banks
 """
 
 import argparse
-import re
 from pathlib import Path
 
 from linkml.generators.pythongen import PythonGenerator
@@ -49,26 +56,39 @@ EXAMPLE_CLASSES = {
     "study": "Study",
 }
 
-VALID_PREFIX_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_.-]*")
+
+def to_curie(bare_id: str, default_prefix: str) -> str:
+    """`access_requirement.42` -> `governanceduo:access_requirement.42`. Raises if
+    already CURIE-shaped (contains a colon) -- this schema's stored ids never do,
+    so that would indicate a caller passed the wrong thing in."""
+    if ":" in bare_id:
+        raise ValueError(f"'{bare_id}' already contains a colon; expected a bare dotted id")
+    return f"{default_prefix}:{bare_id}"
 
 
-def convert_one(example_path: Path, class_name: str, module, schemaview: SchemaView, base_iri: str) -> Graph:
+def from_curie(curie: str) -> str:
+    """Inverse of to_curie -- `governanceduo:access_requirement.42` ->
+    `access_requirement.42`. Not called by this script's own flow (the bare id is
+    restored from a saved variable, not by re-deriving it), but kept alongside
+    to_curie so the mapping is documented as invertible, not just one-directional."""
+    if ":" not in curie:
+        raise ValueError(f"'{curie}' has no colon; expected a CURIE")
+    _prefix, local = curie.split(":", 1)
+    return local
+
+
+def convert_one(example_path: Path, class_name: str, module, schemaview: SchemaView) -> Graph:
     target_class = getattr(module, class_name)
     obj = yaml_loader.load(str(example_path), target_class=target_class)
 
-    dumper = RDFLibDumper()
-    raw_graph = dumper.as_rdf_graph(obj, schemaview, prefix_map={"@base": base_iri})
+    bare_id = obj.id
+    obj.id = to_curie(bare_id, schemaview.schema.default_prefix)
+    try:
+        graph = RDFLibDumper().as_rdf_graph(obj, schemaview)
+    finally:
+        obj.id = bare_id  # defensive: restore in case the loaded object is reused
 
-    # Work around linkml_runtime binding the literal "@base" key as a Turtle prefix
-    # (see module docstring) by rebuilding the graph with only valid prefix bindings.
-    clean_graph = Graph()
-    clean_graph.base = base_iri
-    for prefix, namespace in raw_graph.namespace_manager.namespaces():
-        if VALID_PREFIX_RE.fullmatch(prefix):
-            clean_graph.bind(prefix, namespace)
-    for triple in raw_graph:
-        clean_graph.add(triple)
-    return clean_graph
+    return graph
 
 
 def main():
@@ -78,10 +98,6 @@ def main():
     parser.add_argument("--schema", default="linkml/governance_duo.linkml.yaml")
     parser.add_argument("--examples-dir", default="linkml/examples")
     parser.add_argument("--out-dir", default="linkml/examples/rdf")
-    parser.add_argument(
-        "--base-iri",
-        default="https://w3id.org/sage-bionetworks/governance-duo/individuals/",
-    )
     args = parser.parse_args()
 
     schemaview = SchemaView(args.schema)
@@ -91,13 +107,12 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     merged = Graph()
-    merged.base = args.base_iri
 
     for stem, class_name in EXAMPLE_CLASSES.items():
         example_path = Path(args.examples_dir) / f"{stem}.example.yaml"
         if not example_path.exists():
             continue
-        graph = convert_one(example_path, class_name, module, schemaview, args.base_iri)
+        graph = convert_one(example_path, class_name, module, schemaview)
         out_path = out_dir / f"{stem}.ttl"
         graph.serialize(destination=str(out_path), format="turtle")
         print(f"Wrote {len(graph)} triples to {out_path}")
