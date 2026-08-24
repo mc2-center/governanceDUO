@@ -21,6 +21,15 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
  - Getting your DUCs in a row - standardising the representation of Digital Use Conditions. Jeanson, F., Gibson, S.J., Alper, P. et al., Sci Data 11, 464 (2024), doi: https://doi.org/10.1038/s41597-024-03280-6
 
 
+# Documentation
+
+Deeper, example-backed docs on the LinkML model, its knowledge-graph representations,
+and the Policy Fabric integration — including an auto-generated schema reference
+(`make docs`) — live under [`docs/`](docs/index.md), starting at
+[`docs/index.md`](docs/index.md). The LinkML/Policy Fabric/Governance Graph sections
+below are unchanged and still apply; the docs/ pages add diagrams, worked examples,
+and full per-class/slot/enum reference on top of them.
+
 # LinkML representation
 
 In addition to the schematic CSV model, this repository maintains a

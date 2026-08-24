@@ -49,3 +49,9 @@ governance-graph-validate: governance-graph
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
 
 validate-all: shacl-validate governance-graph-validate
+
+docs-examples:
+	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances
+
+docs: docs-examples
+	gen-doc ${LINKML_SCHEMA} -d docs/reference --render-imports --example-directory docs/example_instances --subfolder-type-separation

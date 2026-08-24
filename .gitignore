@@ -1,0 +1,3 @@
+# build-time scratch dir for `make docs` (renamed copies of linkml/examples/*.yaml
+# for gen-doc's --example-directory convention); regenerated on every build
+docs/example_instances/
