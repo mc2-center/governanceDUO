@@ -18,6 +18,7 @@ prefixes:
   NCIT: http://purl.obolibrary.org/obo/NCIT_
   T4FS: http://purl.obolibrary.org/obo/T4FS_
   ebiswo: http://www.ebi.ac.uk/swo/SWO_
+  dcterms: http://purl.org/dc/terms/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -311,7 +312,135 @@ slots:
     multivalued: true
     comments:
       - 'Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules.'
+  name:
+    description: >-
+      A Synapse-native display name. Shared by SynapseAccessRequirementMixin
+      (ACCESS_REQUIREMENT.NAME) and, via the transitive import chain
+      governance_graph.yaml -> access_requirement.yaml -> mixins.yaml,
+      SynapseEntity (NODE.NAME) in governance_graph.yaml — defined once here
+      rather than in governance_graph.yaml itself, since mixins.yaml cannot import
+      governance_graph.yaml back without creating a cycle
+      (governance_graph.yaml already depends on mixins.yaml through
+      access_requirement.yaml).
+  etag:
+    description: >-
+      Entity tag for optimistic concurrency control (a 36-character UUID). Shared
+      the same way as `name` above, by SynapseAccessRequirementMixin
+      (ACCESS_REQUIREMENT.ETAG) and SynapseEntity/DataAccessSubmission
+      (NODE.ETAG/DATA_ACCESS_SUBMISSION.ETAG) in governance_graph.yaml.
+  createdBy:
+    description: >-
+      Synapse numeric user id of the record's creator. Shared the same way as
+      `name` above. Distinct from ContributionMixin's contributorName, which is
+      this repo's own free-text curator-provenance field, not Synapse's own
+      numeric CREATED_BY column — both coexist on AccessRequirement without
+      collision.
+    range: integer
+    exact_mappings:
+      - dcterms:creator
+  createdOn:
+    description: >-
+      When the record was created (epoch milliseconds in the source Synapse
+      tables). Shared the same way as `name` above. Distinct from
+      ContributionMixin's contributionDate for the same reason as createdBy above.
+    range: integer
+    exact_mappings:
+      - dcterms:created
+  currentRevNum:
+    description: >-
+      The current revision number of the record. Shared the same way as `name`
+      above, by SynapseAccessRequirementMixin (ACCESS_REQUIREMENT.CURRENT_REV_NUM)
+      and SynapseEntity (NODE.CURRENT_REV_NUM).
+    range: integer
+  accessType:
+    description: >-
+      The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE).
+      Range is the same AccessTypeEnum used by AccessGrant.permission in
+      governance_graph.yaml — one real Synapse ACCESS_TYPE type backs both an
+      ACL grant's permission and an Access Requirement's own governed access kind.
+    range: AccessTypeEnum
+  concreteType:
+    description: >-
+      Which kind of Access Requirement this is (ACCESS_REQUIREMENT.CONCRETE_TYPE).
+      The real Synapse column stores the full Java class name (e.g.
+      "org.sagebionetworks.repo.model.ManagedACTAccessRequirement"); this enum
+      uses the short class name for readability.
+    range: AccessRequirementConcreteTypeEnum
+  isTwoFaRequired:
+    description: Whether two-factor authentication is required (ACCESS_REQUIREMENT.IS_TWO_FA_REQUIRED).
+    range: boolean
 enums:
+  AccessTypeEnum:
+    description: >-
+      Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org
+      (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone,
+      which only name a handful of these as examples in a free-text NOTES column).
+      Shared by AccessGrant.permission (an ACL grant's permission —
+      ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's
+      own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying
+      Synapse type in both places.
+    permissible_values:
+      CREATE:
+        description: Permission to create a new entity or resource.
+      READ:
+        description: Permission to read or view the entity or resource.
+      UPDATE:
+        description: Permission to modify or update the entity or resource.
+      DELETE:
+        description: Permission to delete the entity or resource.
+      CHANGE_PERMISSIONS:
+        description: Permission to change access permissions for the entity or resource.
+      DOWNLOAD:
+        description: Permission to download files or data from the entity or resource.
+      UPLOAD:
+        description: Deprecated; adding this to an ACL has no effect.
+        annotations:
+          deprecated: true
+      PARTICIPATE:
+        description: Permission to participate in activities related to the entity, such as discussions or challenges.
+      SUBMIT:
+        description: Permission to submit content or data to the entity or resource.
+      READ_PRIVATE_SUBMISSION:
+        description: Permission to read private submissions associated with the entity.
+      UPDATE_SUBMISSION:
+        description: Permission to update or modify a submission.
+      DELETE_SUBMISSION:
+        description: Permission to delete a submission.
+      TEAM_MEMBERSHIP_UPDATE:
+        description: Permission to update team membership, such as adding or removing members.
+      SEND_MESSAGE:
+        description: Permission to send messages related to the entity or resource.
+      CHANGE_SETTINGS:
+        description: Permission to change settings or configuration for the entity or resource.
+      MODERATE:
+        description: Permission to moderate content or activity related to the entity or resource.
+      REVIEW_SUBMISSIONS:
+        description: Enables reviewing submission groups (e.g., on Access Requirements) for specified objects.
+      EXEMPTION_ELIGIBLE:
+        description: Qualifies for exemption when granted on Access Requirement ACLs.
+  AccessRequirementConcreteTypeEnum:
+    description: >-
+      Synapse's real AccessRequirement subclasses, verified via
+      Sage-Bionetworks/Synapse-Repository-Services's AccessRequirementType.java
+      (lib/jdomodels/.../org/sagebionetworks/repo/model/ar/AccessRequirementType.java).
+      Permissible values use the short Java class name; the actual
+      ACCESS_REQUIREMENT.CONCRETE_TYPE column stores the fully-qualified name
+      (e.g. "org.sagebionetworks.repo.model.ManagedACTAccessRequirement").
+    permissible_values:
+      TermsOfUseAccessRequirement:
+        description: Restricted by terms of use (AccessRequirementType.TOU).
+      SelfSignAccessRequirement:
+        description: Restricted by terms of use, self-signed (AccessRequirementType.SELF_SIGNED).
+      ACTAccessRequirement:
+        description: Controlled by the Access and Compliance Team (AccessRequirementType.ATC).
+      ManagedACTAccessRequirement:
+        description: >-
+          Controlled by the Access and Compliance Team, with a managed data
+          access submission workflow (AccessRequirementType.MANAGED_ATC) — the
+          type backing DataAccessSubmission/DataAccessSubmissionStatus in
+          governance_graph.yaml.
+      LockAccessRequirement:
+        description: Controlled by the Access and Compliance Team; locks an entity (AccessRequirementType.LOCK).
   DataUseModifierEnum:
     description: >-
       Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions
@@ -934,3 +1063,25 @@ classes:
       - guardianUrl
       - policyContractDid
       - trustedIssuerDids
+  SynapseAccessRequirementMixin:
+    mixin: true
+    description: >-
+      The real Synapse-native ACCESS_REQUIREMENT row fields (verified against
+      "sagebrain governance graph ACL_AR data - AR table schemas.csv" plus the
+      live/source lookups documented on the shared slots and enums above),
+      applied to AccessRequirement alongside GovernanceMixin (the DUO
+      characterization of an AR's conditions) and ContributionMixin (this repo's
+      own curator-provenance fields — distinct from Synapse's own createdBy/
+      createdOn here, see those slots' descriptions). Part of aligning
+      governanceDUO with the SageBrain Governance Graph design, where an
+      AccessRequirement is a first-class graph entity with its own Synapse
+      identity, not only a DUO-condition record.
+    slots:
+      - name
+      - etag
+      - currentRevNum
+      - accessType
+      - concreteType
+      - isTwoFaRequired
+      - createdBy
+      - createdOn

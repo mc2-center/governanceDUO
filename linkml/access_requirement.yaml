@@ -21,6 +21,7 @@ classes:
       - GovernanceMixin
       - ContributionMixin
       - PolicyFabricMixin
+      - SynapseAccessRequirementMixin
     tree_root: true
     slot_usage:
       id:
