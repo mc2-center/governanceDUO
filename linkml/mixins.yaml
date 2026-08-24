@@ -216,6 +216,101 @@ slots:
       lookup schema.
     multivalued: true
     pattern: '^did:[a-z0-9]+:.+$'
+  requiredAgreementDocumentId:
+    description: >-
+      DID of the terms/agreement document the requester must accept before this
+      access requirement's data use modifiers are satisfied. Added to close a
+      Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its
+      general-research-use, publication-moratorium, return-to-database-or-resource,
+      and time-limit-on-use policy_cards all key their Reference Values Schema on a
+      single requiredDocumentID, which no existing slot held — publicationMoratorium
+      and timeLimitOnUse hold a date/duration, not a document identifier, so this is
+      a new, distinct slot rather than a reinterpretation of either.
+    pattern: '^did:[a-z0-9]+:.+$'
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000042, DUO:0000024, DUO:0000029, or DUO:0000025 — see GovernanceMixin rules.'
+  notAfter:
+    description: >-
+      ISO-8601 datetime after which use is no longer permitted. Added to close a
+      Policy Fabric gap: time-limit-on-use's Reference Values Schema key notAfter is
+      an absolute datetime, whereas the existing timeLimitOnUse slot holds a number
+      of months — a different shape entirely, so this is a new, distinct slot.
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000025 — see GovernanceMixin rules.'
+  allowedPurposes:
+    description: >-
+      Research purpose term(s) for which use is allowed. Added to close a Policy
+      Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research,
+      population-origins-or-ancestry-research-only, and research-specific-restrictions
+      all key their Reference Values Schema on a multivalued allowedPurposes list;
+      the existing researchSpecificRestrictions slot is free text and not
+      multivalued, so this is a new, distinct slot rather than a reinterpretation of
+      it (the two can coexist — one is a human-readable narrative, this one is the
+      structured, machine-checkable list Policy Fabric's Rego logic actually reads).
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000016, DUO:0000006, DUO:0000011, or DUO:0000012 — see GovernanceMixin rules.'
+  prohibitedPurposes:
+    description: >-
+      Research purpose term(s) for which use is explicitly disallowed. Added to
+      close a Policy Fabric gap: health-or-medical-or-biomedical-research,
+      no-general-methods-research, non-commercial-use-only,
+      not-for-profit-non-commercial-use-only, and
+      population-origins-or-ancestry-research-prohibited all key their Reference
+      Values Schema on a multivalued prohibitedPurposes list, which no existing slot
+      held.
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000006, DUO:0000015, DUO:0000046, DUO:0000018, or DUO:0000044 — see GovernanceMixin rules.'
+  nonprofitLegalForms:
+    description: >-
+      Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017
+      (Entity Legal Form Code List). Added to close a Policy Fabric gap:
+      not-for-profit-organisation-use-only and not-for-profit-non-commercial-use-only
+      both key their Reference Values Schema on a multivalued nonprofitLegalForms
+      list, which no existing slot held.
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000045 or DUO:0000018 — see GovernanceMixin rules.'
+  approvedProjects:
+    description: >-
+      DID(s) of project(s) approved to use the data under this access requirement.
+      Added to close a Policy Fabric gap: project-specific-restriction keys its
+      Reference Values Schema on a multivalued approvedProjects list of DIDs, which
+      no existing slot held.
+    multivalued: true
+    pattern: '^did:[a-z0-9]+:.+$'
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000027 — see GovernanceMixin rules.'
+  approvedUsers:
+    description: >-
+      Identifier(s) of specifically approved users. Added to close a Policy Fabric
+      gap: user-specific-restriction keys part of its Reference Values Schema on a
+      multivalued approvedUsers list, checked against UserPlatformCredential.userId
+      — the existing userSpecificRestriction slot is free text describing the
+      restriction, not a structured list of identifiers, so this is a new, distinct
+      slot (userSpecificRestriction, allowedAccountTypes, and requiredProfileStatuses
+      together cover the three separate keys this one policy_card's Reference Values
+      Schema defines).
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules.'
+  allowedAccountTypes:
+    description: >-
+      Account type(s) permitted to access the data (checked against
+      UserPlatformCredential.accountType). Added to close the same
+      user-specific-restriction gap as approvedUsers.
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules.'
+  requiredProfileStatuses:
+    description: >-
+      Profile status value(s) a requester's account must have (checked against
+      UserPlatformCredential.profileStatus). Added to close the same
+      user-specific-restriction gap as approvedUsers.
+    multivalued: true
+    comments:
+      - 'Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules.'
 enums:
   DataUseModifierEnum:
     description: >-
@@ -515,6 +610,15 @@ classes:
       - dataTier
       - license
       - attribution
+      - requiredAgreementDocumentId
+      - notAfter
+      - allowedPurposes
+      - prohibitedPurposes
+      - nonprofitLegalForms
+      - approvedProjects
+      - approvedUsers
+      - allowedAccountTypes
+      - requiredProfileStatuses
     rules:
       - preconditions:
           slot_conditions:
@@ -635,6 +739,166 @@ classes:
         postconditions:
           slot_conditions:
             attribution:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000042
+        postconditions:
+          slot_conditions:
+            requiredAgreementDocumentId:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000024
+        postconditions:
+          slot_conditions:
+            requiredAgreementDocumentId:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000029
+        postconditions:
+          slot_conditions:
+            requiredAgreementDocumentId:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000025
+        postconditions:
+          slot_conditions:
+            requiredAgreementDocumentId:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000025
+        postconditions:
+          slot_conditions:
+            notAfter:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000016
+        postconditions:
+          slot_conditions:
+            allowedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000006
+        postconditions:
+          slot_conditions:
+            allowedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000006
+        postconditions:
+          slot_conditions:
+            prohibitedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000011
+        postconditions:
+          slot_conditions:
+            allowedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000012
+        postconditions:
+          slot_conditions:
+            allowedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000015
+        postconditions:
+          slot_conditions:
+            prohibitedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000046
+        postconditions:
+          slot_conditions:
+            prohibitedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000018
+        postconditions:
+          slot_conditions:
+            nonprofitLegalForms:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000018
+        postconditions:
+          slot_conditions:
+            prohibitedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000044
+        postconditions:
+          slot_conditions:
+            prohibitedPurposes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000045
+        postconditions:
+          slot_conditions:
+            nonprofitLegalForms:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000027
+        postconditions:
+          slot_conditions:
+            approvedProjects:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000026
+        postconditions:
+          slot_conditions:
+            approvedUsers:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000026
+        postconditions:
+          slot_conditions:
+            allowedAccountTypes:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000026
+        postconditions:
+          slot_conditions:
+            requiredProfileStatuses:
               required: true
   ContributionMixin:
     mixin: true
