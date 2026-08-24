@@ -121,6 +121,71 @@ script's docstring for the full explanation.
   `*_validation_schema-updated.json` files after the `Pattern` additions to
   `model/*.model.csv`.
 
+## Policy Fabric alignment
+
+[Policy Fabric](https://github.com/hasan7n/tmp-policies) (docs:
+[hasan7n.github.io/tmp-policies](https://hasan7n.github.io/tmp-policies/); architecture
+paper: "A Technical Policy Blueprint for Trustworthy Decentralized AI") is a
+decentralized-AI governance framework whose reference policies (`policy_cards/`) are
+each authored against a specific DUO code — the same Data Use Ontology this repo's
+`GovernanceMixin`/`DataUseModifierEnum` already encode. `linkml/policy_fabric.yaml`
+and `linkml/policy_fabric_bindings.yaml` add the missing structured link: for every
+one of the 21 `policy_cards/` in that repo (verified by reading each folder's actual
+`policy.rego` and `policy_data_schema.json`, not inferred from naming), a
+`PolicyCardBinding` records its DUO code, its Reference Values Schema key(s), which
+Verifiable Credential type(s)/claim(s) it requires, and — critically — which existing
+governanceDUO slot (if any) already collects that reference value.
+
+Each `PolicyCardBinding` maps its `referenceValueKeys` to governanceDUO slots via
+`referenceValueSources` (a list, not a single scalar — several bindings need two
+keys from two different slots, e.g. `time-limit-on-use`'s `requiredDocumentID` and
+`notAfter`), each tagged `keyIsMultivalued` since some Policy Fabric keys are lists
+(`allowedCountries`) and some are scalars (`datasetID`, `requiredDocumentID`,
+`notAfter`) — `scripts/build_policy_fabric.py` honors this per key rather than
+uniformly wrapping every value in an array, which was a real bug caught and fixed
+while closing the gaps below.
+
+5 of the 21 bindings had a working `sourceSlot` from the start:
+`geographicalRestriction` and `diseaseSpecificResearch` already collected exactly
+what's needed (ISO country codes, MONDO codes); `institutionSpecificRestriction`
+didn't — Policy Fabric's `AffiliationCredential.isMemberOf` and
+`allowedInstitutions` expect organization **DIDs**, not ROR ids, so a new companion
+slot `institutionDids` was added rather than reinterpreting the existing ROR-pattern
+field; `collaboration-required` and `publication-required` both key on a `datasetID`
+sourced from the new `PolicyFabricMixin.assetDids`. A new `PolicyFabricMixin`
+(`assetDids`, `guardianDataSource`, `guardianUrl`, `policyContractDid`,
+`trustedIssuerDids`), applied to `AccessRequirement`, mirrors the real (minimal)
+Django `Asset` model's `did`/`metadata` fields and the per-record trust choices
+Policy Fabric's "expose" step captures.
+
+The remaining 16 were **documented gaps, not silent guesses**, and have since been
+closed by adding 9 new, deliberately reusable `GovernanceMixin` slots — each with
+its own DUO-conditional `rules:` entry, matching this repo's existing pattern —
+rather than repurposing an existing narrative field into the wrong shape:
+`allowedPurposes`/`prohibitedPurposes` (reused across 8 codes), `nonprofitLegalForms`
+(ISO 20275 ELF codes, 2 codes), `requiredAgreementDocumentId` (4 codes),
+`approvedProjects`, `notAfter`, and `approvedUsers`/`allowedAccountTypes`/
+`requiredProfileStatuses` (all three for `user-specific-restriction` alone, since its
+Reference Values Schema has three independent keys that don't decompose from the
+pre-existing free-text `userSpecificRestriction` field). Two of these are real shape
+corrections, not just additions: `publicationMoratorium` (an end-date) and
+`timeLimitOnUse` (a number of months) are left as-is, and the new
+`requiredAgreementDocumentId`/`notAfter` slots source those two `policy_cards/`
+instead, since the old fields never held what those policies actually check. All 21
+bindings now have every `referenceValueKey` mapped except
+`ethics-approval-required`, whose Reference Values Schema is genuinely empty (a pure
+credential-chain check) — nothing to source, not a gap.
+
+`scripts/build_policy_fabric.py` exports an `AccessRequirement` instance into Policy
+Fabric's actual input shape: `policy_data.json` (merged reference values),
+`associated_credentials.json`, and `asset_registration.json`. Run against
+`linkml/examples/access_requirement_policy_fabric.example.yaml` (DUO:0000022 +
+DUO:0000028 together, mirroring the tutorial's own worked example) via
+`make policy-fabric`, its `policy_data.json` output is byte-for-byte the tutorial's
+literal `{"allowedCountries": ["US"], "allowedInstitutions":
+["did:example:best_university"]}`. **No changes have been made to
+`hasan7n/tmp-policies` itself.**
+
 # Materials available in this repository
  - The modular data model CSV source files are available under `model/schematic`
  - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
