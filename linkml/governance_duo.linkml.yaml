@@ -28,6 +28,8 @@ prefixes:
   T4FS: http://purl.obolibrary.org/obo/T4FS_
   ebiswo: http://www.ebi.ac.uk/swo/SWO_
   EVORAO: https://w3id.org/evorao/
+  dpv: https://w3id.org/dpv#
+  sagegov: https://sagebionetworks.org/governance/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -40,3 +42,4 @@ imports:
   - resource
   - schema
   - study
+  - governance_graph
