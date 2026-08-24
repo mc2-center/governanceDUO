@@ -60,6 +60,7 @@ EXAMPLE_CLASSES = {
     "synapse_entity_file": "SynapseEntity",
     "synapse_entity_study": "SynapseEntity",
     "principal_team_x": "Principal",
+    "principal_user_2000001": "Principal",
     "access_grant": "AccessGrant",
     "access_requirement_association": "AccessRequirementAssociation",
     "data_access_submission": "DataAccessSubmission",
@@ -75,8 +76,39 @@ def gov_id(value: str):
     return GOV[value.replace(".", "-").replace("_", "-")]
 
 
+# Literal SynapseEntity slots emitted as-is (auto-typed by rdflib from the YAML's own
+# Python type); createdBy/createdOn are handled separately below (createdBy as
+# gov:createdByUserId -- see note in add_synapse_entity -- and createdOn to match the
+# xsd:long datatype used for every other class's createdOn), and parentId is an IRI
+# reference, not a literal.
+SYNAPSE_ENTITY_LITERAL_SLOTS = (
+    "name",
+    "nodeType",
+    "alias",
+    "currentRevNum",
+    "maxRevNum",
+    "etag",
+)
+
+
 def add_synapse_entity(g: Graph, data: dict):
     subject = SYN[data["id"]]
+    # Every SynapseEntity gets an explicit rdf:type, even one with no parentId of its
+    # own (e.g. a top-level project) -- otherwise a node referenced only as another
+    # entity's parentId (like syn2343195 below) would have no triples of its own and
+    # be untargetable by a class-based SHACL shape.
+    g.add((subject, RDF.type, GOV.SynapseEntity))
+    for slot in SYNAPSE_ENTITY_LITERAL_SLOTS:
+        if data.get(slot) is not None:
+            g.add((subject, GOV[slot], Literal(data[slot])))
+    if data.get("createdBy") is not None:
+        # gov:createdByUserId, not gov:createdBy: the latter is reserved for IRI
+        # references to a gov:Principal node (see add_data_access_submission and
+        # add_data_access_submission_status) -- this is a raw NODE.CREATED_BY id with
+        # no corresponding Principal record required.
+        g.add((subject, GOV.createdByUserId, Literal(data["createdBy"])))
+    if data.get("createdOn") is not None:
+        g.add((subject, GOV.createdOn, Literal(data["createdOn"], datatype=XSD.long)))
     if data.get("parentId"):
         g.add((subject, GOV.parentId, SYN[data["parentId"]]))
 
@@ -85,6 +117,11 @@ def add_principal(g: Graph, data: dict):
     # Principals have no BaseEntity id in this schema (see governance_graph.yaml's
     # own note on Principal) -- mint a stable node from principalId directly.
     subject = GOV[f"principal-{data['principalId']}"]
+    # Asserted explicitly alongside the Team/User subtype below, rather than relying
+    # solely on shapes/governance_graph.owl.ttl's rdfs:subClassOf declarations -- a
+    # plain SPARQL query for `?x a gov:Principal` (or any tool that doesn't load that
+    # TBox and do subclass entailment) should still find every Principal individual.
+    g.add((subject, RDF.type, GOV.Principal))
     g.add((subject, RDF.type, GOV[data["principalType"]]))
     g.add((subject, GOV.principalId, Literal(data["principalId"])))
     return subject
@@ -99,6 +136,18 @@ def add_access_grant(g: Graph, data: dict, principal_node):
         g.add((subject, GOV.permission, GOV[perm]))
     g.add((subject, GOV.source, GOV[data["source"]]))
     g.add((subject, GOV.bindingType, GOV[data["bindingType"]]))
+    if data.get("createdOn") is not None:
+        g.add((subject, GOV.createdOn, Literal(data["createdOn"], datatype=XSD.long)))
+    if data.get("sourceAclId") is not None:
+        g.add((subject, GOV.sourceAclId, Literal(data["sourceAclId"])))
+    if data.get("sourceAclResourceAccessId") is not None:
+        g.add(
+            (
+                subject,
+                GOV.sourceAclResourceAccessId,
+                Literal(data["sourceAclResourceAccessId"]),
+            )
+        )
     # design doc: "syn10081783 -- hasACL --> ACL:syn10081783 -- (grants) --> ...";
     # this repo's AccessGrant *is* the grant record itself, so the derived
     # convenience triple points hasACL directly at it.
@@ -132,9 +181,33 @@ def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
 
 
 def add_data_access_submission_status(g: Graph, data: dict, submission_node) -> bool:
+    # DataAccessSubmissionStatus has no independent node of its own (see
+    # governance_graph.yaml) -- its state/reason/audit fields are merged onto the
+    # DataAccessSubmission subject. Its own createdBy/modifiedBy use the distinct
+    # gov:statusCreatedBy/gov:statusModifiedBy predicates (IRI references to a
+    # Principal node, mirroring add_data_access_submission's gov:createdBy) rather
+    # than gov:createdBy itself: DataAccessSubmission.createdBy already occupies that
+    # predicate on this same subject, and the status row's creator/modifier can
+    # legitimately be a different Principal (e.g. an ACT reviewer, not the requester).
     g.add((submission_node, GOV.state, GOV[data["state"]]))
     if data.get("reason"):
         g.add((submission_node, GOV.reason, Literal(data["reason"])))
+    if data.get("createdBy") is not None:
+        g.add(
+            (submission_node, GOV.statusCreatedBy, GOV[f"principal-{data['createdBy']}"])
+        )
+    if data.get("createdOn") is not None:
+        g.add(
+            (submission_node, GOV.statusCreatedOn, Literal(data["createdOn"], datatype=XSD.long))
+        )
+    if data.get("modifiedBy") is not None:
+        g.add(
+            (submission_node, GOV.statusModifiedBy, GOV[f"principal-{data['modifiedBy']}"])
+        )
+    if data.get("modifiedOn") is not None:
+        g.add(
+            (submission_node, GOV.statusModifiedOn, Literal(data["modifiedOn"], datatype=XSD.long))
+        )
     return data["state"] == "APPROVED"
 
 

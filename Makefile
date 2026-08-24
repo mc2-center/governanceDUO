@@ -44,3 +44,8 @@ policy-fabric:
 
 governance-graph:
 	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl
+
+governance-graph-validate: governance-graph
+	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
+
+validate-all: shacl-validate governance-graph-validate
