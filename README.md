@@ -186,6 +186,68 @@ literal `{"allowedCountries": ["US"], "allowedInstitutions":
 ["did:example:best_university"]}`. **No changes have been made to
 `hasan7n/tmp-policies` itself.**
 
+## Governance Graph alignment
+
+`linkml/governance_graph.yaml` (plus `AccessTypeEnum`/`AccessRequirementConcreteTypeEnum`
+and a new `SynapseAccessRequirementMixin`, in `linkml/mixins.yaml`) captures the
+SageBrain **Governance Graph** design: a logically separate graph of ACLs and
+Access Requirements, connected to the domain/scientific metadata graph only via
+shared Synapse entity URIs. Its central point — an ACL answers "who has which
+permission on this resource?", an Access Requirement answers "what additional
+conditions must be satisfied?", and effective access needs both — is why
+governanceDUO's existing `AccessRequirement`/DUO-condition model gets a genuinely
+new **ACL/permission-grant** side (`AccessGrant`, `Principal`), not a
+reinterpretation of what already existed.
+
+Every new class/enum was verified against a real source, the same discipline as
+the DUO/Policy-Fabric work above: the two "sagebrain governance graph ACL_AR data"
+CSVs (Synapse's actual `ACCESS_REQUIREMENT`/`ACL`/`NODE`/... relational table
+schemas) for column existence and type, and live lookups for the controlled
+vocabularies those CSVs name but don't enumerate — `AccessTypeEnum` (18 real
+values, shared by an ACL grant's permission *and* an AR's own governed access
+kind — same underlying Synapse type) via `rest-docs.synapse.org`,
+`AccessRequirementConcreteTypeEnum` (5 values) and `SubmissionStateEnum`
+(SUBMITTED/APPROVED/REJECTED/CANCELLED) via Java source on
+`Sage-Bionetworks/Synapse-Repository-Services`/`SynapseWebClient`. `NODE_TYPE`
+(project/folder/file/...) was **not** independently verified and is left as an
+open string rather than a fabricated enum.
+
+New classes are additive and deliberately separate from existing ones with a
+similar-sounding but different purpose: `SynapseEntity` (mirrors `NODE`, with real
+`parentId` hierarchy for direct-vs-inherited resolution) is distinct from
+`Resource` (a reusable resource-*type* pattern, not a concrete entity);
+`AccessRequirementAssociation`/`DataAccessSubmission`/`DataAccessSubmissionStatus`
+give the design doc's "direct vs. inherited" governance and "has the user
+satisfied this AR?" concepts an explicit, auditable home (mirroring
+`ACCESS_REQUIREMENT_PROJECT`/`DATA_ACCESS_SUBMISSION`/`DATA_ACCESS_SUBMISSION_STATUS`)
+instead of a precomputed boolean.
+
+Ontology mappings (verified via OLS where indexed) include `prov:Entity`/`prov:Agent`
+for `SynapseEntity`/`Principal`, `dcterms:isPartOf`/`creator`/`created`/`modified`/
+`contributor`/`source`/`requires` for the obvious provenance/hierarchy slots, and
+`schema:DigitalDocumentPermissionType` + **`dpv:AuthorisationProtocols`** for
+`AccessGrant` — the latter found via a documented **fallback to
+[Linked Open Vocabularies](https://lov.linkeddata.es/)** after confirming OLS has no
+entry at all for DPV (the Data Privacy Vocabulary); this fallback (validated
+against DPV, PROV, and SKOS) is now built into the `ols-term-annotator` skill
+itself as `lov-vocab-search`/`lov-term-search`. `bindingType`, submission `state`,
+and `Principal.principalType` were checked and left unmapped rather than forced.
+
+`scripts/build_governance_graph.py` exports the worked example under
+`linkml/examples/governance_graph/` (recreating the design doc's own `syn10081783`/
+`Team X`/`AR-123`/Alice scenario) as Turtle using the doc's own `gov:`/`syn:`
+predicates — run via `make governance-graph`, its output is structurally the same
+shape as the doc's own snippets (e.g. `gov:ar-association-001 a
+gov:AccessRequirementAssociation ; gov:resource syn:syn10081783 ; gov:accessRequirement
+gov:AR-123 ; gov:source gov:Synapse ; gov:bindingType gov:Inherited .`), including
+correctly *not* emitting a `gov:hasApproval` triple while Alice's submission is only
+`SUBMITTED`, not yet `APPROVED`. The LinkML schema itself registers this same
+namespace under `sagegov:`, not `gov:` — `gov:` collides with a different,
+canonical prefix (`http://gov.genealogy.net/ontology.owl#`) `linkml-lint` flagged,
+same as `ebiswo:` vs. OBO Foundry `SWO:` earlier; the export script uses the literal
+`gov:` in its own Turtle output regardless, since that's independent of the
+schema's prefix registry.
+
 # Materials available in this repository
  - The modular data model CSV source files are available under `model/schematic`
  - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
