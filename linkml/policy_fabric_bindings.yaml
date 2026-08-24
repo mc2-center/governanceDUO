@@ -1,0 +1,502 @@
+bindings:
+  - dataUseModifier: DUO:0000022
+    policyCardName: geographical-restriction
+    referenceValueKeys:
+      - allowedCountries
+    referenceValueSources:
+      - referenceValueKey: allowedCountries
+        sourceSlot: geographicalRestriction
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: LocationCredential
+        requiredClaims: [locatedAt.country]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Exact match: GovernanceMixin.geographicalRestriction already holds a multivalued list of ISO country codes."
+
+  - dataUseModifier: DUO:0000028
+    policyCardName: institution-specific-restriction
+    referenceValueKeys:
+      - allowedInstitutions
+    referenceValueSources:
+      - referenceValueKey: allowedInstitutions
+        sourceSlot: institutionDids
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: AffiliationCredential
+        requiredClaims: [isMemberOf]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Uses the institutionDids slot, not the existing ROR-pattern institutionSpecificRestriction:
+        AffiliationCredential.isMemberOf and allowedInstitutions both expect organization DIDs, not ROR ids."
+
+  - dataUseModifier: DUO:0000026
+    policyCardName: user-specific-restriction
+    referenceValueKeys:
+      - approvedUsers
+      - allowedAccountTypes
+      - requiredProfileStatuses
+    referenceValueSources:
+      - referenceValueKey: approvedUsers
+        sourceSlot: approvedUsers
+        keyIsMultivalued: true
+      - referenceValueKey: allowedAccountTypes
+        sourceSlot: allowedAccountTypes
+        keyIsMultivalued: true
+      - referenceValueKey: requiredProfileStatuses
+        sourceSlot: requiredProfileStatuses
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: UserPlatformCredential
+        requiredClaims: [userId, accountType, profileStatus]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "The pre-existing userSpecificRestriction slot is a single free-text string describing the
+        restriction in prose; it is not reused here because this policy_card wants three separate
+        structured, multivalued lists. approvedUsers/allowedAccountTypes/requiredProfileStatuses were
+        added as new, distinct GovernanceMixin slots (with matching DUO:0000026 conditional-requirement
+        rules) to close this gap without repurposing the free-text field."
+
+  - dataUseModifier: DUO:0000020
+    policyCardName: collaboration-required
+    referenceValueKeys:
+      - datasetID
+    referenceValueSources:
+      - referenceValueKey: datasetID
+        sourceSlot: assetDids
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: AffiliationCredential
+        requiredClaims: [isMemberOf]
+      - credentialType: ScopedAgreementCredential
+        requiredClaims: [agreementInfo.scope.obligation, agreementInfo.scope.dataset, agreementInfo.scope.project]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "datasetID is the governed asset's own DID, not a value about collaboration itself — sourced from
+        PolicyFabricMixin.assetDids, not the existing collaborationRequired slot (which holds a PI email
+        address, an entirely different piece of information)."
+      - "The actual gating condition is a 5-credential chain (Team -> ProjectOwnership -> Affiliation ->
+        ScopedAgreement -> Agreement); governanceDUO has no per-AccessRequirement representation of this
+        chain today (out of scope for this pass — it is evidence the *requester* presents, not something the
+        asset owner's record needs to carry)."
+
+  - dataUseModifier: DUO:0000007
+    policyCardName: disease-specific-research
+    referenceValueKeys:
+      - allowedDiseases
+    referenceValueSources:
+      - referenceValueKey: allowedDiseases
+        sourceSlot: diseaseSpecificResearch
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Exact match: GovernanceMixin.diseaseSpecificResearch already holds a multivalued list of MONDO codes,
+        the same vocabulary IntendedDataUseCredential.useOnlyFor.diseases uses."
+
+  - dataUseModifier: DUO:0000021
+    policyCardName: ethics-approval-required
+    referenceValueKeys: []
+    requiredCredentials:
+      - credentialType: IRBApprovalCredential
+        requiredClaims: [isApprovedByEthicsCommittee]
+      - credentialType: EthicsCommitteeAccreditationCredential
+        requiredClaims: [ResponsibleFor]
+      - credentialType: AffiliationCredential
+        requiredClaims: [isMemberOf]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.diseases]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "policy_data_schema.json is empty — no owner-configured reference values at all, purely a credential
+        chain check. referenceValueSources intentionally empty; this is not a gap, nothing to source."
+
+  - dataUseModifier: DUO:0000042
+    policyCardName: general-research-use
+    referenceValueKeys:
+      - requiredDocumentID
+    referenceValueSources:
+      - referenceValueKey: requiredDocumentID
+        sourceSlot: requiredAgreementDocumentId
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000042 (GRU) had no detail slot in GovernanceMixin before this pass. Closed by the new,
+        shared requiredAgreementDocumentId slot (also used by publication-moratorium,
+        return-to-database-or-resource, and time-limit-on-use)."
+
+  - dataUseModifier: DUO:0000016
+    policyCardName: genetic-studies-only
+    referenceValueKeys:
+      - allowedPurposes
+    referenceValueSources:
+      - referenceValueKey: allowedPurposes
+        sourceSlot: allowedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000016 (GSO) had no detail slot before this pass. Closed by the new, shared allowedPurposes
+        slot (also used by health-or-medical-or-biomedical-research,
+        population-origins-or-ancestry-research-only, and research-specific-restrictions)."
+
+  - dataUseModifier: DUO:0000006
+    policyCardName: health-or-medical-or-biomedical-research
+    referenceValueKeys:
+      - allowedPurposes
+      - prohibitedPurposes
+    referenceValueSources:
+      - referenceValueKey: allowedPurposes
+        sourceSlot: allowedPurposes
+        keyIsMultivalued: true
+      - referenceValueKey: prohibitedPurposes
+        sourceSlot: prohibitedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000006 (HMB) had no detail slot before this pass. Closed by the new, shared allowedPurposes and
+        prohibitedPurposes slots — the only binding among the 21 that needs both keys from two different
+        slots, which is why referenceValueSources (not a single scalar sourceSlot) exists."
+
+  - dataUseModifier: DUO:0000015
+    policyCardName: no-general-methods-research
+    referenceValueKeys:
+      - prohibitedPurposes
+    referenceValueSources:
+      - referenceValueKey: prohibitedPurposes
+        sourceSlot: prohibitedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000015 (NMDS) had no detail slot before this pass. Closed by the new, shared prohibitedPurposes
+        slot (also used by health-or-medical-or-biomedical-research, non-commercial-use-only,
+        not-for-profit-non-commercial-use-only, and population-origins-or-ancestry-research-prohibited)."
+
+  - dataUseModifier: DUO:0000046
+    policyCardName: non-commercial-use-only
+    referenceValueKeys:
+      - prohibitedPurposes
+    referenceValueSources:
+      - referenceValueKey: prohibitedPurposes
+        sourceSlot: prohibitedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000046 (NCU) had no detail slot before this pass. Same shared prohibitedPurposes slot as
+        no-general-methods-research/not-for-profit-non-commercial-use-only/population-origins-or-ancestry-research-prohibited."
+
+  - dataUseModifier: DUO:0000018
+    policyCardName: not-for-profit-non-commercial-use-only
+    referenceValueKeys:
+      - nonprofitLegalForms
+      - prohibitedPurposes
+    referenceValueSources:
+      - referenceValueKey: nonprofitLegalForms
+        sourceSlot: nonprofitLegalForms
+        keyIsMultivalued: true
+      - referenceValueKey: prohibitedPurposes
+        sourceSlot: prohibitedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: LegalDesignationCredential
+        requiredClaims: [hasLegalForm]
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000018 (NPUNCU) had no detail slot before this pass. Closed by the new, shared
+        nonprofitLegalForms and prohibitedPurposes slots — like health-or-medical-or-biomedical-research,
+        needs two keys from two different slots."
+
+  - dataUseModifier: DUO:0000045
+    policyCardName: not-for-profit-organisation-use-only
+    referenceValueKeys:
+      - nonprofitLegalForms
+    referenceValueSources:
+      - referenceValueKey: nonprofitLegalForms
+        sourceSlot: nonprofitLegalForms
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: LegalDesignationCredential
+        requiredClaims: [hasLegalForm]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000045 (NPU) had no detail slot before this pass. Closed by the new, shared nonprofitLegalForms
+        slot (ISO 20275:2017 ELF codes), also used by not-for-profit-non-commercial-use-only."
+
+  - dataUseModifier: DUO:0000011
+    policyCardName: population-origins-or-ancestry-research-only
+    referenceValueKeys:
+      - allowedPurposes
+    referenceValueSources:
+      - referenceValueKey: allowedPurposes
+        sourceSlot: allowedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000011 (POA) had no detail slot before this pass. Same shared allowedPurposes slot as
+        genetic-studies-only/health-or-medical-or-biomedical-research/research-specific-restrictions."
+
+  - dataUseModifier: DUO:0000044
+    policyCardName: population-origins-or-ancestry-research-prohibited
+    referenceValueKeys:
+      - prohibitedPurposes
+    referenceValueSources:
+      - referenceValueKey: prohibitedPurposes
+        sourceSlot: prohibitedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000044 (NPOA) had no detail slot before this pass. Same shared prohibitedPurposes slot as the
+        other prohibited-purposes-keyed bindings."
+
+  - dataUseModifier: DUO:0000027
+    policyCardName: project-specific-restriction
+    referenceValueKeys:
+      - approvedProjects
+    referenceValueSources:
+      - referenceValueKey: approvedProjects
+        sourceSlot: approvedProjects
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000027 (PS) had no detail slot before this pass. Closed by the new approvedProjects
+        (multivalued DID) slot."
+
+  - dataUseModifier: DUO:0000024
+    policyCardName: publication-moratorium
+    referenceValueKeys:
+      - requiredDocumentID
+    referenceValueSources:
+      - referenceValueKey: requiredDocumentID
+        sourceSlot: requiredAgreementDocumentId
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: ComputeEnvironmentCredential
+        requiredClaims: [hasComputeProfile.profile.SecureHandlingOfResults]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Real shape mismatch, not just a missing slot: the pre-existing publicationMoratorium slot holds an
+        end-date; this policy_card's actual policy_data key is requiredDocumentID (an agreement document
+        DID) — the moratorium date itself is presumably embedded in that referenced document, not exposed as
+        policy_data. Closed by the new, shared requiredAgreementDocumentId slot instead of repurposing
+        publicationMoratorium, which is left as-is (it still describes the schematic model's own end-date
+        concept, used elsewhere/by Synapse)."
+
+  - dataUseModifier: DUO:0000019
+    policyCardName: publication-required
+    referenceValueKeys:
+      - datasetID
+    referenceValueSources:
+      - referenceValueKey: datasetID
+        sourceSlot: assetDids
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: AffiliationCredential
+        requiredClaims: [isMemberOf]
+      - credentialType: ScopedAgreementCredential
+        requiredClaims: [agreementInfo.scope.obligation, agreementInfo.scope.dataset, agreementInfo.scope.project]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Same pattern as collaboration-required (DUO:0000020): datasetID sourced from assetDids. DUO:0000019
+        (PUB) has no detail slot of its own in this repo's model, and doesn't need one — nothing about
+        'publication required' itself is owner-configurable reference data in this policy_card."
+
+  - dataUseModifier: DUO:0000012
+    policyCardName: research-specific-restrictions
+    referenceValueKeys:
+      - allowedPurposes
+    referenceValueSources:
+      - referenceValueKey: allowedPurposes
+        sourceSlot: allowedPurposes
+        keyIsMultivalued: true
+    requiredCredentials:
+      - credentialType: IntendedDataUseCredential
+        requiredClaims: [useOnlyFor.purposes, useOnlyFor.diseases]
+      - credentialType: ProjectOwnershipCredential
+        requiredClaims: [Owns]
+      - credentialType: TeamCredential
+        requiredClaims: [MemberOfTeamOf]
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "The pre-existing researchSpecificRestrictions slot is free text and not multivalued, so it is not
+        reused here — this policy_card wants a multivalued controlled list of purpose terms. Closed by the
+        new, shared allowedPurposes slot instead; researchSpecificRestrictions is left as the human-readable
+        narrative field and can coexist with it."
+
+  - dataUseModifier: DUO:0000029
+    policyCardName: return-to-database-or-resource
+    referenceValueKeys:
+      - requiredDocumentID
+    referenceValueSources:
+      - referenceValueKey: requiredDocumentID
+        sourceSlot: requiredAgreementDocumentId
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: ComputeEnvironmentCredential
+        requiredClaims: [hasComputeProfile.profile.SecureHandlingOfResults]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "DUO:0000029 (RTN) had no detail slot before this pass. Same shared requiredAgreementDocumentId slot
+        as general-research-use/publication-moratorium/time-limit-on-use."
+
+  - dataUseModifier: DUO:0000025
+    policyCardName: time-limit-on-use
+    referenceValueKeys:
+      - requiredDocumentID
+      - notAfter
+    referenceValueSources:
+      - referenceValueKey: requiredDocumentID
+        sourceSlot: requiredAgreementDocumentId
+        keyIsMultivalued: false
+      - referenceValueKey: notAfter
+        sourceSlot: notAfter
+        keyIsMultivalued: false
+    requiredCredentials:
+      - credentialType: AgreementCredential
+        requiredClaims: [agreementInfo.documentID]
+      - credentialType: ComputeEnvironmentCredential
+        requiredClaims: [hasComputeProfile.profile.shutsDownAt]
+      - credentialType: publicKeyCredential
+        requiredClaims: [key]
+    capabilityOperation: do_download
+    notes:
+      - "Real shape mismatch, not just a missing slot: the pre-existing timeLimitOnUse slot holds a number of
+        months, whereas this policy_card's notAfter key wants an absolute ISO-8601 datetime, and
+        requiredDocumentID has no analog at all in the old model. Closed by the new, shared
+        requiredAgreementDocumentId slot plus a new, dedicated notAfter slot; timeLimitOnUse is left as-is."
