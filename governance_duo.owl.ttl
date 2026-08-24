@@ -3,6 +3,7 @@
 @prefix NCIT: <http://purl.obolibrary.org/obo/NCIT_> .
 @prefix T4FS: <http://purl.obolibrary.org/obo/T4FS_> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dpv: <https://w3id.org/dpv#> .
 @prefix ebiswo: <http://www.ebi.ac.uk/swo/SWO_> .
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
 @prefix linkml: <https://w3id.org/linkml/> .
@@ -10,6 +11,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema1: <http://schema.org/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -19,6 +21,33 @@ governanceduo:AccessRequirementKey a owl:ObjectProperty,
     skos:definition "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
     skos:inScheme governanceduo:props ;
     governanceduo:foreign_key true .
+
+governanceduo:DataAccessSubmissionStatus a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "DataAccessSubmissionStatus" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:modifiedBy ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdBy ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:modifiedOn ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:submissionId ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdOn ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:reason ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:state ] ;
+    skos:definition "The approval-workflow state of a DataAccessSubmission. Mirrors DATA_ACCESS_SUBMISSION_STATUS, which has no independent identifier of its own in Synapse's schema (only a SUBMISSION_ID foreign key) — modeled here as a plain class keyed by submissionId, not a BaseEntity subclass, for the same reason." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:PolicyCardBindingCollection a owl:Class,
         linkml:ClassDefinition ;
@@ -107,33 +136,83 @@ governanceduo:studyIndexDate a owl:ObjectProperty,
     skos:definition "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date." ;
     skos:inScheme governanceduo:study .
 
-governanceduo:AccessRequirement a owl:Class,
+governanceduo:AccessGrant a owl:Class,
         linkml:ClassDefinition ;
-    rdfs:label "AccessRequirement" ;
+    rdfs:label "AccessGrant" ;
     rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdOn ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:bindingType ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:principal ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:sourceAclResourceAccessId ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:sourceAclId ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:resource ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:source ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty governanceduo:permission ],
+        [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
+                    owl:withRestrictions ( [ xsd:pattern "^grant\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        governanceduo:BaseEntity ;
+    skos:closeMatch schema1:DigitalDocumentPermissionType,
+        dpv:AuthorisationProtocols ;
+    skos:definition "A first-class ACL grant: resource, principal, permission(s), source, and whether the grant is direct or inherited. Mirrors ACL + ACL_RESOURCE_ACCESS + ACL_RESOURCE_ACCESS_TYPE. Answers \"who has which permission on this resource?\" — distinct from AccessRequirementAssociation, which answers \"what additional conditions must be satisfied?\" (the design doc's central ACL-vs-AR distinction)." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:AccessRequirementAssociation a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "AccessRequirementAssociation" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:accessRequirement ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:source ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:bindingType ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:resource ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^ar_association\\.[A-Za-z0-9_-]+$" ] ) ] ;
             owl:onProperty governanceduo:id ],
         [ a owl:Restriction ;
             owl:cardinality 1 ;
             owl:onProperty governanceduo:id ],
-        governanceduo:BaseEntity,
-        governanceduo:ContributionMixin,
-        governanceduo:GovernanceMixin,
-        governanceduo:PolicyFabricMixin ;
-    skos:definition "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects." ;
-    skos:inScheme governanceduo:access_requirement .
+        governanceduo:BaseEntity ;
+    skos:definition "Binds an AccessRequirement to a resource, recording whether the binding is direct or inherited. Mirrors ACCESS_REQUIREMENT_PROJECT, extended with the design doc's explicit direct/inherited distinction — ACCESS_REQUIREMENT_PROJECT itself has no binding-type column; that inheritance concept is this repo's own addition to capture what the design doc calls for (see BindingTypeEnum)." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:ContributionMixin a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ContributionMixin" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:cardinality 1 ;
-            owl:onProperty governanceduo:contributorName ],
+            owl:onProperty governanceduo:contributionDate ],
         [ a owl:Restriction ;
             owl:cardinality 1 ;
-            owl:onProperty governanceduo:contributionDate ] ;
+            owl:onProperty governanceduo:contributorName ] ;
     skos:definition "Contribution/authorship tracking. Only AccessRequirement uses this today, but it is factored out here (rather than inlined) so any class that later needs the same fields reuses it instead of duplicating — mirroring SageCommonDataModel's practice of factoring cross-cutting concerns out of individual entity files even before a second consumer exists." ;
     skos:inScheme governanceduo:mixins .
 
@@ -154,13 +233,13 @@ governanceduo:PolicyCardBinding a owl:Class,
     rdfs:label "PolicyCardBinding" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:cardinality 1 ;
-            owl:onProperty governanceduo:policyCardName ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
             owl:onProperty governanceduo:dataUseModifier ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:capabilityOperation ] ;
+            owl:onProperty governanceduo:capabilityOperation ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:policyCardName ] ;
     skos:definition "One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code it implements, its Reference Values Schema key(s), which existing (or missing) governanceDUO slot already collects each reference value, and which credentials/claims it requires. A referenceValueKey with no entry in referenceValueSources is intentionally left unmapped (rather than force-fit) wherever governanceDUO has no existing slot of the right shape — see policy_fabric_bindings.yaml's `notes` for any such case." ;
     skos:inScheme governanceduo:policy_fabric .
 
@@ -169,23 +248,23 @@ governanceduo:PolicyFabricMixin a owl:Class,
     rdfs:label "PolicyFabricMixin" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:guardianUrl ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
-            owl:onProperty governanceduo:policyContractDid ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:policyContractDid ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
             owl:onProperty governanceduo:guardianDataSource ],
         [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
                     owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
+            owl:onProperty governanceduo:policyContractDid ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
             owl:onProperty governanceduo:assetDids ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:guardianUrl ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:policyContractDid ],
         [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
@@ -194,18 +273,31 @@ governanceduo:PolicyFabricMixin a owl:Class,
     skos:definition "Fields needed to deploy an AccessRequirement's governed entities into Policy Fabric (https://github.com/hasan7n/tmp-policies) as a registered Asset with an exposed policy. All optional — a governanceDUO record can exist before, or without ever, being deployed into Policy Fabric. Applied only to AccessRequirement: it already carries entityIdList (the concrete Synapse containers governed) and dataUseModifiers (which DUO codes/policy_cards apply), making it the natural analog of Policy Fabric's Asset + exposed-policy pairing — see linkml/policy_fabric.yaml and policy_fabric_bindings.yaml for the per-DUO-code credential/reference-value crosswalk this pairs with." ;
     skos:inScheme governanceduo:mixins .
 
+governanceduo:Principal a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "Principal" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:principalType ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:principalId ] ;
+    skos:closeMatch prov:Agent ;
+    skos:definition "A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID (the id of the user or team being granted access) with an explicit type discriminator, since a bare GROUP_ID doesn't distinguish the two on its own." ;
+    skos:inScheme governanceduo:governance_graph .
+
 governanceduo:ReferenceValueSource a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ReferenceValueSource" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:cardinality 1 ;
-            owl:onProperty governanceduo:keyIsMultivalued ],
+            owl:onProperty governanceduo:referenceValueKey ],
         [ a owl:Restriction ;
             owl:cardinality 1 ;
             owl:onProperty governanceduo:sourceSlot ],
         [ a owl:Restriction ;
             owl:cardinality 1 ;
-            owl:onProperty governanceduo:referenceValueKey ] ;
+            owl:onProperty governanceduo:keyIsMultivalued ] ;
     skos:definition "One (referenceValueKey -> governanceDUO slot) mapping. A single PolicyCardBinding can need more than one of these — e.g. time-limit-on-use needs both requiredDocumentID and notAfter, sourced from two different slots — so this is its own inlined list on PolicyCardBinding rather than one scalar \"sourceSlot\" field (an earlier version of this schema had exactly that limitation; it could not represent a binding needing 2+ keys from 2+ slots)." ;
     skos:inScheme governanceduo:policy_fabric .
 
@@ -214,19 +306,40 @@ governanceduo:Resource a owl:Class,
     rdfs:label "Resource" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:registeredSchemaUrl ],
+            owl:onProperty governanceduo:dataTypeValue ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:dataTypeKey ],
+            owl:onProperty governanceduo:grantAnnotationValue ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:activationValue ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:speciesTypeValue ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:SchemaKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:registeredSchemaUrl ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyAnnotationKey ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:activatedByAttribute ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:studyAnnotationKey ],
+            owl:onProperty governanceduo:grantAnnotationKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:dataTypeKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyAnnotationValue ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:speciesTypeKey ],
@@ -235,27 +348,6 @@ governanceduo:Resource a owl:Class,
                     owl:onDatatype xsd:string ;
                     owl:withRestrictions ( [ xsd:pattern "^resource\\.[A-Za-z0-9]+$" ] ) ] ;
             owl:onProperty governanceduo:id ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:id ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:dataTypeValue ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:grantAnnotationValue ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:SchemaKey ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:grantAnnotationKey ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:studyAnnotationValue ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:activationValue ],
         governanceduo:BaseEntity,
         governanceduo:GovernanceMixin ;
     skos:definition "Information that is relevant to resource access conditions." ;
@@ -265,15 +357,15 @@ governanceduo:Schema a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "Schema" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:cardinality 1 ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^schema\\.[A-Za-z0-9_-]+$" ] ) ] ;
             owl:onProperty governanceduo:id ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:schemaUrl ],
         [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^schema\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:cardinality 1 ;
             owl:onProperty governanceduo:id ],
         governanceduo:BaseEntity ;
     skos:definition "Information that is relevant to resource access conditions." ;
@@ -291,7 +383,25 @@ governanceduo:Study a owl:Class,
     rdfs:label "Study" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:studyDeidentificationMethodSoftware ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studySampleNumber ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyDescription ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
             owl:onProperty governanceduo:studyDbgapAccessionId ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyParticipantNumber ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:studyName ],
         [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
@@ -301,21 +411,6 @@ governanceduo:Study a owl:Class,
             owl:cardinality 1 ;
             owl:onProperty governanceduo:studyInvestigator ],
         [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:studyDescription ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:studySampleNumber ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:id ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:studyName ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:studyParticipantNumber ],
-        [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
                     owl:withRestrictions ( [ xsd:pattern "^study\\.[A-Za-z0-9_-]+$" ] ) ] ;
@@ -323,13 +418,70 @@ governanceduo:Study a owl:Class,
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:studyDeidentificationMethodDescription ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:studyDeidentificationMethodSoftware ],
         governanceduo:BaseEntity,
         governanceduo:GovernanceMixin ;
     skos:definition "Studies associated with a grant." ;
     skos:inScheme governanceduo:study .
+
+governanceduo:SynapseAccessRequirementMixin a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "SynapseAccessRequirementMixin" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdOn ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:concreteType ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:etag ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:accessType ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdBy ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:currentRevNum ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:isTwoFaRequired ] ;
+    skos:definition "The real Synapse-native ACCESS_REQUIREMENT row fields (verified against \"sagebrain governance graph ACL_AR data - AR table schemas.csv\" plus the live/source lookups documented on the shared slots and enums above), applied to AccessRequirement alongside GovernanceMixin (the DUO characterization of an AR's conditions) and ContributionMixin (this repo's own curator-provenance fields — distinct from Synapse's own createdBy/ createdOn here, see those slots' descriptions). Part of aligning governanceDUO with the SageBrain Governance Graph design, where an AccessRequirement is a first-class graph entity with its own Synapse identity, not only a DUO-condition record." ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:accessRequirement a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "accessRequirement" ;
+    rdfs:range governanceduo:AccessRequirement ;
+    skos:closeMatch dcterms:requires ;
+    skos:definition "The AccessRequirement this association binds to the resource." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:accessRequirementId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "accessRequirementId" ;
+    rdfs:range governanceduo:AccessRequirement ;
+    skos:closeMatch dcterms:requires ;
+    skos:definition "The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID)." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:accessRequirementVersion a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "accessRequirementVersion" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "The version of the AccessRequirement this submission was made against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_VERSION)." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:accessType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "accessType" ;
+    rdfs:range governanceduo:AccessTypeEnum ;
+    skos:definition "The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE). Range is the same AccessTypeEnum used by AccessGrant.permission in governance_graph.yaml — one real Synapse ACCESS_TYPE type backs both an ACL grant's permission and an Access Requirement's own governed access kind." ;
+    skos:inScheme governanceduo:mixins .
 
 governanceduo:activatedByAttribute a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -342,6 +494,12 @@ governanceduo:activationValue a owl:ObjectProperty,
     rdfs:label "activationValue" ;
     skos:definition "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active." ;
     skos:inScheme governanceduo:resource .
+
+governanceduo:alias a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "alias" ;
+    skos:definition "The Synapse entity's alias (NODE.ALIAS), if any." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:allowedAccountTypes a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -372,6 +530,13 @@ governanceduo:capabilityOperation a owl:ObjectProperty,
     skos:definition "The \"name\" field of the Capability Granted this policy_card's Rego emits on success (every one of the 21 verified policy_cards emits \"do_download\" today — Policy Fabric has not yet diversified beyond dataset download)." ;
     skos:inScheme governanceduo:policy_fabric .
 
+governanceduo:concreteType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "concreteType" ;
+    rdfs:range governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Which kind of Access Requirement this is (ACCESS_REQUIREMENT.CONCRETE_TYPE). The real Synapse column stores the full Java class name (e.g. \"org.sagebionetworks.repo.model.ManagedACTAccessRequirement\"); this enum uses the short class name for readability." ;
+    skos:inScheme governanceduo:mixins .
+
 governanceduo:contributionDate a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "contributionDate" ;
@@ -394,6 +559,13 @@ governanceduo:credentialType a owl:ObjectProperty,
     rdfs:label "credentialType" ;
     rdfs:range governanceduo:CredentialTypeEnum ;
     skos:inScheme governanceduo:policy_fabric .
+
+governanceduo:dataAccessRequestId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "dataAccessRequestId" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID)." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:dataPermission a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -483,6 +655,13 @@ governanceduo:institutionDids a owl:ObjectProperty,
     skos:definition "Institutions with specific restrictions associated with the access requirement, as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction policy_card expects its allowedInstitutions reference values, and the AffiliationCredential.isMemberOf claim it checks against them, to both be organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet, so this is a separate, companion slot rather than a reinterpretation of institutionSpecificRestriction's existing pattern." ;
     skos:inScheme governanceduo:mixins .
 
+governanceduo:isTwoFaRequired a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "isTwoFaRequired" ;
+    rdfs:range linkml:Boolean ;
+    skos:definition "Whether two-factor authentication is required (ACCESS_REQUIREMENT.IS_TWO_FA_REQUIRED)." ;
+    skos:inScheme governanceduo:mixins .
+
 governanceduo:keyIsMultivalued a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "keyIsMultivalued" ;
@@ -498,11 +677,81 @@ governanceduo:license a owl:ObjectProperty,
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUOPlus6 — see GovernanceMixin rules." .
 
+governanceduo:maxRevNum a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "maxRevNum" ;
+    skos:definition "The maximum revision number of this Synapse entity (NODE.MAX_REV_NUM)." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:modifiedBy a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "modifiedBy" ;
+    rdfs:range linkml:Integer ;
+    skos:closeMatch dcterms:contributor ;
+    skos:definition "Synapse numeric user id of who last modified this status record." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:modifiedOn a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "modifiedOn" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "When this status record was last modified (epoch milliseconds)." ;
+    skos:exactMatch dcterms:modified ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:nodeType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "nodeType" ;
+    skos:definition "The kind of Synapse entity (NODE.NODE_TYPE), e.g. project, folder, file, table. **Not independently verified** against a canonical enum in this pass — modeled as an open string rather than a fabricated enum, unlike AccessTypeEnum/AccessRequirementConcreteTypeEnum/SubmissionStateEnum above, all three of which were confirmed against a real source. Common Synapse entity types (project/folder/file/link/table/view/dockerrepo) are well known but not cited here as a closed, checked list." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:parentId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "parentId" ;
+    rdfs:range governanceduo:SynapseEntity ;
+    skos:definition "The parent Synapse entity in the containment hierarchy (NODE.PARENT_ID) — used to resolve direct-vs-inherited governance (e.g. a file inheriting its parent study's Access Requirement, per the design doc's \"Direct and Inherited Governance\" section)." ;
+    skos:exactMatch dcterms:isPartOf ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:permission a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "permission" ;
+    rdfs:range governanceduo:AccessTypeEnum ;
+    skos:definition "The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one permission type." ;
+    skos:inScheme governanceduo:governance_graph .
+
 governanceduo:policyCardName a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "policyCardName" ;
     skos:definition "The literal tmp-policies policy_cards/<name>/ folder name, e.g. \"geographical-restriction\"." ;
     skos:inScheme governanceduo:policy_fabric .
+
+governanceduo:principal a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "principal" ;
+    rdfs:range governanceduo:Principal ;
+    skos:closeMatch prov:agent ;
+    skos:definition "The user or team this grant applies to." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:principalId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "principalId" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID)." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:principalType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "principalType" ;
+    rdfs:range governanceduo:PrincipalTypeEnum ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:reason a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "reason" ;
+    skos:definition "The reason for the current state (e.g. a rejection reason). Stored as DATA_ACCESS_SUBMISSION_STATUS.REASON, a BINARY column in Synapse; modeled here as a plain string." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:referenceValueKey a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -531,6 +780,14 @@ governanceduo:requiredProfileStatuses a owl:ObjectProperty,
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules." .
 
+governanceduo:researchProjectId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "researchProjectId" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID)." ;
+    skos:inScheme governanceduo:governance_graph ;
+    skos:note "DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably the full submission form data) is not modeled as a structured field." .
+
 governanceduo:schemaUrl a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "schemaUrl" ;
@@ -538,6 +795,20 @@ governanceduo:schemaUrl a owl:ObjectProperty,
     skos:exactMatch dcterms:conformsTo ;
     skos:inScheme governanceduo:schema ;
     skos:note "dcterms:conformsTo, \"An established standard to which the described resource conforms\" — see resource.yaml's registeredSchemaUrl for the same exact mapping and rationale." .
+
+governanceduo:sourceAclId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "sourceAclId" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "Traceability back to the literal ACL.ID row this grant was derived from." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:sourceAclResourceAccessId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "sourceAclResourceAccessId" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this grant was derived from." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:sourceGeography a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -564,6 +835,12 @@ governanceduo:speciesTypeValue a owl:ObjectProperty,
     rdfs:label "speciesTypeValue" ;
     skos:definition "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR." ;
     skos:inScheme governanceduo:resource .
+
+governanceduo:state a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "state" ;
+    rdfs:range governanceduo:SubmissionStateEnum ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:studyAnnotationKey a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -644,6 +921,13 @@ governanceduo:studySampleNumber a owl:ObjectProperty,
     skos:definition "The number of specimens associated with systematic investigation into a subject." ;
     skos:inScheme governanceduo:study ;
     governanceduo:cde_id "11555663" .
+
+governanceduo:submissionId a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "submissionId" ;
+    rdfs:range governanceduo:DataAccessSubmission ;
+    skos:definition "The DataAccessSubmission this status record applies to (DATA_ACCESS_SUBMISSION_STATUS.SUBMISSION_ID)." ;
+    skos:inScheme governanceduo:governance_graph .
 
 governanceduo:trustedIssuerDids a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -822,6 +1106,155 @@ DUO:0000046 a owl:Class,
     skos:definition "Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit use." ;
     governanceduo:duo_shorthand "NCU" .
 
+<https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ACTAccessRequirement> a owl:Class,
+        governanceduo:AccessRequirementConcreteTypeEnum ;
+    rdfs:label "ACTAccessRequirement" ;
+    rdfs:subClassOf governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Controlled by the Access and Compliance Team (AccessRequirementType.ATC)." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#LockAccessRequirement> a owl:Class,
+        governanceduo:AccessRequirementConcreteTypeEnum ;
+    rdfs:label "LockAccessRequirement" ;
+    rdfs:subClassOf governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Controlled by the Access and Compliance Team; locks an entity (AccessRequirementType.LOCK)." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ManagedACTAccessRequirement> a owl:Class,
+        governanceduo:AccessRequirementConcreteTypeEnum ;
+    rdfs:label "ManagedACTAccessRequirement" ;
+    rdfs:subClassOf governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Controlled by the Access and Compliance Team, with a managed data access submission workflow (AccessRequirementType.MANAGED_ATC) — the type backing DataAccessSubmission/DataAccessSubmissionStatus in governance_graph.yaml." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#SelfSignAccessRequirement> a owl:Class,
+        governanceduo:AccessRequirementConcreteTypeEnum ;
+    rdfs:label "SelfSignAccessRequirement" ;
+    rdfs:subClassOf governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Restricted by terms of use, self-signed (AccessRequirementType.SELF_SIGNED)." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#TermsOfUseAccessRequirement> a owl:Class,
+        governanceduo:AccessRequirementConcreteTypeEnum ;
+    rdfs:label "TermsOfUseAccessRequirement" ;
+    rdfs:subClassOf governanceduo:AccessRequirementConcreteTypeEnum ;
+    skos:definition "Restricted by terms of use (AccessRequirementType.TOU)." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_PERMISSIONS> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "CHANGE_PERMISSIONS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to change access permissions for the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_SETTINGS> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "CHANGE_SETTINGS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to change settings or configuration for the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CREATE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "CREATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to create a new entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "DELETE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to delete the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE_SUBMISSION> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "DELETE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to delete a submission." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DOWNLOAD> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "DOWNLOAD" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to download files or data from the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#EXEMPTION_ELIGIBLE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "EXEMPTION_ELIGIBLE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Qualifies for exemption when granted on Access Requirement ACLs." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#MODERATE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "MODERATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to moderate content or activity related to the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#PARTICIPATE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "PARTICIPATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to participate in activities related to the entity, such as discussions or challenges." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "READ" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to read or view the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ_PRIVATE_SUBMISSION> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "READ_PRIVATE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to read private submissions associated with the entity." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#REVIEW_SUBMISSIONS> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "REVIEW_SUBMISSIONS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Enables reviewing submission groups (e.g., on Access Requirements) for specified objects." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SEND_MESSAGE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "SEND_MESSAGE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to send messages related to the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SUBMIT> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "SUBMIT" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to submit content or data to the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#TEAM_MEMBERSHIP_UPDATE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "TEAM_MEMBERSHIP_UPDATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to update team membership, such as adding or removing members." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "UPDATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to modify or update the entity or resource." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE_SUBMISSION> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "UPDATE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Permission to update or modify a submission." .
+
+<https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPLOAD> a owl:Class,
+        governanceduo:AccessTypeEnum ;
+    rdfs:label "UPLOAD" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum ;
+    skos:definition "Deprecated; adding this to an ACL has no effect." ;
+    governanceduo:deprecated true .
+
+<https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Direct> a owl:Class,
+        governanceduo:BindingTypeEnum ;
+    rdfs:label "Direct" ;
+    rdfs:subClassOf governanceduo:BindingTypeEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Inherited> a owl:Class,
+        governanceduo:BindingTypeEnum ;
+    rdfs:label "Inherited" ;
+    rdfs:subClassOf governanceduo:BindingTypeEnum .
+
 <https://w3id.org/sage-bionetworks/governance-duo/CredentialTypeEnum#AffiliationCredential> a owl:Class,
         governanceduo:CredentialTypeEnum ;
     rdfs:label "AffiliationCredential" ;
@@ -911,6 +1344,42 @@ DUO:0000046 a owl:Class,
     rdfs:label "publicKeyCredential" ;
     rdfs:subClassOf governanceduo:CredentialTypeEnum ;
     skos:definition "Claims: key (string, PEM-encoded, required). The requester's channel public key." .
+
+governanceduo:DataAccessSubmission a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "DataAccessSubmission" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdOn ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^data_access_submission\\.\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdBy ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:dataAccessRequestId ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:researchProjectId ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:etag ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:accessRequirementVersion ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:accessRequirementId ],
+        governanceduo:BaseEntity ;
+    skos:definition "A user's application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION. Represents the design doc's \"user satisfaction\" side of an Access Requirement (gov:hasSignedAgreement / gov:hasApproval) as an explicit, auditable record rather than a precomputed boolean." ;
+    skos:inScheme governanceduo:governance_graph .
 
 <https://w3id.org/sage-bionetworks/governance-duo/DataPermissionEnum#Agreement> a owl:Class,
         governanceduo:DataPermissionEnum ;
@@ -2611,6 +3080,16 @@ DUO:0000046 a owl:Class,
     rdfs:subClassOf governanceduo:LicenseEnum ;
     skos:definition "MIT License, a permissive license allowing for use, modification, and distribution." .
 
+<https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#Team> a owl:Class,
+        governanceduo:PrincipalTypeEnum ;
+    rdfs:label "Team" ;
+    rdfs:subClassOf governanceduo:PrincipalTypeEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#User> a owl:Class,
+        governanceduo:PrincipalTypeEnum ;
+    rdfs:label "User" ;
+    rdfs:subClassOf governanceduo:PrincipalTypeEnum .
+
 <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Birth%20Date> a owl:Class,
         governanceduo:StudyIndexDateEnum ;
     rdfs:label "Birth Date" ;
@@ -2631,6 +3110,26 @@ DUO:0000046 a owl:Class,
     rdfs:label "Enrollment Date" ;
     rdfs:subClassOf governanceduo:StudyIndexDateEnum .
 
+<https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#APPROVED> a owl:Class,
+        governanceduo:SubmissionStateEnum ;
+    rdfs:label "APPROVED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#CANCELLED> a owl:Class,
+        governanceduo:SubmissionStateEnum ;
+    rdfs:label "CANCELLED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#REJECTED> a owl:Class,
+        governanceduo:SubmissionStateEnum ;
+    rdfs:label "REJECTED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#SUBMITTED> a owl:Class,
+        governanceduo:SubmissionStateEnum ;
+    rdfs:label "SUBMITTED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
+
 governanceduo:approvedProjects a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "approvedProjects" ;
@@ -2650,6 +3149,12 @@ governanceduo:attribution a owl:ObjectProperty,
     skos:note "Required when dataUseModifiers contains DUOPlus7 — see GovernanceMixin rules.",
         "SWO:9000006 \"Attribution clause\" (Software Ontology term, reused via the mcro ontology) — a license-clause-shaped close mapping; this slot instead holds the free-text statement itself, not the clause concept." .
 
+governanceduo:bindingType a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "bindingType" ;
+    rdfs:range governanceduo:BindingTypeEnum ;
+    skos:inScheme governanceduo:governance_graph .
+
 governanceduo:collaborationRequired a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "collaborationRequired" ;
@@ -2658,6 +3163,13 @@ governanceduo:collaborationRequired a owl:ObjectProperty,
     skos:inScheme governanceduo:mixins ;
     skos:note "NCIT:C221739 \"Consent for Use Requires Collaboration Agreement\" carries the synonyms \"COL\"/\"Collaboration required\", the same shorthand this repo already uses for DUO:0000020 — verified live and non-obsolete via the OLS4 API.",
         "Required when dataUseModifiers contains DUO:0000020 — see GovernanceMixin rules." .
+
+governanceduo:currentRevNum a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "currentRevNum" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "The current revision number of the record. Shared the same way as `name` above, by SynapseAccessRequirementMixin (ACCESS_REQUIREMENT.CURRENT_REV_NUM) and SynapseEntity (NODE.CURRENT_REV_NUM)." ;
+    skos:inScheme governanceduo:mixins .
 
 governanceduo:diseaseSpecificResearch a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -2678,6 +3190,12 @@ governanceduo:institutionSpecificRestriction a owl:ObjectProperty,
     skos:definition "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000028 — see GovernanceMixin rules." .
+
+governanceduo:name a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "name" ;
+    skos:definition "A Synapse-native display name. Shared by SynapseAccessRequirementMixin (ACCESS_REQUIREMENT.NAME) and, via the transitive import chain governance_graph.yaml -> access_requirement.yaml -> mixins.yaml, SynapseEntity (NODE.NAME) in governance_graph.yaml — defined once here rather than in governance_graph.yaml itself, since mixins.yaml cannot import governance_graph.yaml back without creating a cycle (governance_graph.yaml already depends on mixins.yaml through access_requirement.yaml)." ;
+    skos:inScheme governanceduo:mixins .
 
 governanceduo:nonprofitLegalForms a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -2724,6 +3242,13 @@ governanceduo:researchSpecificRestrictions a owl:ObjectProperty,
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000012 — see GovernanceMixin rules." .
 
+governanceduo:source a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "source" ;
+    skos:definition "The system this grant/association was derived from, e.g. \"Synapse\"." ;
+    skos:exactMatch dcterms:source ;
+    skos:inScheme governanceduo:governance_graph .
+
 governanceduo:timeLimitOnUse a owl:ObjectProperty,
         linkml:SlotDefinition ;
     rdfs:label "timeLimitOnUse" ;
@@ -2739,15 +3264,73 @@ governanceduo:userSpecificRestriction a owl:ObjectProperty,
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000026 — see GovernanceMixin rules." .
 
-governanceduo:BaseEntity a owl:Class,
+governanceduo:AccessRequirement a owl:Class,
         linkml:ClassDefinition ;
-    rdfs:label "BaseEntity" ;
+    rdfs:label "AccessRequirement" ;
     rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
             owl:cardinality 1 ;
             owl:onProperty governanceduo:id ],
-        [ owl:unionOf ( governanceduo:AccessRequirement governanceduo:Resource governanceduo:Schema governanceduo:Study ) ] ;
-    skos:definition "Abstract root shared by every governanceDUO class." ;
-    skos:inScheme governanceduo:base_entity .
+        governanceduo:BaseEntity,
+        governanceduo:ContributionMixin,
+        governanceduo:GovernanceMixin,
+        governanceduo:PolicyFabricMixin,
+        governanceduo:SynapseAccessRequirementMixin ;
+    skos:definition "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects." ;
+    skos:inScheme governanceduo:access_requirement .
+
+governanceduo:SynapseEntity a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "SynapseEntity" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:maxRevNum ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:currentRevNum ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdOn ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:createdBy ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:alias ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:etag ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:nodeType ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:parentId ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^syn\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:id ],
+        governanceduo:BaseEntity ;
+    skos:closeMatch prov:Entity ;
+    skos:definition "A concrete Synapse entity (project, folder, file, etc.) that ACLs and Access Requirements attach to. Mirrors the NODE table. Deliberately separate from the Resource class: Resource represents a reusable resource-*type* pattern (e.g. \"mc2Res1\"), not a concrete entity instance with real parent/child structure." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:etag a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "etag" ;
+    skos:definition "Entity tag for optimistic concurrency control (a 36-character UUID). Shared the same way as `name` above, by SynapseAccessRequirementMixin (ACCESS_REQUIREMENT.ETAG) and SynapseEntity/DataAccessSubmission (NODE.ETAG/DATA_ACCESS_SUBMISSION.ETAG) in governance_graph.yaml." ;
+    skos:inScheme governanceduo:mixins .
 
 governanceduo:allowedPurposes a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -2755,6 +3338,40 @@ governanceduo:allowedPurposes a owl:ObjectProperty,
     skos:definition "Research purpose term(s) for which use is allowed. Added to close a Policy Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research, population-origins-or-ancestry-research-only, and research-specific-restrictions all key their Reference Values Schema on a multivalued allowedPurposes list; the existing researchSpecificRestrictions slot is free text and not multivalued, so this is a new, distinct slot rather than a reinterpretation of it (the two can coexist — one is a human-readable narrative, this one is the structured, machine-checkable list Policy Fabric's Rego logic actually reads)." ;
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000016, DUO:0000006, DUO:0000011, or DUO:0000012 — see GovernanceMixin rules." .
+
+governanceduo:createdBy a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "createdBy" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "Synapse numeric user id of the record's creator. Shared the same way as `name` above. Distinct from ContributionMixin's contributorName, which is this repo's own free-text curator-provenance field, not Synapse's own numeric CREATED_BY column — both coexist on AccessRequirement without collision." ;
+    skos:exactMatch dcterms:creator ;
+    skos:inScheme governanceduo:mixins .
+
+governanceduo:BindingTypeEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "BindingTypeEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Direct> <https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Inherited> ) ;
+    skos:definition "Whether a governance relationship (an AccessGrant or AccessRequirementAssociation) applies directly to a resource or is inherited from a parent (e.g. a file inheriting its parent study's Access Requirement) — from the design doc's own `gov:bindingType gov:Inherited` example. Not a Synapse database column; ACCESS_REQUIREMENT_PROJECT and the ACL tables record only the direct binding, so inheritance has to be resolved (via SynapseEntity.parentId) and recorded explicitly, per the design doc's \"Direct and Inherited Governance\" section." ;
+    skos:inScheme governanceduo:governance_graph ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Direct>,
+        <https://w3id.org/sage-bionetworks/governance-duo/BindingTypeEnum#Inherited> .
+
+governanceduo:PrincipalTypeEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "PrincipalTypeEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#User> <https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#Team> ) ;
+    skos:definition "Whether a Principal is an individual user or a team — from the design doc: \"Principals may represent either individual users or teams.\" ACL_RESOURCE_ACCESS.GROUP_ID itself doesn't distinguish the two; Synapse resolves that from the id's own type at runtime, so this is recorded explicitly here rather than inferred." ;
+    skos:inScheme governanceduo:governance_graph ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#Team>,
+        <https://w3id.org/sage-bionetworks/governance-duo/PrincipalTypeEnum#User> .
+
+governanceduo:createdOn a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "createdOn" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "When the record was created (epoch milliseconds in the source Synapse tables). Shared the same way as `name` above. Distinct from ContributionMixin's contributionDate for the same reason as createdBy above." ;
+    skos:exactMatch dcterms:created ;
+    skos:inScheme governanceduo:mixins .
 
 governanceduo:prohibitedPurposes a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -2772,6 +3389,16 @@ governanceduo:requiredAgreementDocumentId a owl:ObjectProperty,
     skos:definition "DID of the terms/agreement document the requester must accept before this access requirement's data use modifiers are satisfied. Added to close a Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its general-research-use, publication-moratorium, return-to-database-or-resource, and time-limit-on-use policy_cards all key their Reference Values Schema on a single requiredDocumentID, which no existing slot held — publicationMoratorium and timeLimitOnUse hold a date/duration, not a document identifier, so this is a new, distinct slot rather than a reinterpretation of either." ;
     skos:inScheme governanceduo:mixins ;
     skos:note "Required when dataUseModifiers contains DUO:0000042, DUO:0000024, DUO:0000029, or DUO:0000025 — see GovernanceMixin rules." .
+
+governanceduo:BaseEntity a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "BaseEntity" ;
+    rdfs:subClassOf [ owl:unionOf ( governanceduo:AccessGrant governanceduo:AccessRequirement governanceduo:AccessRequirementAssociation governanceduo:DataAccessSubmission governanceduo:Resource governanceduo:Schema governanceduo:Study governanceduo:SynapseEntity ) ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:id ] ;
+    skos:definition "Abstract root shared by every governanceDUO class." ;
+    skos:inScheme governanceduo:base_entity .
 
 governanceduo:DataPermissionEnum a owl:Class,
         linkml:EnumDefinition ;
@@ -2803,11 +3430,28 @@ governanceduo:StudyIndexDateEnum a owl:Class,
         <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Diagnosis%20Date>,
         <https://w3id.org/sage-bionetworks/governance-duo/StudyIndexDateEnum#Enrollment%20Date> .
 
-governanceduo:id a owl:ObjectProperty,
-        linkml:SlotDefinition ;
-    rdfs:label "id" ;
-    skos:definition "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare \"id\" attribute there without colliding." ;
-    skos:inScheme governanceduo:base_entity .
+governanceduo:SubmissionStateEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "SubmissionStateEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#SUBMITTED> <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#APPROVED> <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#REJECTED> <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#CANCELLED> ) ;
+    skos:definition "Synapse's real DataAccessSubmissionState values, verified via Sage-Bionetworks/SynapseWebClient source (ACTDataAccessSubmissionWidget.java's exhaustive state switch) — the \"sagebrain governance graph ACL_AR data - AR table schemas.csv\" only says DATA_ACCESS_SUBMISSION_STATUS.STATE is TEXT, with no NOTES-column value list." ;
+    skos:inScheme governanceduo:governance_graph ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#APPROVED>,
+        <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#CANCELLED>,
+        <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#REJECTED>,
+        <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#SUBMITTED> .
+
+governanceduo:AccessRequirementConcreteTypeEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "AccessRequirementConcreteTypeEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#TermsOfUseAccessRequirement> <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#SelfSignAccessRequirement> <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ACTAccessRequirement> <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ManagedACTAccessRequirement> <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#LockAccessRequirement> ) ;
+    skos:definition "Synapse's real AccessRequirement subclasses, verified via Sage-Bionetworks/Synapse-Repository-Services's AccessRequirementType.java (lib/jdomodels/.../org/sagebionetworks/repo/model/ar/AccessRequirementType.java). Permissible values use the short Java class name; the actual ACCESS_REQUIREMENT.CONCRETE_TYPE column stores the fully-qualified name (e.g. \"org.sagebionetworks.repo.model.ManagedACTAccessRequirement\")." ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ACTAccessRequirement>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#LockAccessRequirement>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#ManagedACTAccessRequirement>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#SelfSignAccessRequirement>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessRequirementConcreteTypeEnum#TermsOfUseAccessRequirement> .
 
 governanceduo:DeidentificationTypeEnum a owl:Class,
         linkml:EnumDefinition ;
@@ -2821,6 +3465,19 @@ governanceduo:DeidentificationTypeEnum a owl:Class,
         <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Other>,
         <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#Pseudonymized>,
         <https://w3id.org/sage-bionetworks/governance-duo/DeidentificationTypeEnum#SafeHarbor> .
+
+governanceduo:resource a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "resource" ;
+    rdfs:range governanceduo:SynapseEntity ;
+    skos:definition "The SynapseEntity this grant/association applies to." ;
+    skos:inScheme governanceduo:governance_graph .
+
+governanceduo:id a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "id" ;
+    skos:definition "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare \"id\" attribute there without colliding." ;
+    skos:inScheme governanceduo:base_entity .
 
 governanceduo:LicenseEnum a owl:Class,
         linkml:EnumDefinition ;
@@ -2869,53 +3526,45 @@ governanceduo:dataUseModifiers a owl:ObjectProperty,
     skos:definition "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
     skos:inScheme governanceduo:mixins .
 
+governanceduo:AccessTypeEnum a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "AccessTypeEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CREATE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_PERMISSIONS> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DOWNLOAD> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPLOAD> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#PARTICIPATE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SUBMIT> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ_PRIVATE_SUBMISSION> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE_SUBMISSION> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE_SUBMISSION> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#TEAM_MEMBERSHIP_UPDATE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SEND_MESSAGE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_SETTINGS> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#MODERATE> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#REVIEW_SUBMISSIONS> <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#EXEMPTION_ELIGIBLE> ) ;
+    skos:definition "Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org (not inferred from the \"sagebrain governance graph ACL_AR data\" CSVs alone, which only name a handful of these as examples in a free-text NOTES column). Shared by AccessGrant.permission (an ACL grant's permission — ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying Synapse type in both places." ;
+    skos:inScheme governanceduo:mixins ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_PERMISSIONS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CHANGE_SETTINGS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#CREATE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DELETE_SUBMISSION>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#DOWNLOAD>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#EXEMPTION_ELIGIBLE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#MODERATE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#PARTICIPATE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#READ_PRIVATE_SUBMISSION>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#REVIEW_SUBMISSIONS>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SEND_MESSAGE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#SUBMIT>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#TEAM_MEMBERSHIP_UPDATE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPDATE_SUBMISSION>,
+        <https://w3id.org/sage-bionetworks/governance-duo/AccessTypeEnum#UPLOAD> .
+
 governanceduo:GovernanceMixin a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "GovernanceMixin" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:populationType ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
-            owl:onProperty governanceduo:institutionDids ],
+            owl:onProperty governanceduo:publicationMoratorium ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:collaborationRequired ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:attribution ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:researchSpecificRestrictions ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "MONDO:\\d{7}" ] ) ] ;
-            owl:onProperty governanceduo:diseaseSpecificResearch ],
-        [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
                     owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
             owl:onProperty governanceduo:requiredAgreementDocumentId ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:notAfter ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:timeLimitOnUse ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:requiredAgreementDocumentId ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:userSpecificRestriction ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
-            owl:onProperty governanceduo:approvedProjects ],
         [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
                     owl:onDatatype xsd:string ;
@@ -2923,7 +3572,40 @@ governanceduo:GovernanceMixin a owl:Class,
             owl:onProperty governanceduo:institutionSpecificRestriction ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:publicationMoratorium ] ;
+            owl:onProperty governanceduo:requiredAgreementDocumentId ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:populationType ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "MONDO:\\d{7}" ] ) ] ;
+            owl:onProperty governanceduo:diseaseSpecificResearch ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:userSpecificRestriction ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
+            owl:onProperty governanceduo:institutionDids ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:researchSpecificRestrictions ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:timeLimitOnUse ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:attribution ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:notAfter ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
+            owl:onProperty governanceduo:approvedProjects ] ;
     skos:definition "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
     skos:inScheme governanceduo:mixins .
 
@@ -3223,42 +3905,28 @@ governanceduo:GeographicalRegionEnum a owl:Class,
         <https://w3id.org/sage-bionetworks/governance-duo/GeographicalRegionEnum#ZW> .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:requiredProfileStatuses ;
+            owl:onProperty governanceduo:requiredAgreementDocumentId ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:timeLimitOnUse ;
+            owl:onProperty governanceduo:prohibitedPurposes ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:approvedProjects ;
+            owl:onProperty governanceduo:attribution ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:allowedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:userSpecificRestriction ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:populationType ;
+            owl:onProperty governanceduo:prohibitedPurposes ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3272,62 +3940,6 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:diseaseSpecificResearch ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:institutionSpecificRestriction ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:nonprofitLegalForms ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:allowedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:prohibitedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:researchSpecificRestrictions ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:requiredAgreementDocumentId ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:dataPermission ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
             owl:onProperty governanceduo:publicationMoratorium ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
@@ -3335,7 +3947,14 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:prohibitedPurposes ;
+            owl:onProperty governanceduo:dataTier ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:populationType ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3349,14 +3968,21 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:requiredAgreementDocumentId ;
+            owl:onProperty governanceduo:notAfter ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:sourceGeography ;
+            owl:onProperty governanceduo:approvedUsers ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:nonprofitLegalForms ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3377,7 +4003,7 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:geographicalRestriction ;
+            owl:onProperty governanceduo:nonprofitLegalForms ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3385,48 +4011,6 @@ governanceduo:GeographicalRegionEnum a owl:Class,
 
 [] rdfs:subClassOf [ a owl:Restriction ;
             owl:onProperty governanceduo:allowedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:allowedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:attribution ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:notAfter ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:prohibitedPurposes ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:dataTier ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:approvedUsers ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3440,6 +4024,34 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:approvedProjects ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:timeLimitOnUse ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:dataPermission ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:allowedPurposes ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
             owl:onProperty governanceduo:prohibitedPurposes ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
@@ -3447,14 +4059,7 @@ governanceduo:GeographicalRegionEnum a owl:Class,
                 owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
 
 [] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:nonprofitLegalForms ;
-            owl:someValuesFrom linkml:String ] ;
-    owl:intersectionOf ( [ a owl:Restriction ;
-                owl:onProperty governanceduo:dataUseModifiers ;
-                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
-
-[] rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty governanceduo:prohibitedPurposes ;
+            owl:onProperty governanceduo:geographicalRestriction ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;
@@ -3462,6 +4067,83 @@ governanceduo:GeographicalRegionEnum a owl:Class,
 
 [] rdfs:subClassOf [ a owl:Restriction ;
             owl:onProperty governanceduo:license ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:requiredProfileStatuses ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:userSpecificRestriction ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:sourceGeography ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:prohibitedPurposes ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:allowedPurposes ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:allowedPurposes ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:requiredAgreementDocumentId ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:researchSpecificRestrictions ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:prohibitedPurposes ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:diseaseSpecificResearch ;
+            owl:someValuesFrom linkml:String ] ;
+    owl:intersectionOf ( [ a owl:Restriction ;
+                owl:onProperty governanceduo:dataUseModifiers ;
+                owl:someValuesFrom linkml:String ] governanceduo:GovernanceMixin ) .
+
+[] rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty governanceduo:institutionSpecificRestriction ;
             owl:someValuesFrom linkml:String ] ;
     owl:intersectionOf ( [ a owl:Restriction ;
                 owl:onProperty governanceduo:dataUseModifiers ;

@@ -1,0 +1,31 @@
+@prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+gov:ar-association-001 a gov:AccessRequirementAssociation ;
+    gov:accessRequirement gov:AR-123 ;
+    gov:bindingType gov:Inherited ;
+    gov:resource syn:syn10081783 ;
+    gov:source gov:Synapse .
+
+gov:data-access-submission-555 a gov:DataAccessSubmission ;
+    gov:accessRequirement gov:AR-123 ;
+    gov:createdBy gov:principal-2000001 ;
+    gov:createdOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:state gov:SUBMITTED .
+
+gov:grant-001 a gov:AccessGrant ;
+    gov:bindingType gov:Direct ;
+    gov:permission gov:DOWNLOAD ;
+    gov:principal gov:principal-9000001 ;
+    gov:resource syn:syn10081783 ;
+    gov:source gov:Synapse .
+
+gov:principal-9000001 a gov:Team ;
+    gov:principalId 9000001 .
+
+syn:syn10081783 gov:hasACL gov:grant-001 ;
+    gov:hasAccessRequirement gov:AR-123 ;
+    gov:parentId syn:syn2343195 .
+
+gov:AR-123 a gov:AccessRequirement .
+
