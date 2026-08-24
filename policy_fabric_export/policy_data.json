@@ -1,0 +1,8 @@
+{
+  "allowedCountries": [
+    "US"
+  ],
+  "allowedInstitutions": [
+    "did:example:best_university"
+  ]
+}

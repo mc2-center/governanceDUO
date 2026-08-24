@@ -1,0 +1,8 @@
+{
+  "name": "access_requirement.101",
+  "did": "did:example:asset123",
+  "metadata": {
+    "data_source": "/tmp/asset_data.txt",
+    "guardian_url": null
+  }
+}

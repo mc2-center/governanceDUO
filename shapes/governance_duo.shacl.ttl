@@ -10,9 +10,49 @@ governanceduo:AccessRequirement a sh:NodeShape ;
     rdfs:comment "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "DID of the terms/agreement document the requester must accept before this access requirement's data use modifiers are satisfied. Added to close a Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its general-research-use, publication-moratorium, return-to-database-or-resource, and time-limit-on-use policy_cards all key their Reference Values Schema on a single requiredDocumentID, which no existing slot held — publicationMoratorium and timeLimitOnUse hold a date/duration, not a document identifier, so this is a new, distinct slot rather than a reinterpretation of either." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 19 ;
+            sh:path governanceduo:requiredAgreementDocumentId ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research-specific restrictions associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path governanceduo:researchSpecificRestrictions ],
+        [ sh:datatype xsd:string ;
+            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path governanceduo:collaborationRequired ],
+        [ sh:datatype xsd:string ;
+            sh:description "A unique identifier for the access requirement (schematic source attribute: AccessRequirement_id — the numeric Synapse access-requirement identifier)." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 35 ;
+            sh:path dcterms:identifier ;
+            sh:pattern "^access_requirement\\.\\d+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identifier(s) of specifically approved users. Added to close a Policy Fabric gap: user-specific-restriction keys part of its Reference Values Schema on a multivalued approvedUsers list, checked against UserPlatformCredential.userId — the existing userSpecificRestriction slot is free text describing the restriction, not a structured list of identifiers, so this is a new, distinct slot (userSpecificRestriction, allowedAccountTypes, and requiredProfileStatuses together cover the three separate keys this one policy_card's Reference Values Schema defines)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 25 ;
+            sh:path governanceduo:approvedUsers ],
+        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
+            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
+            sh:order 14 ;
+            sh:path governanceduo:deidentificationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is explicitly disallowed. Added to close a Policy Fabric gap: health-or-medical-or-biomedical-research, no-general-methods-research, non-commercial-use-only, not-for-profit-non-commercial-use-only, and population-origins-or-ancestry-research-prohibited all key their Reference Values Schema on a multivalued prohibitedPurposes list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 22 ;
+            sh:path governanceduo:prohibitedPurposes ],
+        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
             sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
-            sh:order 15 ;
+            sh:order 16 ;
             sh:path governanceduo:dataTier ],
         [ sh:datatype xsd:string ;
             sh:description "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
@@ -21,73 +61,145 @@ governanceduo:AccessRequirement a sh:NodeShape ;
             sh:path governanceduo:institutionSpecificRestriction ;
             sh:pattern "ROR:[a-z0-9]{9}" ],
         [ sh:datatype xsd:string ;
-            sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
-            sh:nodeKind sh:Literal ;
-            sh:order 4 ;
-            sh:path governanceduo:diseaseSpecificResearch ;
-            sh:pattern "MONDO:\\d{7}" ],
-        [ sh:datatype xsd:string ;
-            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 17 ;
-            sh:path governanceduo:attribution ],
-        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 11 ;
-            sh:path governanceduo:sourceGeography ],
-        [ sh:datatype xsd:string ;
-            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 3 ;
-            sh:path governanceduo:collaborationRequired ],
-        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
-            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
-            sh:order 14 ;
-            sh:path governanceduo:dataPermission ],
-        [ sh:datatype xsd:string ;
-            sh:description "The user-specific restrictions associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 10 ;
-            sh:path governanceduo:userSpecificRestriction ],
-        [ sh:datatype xsd:string ;
             sh:description "The name of the person who added this access requirement." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 18 ;
+            sh:order 28 ;
             sh:path governanceduo:contributorName ],
         [ sh:datatype xsd:string ;
-            sh:description "Research-specific restrictions associated with the access requirement." ;
+            sh:description "The user-specific restrictions associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 11 ;
+            sh:path governanceduo:userSpecificRestriction ],
+        [ sh:datatype xsd:string ;
+            sh:description "ISO-8601 datetime after which use is no longer permitted. Added to close a Policy Fabric gap: time-limit-on-use's Reference Values Schema key notAfter is an absolute datetime, whereas the existing timeLimitOnUse slot holds a number of months — a different shape entirely, so this is a new, distinct slot." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 20 ;
+            sh:path governanceduo:notAfter ],
+        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 12 ;
+            sh:path governanceduo:sourceGeography ],
+        [ sh:datatype xsd:string ;
+            sh:description "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:StudyKey ],
+        [ sh:datatype xsd:string ;
+            sh:description "End date of the publication moratorium associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 8 ;
-            sh:path governanceduo:researchSpecificRestrictions ],
+            sh:path governanceduo:publicationMoratorium ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID(s) of project(s) approved to use the data under this access requirement. Added to close a Policy Fabric gap: project-specific-restriction keys its Reference Values Schema on a multivalued approvedProjects list of DIDs, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 24 ;
+            sh:path governanceduo:approvedProjects ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "The DID of the deployed rego_policy_agent/rego_token contract pair once this AccessRequirement's selected DUO codes have been \"exposed\" as a policy in Policy Fabric. Mirrors Asset.metadata.policy_contract." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 33 ;
+            sh:path governanceduo:policyContractDid ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 18 ;
+            sh:path governanceduo:attribution ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is allowed. Added to close a Policy Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research, population-origins-or-ancestry-research-only, and research-specific-restrictions all key their Reference Values Schema on a multivalued allowedPurposes list; the existing researchSpecificRestrictions slot is free text and not multivalued, so this is a new, distinct slot rather than a reinterpretation of it (the two can coexist — one is a human-readable narrative, this one is the structured, machine-checkable list Policy Fabric's Rego logic actually reads)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 21 ;
+            sh:path governanceduo:allowedPurposes ],
+        [ sh:datatype xsd:string ;
+            sh:description "The deployed Guardian service URL for this asset. Mirrors Asset.metadata.guardian_url, set by the same asset-setup convention." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 32 ;
+            sh:path governanceduo:guardianUrl ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017 (Entity Legal Form Code List). Added to close a Policy Fabric gap: not-for-profit-organisation-use-only and not-for-profit-non-commercial-use-only both key their Reference Values Schema on a multivalued nonprofitLegalForms list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 23 ;
+            sh:path governanceduo:nonprofitLegalForms ],
+        [ sh:datatype xsd:string ;
+            sh:description "Profile status value(s) a requester's account must have (checked against UserPlatformCredential.profileStatus). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 27 ;
+            sh:path governanceduo:requiredProfileStatuses ],
+        [ sh:datatype xsd:string ;
+            sh:description "Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList (order-aligned — position N here corresponds to position N in entityIdList). Mirrors the Django Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 30 ;
+            sh:path governanceduo:assetDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID(s) of the Verifiable Credential issuer(s) this AccessRequirement's owner trusts to attest the claims its selected DUO codes require (see policy_fabric_bindings.yaml's requiredCredentials per code). Unlike PolicyCardBinding.requiredCredentials (a static, per-DUO-code fact), this varies per AccessRequirement — different owners may trust different institutional VC issuers — so it lives here, not in the policy_fabric.yaml lookup schema." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 34 ;
+            sh:path governanceduo:trustedIssuerDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 5 ;
+            sh:path governanceduo:geographicalRestriction ],
         [ sh:datatype xsd:string ;
             sh:description "The date on which the access requirement was added." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 19 ;
+            sh:order 29 ;
             sh:path governanceduo:contributionDate ],
-        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
-            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
-            sh:order 16 ;
-            sh:path governanceduo:license ],
         [ sh:datatype xsd:float ;
             sh:description "Time limit on the use of the data associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 9 ;
+            sh:order 10 ;
             sh:path governanceduo:timeLimitOnUse ],
+        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
+            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
+            sh:order 15 ;
+            sh:path governanceduo:dataPermission ],
+        [ sh:datatype xsd:string ;
+            sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path governanceduo:diseaseSpecificResearch ;
+            sh:pattern "MONDO:\\d{7}" ],
+        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
+            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
+            sh:order 17 ;
+            sh:path governanceduo:license ],
         [ sh:datatype xsd:string ;
             sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 12 ;
+            sh:order 13 ;
             sh:path governanceduo:populationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "Account type(s) permitted to access the data (checked against UserPlatformCredential.accountType). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 26 ;
+            sh:path governanceduo:allowedAccountTypes ],
+        [ sh:datatype xsd:string ;
+            sh:description "The data path/source configured for this asset's Guardian. Mirrors Asset.metadata.data_source, set by convention (not schema) in tmp-policies/tools/pdo_client at asset-setup time." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 31 ;
+            sh:path governanceduo:guardianDataSource ],
+        [ sh:datatype xsd:string ;
+            sh:description "Institutions with specific restrictions associated with the access requirement, as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction policy_card expects its allowedInstitutions reference values, and the AffiliationCredential.isMemberOf claim it checks against them, to both be organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet, so this is a separate, companion slot rather than a reinterpretation of institutionSpecificRestriction's existing pattern." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path governanceduo:institutionDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
         [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
             sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
             sh:order 2 ;
@@ -96,39 +208,13 @@ governanceduo:AccessRequirement a sh:NodeShape ;
             sh:description "Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder, Table, etc.) with which the Access Requirement is expected to be associated. Provide multiple values as a comma-separated list." ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
-            sh:path governanceduo:entityIdList ],
-        [ sh:datatype xsd:string ;
-            sh:description "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
-            sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path governanceduo:StudyKey ],
-        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
-            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
-            sh:order 13 ;
-            sh:path governanceduo:deidentificationType ],
-        [ sh:datatype xsd:string ;
-            sh:description "A unique identifier for the access requirement (schematic source attribute: AccessRequirement_id — the numeric Synapse access-requirement identifier)." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 20 ;
-            sh:path dcterms:identifier ;
-            sh:pattern "^access_requirement\\.\\d+$" ],
-        [ sh:datatype xsd:string ;
-            sh:description "End date of the publication moratorium associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 7 ;
-            sh:path governanceduo:publicationMoratorium ],
-        [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 5 ;
-            sh:path governanceduo:geographicalRestriction ] ;
+            sh:path governanceduo:entityIdList ] ;
     sh:targetClass governanceduo:AccessRequirement .
 
 governanceduo:BaseEntity a sh:NodeShape ;
     rdfs:comment "Abstract root shared by every governanceDUO class." ;
     sh:closed false ;
-    sh:ignoredProperties ( governanceduo:studyDeidentificationMethodSoftware governanceduo:activationValue governanceduo:timeLimitOnUse governanceduo:dataPermission governanceduo:populationType governanceduo:grantAnnotationKey governanceduo:studyDescription governanceduo:speciesTypeKey governanceduo:grantNumber governanceduo:studyProjectIdentifier governanceduo:studyIndexDate governanceduo:studyParticipantNumber governanceduo:researchSpecificRestrictions governanceduo:userSpecificRestriction governanceduo:grantAnnotationValue governanceduo:studyInvestigator governanceduo:activatedByAttribute governanceduo:studyDbgapAccessionId governanceduo:collaborationRequired governanceduo:registeredSchemaUrl governanceduo:studyDeidentificationMethodDescription governanceduo:studySampleNumber governanceduo:license governanceduo:contributionDate governanceduo:entityIdList governanceduo:studyName governanceduo:diseaseSpecificResearch governanceduo:attribution governanceduo:StudyKey governanceduo:sourceGeography governanceduo:studyDeidentificationType governanceduo:studyAnnotationValue governanceduo:deidentificationType governanceduo:ResourceKey governanceduo:institutionSpecificRestriction governanceduo:dataTypeKey governanceduo:publicationMoratorium governanceduo:AccessRequirementKey governanceduo:schemaUrl rdf:type governanceduo:geographicalRestriction governanceduo:dataTypeValue governanceduo:speciesTypeValue governanceduo:SchemaKey governanceduo:dataTier governanceduo:dataUseModifiers governanceduo:contributorName governanceduo:studyAnnotationKey ) ;
+    sh:ignoredProperties ( governanceduo:assetDids governanceduo:studyIndexDate governanceduo:timeLimitOnUse governanceduo:StudyKey governanceduo:grantAnnotationValue governanceduo:registeredSchemaUrl governanceduo:trustedIssuerDids governanceduo:requiredAgreementDocumentId governanceduo:studyDescription governanceduo:studyInvestigator governanceduo:approvedUsers governanceduo:entityIdList governanceduo:dataTier governanceduo:license governanceduo:studySampleNumber governanceduo:institutionDids governanceduo:diseaseSpecificResearch governanceduo:userSpecificRestriction governanceduo:grantAnnotationKey governanceduo:studyParticipantNumber governanceduo:studyAnnotationKey governanceduo:attribution governanceduo:studyAnnotationValue governanceduo:geographicalRestriction governanceduo:studyDbgapAccessionId governanceduo:institutionSpecificRestriction governanceduo:contributionDate governanceduo:prohibitedPurposes governanceduo:allowedPurposes governanceduo:activationValue governanceduo:studyDeidentificationMethodDescription governanceduo:studyName governanceduo:contributorName governanceduo:approvedProjects governanceduo:nonprofitLegalForms governanceduo:ResourceKey governanceduo:dataTypeValue governanceduo:sourceGeography governanceduo:collaborationRequired governanceduo:researchSpecificRestrictions governanceduo:grantNumber governanceduo:requiredProfileStatuses governanceduo:notAfter governanceduo:studyDeidentificationType governanceduo:populationType governanceduo:speciesTypeValue governanceduo:allowedAccountTypes governanceduo:studyProjectIdentifier governanceduo:SchemaKey governanceduo:policyContractDid governanceduo:schemaUrl governanceduo:studyDeidentificationMethodSoftware governanceduo:guardianDataSource governanceduo:deidentificationType governanceduo:dataTypeKey governanceduo:AccessRequirementKey governanceduo:activatedByAttribute governanceduo:dataPermission governanceduo:guardianUrl governanceduo:dataUseModifiers governanceduo:speciesTypeKey rdf:type governanceduo:publicationMoratorium ) ;
     sh:property [ sh:datatype xsd:string ;
             sh:description "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare \"id\" attribute there without colliding." ;
             sh:maxCount 1 ;
@@ -142,219 +228,253 @@ governanceduo:ContributionMixin a sh:NodeShape ;
     sh:closed false ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:datatype xsd:string ;
-            sh:description "The date on which the access requirement was added." ;
-            sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 1 ;
-            sh:path governanceduo:contributionDate ],
-        [ sh:datatype xsd:string ;
             sh:description "The name of the person who added this access requirement." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 0 ;
-            sh:path governanceduo:contributorName ] ;
+            sh:path governanceduo:contributorName ],
+        [ sh:datatype xsd:string ;
+            sh:description "The date on which the access requirement was added." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:contributionDate ] ;
     sh:targetClass governanceduo:ContributionMixin .
 
 governanceduo:GovernanceMixin a sh:NodeShape ;
     rdfs:comment "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
     sh:closed false ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 3 ;
-            sh:path governanceduo:geographicalRestriction ],
-        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
-            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
-            sh:order 11 ;
-            sh:path governanceduo:deidentificationType ],
-        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
-            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
-            sh:order 0 ;
-            sh:path governanceduo:dataUseModifiers ],
-        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
-            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
-            sh:order 13 ;
-            sh:path governanceduo:dataTier ],
-        [ sh:datatype xsd:float ;
+    sh:property [ sh:datatype xsd:float ;
             sh:description "Time limit on the use of the data associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 7 ;
+            sh:order 8 ;
             sh:path governanceduo:timeLimitOnUse ],
         [ sh:datatype xsd:string ;
-            sh:description "Research-specific restrictions associated with the access requirement." ;
-            sh:maxCount 1 ;
+            sh:description "Profile status value(s) a requester's account must have (checked against UserPlatformCredential.profileStatus). Added to close the same user-specific-restriction gap as approvedUsers." ;
             sh:nodeKind sh:Literal ;
-            sh:order 6 ;
-            sh:path governanceduo:researchSpecificRestrictions ],
+            sh:order 25 ;
+            sh:path governanceduo:requiredProfileStatuses ],
         [ sh:datatype xsd:string ;
-            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
+            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 15 ;
-            sh:path governanceduo:attribution ],
+            sh:order 11 ;
+            sh:path governanceduo:populationType ],
+        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
+            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
+            sh:order 14 ;
+            sh:path governanceduo:dataTier ],
+        [ sh:datatype xsd:string ;
+            sh:description "The user-specific restrictions associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path governanceduo:userSpecificRestriction ],
+        [ sh:datatype xsd:string ;
+            sh:description "Institutions with specific restrictions associated with the access requirement, as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction policy_card expects its allowedInstitutions reference values, and the AffiliationCredential.isMemberOf claim it checks against them, to both be organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet, so this is a separate, companion slot rather than a reinterpretation of institutionSpecificRestriction's existing pattern." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path governanceduo:institutionDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID(s) of project(s) approved to use the data under this access requirement. Added to close a Policy Fabric gap: project-specific-restriction keys its Reference Values Schema on a multivalued approvedProjects list of DIDs, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 22 ;
+            sh:path governanceduo:approvedProjects ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Account type(s) permitted to access the data (checked against UserPlatformCredential.accountType). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 24 ;
+            sh:path governanceduo:allowedAccountTypes ],
         [ sh:datatype xsd:string ;
             sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
             sh:path governanceduo:diseaseSpecificResearch ;
             sh:pattern "MONDO:\\d{7}" ],
-        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
-            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
-            sh:order 12 ;
-            sh:path governanceduo:dataPermission ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID of the terms/agreement document the requester must accept before this access requirement's data use modifiers are satisfied. Added to close a Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its general-research-use, publication-moratorium, return-to-database-or-resource, and time-limit-on-use policy_cards all key their Reference Values Schema on a single requiredDocumentID, which no existing slot held — publicationMoratorium and timeLimitOnUse hold a date/duration, not a document identifier, so this is a new, distinct slot rather than a reinterpretation of either." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 17 ;
+            sh:path governanceduo:requiredAgreementDocumentId ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
         [ sh:datatype xsd:string ;
             sh:description "End date of the publication moratorium associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 5 ;
+            sh:order 6 ;
             sh:path governanceduo:publicationMoratorium ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research-specific restrictions associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path governanceduo:researchSpecificRestrictions ],
+        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
+            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
+            sh:order 12 ;
+            sh:path governanceduo:deidentificationType ],
+        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 10 ;
+            sh:path governanceduo:sourceGeography ],
+        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
+            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
+            sh:order 13 ;
+            sh:path governanceduo:dataPermission ],
+        [ sh:datatype xsd:string ;
+            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 16 ;
+            sh:path governanceduo:attribution ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017 (Entity Legal Form Code List). Added to close a Policy Fabric gap: not-for-profit-organisation-use-only and not-for-profit-non-commercial-use-only both key their Reference Values Schema on a multivalued nonprofitLegalForms list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 21 ;
+            sh:path governanceduo:nonprofitLegalForms ],
+        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
+            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
+            sh:order 15 ;
+            sh:path governanceduo:license ],
         [ sh:datatype xsd:string ;
             sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path governanceduo:collaborationRequired ],
-        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 9 ;
-            sh:path governanceduo:sourceGeography ],
-        [ sh:datatype xsd:string ;
-            sh:description "The user-specific restrictions associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 8 ;
-            sh:path governanceduo:userSpecificRestriction ],
-        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
-            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
-            sh:order 14 ;
-            sh:path governanceduo:license ],
-        [ sh:datatype xsd:string ;
-            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 10 ;
-            sh:path governanceduo:populationType ],
         [ sh:datatype xsd:string ;
             sh:description "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
             sh:nodeKind sh:Literal ;
             sh:order 4 ;
             sh:path governanceduo:institutionSpecificRestriction ;
-            sh:pattern "ROR:[a-z0-9]{9}" ] ;
+            sh:pattern "ROR:[a-z0-9]{9}" ],
+        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
+            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
+            sh:order 0 ;
+            sh:path governanceduo:dataUseModifiers ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is explicitly disallowed. Added to close a Policy Fabric gap: health-or-medical-or-biomedical-research, no-general-methods-research, non-commercial-use-only, not-for-profit-non-commercial-use-only, and population-origins-or-ancestry-research-prohibited all key their Reference Values Schema on a multivalued prohibitedPurposes list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 20 ;
+            sh:path governanceduo:prohibitedPurposes ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is allowed. Added to close a Policy Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research, population-origins-or-ancestry-research-only, and research-specific-restrictions all key their Reference Values Schema on a multivalued allowedPurposes list; the existing researchSpecificRestrictions slot is free text and not multivalued, so this is a new, distinct slot rather than a reinterpretation of it (the two can coexist — one is a human-readable narrative, this one is the structured, machine-checkable list Policy Fabric's Rego logic actually reads)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 19 ;
+            sh:path governanceduo:allowedPurposes ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identifier(s) of specifically approved users. Added to close a Policy Fabric gap: user-specific-restriction keys part of its Reference Values Schema on a multivalued approvedUsers list, checked against UserPlatformCredential.userId — the existing userSpecificRestriction slot is free text describing the restriction, not a structured list of identifiers, so this is a new, distinct slot (userSpecificRestriction, allowedAccountTypes, and requiredProfileStatuses together cover the three separate keys this one policy_card's Reference Values Schema defines)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 23 ;
+            sh:path governanceduo:approvedUsers ],
+        [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 3 ;
+            sh:path governanceduo:geographicalRestriction ],
+        [ sh:datatype xsd:string ;
+            sh:description "ISO-8601 datetime after which use is no longer permitted. Added to close a Policy Fabric gap: time-limit-on-use's Reference Values Schema key notAfter is an absolute datetime, whereas the existing timeLimitOnUse slot holds a number of months — a different shape entirely, so this is a new, distinct slot." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 18 ;
+            sh:path governanceduo:notAfter ] ;
     sh:targetClass governanceduo:GovernanceMixin .
+
+governanceduo:PolicyCardBindingCollection a sh:NodeShape ;
+    rdfs:comment "Container class for policy_fabric_bindings.yaml — a plain list wrapper so the data file has a single root class to validate against." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class governanceduo:PolicyCardBinding ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path governanceduo:bindings ] ;
+    sh:targetClass governanceduo:PolicyCardBindingCollection .
+
+governanceduo:PolicyFabricMixin a sh:NodeShape ;
+    rdfs:comment "Fields needed to deploy an AccessRequirement's governed entities into Policy Fabric (https://github.com/hasan7n/tmp-policies) as a registered Asset with an exposed policy. All optional — a governanceDUO record can exist before, or without ever, being deployed into Policy Fabric. Applied only to AccessRequirement: it already carries entityIdList (the concrete Synapse containers governed) and dataUseModifiers (which DUO codes/policy_cards apply), making it the natural analog of Policy Fabric's Asset + exposed-policy pairing — see linkml/policy_fabric.yaml and policy_fabric_bindings.yaml for the per-DUO-code credential/reference-value crosswalk this pairs with." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "The data path/source configured for this asset's Guardian. Mirrors Asset.metadata.data_source, set by convention (not schema) in tmp-policies/tools/pdo_client at asset-setup time." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:guardianDataSource ],
+        [ sh:datatype xsd:string ;
+            sh:description "The deployed Guardian service URL for this asset. Mirrors Asset.metadata.guardian_url, set by the same asset-setup convention." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path governanceduo:guardianUrl ],
+        [ sh:datatype xsd:string ;
+            sh:description "The DID of the deployed rego_policy_agent/rego_token contract pair once this AccessRequirement's selected DUO codes have been \"exposed\" as a policy in Policy Fabric. Mirrors Asset.metadata.policy_contract." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path governanceduo:policyContractDid ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID(s) of the Verifiable Credential issuer(s) this AccessRequirement's owner trusts to attest the claims its selected DUO codes require (see policy_fabric_bindings.yaml's requiredCredentials per code). Unlike PolicyCardBinding.requiredCredentials (a static, per-DUO-code fact), this varies per AccessRequirement — different owners may trust different institutional VC issuers — so it lives here, not in the policy_fabric.yaml lookup schema." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path governanceduo:trustedIssuerDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList (order-aligned — position N here corresponds to position N in entityIdList). Mirrors the Django Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:assetDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ] ;
+    sh:targetClass governanceduo:PolicyFabricMixin .
 
 governanceduo:Resource a sh:NodeShape ;
     rdfs:comment "Information that is relevant to resource access conditions." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:datatype xsd:string ;
-            sh:description "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
-            sh:nodeKind sh:Literal ;
-            sh:order 18 ;
-            sh:path governanceduo:institutionSpecificRestriction ;
-            sh:pattern "ROR:[a-z0-9]{9}" ],
-        [ sh:datatype xsd:string ;
-            sh:description "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
-            sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path governanceduo:StudyKey ],
-        [ sh:datatype xsd:string ;
-            sh:description "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR." ;
+            sh:description "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 8 ;
-            sh:path governanceduo:dataTypeValue ],
+            sh:order 10 ;
+            sh:path governanceduo:speciesTypeValue ],
         [ sh:datatype xsd:string ;
-            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
-            sh:maxCount 1 ;
+            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
             sh:nodeKind sh:Literal ;
-            sh:order 15 ;
-            sh:path governanceduo:collaborationRequired ],
-        [ sh:datatype xsd:string ;
-            sh:description "A unique identifier for the resource type (schematic source attribute: Resource_id). Examples: mc2Res1, adkpRes1, adkpRes2." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 30 ;
-            sh:path dcterms:identifier ;
-            sh:pattern "^resource\\.[A-Za-z0-9]+$" ],
-        [ sh:datatype xsd:float ;
-            sh:description "Time limit on the use of the data associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 21 ;
-            sh:path governanceduo:timeLimitOnUse ],
-        [ sh:datatype xsd:string ;
-            sh:description "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 4 ;
-            sh:path governanceduo:grantAnnotationValue ],
-        [ sh:datatype xsd:string ;
-            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:AccessRequirementKey ],
+        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
+            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
             sh:order 29 ;
-            sh:path governanceduo:attribution ],
-        [ sh:datatype xsd:string ;
-            sh:description "The annotation key applied to a Synapse entity that contains a species identifier." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 9 ;
-            sh:path governanceduo:speciesTypeKey ],
-        [ sh:datatype xsd:string ;
-            sh:description "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 11 ;
-            sh:path governanceduo:activatedByAttribute ],
-        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 23 ;
-            sh:path governanceduo:sourceGeography ],
-        [ sh:datatype xsd:string ;
-            sh:description "URL associated with the annotation schema that will be applied to the resource type." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 13 ;
-            sh:path governanceduo:registeredSchemaUrl ],
+            sh:path governanceduo:license ],
         [ sh:datatype xsd:string ;
             sh:description "The Schema id corresponding to a registered JSON schema that describes the access conditions relevant to this Resource." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
             sh:path governanceduo:SchemaKey ],
-        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
-            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
-            sh:order 25 ;
-            sh:path governanceduo:deidentificationType ],
         [ sh:datatype xsd:string ;
-            sh:description "The value that will be assigned to the key provided under speciesTypeKey. Value should be applied to Synapse entities released with this AR." ;
+            sh:description "Research purpose term(s) for which use is explicitly disallowed. Added to close a Policy Fabric gap: health-or-medical-or-biomedical-research, no-general-methods-research, non-commercial-use-only, not-for-profit-non-commercial-use-only, and population-origins-or-ancestry-research-prohibited all key their Reference Values Schema on a multivalued prohibitedPurposes list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 34 ;
+            sh:path governanceduo:prohibitedPurposes ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research-specific restrictions associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 10 ;
-            sh:path governanceduo:speciesTypeValue ],
-        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
-            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
-            sh:order 28 ;
-            sh:path governanceduo:license ],
+            sh:order 21 ;
+            sh:path governanceduo:researchSpecificRestrictions ],
         [ sh:datatype xsd:string ;
-            sh:description "End date of the publication moratorium associated with the access requirement." ;
+            sh:description "The name of a Synapse annotation key that will be applied to entities released under this AR. Setting this attribute to activationValue designates that the AR should be active." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 19 ;
-            sh:path governanceduo:publicationMoratorium ],
-        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
-            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
-            sh:order 14 ;
-            sh:path governanceduo:dataUseModifiers ],
-        [ sh:datatype xsd:string ;
-            sh:description "The user-specific restrictions associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 22 ;
-            sh:path governanceduo:userSpecificRestriction ],
+            sh:order 11 ;
+            sh:path governanceduo:activatedByAttribute ],
         [ sh:datatype xsd:string ;
             sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
             sh:nodeKind sh:Literal ;
@@ -362,36 +482,11 @@ governanceduo:Resource a sh:NodeShape ;
             sh:path governanceduo:diseaseSpecificResearch ;
             sh:pattern "MONDO:\\d{7}" ],
         [ sh:datatype xsd:string ;
-            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
-            sh:nodeKind sh:Literal ;
-            sh:order 1 ;
-            sh:path governanceduo:AccessRequirementKey ],
-        [ sh:datatype xsd:string ;
-            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
+            sh:description "The user-specific restrictions associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 24 ;
-            sh:path governanceduo:populationType ],
-        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
-            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
-            sh:order 27 ;
-            sh:path governanceduo:dataTier ],
-        [ sh:datatype xsd:string ;
-            sh:description "The annotation key applied to a Synapse entity that contains a grant identifier." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 3 ;
-            sh:path governanceduo:grantAnnotationKey ],
-        [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 17 ;
-            sh:path governanceduo:geographicalRestriction ],
-        [ sh:datatype xsd:string ;
-            sh:description "The annotation key applied to a Synapse entity that contains a data type identifier." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 7 ;
-            sh:path governanceduo:dataTypeKey ],
+            sh:order 23 ;
+            sh:path governanceduo:userSpecificRestriction ],
         [ sh:datatype xsd:string ;
             sh:description "The value that will be assigned to the key provided under studyAnnotationKey. Value should be applied to Synapse entities released with this AR." ;
             sh:maxCount 1 ;
@@ -399,27 +494,175 @@ governanceduo:Resource a sh:NodeShape ;
             sh:order 6 ;
             sh:path governanceduo:studyAnnotationValue ],
         [ sh:datatype xsd:string ;
+            sh:description "Account type(s) permitted to access the data (checked against UserPlatformCredential.accountType). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 38 ;
+            sh:path governanceduo:allowedAccountTypes ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID of the terms/agreement document the requester must accept before this access requirement's data use modifiers are satisfied. Added to close a Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its general-research-use, publication-moratorium, return-to-database-or-resource, and time-limit-on-use policy_cards all key their Reference Values Schema on a single requiredDocumentID, which no existing slot held — publicationMoratorium and timeLimitOnUse hold a date/duration, not a document identifier, so this is a new, distinct slot rather than a reinterpretation of either." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 31 ;
+            sh:path governanceduo:requiredAgreementDocumentId ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017 (Entity Legal Form Code List). Added to close a Policy Fabric gap: not-for-profit-organisation-use-only and not-for-profit-non-commercial-use-only both key their Reference Values Schema on a multivalued nonprofitLegalForms list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 35 ;
+            sh:path governanceduo:nonprofitLegalForms ],
+        [ sh:datatype xsd:string ;
+            sh:description "DID(s) of project(s) approved to use the data under this access requirement. Added to close a Policy Fabric gap: project-specific-restriction keys its Reference Values Schema on a multivalued approvedProjects list of DIDs, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 36 ;
+            sh:path governanceduo:approvedProjects ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "The annotation key applied to a Synapse entity that contains a data type identifier." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path governanceduo:dataTypeKey ],
+        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
+            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
+            sh:order 28 ;
+            sh:path governanceduo:dataTier ],
+        [ sh:datatype xsd:string ;
+            sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 30 ;
+            sh:path governanceduo:attribution ],
+        [ sh:datatype xsd:string ;
+            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 15 ;
+            sh:path governanceduo:collaborationRequired ],
+        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 24 ;
+            sh:path governanceduo:sourceGeography ],
+        [ sh:datatype xsd:string ;
+            sh:description "The value that will be assigned to the key provided under dataTypeKey. Value should be applied to Synapse entities released with this AR." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path governanceduo:dataTypeValue ],
+        [ sh:datatype xsd:string ;
+            sh:description "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 18 ;
+            sh:path governanceduo:institutionSpecificRestriction ;
+            sh:pattern "ROR:[a-z0-9]{9}" ],
+        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
+            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
+            sh:order 26 ;
+            sh:path governanceduo:deidentificationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "ISO-8601 datetime after which use is no longer permitted. Added to close a Policy Fabric gap: time-limit-on-use's Reference Values Schema key notAfter is an absolute datetime, whereas the existing timeLimitOnUse slot holds a number of months — a different shape entirely, so this is a new, distinct slot." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 32 ;
+            sh:path governanceduo:notAfter ],
+        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
+            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
+            sh:order 14 ;
+            sh:path governanceduo:dataUseModifiers ],
+        [ sh:datatype xsd:string ;
+            sh:description "The value that will be assigned to the key provided under grantAnnotationKey. Value should be applied to Synapse entities released with this AR." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path governanceduo:grantAnnotationValue ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identifier(s) of specifically approved users. Added to close a Policy Fabric gap: user-specific-restriction keys part of its Reference Values Schema on a multivalued approvedUsers list, checked against UserPlatformCredential.userId — the existing userSpecificRestriction slot is free text describing the restriction, not a structured list of identifiers, so this is a new, distinct slot (userSpecificRestriction, allowedAccountTypes, and requiredProfileStatuses together cover the three separate keys this one policy_card's Reference Values Schema defines)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 37 ;
+            sh:path governanceduo:approvedUsers ],
+        [ sh:datatype xsd:string ;
+            sh:description "URL associated with the annotation schema that will be applied to the resource type." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 13 ;
+            sh:path governanceduo:registeredSchemaUrl ],
+        [ sh:datatype xsd:string ;
             sh:description "The value of Synapse annotation recorded under activatedByAttribute that will be applied to entities released under this AR to indicate the AR should be active." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 12 ;
             sh:path governanceduo:activationValue ],
         [ sh:datatype xsd:string ;
-            sh:description "Research-specific restrictions associated with the access requirement." ;
+            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 25 ;
+            sh:path governanceduo:populationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "The annotation key applied to a Synapse entity that contains a species identifier." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path governanceduo:speciesTypeKey ],
+        [ sh:datatype xsd:string ;
+            sh:description "The annotation key applied to a Synapse entity that contains a grant identifier." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path governanceduo:grantAnnotationKey ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is allowed. Added to close a Policy Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research, population-origins-or-ancestry-research-only, and research-specific-restrictions all key their Reference Values Schema on a multivalued allowedPurposes list; the existing researchSpecificRestrictions slot is free text and not multivalued, so this is a new, distinct slot rather than a reinterpretation of it (the two can coexist — one is a human-readable narrative, this one is the structured, machine-checkable list Policy Fabric's Rego logic actually reads)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 33 ;
+            sh:path governanceduo:allowedPurposes ],
+        [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 17 ;
+            sh:path governanceduo:geographicalRestriction ],
+        [ sh:datatype xsd:string ;
+            sh:description "End date of the publication moratorium associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 20 ;
-            sh:path governanceduo:researchSpecificRestrictions ],
+            sh:path governanceduo:publicationMoratorium ],
+        [ sh:datatype xsd:string ;
+            sh:description "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:StudyKey ],
+        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
+            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
+            sh:order 27 ;
+            sh:path governanceduo:dataPermission ],
+        [ sh:datatype xsd:string ;
+            sh:description "A unique identifier for the resource type (schematic source attribute: Resource_id). Examples: mc2Res1, adkpRes1, adkpRes2." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 40 ;
+            sh:path dcterms:identifier ;
+            sh:pattern "^resource\\.[A-Za-z0-9]+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Institutions with specific restrictions associated with the access requirement, as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction policy_card expects its allowedInstitutions reference values, and the AffiliationCredential.isMemberOf claim it checks against them, to both be organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet, so this is a separate, companion slot rather than a reinterpretation of institutionSpecificRestriction's existing pattern." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 19 ;
+            sh:path governanceduo:institutionDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
         [ sh:datatype xsd:string ;
             sh:description "The annotation key applied to a Synapse entity that contains a study identifier." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 5 ;
             sh:path governanceduo:studyAnnotationKey ],
-        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
-            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
-            sh:order 26 ;
-            sh:path governanceduo:dataPermission ] ;
+        [ sh:datatype xsd:float ;
+            sh:description "Time limit on the use of the data associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 22 ;
+            sh:path governanceduo:timeLimitOnUse ],
+        [ sh:datatype xsd:string ;
+            sh:description "Profile status value(s) a requester's account must have (checked against UserPlatformCredential.profileStatus). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 39 ;
+            sh:path governanceduo:requiredProfileStatuses ] ;
     sh:targetClass governanceduo:Resource .
 
 governanceduo:Schema a sh:NodeShape ;
@@ -427,6 +670,22 @@ governanceduo:Schema a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:datatype xsd:string ;
+            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:AccessRequirementKey ],
+        [ sh:datatype xsd:string ;
+            sh:description "The registered URL associated with the access requirement JSON schema." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path governanceduo:schemaUrl ],
+        [ sh:datatype xsd:string ;
+            sh:description "The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:ResourceKey ],
+        [ sh:datatype xsd:string ;
             sh:description "A unique identifier for the schema (schematic source attribute: Schema_id)." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -434,26 +693,10 @@ governanceduo:Schema a sh:NodeShape ;
             sh:path dcterms:identifier ;
             sh:pattern "^schema\\.[A-Za-z0-9_-]+$" ],
         [ sh:datatype xsd:string ;
-            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
-            sh:nodeKind sh:Literal ;
-            sh:order 1 ;
-            sh:path governanceduo:AccessRequirementKey ],
-        [ sh:datatype xsd:string ;
             sh:description "The Study id(s) associated with this object. Provide multiple values as a comma-separated list." ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
-            sh:path governanceduo:StudyKey ],
-        [ sh:datatype xsd:string ;
-            sh:description "The identifier(s) for the Resource(s) associated with this schema. Provide multiple values as a comma-separated list." ;
-            sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path governanceduo:ResourceKey ],
-        [ sh:datatype xsd:string ;
-            sh:description "The registered URL associated with the access requirement JSON schema." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 3 ;
-            sh:path governanceduo:schemaUrl ] ;
+            sh:path governanceduo:StudyKey ] ;
     sh:targetClass governanceduo:Schema .
 
 governanceduo:Study a sh:NodeShape ;
@@ -461,43 +704,36 @@ governanceduo:Study a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:datatype xsd:string ;
-            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
-            sh:maxCount 1 ;
+            sh:description "The identifier associated with the award funding this study." ;
             sh:nodeKind sh:Literal ;
-            sh:order 23 ;
-            sh:path governanceduo:populationType ],
-        [ sh:description "General description of the de-identification method. Maps to DUOPlus3." ;
-            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
-            sh:order 7 ;
-            sh:path governanceduo:studyDeidentificationType ],
-        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
-            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
-            sh:order 25 ;
-            sh:path governanceduo:dataPermission ],
-        [ sh:datatype xsd:string ;
-            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 14 ;
-            sh:path governanceduo:collaborationRequired ],
-        [ sh:datatype xsd:string ;
-            sh:description "The user-specific restrictions associated with the access requirement." ;
+            sh:order 1 ;
+            sh:path governanceduo:grantNumber ],
+        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
+            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
+            sh:order 28 ;
+            sh:path governanceduo:license ],
+        [ sh:datatype xsd:float ;
+            sh:description "Time limit on the use of the data associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 21 ;
-            sh:path governanceduo:userSpecificRestriction ],
+            sh:path governanceduo:timeLimitOnUse ],
+        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
+            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
+            sh:order 25 ;
+            sh:path governanceduo:deidentificationType ],
         [ sh:datatype xsd:string ;
-            sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
-            sh:nodeKind sh:Literal ;
-            sh:order 15 ;
-            sh:path governanceduo:diseaseSpecificResearch ;
-            sh:pattern "MONDO:\\d{7}" ],
-        [ sh:datatype xsd:string ;
-            sh:description "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC." ;
+            sh:description "DID of the terms/agreement document the requester must accept before this access requirement's data use modifiers are satisfied. Added to close a Policy Fabric (https://github.com/hasan7n/tmp-policies) gap: its general-research-use, publication-moratorium, return-to-database-or-resource, and time-limit-on-use policy_cards all key their Reference Values Schema on a single requiredDocumentID, which no existing slot held — publicationMoratorium and timeLimitOnUse hold a date/duration, not a document identifier, so this is a new, distinct slot rather than a reinterpretation of either." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 10 ;
-            sh:path governanceduo:studyDbgapAccessionId ],
+            sh:order 30 ;
+            sh:path governanceduo:requiredAgreementDocumentId ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is allowed. Added to close a Policy Fabric gap: genetic-studies-only, health-or-medical-or-biomedical-research, population-origins-or-ancestry-research-only, and research-specific-restrictions all key their Reference Values Schema on a multivalued allowedPurposes list; the existing researchSpecificRestrictions slot is free text and not multivalued, so this is a new, distinct slot rather than a reinterpretation of it (the two can coexist — one is a human-readable narrative, this one is the structured, machine-checkable list Policy Fabric's Rego logic actually reads)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 32 ;
+            sh:path governanceduo:allowedPurposes ],
         [ sh:datatype xsd:float ;
             sh:description "The number of specimens associated with systematic investigation into a subject." ;
             sh:maxCount 1 ;
@@ -506,60 +742,152 @@ governanceduo:Study a sh:NodeShape ;
             sh:order 6 ;
             sh:path governanceduo:studySampleNumber ],
         [ sh:datatype xsd:string ;
-            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+            sh:description "Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017 (Entity Legal Form Code List). Added to close a Policy Fabric gap: not-for-profit-organisation-use-only and not-for-profit-non-commercial-use-only both key their Reference Values Schema on a multivalued nonprofitLegalForms list, which no existing slot held." ;
             sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path governanceduo:AccessRequirementKey ],
+            sh:order 34 ;
+            sh:path governanceduo:nonprofitLegalForms ],
         [ sh:description "The specific geographic region(s) to which use is limited by the access requirement." ;
             sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
             sh:order 16 ;
             sh:path governanceduo:geographicalRestriction ],
-        [ sh:description "The type of de-identification applied to the data associated with the access requirement. Equivalent to DUOPlus3." ;
-            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
-            sh:order 24 ;
-            sh:path governanceduo:deidentificationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identifier(s) of specifically approved users. Added to close a Policy Fabric gap: user-specific-restriction keys part of its Reference Values Schema on a multivalued approvedUsers list, checked against UserPlatformCredential.userId — the existing userSpecificRestriction slot is free text describing the restriction, not a structured list of identifiers, so this is a new, distinct slot (userSpecificRestriction, allowedAccountTypes, and requiredProfileStatuses together cover the three separate keys this one policy_card's Reference Values Schema defines)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 36 ;
+            sh:path governanceduo:approvedUsers ],
+        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
+            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
+            sh:order 23 ;
+            sh:path governanceduo:sourceGeography ],
         [ sh:datatype xsd:string ;
             sh:description "A unique primary key that enables record updates using schematic (schematic source attribute: Study_id)." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 29 ;
+            sh:order 39 ;
             sh:path dcterms:identifier ;
             sh:pattern "^study\\.[A-Za-z0-9_-]+$" ],
         [ sh:datatype xsd:string ;
-            sh:description "Name of the study." ;
+            sh:description "DID(s) of project(s) approved to use the data under this access requirement. Added to close a Policy Fabric gap: project-specific-restriction keys its Reference Values Schema on a multivalued approvedProjects list of DIDs, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 35 ;
+            sh:path governanceduo:approvedProjects ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "End date of the publication moratorium associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 19 ;
+            sh:path governanceduo:publicationMoratorium ],
+        [ sh:description "General description of the de-identification method. Maps to DUOPlus3." ;
+            sh:in ( "HIPPA_LDS" "SafeHarbor" "ExpertDetermination" "Pseudonymized" "Anonymized" "Other" ) ;
+            sh:order 7 ;
+            sh:path governanceduo:studyDeidentificationType ],
+        [ sh:datatype xsd:string ;
+            sh:description "The Synapse Project identifier (synID) with which this Study is related." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 12 ;
+            sh:path governanceduo:studyProjectIdentifier ;
+            sh:pattern "syn[0-9]+" ],
+        [ sh:datatype xsd:string ;
+            sh:description "The type(s) of disease research allowed by this access requirement. Provide the MONDO ID in format MONDO:id. Provide multiple values as a comma-separated list. MONDO terms can be found here: https://ols.monarchinitiative.org/ontologies/mondo" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 15 ;
+            sh:path governanceduo:diseaseSpecificResearch ;
+            sh:pattern "MONDO:\\d{7}" ],
+        [ sh:datatype xsd:float ;
+            sh:description "The number of participant instances associated with systematic investigation into a subject." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 2 ;
-            sh:path governanceduo:studyName ],
+            sh:order 5 ;
+            sh:path governanceduo:studyParticipantNumber ],
         [ sh:datatype xsd:string ;
-            sh:description "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place." ;
-            sh:maxCount 1 ;
+            sh:description "Institutions with specific restrictions associated with the access requirement, as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction policy_card expects its allowedInstitutions reference values, and the AffiliationCredential.isMemberOf claim it checks against them, to both be organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet, so this is a separate, companion slot rather than a reinterpretation of institutionSpecificRestriction's existing pattern." ;
             sh:nodeKind sh:Literal ;
-            sh:order 8 ;
-            sh:path governanceduo:studyDeidentificationMethodDescription ],
-        [ sh:description "The license under which the data associated with the access requirement is shared. Equivalent to DUOPlus6." ;
-            sh:in ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ;
-            sh:order 27 ;
-            sh:path governanceduo:license ],
+            sh:order 18 ;
+            sh:path governanceduo:institutionDids ;
+            sh:pattern "^did:[a-z0-9]+:.+$" ],
         [ sh:datatype xsd:string ;
             sh:description "Research-specific restrictions associated with the access requirement." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 19 ;
+            sh:order 20 ;
             sh:path governanceduo:researchSpecificRestrictions ],
+        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
+            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
+            sh:order 27 ;
+            sh:path governanceduo:dataTier ],
+        [ sh:description "The permissions associated with the data under the access requirement. Equivalent to DUOPlus4." ;
+            sh:in ( "Agreement" "Attestation" "Award" "Other" ) ;
+            sh:order 26 ;
+            sh:path governanceduo:dataPermission ],
+        [ sh:datatype xsd:string ;
+            sh:description "If collaboration is required for the access requirement, provide the PI email address. Provide multiple as a comma-separated list." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 14 ;
+            sh:path governanceduo:collaborationRequired ],
+        [ sh:datatype xsd:string ;
+            sh:description "Profile status value(s) a requester's account must have (checked against UserPlatformCredential.profileStatus). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 38 ;
+            sh:path governanceduo:requiredProfileStatuses ],
         [ sh:datatype xsd:string ;
             sh:description "The attribution statement for the data associated with the access requirement. Equivalent to DUOPlus7." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 28 ;
+            sh:order 29 ;
             sh:path governanceduo:attribution ],
+        [ sh:datatype xsd:string ;
+            sh:description "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:AccessRequirementKey ],
+        [ sh:datatype xsd:string ;
+            sh:description "The population studied in the research associated with the access requirement. Equivalent to DUOPlus2." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 24 ;
+            sh:path governanceduo:populationType ],
+        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
+            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
+            sh:order 13 ;
+            sh:path governanceduo:dataUseModifiers ],
+        [ sh:datatype xsd:string ;
+            sh:description "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOPlus2." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path governanceduo:studyDescription ],
+        [ sh:description "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date." ;
+            sh:in ( "Diagnosis Date" "Enrollment Date" "Collection Date" "Birth Date" ) ;
+            sh:order 11 ;
+            sh:path governanceduo:studyIndexDate ],
         [ sh:datatype xsd:string ;
             sh:description "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
             sh:nodeKind sh:Literal ;
             sh:order 17 ;
             sh:path governanceduo:institutionSpecificRestriction ;
             sh:pattern "ROR:[a-z0-9]{9}" ],
+        [ sh:datatype xsd:string ;
+            sh:description "Description of the process of removing potentially identifying data or data elements to render data into a form that does not identify individuals and where identification is not likely to take place." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path governanceduo:studyDeidentificationMethodDescription ],
+        [ sh:datatype xsd:string ;
+            sh:description "The user-specific restrictions associated with the access requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 22 ;
+            sh:path governanceduo:userSpecificRestriction ],
+        [ sh:datatype xsd:string ;
+            sh:description "A stable unique alphanumeric identifier assigned to a study and any objects by the database of Genotypes and Phenotypes (dbGaP). Required for controlled access data being submitted to CDS/CRDC." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 10 ;
+            sh:path governanceduo:studyDbgapAccessionId ],
         [ sh:datatype xsd:string ;
             sh:description "Investigator(s) associated with the project. Multiple names should be provided as a comma-separated list." ;
             sh:maxCount 1 ;
@@ -568,64 +896,123 @@ governanceduo:Study a sh:NodeShape ;
             sh:order 4 ;
             sh:path governanceduo:studyInvestigator ],
         [ sh:datatype xsd:string ;
-            sh:description "The Synapse Project identifier (synID) with which this Study is related." ;
+            sh:description "ISO-8601 datetime after which use is no longer permitted. Added to close a Policy Fabric gap: time-limit-on-use's Reference Values Schema key notAfter is an absolute datetime, whereas the existing timeLimitOnUse slot holds a number of months — a different shape entirely, so this is a new, distinct slot." ;
+            sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 12 ;
-            sh:path governanceduo:studyProjectIdentifier ;
-            sh:pattern "syn[0-9]+" ],
+            sh:order 31 ;
+            sh:path governanceduo:notAfter ],
+        [ sh:datatype xsd:string ;
+            sh:description "Research purpose term(s) for which use is explicitly disallowed. Added to close a Policy Fabric gap: health-or-medical-or-biomedical-research, no-general-methods-research, non-commercial-use-only, not-for-profit-non-commercial-use-only, and population-origins-or-ancestry-research-prohibited all key their Reference Values Schema on a multivalued prohibitedPurposes list, which no existing slot held." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 33 ;
+            sh:path governanceduo:prohibitedPurposes ],
+        [ sh:datatype xsd:string ;
+            sh:description "Name of the study." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path governanceduo:studyName ],
         [ sh:datatype xsd:string ;
             sh:description "Software that was used to de-identify the data (if used)." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 9 ;
             sh:path governanceduo:studyDeidentificationMethodSoftware ],
-        [ sh:datatype xsd:float ;
-            sh:description "The number of participant instances associated with systematic investigation into a subject." ;
-            sh:maxCount 1 ;
+        [ sh:datatype xsd:string ;
+            sh:description "Account type(s) permitted to access the data (checked against UserPlatformCredential.accountType). Added to close the same user-specific-restriction gap as approvedUsers." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 37 ;
+            sh:path governanceduo:allowedAccountTypes ] ;
+    sh:targetClass governanceduo:Study .
+
+governanceduo:CredentialRequirement a sh:NodeShape ;
+    rdfs:comment "One credential type a Policy Fabric policy_card requires the requester to present, and the specific claim path(s) it checks — verified from the folder's actual policy.rego, not inferred from the credential's schema alone (a credential type can be required without every one of its claims being read by a given policy)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Dot-path claim name(s) this policy_card's Rego logic actually reads, e.g. \"locatedAt.country\"." ;
             sh:minCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 5 ;
-            sh:path governanceduo:studyParticipantNumber ],
-        [ sh:description "The tier of data access associated with the access requirement. Equivalent to DUOPlus5." ;
-            sh:in ( "Anonymous" "Open" "Controlled" "Private" ) ;
-            sh:order 26 ;
-            sh:path governanceduo:dataTier ],
-        [ sh:datatype xsd:string ;
-            sh:description "Description of the study, including the types of experimental assays, model systems, types of analysis, description of cohort, associated vulnerable populations, special categories of data, rare diseases, etc. Maps to DUOPlus2." ;
-            sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 3 ;
-            sh:path governanceduo:studyDescription ],
-        [ sh:datatype xsd:string ;
-            sh:description "End date of the publication moratorium associated with the access requirement." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 18 ;
-            sh:path governanceduo:publicationMoratorium ],
-        [ sh:description "The reference event associated with timepoints in this study. One of Diagnosis Date, Enrollment Date, Collection Date, or Birth Date." ;
-            sh:in ( "Diagnosis Date" "Enrollment Date" "Collection Date" "Birth Date" ) ;
-            sh:order 11 ;
-            sh:path governanceduo:studyIndexDate ],
-        [ sh:datatype xsd:string ;
-            sh:description "The identifier associated with the award funding this study." ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
-            sh:path governanceduo:grantNumber ],
-        [ sh:description "The geographical source of the data associated with the access requirement. Equivalent to DUOPlus1." ;
-            sh:in ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ;
-            sh:order 22 ;
-            sh:path governanceduo:sourceGeography ],
-        [ sh:description "A list of data use modifiers that apply to the access requirement. Includes real Data Use Ontology (DUO) terms plus Sage-local DUOPlus1-7 extensions (see README) and the literal value \"Pending Annotation\"." ;
-            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
-            sh:order 13 ;
-            sh:path governanceduo:dataUseModifiers ],
-        [ sh:datatype xsd:float ;
-            sh:description "Time limit on the use of the data associated with the access requirement." ;
+            sh:path governanceduo:requiredClaims ],
+        [ sh:in ( "AffiliationCredential" "LocationCredential" "publicKeyCredential" "AgreementCredential" "ComputeEnvironmentCredential" "EmailCredential" "EthicsCommitteeAccreditationCredential" "IRBApprovalCredential" "IntendedDataUseCredential" "LegalDesignationCredential" "ProjectOwnershipCredential" "ScopedAgreementCredential" "TeamCredential" "UserPlatformCredential" "WalletVerifyingKeyCredential" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path governanceduo:credentialType ] ;
+    sh:targetClass governanceduo:CredentialRequirement .
+
+governanceduo:PolicyCardBinding a sh:NodeShape ;
+    rdfs:comment "One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code it implements, its Reference Values Schema key(s), which existing (or missing) governanceDUO slot already collects each reference value, and which credentials/claims it requires. A referenceValueKey with no entry in referenceValueSources is intentionally left unmapped (rather than force-fit) wherever governanceDUO has no existing slot of the right shape — see policy_fabric_bindings.yaml's `notes` for any such case." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:defaultValue "do_download"^^xsd:string ;
+            sh:description "The \"name\" field of the Capability Granted this policy_card's Rego emits on success (every one of the 21 verified policy_cards emits \"do_download\" today — Policy Fabric has not yet diversified beyond dataset download)." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 20 ;
-            sh:path governanceduo:timeLimitOnUse ] ;
-    sh:targetClass governanceduo:Study .
+            sh:order 5 ;
+            sh:path governanceduo:capabilityOperation ],
+        [ sh:datatype xsd:string ;
+            sh:description "The literal tmp-policies policy_cards/<name>/ folder name, e.g. \"geographical-restriction\"." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:policyCardName ],
+        [ sh:class governanceduo:ReferenceValueSource ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 3 ;
+            sh:path governanceduo:referenceValueSources ],
+        [ sh:datatype xsd:string ;
+            sh:description "The policy_data_schema.json key(s) this policy_card's Reference Values Schema defines, e.g. \"allowedCountries\". Empty for policy_cards with no reference values at all (pure credential-chain checks, e.g. ethics-approval-required)." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path governanceduo:referenceValueKeys ],
+        [ sh:datatype xsd:string ;
+            sh:description "Free-text notes — used in particular to record why sourceSlot is left unset (which governanceDUO slot would need to be added, and its required shape) so a gap is documented rather than silently dropped." ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path governanceduo:notes ],
+        [ sh:description "The DUO code (or Sage DUOPlus extension) this binding documents." ;
+            sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000017 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 "DUOPlus1" "DUOPlus2" "DUOPlus3" "DUOPlus4" "DUOPlus5" "DUOPlus6" "DUOPlus7" "Pending Annotation" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path governanceduo:dataUseModifier ],
+        [ sh:class governanceduo:CredentialRequirement ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 4 ;
+            sh:path governanceduo:requiredCredentials ] ;
+    sh:targetClass governanceduo:PolicyCardBinding .
+
+governanceduo:ReferenceValueSource a sh:NodeShape ;
+    rdfs:comment "One (referenceValueKey -> governanceDUO slot) mapping. A single PolicyCardBinding can need more than one of these — e.g. time-limit-on-use needs both requiredDocumentID and notAfter, sourced from two different slots — so this is its own inlined list on PolicyCardBinding rather than one scalar \"sourceSlot\" field (an earlier version of this schema had exactly that limitation; it could not represent a binding needing 2+ keys from 2+ slots)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:boolean ;
+            sh:defaultValue true ;
+            sh:description "True if this referenceValueKey's own policy_data_schema.json documents it as a list (e.g. \"list of strings\"); False if it's a single scalar value (e.g. requiredDocumentID, notAfter, datasetID — each documented as \"DID of ...\"/an ISO-8601 datetime, not a list). This is a property of the Policy Fabric key itself, independent of whether its governanceDUO sourceSlot happens to be multivalued — e.g. datasetID is scalar even though it is sourced from the multivalued assetDids slot (build_policy_fabric.py takes assetDids[0])." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path governanceduo:keyIsMultivalued ],
+        [ sh:datatype xsd:string ;
+            sh:description "The name of the governanceDUO slot (on GovernanceMixin, Study, or the PolicyFabricMixin) that collects the value for the paired referenceValueKey." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path governanceduo:sourceSlot ],
+        [ sh:datatype xsd:string ;
+            sh:description "One of the containing binding's referenceValueKeys, e.g. \"allowedCountries\"." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path governanceduo:referenceValueKey ] ;
+    sh:targetClass governanceduo:ReferenceValueSource .
 
 
