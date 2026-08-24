@@ -41,3 +41,6 @@ shacl-validate: owl shacl example-rdf
 
 policy-fabric:
 	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
+
+governance-graph:
+	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl
