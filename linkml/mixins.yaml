@@ -68,6 +68,18 @@ slots:
     pattern: 'ROR:[a-z0-9]{9}'
     comments:
       - 'Required when dataUseModifiers contains DUO:0000028 — see GovernanceMixin rules.'
+  institutionDids:
+    description: >-
+      Institutions with specific restrictions associated with the access requirement,
+      as decentralized identifiers (DIDs) rather than ROR ids. Policy Fabric
+      (https://github.com/hasan7n/tmp-policies)'s institution-specific-restriction
+      policy_card expects its allowedInstitutions reference values, and the
+      AffiliationCredential.isMemberOf claim it checks against them, to both be
+      organization DIDs — not ROR ids. No standard ROR-to-DID resolution exists yet,
+      so this is a separate, companion slot rather than a reinterpretation of
+      institutionSpecificRestriction's existing pattern.
+    multivalued: true
+    pattern: '^did:[a-z0-9]+:.+$'
   publicationMoratorium:
     description: End date of the publication moratorium associated with the access requirement.
     comments:
@@ -170,6 +182,40 @@ slots:
       - 'prov:generatedAtTime ("The time at which an entity was completely created
         and is available for use") matches this slot''s semantics closely, treating
         the AccessRequirement record itself as the generated prov:Entity.'
+  assetDids:
+    description: >-
+      Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList
+      (order-aligned — position N here corresponds to position N in entityIdList).
+      Mirrors the Django Asset model's `did` field (unique per Asset) in
+      tmp-policies/tools/asset_registry.
+    multivalued: true
+    pattern: '^did:[a-z0-9]+:.+$'
+  guardianDataSource:
+    description: >-
+      The data path/source configured for this asset's Guardian. Mirrors
+      Asset.metadata.data_source, set by convention (not schema) in
+      tmp-policies/tools/pdo_client at asset-setup time.
+  guardianUrl:
+    description: >-
+      The deployed Guardian service URL for this asset. Mirrors
+      Asset.metadata.guardian_url, set by the same asset-setup convention.
+  policyContractDid:
+    description: >-
+      The DID of the deployed rego_policy_agent/rego_token contract pair once this
+      AccessRequirement's selected DUO codes have been "exposed" as a policy in
+      Policy Fabric. Mirrors Asset.metadata.policy_contract.
+    pattern: '^did:[a-z0-9]+:.+$'
+  trustedIssuerDids:
+    description: >-
+      DID(s) of the Verifiable Credential issuer(s) this AccessRequirement's owner
+      trusts to attest the claims its selected DUO codes require (see
+      policy_fabric_bindings.yaml's requiredCredentials per code). Unlike
+      PolicyCardBinding.requiredCredentials (a static, per-DUO-code fact), this
+      varies per AccessRequirement — different owners may trust different
+      institutional VC issuers — so it lives here, not in the policy_fabric.yaml
+      lookup schema.
+    multivalued: true
+    pattern: '^did:[a-z0-9]+:.+$'
 enums:
   DataUseModifierEnum:
     description: >-
@@ -457,6 +503,7 @@ classes:
       - diseaseSpecificResearch
       - geographicalRestriction
       - institutionSpecificRestriction
+      - institutionDids
       - publicationMoratorium
       - researchSpecificRestrictions
       - timeLimitOnUse
@@ -605,3 +652,21 @@ classes:
         required: true
       contributionDate:
         required: true
+  PolicyFabricMixin:
+    mixin: true
+    description: >-
+      Fields needed to deploy an AccessRequirement's governed entities into Policy
+      Fabric (https://github.com/hasan7n/tmp-policies) as a registered Asset with an
+      exposed policy. All optional — a governanceDUO record can exist before, or
+      without ever, being deployed into Policy Fabric. Applied only to
+      AccessRequirement: it already carries entityIdList (the concrete Synapse
+      containers governed) and dataUseModifiers (which DUO codes/policy_cards
+      apply), making it the natural analog of Policy Fabric's Asset + exposed-policy
+      pairing — see linkml/policy_fabric.yaml and policy_fabric_bindings.yaml for the
+      per-DUO-code credential/reference-value crosswalk this pairs with.
+    slots:
+      - assetDids
+      - guardianDataSource
+      - guardianUrl
+      - policyContractDid
+      - trustedIssuerDids
