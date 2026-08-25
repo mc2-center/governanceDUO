@@ -31,8 +31,12 @@ governance_duo.owl.ttl doubles as one, so only a single validation pass is run.
 Usage:
     python scripts/validate_graph.py [--data governance_duo.owl.ttl]
                                       [--shapes shapes/governance_duo.shacl.ttl]
-                                      [--ont governance_duo.owl.ttl]
-                                      [--instances linkml/examples/rdf/all_examples.ttl]
+                                      [--ont ONT_GRAPH]
+                                      [--instances INSTANCES]
+
+    --ont defaults to --data's value if omitted (not a separate hardcoded default —
+    see --ont's own --help text). --instances defaults to None/skipped if omitted;
+    the Makefile's `shacl-validate` target always passes it explicitly.
 
 author: orion.banks
 """

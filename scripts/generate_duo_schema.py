@@ -1,9 +1,15 @@
 """
 generate_duo_schema.py
-This script generates a JSON schema defining access requirements based on a CSV file containing annotation-based access restrictions.
+This script generates a JSON schema defining access requirements based on annotation-based
+access restriction data, read from local file path(s), a local folder, or Synapse id(s).
 
 Usage:
-python generate_duo_schema.py [CSV file path] [Output JSON schema file path] [Optional parameters]
+python generate_duo_schema.py INPUT_DATA INPUT_TYPE OUTPUT_PATH -d DATA_TYPE
+    [-t TITLE] [-v VERSION] [-o ORG_ID] [-g GRANT_ID] [-s STUDY_ID]
+
+    INPUT_DATA: path to a directory, or a list of file paths / Synapse ids
+    INPUT_TYPE: one of 'paths', 'folder', or 'syn_id'
+    OUTPUT_PATH: output directory for the generated JSON schema
 
 author: orion.banks
 """
