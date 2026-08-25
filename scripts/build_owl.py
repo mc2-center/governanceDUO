@@ -13,6 +13,21 @@ that repo's `ontology/governance/` folder whenever cross-repo linking is in scop
   itself) + owl:versionInfo on every reused external class — in this schema, the real
   DUO terms backing `meaning:` CURIEs on DataUseModifierEnum's permissible values
 
+Which DUO terms get stamped is derived from the schema itself at build time (every
+DataUseModifierEnum permissible_value with both a `meaning:` CURIE and a
+description), not a hardcoded snapshot: an earlier version of this script hardcoded a
+list of 8 terms ("the 8 terms this repo has authored curation text for" at the time),
+which was already stale (the schema has descriptions for all 24 real DUO terms) and,
+independently, never actually worked at all: its dict keys were shaped like
+"DUO_0000007" and indexed directly into a Namespace whose base IRI already ends in
+"DUO_" (`.../obo/DUO_`), producing a doubled ".../obo/DUO_DUO_0000007" that never
+matched anything in the generated graph -- so `governance_duo.owl.ttl` has never
+actually carried a single skos:scopeNote/owl:versionInfo stamp on any reused DUO term,
+for any version of this script, despite the module and inline comments describing it
+as working. Fixed here by deriving the term list from the schema (so it can't
+under-cover again) and keying by the bare local suffix (e.g. "0000007") that actually
+combines correctly with DUO_NS's already-suffixed base IRI.
+
 Usage:
     python scripts/build_owl.py [--schema linkml/governance_duo.linkml.yaml]
                                  [--out governance_duo.owl.ttl]
@@ -24,62 +39,29 @@ author: orion.banks
 import argparse
 
 from linkml.generators.owlgen import OwlSchemaGenerator
+from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, Namespace, Literal, URIRef
 from rdflib.namespace import OWL, RDFS, SKOS
 
-# Real DUO terms this schema reuses by IRI (obo:DUO_<local>), with the description
-# already carried on the matching DataUseModifierEnum permissible_value in
-# linkml/mixins.yaml. Kept as a plain list here rather than re-parsed from the schema,
-# since these are exactly the 8 terms this repo has authored curation text for.
-REUSED_DUO_TERMS = {
-    "DUO_0000007": (
-        "Disease Specific Research - This data use permission indicates that use is "
-        "allowed provided it is related to the specified disease. If providing this "
-        "term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch."
-    ),
-    "DUO_0000012": (
-        "Research Specific Restrictions - This data use modifier indicates that use "
-        "is limited to studies of a certain research type. If providing this term, "
-        "please note the research type(s) in column researchSpecificRestrictions."
-    ),
-    "DUO_0000020": (
-        "Collaboration Required - This data use modifier indicates that the "
-        "requestor must agree to collaboration with the primary study "
-        "investigator(s). If providing this term, please note the contact email in "
-        "column collaborationRequired."
-    ),
-    "DUO_0000022": (
-        "Geographical Restriction - This data use modifier indicates that use is "
-        "limited to within a specific geographic region. If providing this term, "
-        "please provide the applicable country code(s) in column "
-        "geographicalRestriction."
-    ),
-    "DUO_0000024": (
-        "Publication Moratorium - This data use modifier indicates that requestor "
-        "agrees not to publish results of studies until a specific date. If "
-        "providing this term, please provide the date in column "
-        "publicationMoratorium."
-    ),
-    "DUO_0000025": (
-        "Time Limit on Use - This data use modifier indicates that use is approved "
-        "for a specific number of months. If providing this term, please provide the "
-        "number of months in column timeLimitOnUse."
-    ),
-    "DUO_0000026": (
-        "User Specific Restriction - This data use modifier indicates that use is "
-        "limited to use by approved users. If providing this term, please describe "
-        "the restrictions in column userSpecificRestriction."
-    ),
-    "DUO_0000028": (
-        "Institution Specific Restriction - This data use modifier indicates that "
-        "use is limited to use within an approved institution. If providing this "
-        "term, please provide the institution ROR ID(s) in column "
-        "institutionSpecificRestriction."
-    ),
-}
-
 DUO_NS = Namespace("http://purl.obolibrary.org/obo/DUO_")
 GOVERNANCEDUO_NS = Namespace("https://w3id.org/sage-bionetworks/governance-duo/")
+
+
+def reused_duo_terms(schema_path: str) -> dict:
+    """Real DUO terms this schema reuses by IRI: every DataUseModifierEnum
+    permissible_value with both a `meaning:` CURIE (so it's a real DUO term, not one
+    of the Sage-local DUOPlus1-7 extensions or "Pending Annotation") and a
+    description (the curation text to stamp as skos:scopeNote) -- see this module's
+    docstring for why this is derived from the schema rather than hardcoded, and why
+    the returned keys are the bare local suffix ("0000007", not "DUO_0000007")."""
+    sv = SchemaView(schema_path)
+    enum_def = sv.get_enum("DataUseModifierEnum")
+    terms = {}
+    for pv in enum_def.permissible_values.values():
+        if pv.meaning and pv.meaning.startswith("DUO:") and pv.description:
+            local_name = pv.meaning.split(":", 1)[1]
+            terms[local_name] = pv.description
+    return terms
 
 
 def build(schema_path: str, version: str) -> Graph:
@@ -99,7 +81,7 @@ def build(schema_path: str, version: str) -> Graph:
     graph.add((ontology_iri, OWL.versionIRI, version_iri))
     graph.add((ontology_iri, OWL.versionInfo, Literal(version)))
 
-    for local_name, description in REUSED_DUO_TERMS.items():
+    for local_name, description in reused_duo_terms(schema_path).items():
         term = DUO_NS[local_name]
         if (term, None, None) not in graph:
             continue
