@@ -1,14 +1,16 @@
 @prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix syn: <https://www.synapse.org/Synapse:> .
 
 gov:ar-association-001 a gov:AccessRequirementAssociation ;
-    gov:accessRequirement gov:AR-123 ;
+    gov:accessRequirement gov:AR-42 ;
     gov:bindingType gov:Inherited ;
     gov:resource syn:syn10081783 ;
     gov:source gov:Synapse .
 
 gov:data-access-submission-555 a gov:DataAccessSubmission ;
-    gov:accessRequirement gov:AR-123 ;
+    gov:accessRequirement gov:AR-42 ;
     gov:createdBy gov:principal-2000001 ;
     gov:createdOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
     gov:state gov:SUBMITTED ;
@@ -43,12 +45,13 @@ syn:syn10081783 a gov:SynapseEntity ;
     gov:createdOn "1755000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
     gov:etag "3f9c9b8a-1a2b-4c3d-9e5f-6a7b8c9d0e1f" ;
     gov:hasACL gov:grant-001 ;
-    gov:hasAccessRequirement gov:AR-123 ;
+    gov:hasAccessRequirement gov:AR-42 ;
     gov:name "HS01_CUDC907_Run1_S2_R1_001.fastq" ;
     gov:nodeType "file" ;
     gov:parentId syn:syn2343195 .
 
-gov:AR-123 a gov:AccessRequirement .
+gov:AR-42 a gov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.42 .
 
 gov:principal-2000001 a gov:Principal,
         gov:User ;

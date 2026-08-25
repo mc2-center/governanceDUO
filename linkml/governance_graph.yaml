@@ -19,6 +19,20 @@ description: >-
   REST API docs and Java source on GitHub) for the controlled vocabularies those
   CSVs name but don't enumerate — see AccessTypeEnum/AccessRequirementConcreteTypeEnum
   in mixins.yaml and SubmissionStateEnum below for exactly what was verified where.
+
+  scripts/build_governance_graph.py exports this schema's example instances as Turtle
+  in this same `sagegov:` IRI space, but under the CURIE `gov:` instead of `sagegov:`
+  (both resolve to https://sagebionetworks.org/governance/) — `gov:` was avoided here
+  because it collides with linkml-lint's canonical-prefix registry entry for
+  http://gov.genealogy.net/ontology.owl#, but the script controls its own Turtle
+  serialization directly with rdflib, independent of this schema's prefix registry, so
+  it uses the shorter `gov:` there. `gov:`/`sagegov:` are the same namespace, not two
+  different ones. That same script also re-serializes this schema's dotted/underscored
+  ids (e.g. `access_requirement.42`, `grant.001`) fully hyphenated (`gov:AR-42`,
+  `gov:grant-001`) to structurally match the "SageBrain Governance Graph Design" doc's
+  own literal snippets — see `gov_id()` in build_governance_graph.py for the exact
+  transform; it is not expressible as a LinkML id_prefixes/pattern construct since it's
+  a display-convention rename, not a distinct identifier scheme.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
@@ -72,6 +86,7 @@ enums:
 classes:
   SynapseEntity:
     is_a: BaseEntity
+    class_uri: sagegov:SynapseEntity
     description: >-
       A concrete Synapse entity (project, folder, file, etc.) that ACLs and
       Access Requirements attach to. Mirrors the NODE table. Deliberately
@@ -86,6 +101,21 @@ classes:
         pattern: '^syn\d+$'
         examples:
           - value: syn10081783
+      name:
+        slot_uri: sagegov:name
+      etag:
+        slot_uri: sagegov:etag
+      currentRevNum:
+        slot_uri: sagegov:currentRevNum
+      createdOn:
+        slot_uri: sagegov:createdOn
+      createdBy:
+        slot_uri: sagegov:createdByUserId
+        comments:
+          - 'On SynapseEntity specifically, this is a raw literal Synapse user id
+            (sagegov:createdByUserId), not an IRI reference -- see mixins.yaml''s
+            createdBy comment for why this diverges from DataAccessSubmission''s
+            usage of the same underlying slot.'
     slots:
       - name
       - nodeType
@@ -97,11 +127,26 @@ classes:
       - createdBy
       - createdOn
   Principal:
+    class_uri: sagegov:Principal
     description: >-
       A Synapse user or team being granted access via an ACL. Mirrors
       ACL_RESOURCE_ACCESS.GROUP_ID (the id of the user or team being granted
       access) with an explicit type discriminator, since a bare GROUP_ID doesn't
-      distinguish the two on its own.
+      distinguish the two on its own. Deliberately not `is_a: BaseEntity`, and for a
+      different reason than DataAccessSubmissionStatus's (see that class's own
+      description): unlike AccessGrant/AccessRequirementAssociation/
+      DataAccessSubmission -- which mint a *synthetic* BaseEntity id specifically
+      because their underlying Synapse tables have no single natural key for the
+      merged, first-class thing being modeled -- GROUP_ID already *is* a real,
+      unambiguous, already-existing natural key (Synapse's own numeric
+      Principal/UserGroup id), so there's nothing to synthesize. It's also an
+      integer, not a string, so reusing BaseEntity's generically string-typed `id`
+      slot would require both a range override and renaming this attribute from
+      principalId to literally `id` (slot_usage overrides a slot's attributes; it
+      can't let a differently-named slot stand in for it) -- sacrificing the direct
+      principalId <-> ACL_RESOURCE_ACCESS.GROUP_ID column traceability this schema
+      preserves everywhere else (see SynapseAccessRequirementMixin's real-column-name
+      convention).
     close_mappings:
       - prov:Agent
     slots:
@@ -109,6 +154,7 @@ classes:
       - principalType
   AccessGrant:
     is_a: BaseEntity
+    class_uri: sagegov:AccessGrant
     description: >-
       A first-class ACL grant: resource, principal, permission(s), source, and
       whether the grant is direct or inherited. Mirrors ACL + ACL_RESOURCE_ACCESS
@@ -130,6 +176,8 @@ classes:
         pattern: '^grant\.[A-Za-z0-9_-]+$'
         examples:
           - value: grant.001
+      createdOn:
+        slot_uri: sagegov:createdOn
     slots:
       - resource
       - principal
@@ -141,6 +189,7 @@ classes:
       - sourceAclResourceAccessId
   AccessRequirementAssociation:
     is_a: BaseEntity
+    class_uri: sagegov:AccessRequirementAssociation
     description: >-
       Binds an AccessRequirement to a resource, recording whether the binding
       is direct or inherited. Mirrors ACCESS_REQUIREMENT_PROJECT, extended with
@@ -165,6 +214,7 @@ classes:
       - bindingType
   DataAccessSubmission:
     is_a: BaseEntity
+    class_uri: sagegov:DataAccessSubmission
     description: >-
       A user's application against an AccessRequirement. Mirrors
       DATA_ACCESS_SUBMISSION. Represents the design doc's "user satisfaction"
@@ -179,6 +229,16 @@ classes:
         pattern: '^data_access_submission\.\d+$'
         examples:
           - value: data_access_submission.555
+      createdBy:
+        slot_uri: sagegov:createdBy
+        comments:
+          - 'On DataAccessSubmission specifically, this is an IRI reference to a
+            sagegov:Principal node (looked up by the submission''s numeric creator
+            id), not a literal -- see mixins.yaml''s createdBy comment.'
+      createdOn:
+        slot_uri: sagegov:createdOn
+      etag:
+        slot_uri: sagegov:etag
     slots:
       - accessRequirementId
       - accessRequirementVersion
@@ -204,6 +264,7 @@ classes:
       - modifiedOn
 slots:
   nodeType:
+    slot_uri: sagegov:nodeType
     description: >-
       The kind of Synapse entity (NODE.NODE_TYPE), e.g. project, folder, file,
       table. **Not independently verified** against a canonical enum in this
@@ -213,6 +274,7 @@ slots:
       Synapse entity types (project/folder/file/link/table/view/dockerrepo) are
       well known but not cited here as a closed, checked list.
   parentId:
+    slot_uri: sagegov:parentId
     description: >-
       The parent Synapse entity in the containment hierarchy (NODE.PARENT_ID) —
       used to resolve direct-vs-inherited governance (e.g. a file inheriting
@@ -222,10 +284,13 @@ slots:
     exact_mappings:
       - dcterms:isPartOf
   alias:
+    slot_uri: sagegov:alias
     description: The Synapse entity's alias (NODE.ALIAS), if any.
   maxRevNum:
+    slot_uri: sagegov:maxRevNum
     description: The maximum revision number of this Synapse entity (NODE.MAX_REV_NUM).
   principalId:
+    slot_uri: sagegov:principalId
     description: The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID).
     range: integer
     identifier: true
@@ -234,16 +299,19 @@ slots:
     range: PrincipalTypeEnum
     required: true
   resource:
+    slot_uri: sagegov:resource
     description: The SynapseEntity this grant/association applies to.
     range: SynapseEntity
     required: true
   principal:
+    slot_uri: sagegov:principal
     description: The user or team this grant applies to.
     range: Principal
     required: true
     close_mappings:
       - prov:agent
   permission:
+    slot_uri: sagegov:permission
     description: >-
       The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE).
       Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one
@@ -252,25 +320,31 @@ slots:
     multivalued: true
     required: true
   source:
+    slot_uri: sagegov:source
     description: The system this grant/association was derived from, e.g. "Synapse".
     exact_mappings:
       - dcterms:source
   bindingType:
+    slot_uri: sagegov:bindingType
     range: BindingTypeEnum
     required: true
   sourceAclId:
+    slot_uri: sagegov:sourceAclId
     description: Traceability back to the literal ACL.ID row this grant was derived from.
     range: integer
   sourceAclResourceAccessId:
+    slot_uri: sagegov:sourceAclResourceAccessId
     description: Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this grant was derived from.
     range: integer
   accessRequirement:
+    slot_uri: sagegov:accessRequirement
     description: The AccessRequirement this association binds to the resource.
     range: AccessRequirement
     required: true
     close_mappings:
       - dcterms:requires
   accessRequirementId:
+    slot_uri: sagegov:accessRequirement
     description: >-
       The AccessRequirement this submission is an application against
       (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
@@ -278,6 +352,12 @@ slots:
     required: true
     close_mappings:
       - dcterms:requires
+    comments:
+      - 'slot_uri intentionally reuses sagegov:accessRequirement, the same predicate
+        AccessRequirementAssociation.accessRequirement uses, even though this is a
+        differently-named LinkML slot -- so "what AccessRequirement does this
+        concern?" is a uniform gov:accessRequirement query regardless of subject
+        class. See scripts/build_governance_graph.py.'
   accessRequirementVersion:
     description: >-
       The version of the AccessRequirement this submission was made against
@@ -297,9 +377,11 @@ slots:
     range: DataAccessSubmission
     required: true
   state:
+    slot_uri: sagegov:state
     range: SubmissionStateEnum
     required: true
   reason:
+    slot_uri: sagegov:reason
     description: >-
       The reason for the current state (e.g. a rejection reason). Stored as
       DATA_ACCESS_SUBMISSION_STATUS.REASON, a BINARY column in Synapse; modeled
