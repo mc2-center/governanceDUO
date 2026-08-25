@@ -14,7 +14,7 @@ _The system this grant/association was derived from, e.g. "Synapse"._
 
 
 
-URI: [governanceduo:slot/source](https://w3id.org/sage-bionetworks/governance-duo/slot/source)
+URI: [sagegov:source](https://sagebionetworks.org/governance/source)
 <!-- no inheritance hierarchy -->
 
 
@@ -41,6 +41,7 @@ URI: [governanceduo:slot/source](https://w3id.org/sage-bionetworks/governance-du
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md), [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
+| Slot URI | [sagegov:source](https://sagebionetworks.org/governance/source) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +75,7 @@ URI: [governanceduo:slot/source](https://w3id.org/sage-bionetworks/governance-du
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:source |
+| self | sagegov:source |
 | native | governanceduo:source |
 | exact | dcterms:source |
 
@@ -91,6 +92,7 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 exact_mappings:
 - dcterms:source
 rank: 1000
+slot_uri: sagegov:source
 domain_of:
 - AccessGrant
 - AccessRequirementAssociation

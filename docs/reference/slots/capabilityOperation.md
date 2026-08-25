@@ -60,6 +60,10 @@ URI: [governanceduo:slot/capabilityOperation](https://w3id.org/sage-bionetworks/
 
 
 
+## Comments
+
+* Related to, but intentionally not unified with, mixins.yaml's AccessTypeEnum (used by AccessGrant.permission and AccessRequirement.accessType): both describe "what operation is being granted," but AccessTypeEnum is Synapse's own closed ACL vocabulary while this slot is Policy Fabric's free-string Rego capability-name convention -- the two vocabularies belong to different external systems and may drift independently, so this stays a free string rather than being coerced into AccessTypeEnum.
+
 
 
 ## Identifier and Mapping Information
@@ -94,6 +98,13 @@ name: capabilityOperation
 description: The "name" field of the Capability Granted this policy_card's Rego emits
   on success (every one of the 21 verified policy_cards emits "do_download" today
   — Policy Fabric has not yet diversified beyond dataset download).
+comments:
+- 'Related to, but intentionally not unified with, mixins.yaml''s AccessTypeEnum (used
+  by AccessGrant.permission and AccessRequirement.accessType): both describe "what
+  operation is being granted," but AccessTypeEnum is Synapse''s own closed ACL vocabulary
+  while this slot is Policy Fabric''s free-string Rego capability-name convention
+  -- the two vocabularies belong to different external systems and may drift independently,
+  so this stays a free string rather than being coerced into AccessTypeEnum.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 ifabsent: string(do_download)

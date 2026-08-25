@@ -14,7 +14,7 @@ _A concrete Synapse entity (project, folder, file, etc.) that ACLs and Access Re
 
 
 
-URI: [governanceduo:class/SynapseEntity](https://w3id.org/sage-bionetworks/governance-duo/class/SynapseEntity)
+URI: [sagegov:SynapseEntity](https://sagebionetworks.org/governance/SynapseEntity)
 
 
 
@@ -66,6 +66,13 @@ URI: [governanceduo:class/SynapseEntity](https://w3id.org/sage-bionetworks/gover
 ## Inheritance
 * [BaseEntity](../classes/BaseEntity.md)
     * **SynapseEntity**
+
+
+## Class Properties
+
+| Property | Value |
+| --- | --- |
+| Class URI | [sagegov:SynapseEntity](https://sagebionetworks.org/governance/SynapseEntity) |
 
 
 ## Slots
@@ -124,7 +131,7 @@ URI: [governanceduo:class/SynapseEntity](https://w3id.org/sage-bionetworks/gover
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:SynapseEntity |
+| self | sagegov:SynapseEntity |
 | native | governanceduo:SynapseEntity |
 | close | prov:Entity |
 
@@ -192,6 +199,26 @@ slot_usage:
     examples:
     - value: syn10081783
     pattern: ^syn\d+$
+  name:
+    name: name
+    slot_uri: sagegov:name
+  etag:
+    name: etag
+    slot_uri: sagegov:etag
+  currentRevNum:
+    name: currentRevNum
+    slot_uri: sagegov:currentRevNum
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
+  createdBy:
+    name: createdBy
+    comments:
+    - On SynapseEntity specifically, this is a raw literal Synapse user id (sagegov:createdByUserId),
+      not an IRI reference -- see mixins.yaml's createdBy comment for why this diverges
+      from DataAccessSubmission's usage of the same underlying slot.
+    slot_uri: sagegov:createdByUserId
+class_uri: sagegov:SynapseEntity
 
 ```
 </details>
@@ -216,6 +243,25 @@ slot_usage:
     examples:
     - value: syn10081783
     pattern: ^syn\d+$
+  name:
+    name: name
+    slot_uri: sagegov:name
+  etag:
+    name: etag
+    slot_uri: sagegov:etag
+  currentRevNum:
+    name: currentRevNum
+    slot_uri: sagegov:currentRevNum
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
+  createdBy:
+    name: createdBy
+    comments:
+    - On SynapseEntity specifically, this is a raw literal Synapse user id (sagegov:createdByUserId),
+      not an IRI reference -- see mixins.yaml's createdBy comment for why this diverges
+      from DataAccessSubmission's usage of the same underlying slot.
+    slot_uri: sagegov:createdByUserId
 attributes:
   name:
     name: name
@@ -227,6 +273,7 @@ attributes:
       already depends on mixins.yaml through access_requirement.yaml).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:name
     owner: SynapseEntity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -242,6 +289,7 @@ attributes:
       but not cited here as a closed, checked list.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:nodeType
     owner: SynapseEntity
     domain_of:
     - SynapseEntity
@@ -256,6 +304,7 @@ attributes:
     exact_mappings:
     - dcterms:isPartOf
     rank: 1000
+    slot_uri: sagegov:parentId
     owner: SynapseEntity
     domain_of:
     - SynapseEntity
@@ -265,6 +314,7 @@ attributes:
     description: The Synapse entity's alias (NODE.ALIAS), if any.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:alias
     owner: SynapseEntity
     domain_of:
     - SynapseEntity
@@ -276,6 +326,7 @@ attributes:
       and SynapseEntity (NODE.CURRENT_REV_NUM).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:currentRevNum
     owner: SynapseEntity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -286,6 +337,7 @@ attributes:
     description: The maximum revision number of this Synapse entity (NODE.MAX_REV_NUM).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:maxRevNum
     owner: SynapseEntity
     domain_of:
     - SynapseEntity
@@ -298,6 +350,7 @@ attributes:
       in governance_graph.yaml.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:etag
     owner: SynapseEntity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -310,10 +363,15 @@ attributes:
       way as `name` above. Distinct from ContributionMixin's contributorName, which
       is this repo's own free-text curator-provenance field, not Synapse's own numeric
       CREATED_BY column — both coexist on AccessRequirement without collision.
+    comments:
+    - On SynapseEntity specifically, this is a raw literal Synapse user id (sagegov:createdByUserId),
+      not an IRI reference -- see mixins.yaml's createdBy comment for why this diverges
+      from DataAccessSubmission's usage of the same underlying slot.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:creator
     rank: 1000
+    slot_uri: sagegov:createdByUserId
     owner: SynapseEntity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -330,6 +388,7 @@ attributes:
     exact_mappings:
     - dcterms:created
     rank: 1000
+    slot_uri: sagegov:createdOn
     owner: SynapseEntity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -353,6 +412,7 @@ attributes:
     range: string
     required: true
     pattern: ^syn\d+$
+class_uri: sagegov:SynapseEntity
 
 ```
 </details></div>

@@ -54,7 +54,16 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
         
       AccessRequirement : approvedUsers
         
-      AccessRequirement : assetDids
+      AccessRequirement : assetBindings
+        
+          
+    
+        
+        
+        AccessRequirement --> "*" AssetBinding : assetBindings
+        click AssetBinding href "../../classes/AssetBinding/"
+    
+
         
       AccessRequirement : attribution
         
@@ -257,7 +266,7 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | [requiredProfileStatuses](../slots/requiredProfileStatuses.md) | * <br/> [String](../types/String.md) | Profile status value(s) a requester's account must have (checked against User... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [contributorName](../slots/contributorName.md) | 1 <br/> [String](../types/String.md) | The name of the person who added this access requirement | [ContributionMixin](../classes/ContributionMixin.md) |
 | [contributionDate](../slots/contributionDate.md) | 1 <br/> [String](../types/String.md) | The date on which the access requirement was added | [ContributionMixin](../classes/ContributionMixin.md) |
-| [assetDids](../slots/assetDids.md) | * <br/> [String](../types/String.md) | Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList ... | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
+| [assetBindings](../slots/assetBindings.md) | * <br/> [AssetBinding](../classes/AssetBinding.md) | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id i... | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
 | [guardianDataSource](../slots/guardianDataSource.md) | 0..1 <br/> [String](../types/String.md) | The data path/source configured for this asset's Guardian | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
 | [guardianUrl](../slots/guardianUrl.md) | 0..1 <br/> [String](../types/String.md) | The deployed Guardian service URL for this asset | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
 | [policyContractDid](../slots/policyContractDid.md) | 0..1 <br/> [String](../types/String.md) | The DID of the deployed rego_policy_agent/rego_token contract pair once this ... | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
@@ -352,8 +361,9 @@ geographicalRestriction:
   - US
 institutionDids:
   - did:example:best_university
-assetDids:
-  - did:example:asset123
+assetBindings:
+  - synapseId: syn98765432
+    assetDid: did:example:asset123
 guardianDataSource: /tmp/asset_data.txt
 trustedIssuerDids:
   - did:example:sage_bionetworks_issuer
@@ -448,6 +458,7 @@ attributes:
     - AccessRequirement
     range: string
     multivalued: true
+    pattern: ^syn\d+$
   dataUseModifiers:
     name: dataUseModifiers
     description: A list of data use modifiers that apply to the access requirement.
@@ -874,19 +885,27 @@ attributes:
     - ContributionMixin
     range: string
     required: true
-  assetDids:
-    name: assetDids
-    description: Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList
-      (order-aligned — position N here corresponds to position N in entityIdList).
-      Mirrors the Django Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry.
+  assetBindings:
+    name: assetBindings
+    description: Policy Fabric Asset-registry DID(s), each paired with the Synapse
+      entity id it registers. Replaces a pair of positionally order-aligned lists
+      (dataUseModifiers-adjacent entityIdList and a since-removed flat assetDids list)
+      with an explicit pairing, so which DID belongs to which Synapse entity is structural
+      rather than convention-only. Each synapseId here should also appear in the containing
+      record's entityIdList (documented, not schema-enforced). GovernanceMixin's own
+      `rules:` are cross-slot too, but only in the simpler "value X on slot A requires
+      slot B to be present" sense; this would need the harder kind -- a positional/arity
+      correspondence between two multivalued lists -- which LinkML's `rules:` preconditions/postconditions
+      don't express, so it's left as a documented, not enforced, invariant.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: AccessRequirement
     domain_of:
     - PolicyFabricMixin
-    range: string
+    range: AssetBinding
     multivalued: true
-    pattern: ^did:[a-z0-9]+:.+$
+    inlined: true
+    inlined_as_list: true
   guardianDataSource:
     name: guardianDataSource
     description: The data path/source configured for this asset's Guardian. Mirrors
@@ -1015,6 +1034,14 @@ attributes:
       way as `name` above. Distinct from ContributionMixin's contributorName, which
       is this repo's own free-text curator-provenance field, not Synapse's own numeric
       CREATED_BY column — both coexist on AccessRequirement without collision.
+    comments:
+    - 'scripts/build_governance_graph.py emits this integer two different ways depending
+      on which class it''s on: as an IRI reference to a gov:Principal node (gov:createdBy)
+      on DataAccessSubmission -- since a submission''s creator can be looked up as
+      a first-class Principal individual -- but as a plain literal (gov:createdByUserId,
+      a distinct predicate, not gov:createdBy) on SynapseEntity, which has no corresponding
+      Principal record to link to. This divergence is deliberate and documented in
+      shapes/governance_graph.owl.ttl, not a schema/export mismatch to fix.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:creator

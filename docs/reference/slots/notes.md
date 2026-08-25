@@ -6,7 +6,7 @@ search:
 # Slot: notes 
 
 
-_Free-text notes — used in particular to record why sourceSlot is left unset (which governanceDUO slot would need to be added, and its required shape) so a gap is documented rather than silently dropped._
+_Free-text notes — used in particular to record why sourceSlot is left unset (which governanceDUO slot would need to be added, and its required shape) so a gap is documented rather than silently dropped. Reused by drs_alignment.yaml's DrsAuthorizationBinding for the same purpose._
 
 
 
@@ -26,6 +26,7 @@ URI: [governanceduo:slot/notes](https://w3id.org/sage-bionetworks/governance-duo
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [PolicyCardBinding](../classes/PolicyCardBinding.md) | One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code... |  no  |
+| [DrsAuthorizationBinding](../classes/DrsAuthorizationBinding.md) | Crosswalks one DUO code (or Sage DUOPlus extension) to the shape of the DRS A... |  no  |
 
 
 
@@ -39,7 +40,7 @@ URI: [governanceduo:slot/notes](https://w3id.org/sage-bionetworks/governance-duo
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [PolicyCardBinding](../classes/PolicyCardBinding.md) |
+| Domain Of | [PolicyCardBinding](../classes/PolicyCardBinding.md), [DrsAuthorizationBinding](../classes/DrsAuthorizationBinding.md) |
 
 ### Cardinality and Requirements
 
@@ -87,11 +88,13 @@ URI: [governanceduo:slot/notes](https://w3id.org/sage-bionetworks/governance-duo
 name: notes
 description: Free-text notes — used in particular to record why sourceSlot is left
   unset (which governanceDUO slot would need to be added, and its required shape)
-  so a gap is documented rather than silently dropped.
+  so a gap is documented rather than silently dropped. Reused by drs_alignment.yaml's
+  DrsAuthorizationBinding for the same purpose.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - PolicyCardBinding
+- DrsAuthorizationBinding
 range: string
 multivalued: true
 

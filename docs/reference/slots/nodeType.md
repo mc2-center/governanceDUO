@@ -14,7 +14,7 @@ _The kind of Synapse entity (NODE.NODE_TYPE), e.g. project, folder, file, table.
 
 
 
-URI: [governanceduo:slot/nodeType](https://w3id.org/sage-bionetworks/governance-duo/slot/nodeType)
+URI: [sagegov:nodeType](https://sagebionetworks.org/governance/nodeType)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/nodeType](https://w3id.org/sage-bionetworks/governance-
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [SynapseEntity](../classes/SynapseEntity.md) |
+| Slot URI | [sagegov:nodeType](https://sagebionetworks.org/governance/nodeType) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/nodeType](https://w3id.org/sage-bionetworks/governance-
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:nodeType |
+| self | sagegov:nodeType |
 | native | governanceduo:nodeType |
 
 
@@ -92,6 +93,7 @@ description: The kind of Synapse entity (NODE.NODE_TYPE), e.g. project, folder, 
   here as a closed, checked list.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:nodeType
 domain_of:
 - SynapseEntity
 range: string

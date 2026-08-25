@@ -26,8 +26,8 @@ URI: [governanceduo:slot/createdBy](https://w3id.org/sage-bionetworks/governance
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
-| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  no  |
-| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  no  |
+| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
+| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
 | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |  no  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
@@ -56,6 +56,10 @@ URI: [governanceduo:slot/createdBy](https://w3id.org/sage-bionetworks/governance
 
 
 
+
+## Comments
+
+* scripts/build_governance_graph.py emits this integer two different ways depending on which class it's on: as an IRI reference to a gov:Principal node (gov:createdBy) on DataAccessSubmission -- since a submission's creator can be looked up as a first-class Principal individual -- but as a plain literal (gov:createdByUserId, a distinct predicate, not gov:createdBy) on SynapseEntity, which has no corresponding Principal record to link to. This divergence is deliberate and documented in shapes/governance_graph.owl.ttl, not a schema/export mismatch to fix.
 
 
 
@@ -93,6 +97,14 @@ description: Synapse numeric user id of the record's creator. Shared the same wa
   as `name` above. Distinct from ContributionMixin's contributorName, which is this
   repo's own free-text curator-provenance field, not Synapse's own numeric CREATED_BY
   column — both coexist on AccessRequirement without collision.
+comments:
+- 'scripts/build_governance_graph.py emits this integer two different ways depending
+  on which class it''s on: as an IRI reference to a gov:Principal node (gov:createdBy)
+  on DataAccessSubmission -- since a submission''s creator can be looked up as a first-class
+  Principal individual -- but as a plain literal (gov:createdByUserId, a distinct
+  predicate, not gov:createdBy) on SynapseEntity, which has no corresponding Principal
+  record to link to. This divergence is deliberate and documented in shapes/governance_graph.owl.ttl,
+  not a schema/export mismatch to fix.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 exact_mappings:
 - dcterms:creator

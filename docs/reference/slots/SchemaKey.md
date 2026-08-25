@@ -53,6 +53,10 @@ URI: [governanceduo:slot/SchemaKey](https://w3id.org/sage-bionetworks/governance
 
 
 
+## Comments
+
+* Untyped string, not range: Schema -- see props.yaml's AccessRequirementKey comment for why (this file cannot import schema.yaml without risking a cycle).
+
 
 
 ## Identifier and Mapping Information
@@ -97,6 +101,9 @@ annotations:
     value: true
 description: The Schema id corresponding to a registered JSON schema that describes
   the access conditions relevant to this Resource.
+comments:
+- 'Untyped string, not range: Schema -- see props.yaml''s AccessRequirementKey comment
+  for why (this file cannot import schema.yaml without risking a cycle).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:

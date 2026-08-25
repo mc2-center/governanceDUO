@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: principalId 
+# Slot: assetDid 
 
 
-_The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID)._
+_The Policy Fabric Asset-registry DID for synapseId._
 
 
 
@@ -14,7 +14,7 @@ _The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID)._
 
 
 
-URI: [sagegov:principalId](https://sagebionetworks.org/governance/principalId)
+URI: [governanceduo:slot/assetDid](https://w3id.org/sage-bionetworks/governance-duo/slot/assetDid)
 <!-- no inheritance hierarchy -->
 
 
@@ -25,7 +25,7 @@ URI: [sagegov:principalId](https://sagebionetworks.org/governance/principalId)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [Principal](../classes/Principal.md) | A Synapse user or team being granted access via an ACL |  no  |
+| [AssetBinding](../classes/AssetBinding.md) | One (Synapse entity id -> Policy Fabric Asset DID) pairing |  no  |
 
 
 
@@ -38,20 +38,19 @@ URI: [sagegov:principalId](https://sagebionetworks.org/governance/principalId)
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
-| Domain Of | [Principal](../classes/Principal.md) |
-| Slot URI | [sagegov:principalId](https://sagebionetworks.org/governance/principalId) |
+| Range | [String](../types/String.md) |
+| Domain Of | [AssetBinding](../classes/AssetBinding.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
 | Required | Yes |
-### Slot Characteristics
+### Value Constraints
 
 | Property | Value |
 | --- | --- |
-| Identifier | Yes |
+| Regex Pattern | `^did:[a-z0-9]+:.+$` |
 
 
 
@@ -82,8 +81,8 @@ URI: [sagegov:principalId](https://sagebionetworks.org/governance/principalId)
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | sagegov:principalId |
-| native | governanceduo:principalId |
+| self | governanceduo:assetDid |
+| native | governanceduo:assetDid |
 
 
 
@@ -92,16 +91,15 @@ URI: [sagegov:principalId](https://sagebionetworks.org/governance/principalId)
 
 <details>
 ```yaml
-name: principalId
-description: The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID).
+name: assetDid
+description: The Policy Fabric Asset-registry DID for synapseId.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: sagegov:principalId
-identifier: true
 domain_of:
-- Principal
-range: integer
+- AssetBinding
+range: string
 required: true
+pattern: ^did:[a-z0-9]+:.+$
 
 ```
 </details></div>

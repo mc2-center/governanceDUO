@@ -6,7 +6,7 @@ search:
 # Slot: keyIsMultivalued 
 
 
-_True if this referenceValueKey's own policy_data_schema.json documents it as a list (e.g. "list of strings"); False if it's a single scalar value (e.g. requiredDocumentID, notAfter, datasetID — each documented as "DID of ..."/an ISO-8601 datetime, not a list). This is a property of the Policy Fabric key itself, independent of whether its governanceDUO sourceSlot happens to be multivalued — e.g. datasetID is scalar even though it is sourced from the multivalued assetDids slot (build_policy_fabric.py takes assetDids[0])._
+_True if this referenceValueKey's own policy_data_schema.json documents it as a list (e.g. "list of strings"); False if it's a single scalar value (e.g. requiredDocumentID, notAfter, datasetID — each documented as "DID of ..."/an ISO-8601 datetime, not a list). This is a property of the Policy Fabric key itself, independent of whether its governanceDUO sourceSlot happens to be multivalued — e.g. datasetID is scalar even though it is sourced from the multivalued assetBindings slot (build_policy_fabric.py takes assetBindings[0].assetDid)._
 
 
 
@@ -97,8 +97,8 @@ description: True if this referenceValueKey's own policy_data_schema.json docume
   requiredDocumentID, notAfter, datasetID — each documented as "DID of ..."/an ISO-8601
   datetime, not a list). This is a property of the Policy Fabric key itself, independent
   of whether its governanceDUO sourceSlot happens to be multivalued — e.g. datasetID
-  is scalar even though it is sourced from the multivalued assetDids slot (build_policy_fabric.py
-  takes assetDids[0]).
+  is scalar even though it is sourced from the multivalued assetBindings slot (build_policy_fabric.py
+  takes assetBindings[0].assetDid).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 ifabsent: 'true'

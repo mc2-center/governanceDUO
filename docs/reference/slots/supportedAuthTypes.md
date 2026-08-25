@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: dataUseModifier 
+# Slot: supportedAuthTypes 
 
 
-_The DUO code (or Sage DUOPlus extension) this binding documents._
+_Mirrors DRS's Authorizations.supported_types for objects governed by this DUO code._
 
 
 
@@ -14,7 +14,7 @@ _The DUO code (or Sage DUOPlus extension) this binding documents._
 
 
 
-URI: [governanceduo:slot/dataUseModifier](https://w3id.org/sage-bionetworks/governance-duo/slot/dataUseModifier)
+URI: [governanceduo:slot/supportedAuthTypes](https://w3id.org/sage-bionetworks/governance-duo/slot/supportedAuthTypes)
 <!-- no inheritance hierarchy -->
 
 
@@ -25,7 +25,6 @@ URI: [governanceduo:slot/dataUseModifier](https://w3id.org/sage-bionetworks/gove
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [PolicyCardBinding](../classes/PolicyCardBinding.md) | One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code... |  no  |
 | [DrsAuthorizationBinding](../classes/DrsAuthorizationBinding.md) | Crosswalks one DUO code (or Sage DUOPlus extension) to the shape of the DRS A... |  no  |
 
 
@@ -39,14 +38,21 @@ URI: [governanceduo:slot/dataUseModifier](https://w3id.org/sage-bionetworks/gove
 
 | Property | Value |
 | --- | --- |
-| Range | [DataUseModifierEnum](../enums/DataUseModifierEnum.md) |
-| Domain Of | [PolicyCardBinding](../classes/PolicyCardBinding.md), [DrsAuthorizationBinding](../classes/DrsAuthorizationBinding.md) |
+| Range | [DrsAuthTypeEnum](../enums/DrsAuthTypeEnum.md) |
+| Domain Of | [DrsAuthorizationBinding](../classes/DrsAuthorizationBinding.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
+| Multivalued | Yes |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| If Absent | `PassportAuth` |
+
+
 
 
 
@@ -75,8 +81,8 @@ URI: [governanceduo:slot/dataUseModifier](https://w3id.org/sage-bionetworks/gove
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:dataUseModifier |
-| native | governanceduo:dataUseModifier |
+| self | governanceduo:supportedAuthTypes |
+| native | governanceduo:supportedAuthTypes |
 
 
 
@@ -85,15 +91,16 @@ URI: [governanceduo:slot/dataUseModifier](https://w3id.org/sage-bionetworks/gove
 
 <details>
 ```yaml
-name: dataUseModifier
-description: The DUO code (or Sage DUOPlus extension) this binding documents.
+name: supportedAuthTypes
+description: Mirrors DRS's Authorizations.supported_types for objects governed by
+  this DUO code.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+ifabsent: PassportAuth
 domain_of:
-- PolicyCardBinding
 - DrsAuthorizationBinding
-range: DataUseModifierEnum
-required: true
+range: DrsAuthTypeEnum
+multivalued: true
 
 ```
 </details></div>

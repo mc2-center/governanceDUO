@@ -9,7 +9,7 @@ search:
 
 
 
-_The 14 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json._
+_The 15 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json._
 
 
 
@@ -75,7 +75,7 @@ URI: [governanceduo:enum/CredentialTypeEnum](https://w3id.org/sage-bionetworks/g
 <details>
 ```yaml
 name: CredentialTypeEnum
-description: The 14 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
+description: The 15 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:

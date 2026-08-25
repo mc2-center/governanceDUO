@@ -28,6 +28,8 @@ URI: [governanceduo:class/ReferenceValueSource](https://w3id.org/sage-bionetwork
         
       ReferenceValueSource : referenceValueKey
         
+      ReferenceValueSource : sourceField
+        
       ReferenceValueSource : sourceSlot
         
       
@@ -44,6 +46,7 @@ URI: [governanceduo:class/ReferenceValueSource](https://w3id.org/sage-bionetwork
 | ---  | --- | --- | --- |
 | [referenceValueKey](../slots/referenceValueKey.md) | 1 <br/> [String](../types/String.md) | One of the containing binding's referenceValueKeys, e | direct |
 | [sourceSlot](../slots/sourceSlot.md) | 1 <br/> [String](../types/String.md) | The name of the governanceDUO slot (on GovernanceMixin, Study, or the PolicyF... | direct |
+| [sourceField](../slots/sourceField.md) | 0..1 <br/> [String](../types/String.md) | When sourceSlot names an inlined class (e | direct |
 | [keyIsMultivalued](../slots/keyIsMultivalued.md) | 1 <br/> [Boolean](../types/Boolean.md) | True if this referenceValueKey's own policy_data_schema | direct |
 
 
@@ -112,6 +115,7 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 slots:
 - referenceValueKey
 - sourceSlot
+- sourceField
 - keyIsMultivalued
 
 ```
@@ -151,6 +155,18 @@ attributes:
     - ReferenceValueSource
     range: string
     required: true
+  sourceField:
+    name: sourceField
+    description: 'When sourceSlot names an inlined class (e.g. PolicyFabricMixin.assetBindings,
+      range AssetBinding), the sub-field of each element to extract — e.g. sourceSlot:
+      assetBindings, sourceField: assetDid pulls AssetBinding.assetDid out of each
+      entry. Unset when sourceSlot is a flat scalar/list slot.'
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    owner: ReferenceValueSource
+    domain_of:
+    - ReferenceValueSource
+    range: string
   keyIsMultivalued:
     name: keyIsMultivalued
     description: True if this referenceValueKey's own policy_data_schema.json documents
@@ -158,8 +174,8 @@ attributes:
       requiredDocumentID, notAfter, datasetID — each documented as "DID of ..."/an
       ISO-8601 datetime, not a list). This is a property of the Policy Fabric key
       itself, independent of whether its governanceDUO sourceSlot happens to be multivalued
-      — e.g. datasetID is scalar even though it is sourced from the multivalued assetDids
-      slot (build_policy_fabric.py takes assetDids[0]).
+      — e.g. datasetID is scalar even though it is sourced from the multivalued assetBindings
+      slot (build_policy_fabric.py takes assetBindings[0].assetDid).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     ifabsent: 'true'

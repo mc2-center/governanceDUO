@@ -14,7 +14,7 @@ _The reason for the current state (e.g. a rejection reason). Stored as DATA_ACCE
 
 
 
-URI: [governanceduo:slot/reason](https://w3id.org/sage-bionetworks/governance-duo/slot/reason)
+URI: [sagegov:reason](https://sagebionetworks.org/governance/reason)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/reason](https://w3id.org/sage-bionetworks/governance-du
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Slot URI | [sagegov:reason](https://sagebionetworks.org/governance/reason) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/reason](https://w3id.org/sage-bionetworks/governance-du
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:reason |
+| self | sagegov:reason |
 | native | governanceduo:reason |
 
 
@@ -89,6 +90,7 @@ description: The reason for the current state (e.g. a rejection reason). Stored 
   a plain string.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:reason
 domain_of:
 - DataAccessSubmissionStatus
 range: string

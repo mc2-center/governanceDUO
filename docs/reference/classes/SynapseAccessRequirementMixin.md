@@ -263,6 +263,14 @@ attributes:
       way as `name` above. Distinct from ContributionMixin's contributorName, which
       is this repo's own free-text curator-provenance field, not Synapse's own numeric
       CREATED_BY column — both coexist on AccessRequirement without collision.
+    comments:
+    - 'scripts/build_governance_graph.py emits this integer two different ways depending
+      on which class it''s on: as an IRI reference to a gov:Principal node (gov:createdBy)
+      on DataAccessSubmission -- since a submission''s creator can be looked up as
+      a first-class Principal individual -- but as a plain literal (gov:createdByUserId,
+      a distinct predicate, not gov:createdBy) on SynapseEntity, which has no corresponding
+      Principal record to link to. This divergence is deliberate and documented in
+      shapes/governance_graph.owl.ttl, not a schema/export mismatch to fix.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:creator

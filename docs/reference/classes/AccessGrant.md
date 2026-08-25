@@ -14,7 +14,7 @@ _A first-class ACL grant: resource, principal, permission(s), source, and whethe
 
 
 
-URI: [governanceduo:class/AccessGrant](https://w3id.org/sage-bionetworks/governance-duo/class/AccessGrant)
+URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
 
 
 
@@ -93,6 +93,13 @@ URI: [governanceduo:class/AccessGrant](https://w3id.org/sage-bionetworks/governa
     * **AccessGrant**
 
 
+## Class Properties
+
+| Property | Value |
+| --- | --- |
+| Class URI | [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant) |
+
+
 ## Slots
 
 | Name | Cardinality and Range | Description | Inheritance |
@@ -139,7 +146,7 @@ URI: [governanceduo:class/AccessGrant](https://w3id.org/sage-bionetworks/governa
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:AccessGrant |
+| self | sagegov:AccessGrant |
 | native | governanceduo:AccessGrant |
 | close | schema:DigitalDocumentPermissionType, dpv:AuthorisationProtocols |
 
@@ -203,6 +210,10 @@ slot_usage:
     examples:
     - value: grant.001
     pattern: ^grant\.[A-Za-z0-9_-]+$
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
+class_uri: sagegov:AccessGrant
 
 ```
 </details>
@@ -232,12 +243,16 @@ slot_usage:
     examples:
     - value: grant.001
     pattern: ^grant\.[A-Za-z0-9_-]+$
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
 attributes:
   resource:
     name: resource
     description: The SynapseEntity this grant/association applies to.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:resource
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -251,6 +266,7 @@ attributes:
     close_mappings:
     - prov:agent
     rank: 1000
+    slot_uri: sagegov:principal
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -263,6 +279,7 @@ attributes:
       type.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:permission
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -276,6 +293,7 @@ attributes:
     exact_mappings:
     - dcterms:source
     rank: 1000
+    slot_uri: sagegov:source
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -285,6 +303,7 @@ attributes:
     name: bindingType
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:bindingType
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -300,6 +319,7 @@ attributes:
     exact_mappings:
     - dcterms:created
     rank: 1000
+    slot_uri: sagegov:createdOn
     owner: AccessGrant
     domain_of:
     - SynapseAccessRequirementMixin
@@ -314,6 +334,7 @@ attributes:
       from.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:sourceAclId
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -324,6 +345,7 @@ attributes:
       grant was derived from.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:sourceAclResourceAccessId
     owner: AccessGrant
     domain_of:
     - AccessGrant
@@ -346,6 +368,7 @@ attributes:
     range: string
     required: true
     pattern: ^grant\.[A-Za-z0-9_-]+$
+class_uri: sagegov:AccessGrant
 
 ```
 </details></div>

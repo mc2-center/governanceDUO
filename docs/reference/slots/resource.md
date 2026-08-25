@@ -14,7 +14,7 @@ _The SynapseEntity this grant/association applies to._
 
 
 
-URI: [governanceduo:slot/resource](https://w3id.org/sage-bionetworks/governance-duo/slot/resource)
+URI: [sagegov:resource](https://sagebionetworks.org/governance/resource)
 <!-- no inheritance hierarchy -->
 
 
@@ -41,6 +41,7 @@ URI: [governanceduo:slot/resource](https://w3id.org/sage-bionetworks/governance-
 | --- | --- |
 | Range | [SynapseEntity](../classes/SynapseEntity.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md), [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
+| Slot URI | [sagegov:resource](https://sagebionetworks.org/governance/resource) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +76,7 @@ URI: [governanceduo:slot/resource](https://w3id.org/sage-bionetworks/governance-
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:resource |
+| self | sagegov:resource |
 | native | governanceduo:resource |
 
 
@@ -89,6 +90,7 @@ name: resource
 description: The SynapseEntity this grant/association applies to.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:resource
 domain_of:
 - AccessGrant
 - AccessRequirementAssociation

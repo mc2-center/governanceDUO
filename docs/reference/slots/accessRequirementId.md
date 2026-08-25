@@ -14,7 +14,7 @@ _The AccessRequirement this submission is an application against (DATA_ACCESS_SU
 
 
 
-URI: [governanceduo:slot/accessRequirementId](https://w3id.org/sage-bionetworks/governance-duo/slot/accessRequirementId)
+URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/accessRequirementId](https://w3id.org/sage-bionetworks/
 | --- | --- |
 | Range | [AccessRequirement](../classes/AccessRequirement.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Slot URI | [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement) |
 
 ### Cardinality and Requirements
 
@@ -53,6 +54,10 @@ URI: [governanceduo:slot/accessRequirementId](https://w3id.org/sage-bionetworks/
 
 
 
+
+## Comments
+
+* slot_uri intentionally reuses sagegov:accessRequirement, the same predicate AccessRequirementAssociation.accessRequirement uses, even though this is a differently-named LinkML slot -- so "what AccessRequirement does this concern?" is a uniform gov:accessRequirement query regardless of subject class. See scripts/build_governance_graph.py.
 
 
 
@@ -74,7 +79,7 @@ URI: [governanceduo:slot/accessRequirementId](https://w3id.org/sage-bionetworks/
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:accessRequirementId |
+| self | sagegov:accessRequirement |
 | native | governanceduo:accessRequirementId |
 | close | dcterms:requires |
 
@@ -87,10 +92,16 @@ URI: [governanceduo:slot/accessRequirementId](https://w3id.org/sage-bionetworks/
 ```yaml
 name: accessRequirementId
 description: The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
+comments:
+- slot_uri intentionally reuses sagegov:accessRequirement, the same predicate AccessRequirementAssociation.accessRequirement
+  uses, even though this is a differently-named LinkML slot -- so "what AccessRequirement
+  does this concern?" is a uniform gov:accessRequirement query regardless of subject
+  class. See scripts/build_governance_graph.py.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - dcterms:requires
 rank: 1000
+slot_uri: sagegov:accessRequirement
 domain_of:
 - DataAccessSubmission
 range: AccessRequirement

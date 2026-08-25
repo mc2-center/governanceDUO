@@ -9,7 +9,7 @@ search:
 
 
 
-URI: [governanceduo:slot/bindingType](https://w3id.org/sage-bionetworks/governance-duo/slot/bindingType)
+URI: [sagegov:bindingType](https://sagebionetworks.org/governance/bindingType)
 <!-- no inheritance hierarchy -->
 
 
@@ -36,6 +36,7 @@ URI: [governanceduo:slot/bindingType](https://w3id.org/sage-bionetworks/governan
 | --- | --- |
 | Range | [BindingTypeEnum](../enums/BindingTypeEnum.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md), [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
+| Slot URI | [sagegov:bindingType](https://sagebionetworks.org/governance/bindingType) |
 
 ### Cardinality and Requirements
 
@@ -70,7 +71,7 @@ URI: [governanceduo:slot/bindingType](https://w3id.org/sage-bionetworks/governan
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:bindingType |
+| self | sagegov:bindingType |
 | native | governanceduo:bindingType |
 
 
@@ -83,6 +84,7 @@ URI: [governanceduo:slot/bindingType](https://w3id.org/sage-bionetworks/governan
 name: bindingType
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:bindingType
 domain_of:
 - AccessGrant
 - AccessRequirementAssociation

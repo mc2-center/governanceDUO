@@ -50,7 +50,7 @@ URI: [governanceduo:slot/studyProjectIdentifier](https://w3id.org/sage-bionetwor
 
 | Property | Value |
 | --- | --- |
-| Regex Pattern | `syn[0-9]+` |
+| Regex Pattern | `^syn\d+$` |
 
 
 
@@ -99,7 +99,7 @@ domain_of:
 - Study
 range: string
 multivalued: true
-pattern: syn[0-9]+
+pattern: ^syn\d+$
 
 ```
 </details></div>

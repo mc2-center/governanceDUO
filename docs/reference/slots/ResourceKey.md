@@ -54,6 +54,10 @@ URI: [governanceduo:slot/ResourceKey](https://w3id.org/sage-bionetworks/governan
 
 
 
+## Comments
+
+* Untyped string, not range: Resource -- see props.yaml's AccessRequirementKey comment for why (this file cannot import resource.yaml without risking a cycle).
+
 
 
 ## Identifier and Mapping Information
@@ -98,6 +102,9 @@ annotations:
     value: true
 description: The identifier(s) for the Resource(s) associated with this schema. Provide
   multiple values as a comma-separated list.
+comments:
+- 'Untyped string, not range: Resource -- see props.yaml''s AccessRequirementKey comment
+  for why (this file cannot import resource.yaml without risking a cycle).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:

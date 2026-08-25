@@ -46,6 +46,13 @@ URI: [governanceduo:slot/entityIdList](https://w3id.org/sage-bionetworks/governa
 | Property | Value |
 | --- | --- |
 | Multivalued | Yes |
+### Value Constraints
+
+| Property | Value |
+| --- | --- |
+| Regex Pattern | `^syn\d+$` |
+
+
 
 
 
@@ -94,6 +101,7 @@ domain_of:
 - AccessRequirement
 range: string
 multivalued: true
+pattern: ^syn\d+$
 
 ```
 </details></div>

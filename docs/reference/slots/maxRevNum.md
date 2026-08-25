@@ -14,7 +14,7 @@ _The maximum revision number of this Synapse entity (NODE.MAX_REV_NUM)._
 
 
 
-URI: [governanceduo:slot/maxRevNum](https://w3id.org/sage-bionetworks/governance-duo/slot/maxRevNum)
+URI: [sagegov:maxRevNum](https://sagebionetworks.org/governance/maxRevNum)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/maxRevNum](https://w3id.org/sage-bionetworks/governance
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [SynapseEntity](../classes/SynapseEntity.md) |
+| Slot URI | [sagegov:maxRevNum](https://sagebionetworks.org/governance/maxRevNum) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/maxRevNum](https://w3id.org/sage-bionetworks/governance
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:maxRevNum |
+| self | sagegov:maxRevNum |
 | native | governanceduo:maxRevNum |
 
 
@@ -87,6 +88,7 @@ name: maxRevNum
 description: The maximum revision number of this Synapse entity (NODE.MAX_REV_NUM).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:maxRevNum
 domain_of:
 - SynapseEntity
 range: string

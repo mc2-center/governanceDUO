@@ -27,7 +27,16 @@ URI: [governanceduo:class/PolicyFabricMixin](https://w3id.org/sage-bionetworks/g
       PolicyFabricMixin <|-- AccessRequirement
         click AccessRequirement href "../../classes/AccessRequirement/"
       
-      PolicyFabricMixin : assetDids
+      PolicyFabricMixin : assetBindings
+        
+          
+    
+        
+        
+        PolicyFabricMixin --> "*" AssetBinding : assetBindings
+        click AssetBinding href "../../classes/AssetBinding/"
+    
+
         
       PolicyFabricMixin : guardianDataSource
         
@@ -56,7 +65,7 @@ URI: [governanceduo:class/PolicyFabricMixin](https://w3id.org/sage-bionetworks/g
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [assetDids](../slots/assetDids.md) | * <br/> [String](../types/String.md) | Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList ... | direct |
+| [assetBindings](../slots/assetBindings.md) | * <br/> [AssetBinding](../classes/AssetBinding.md) | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id i... | direct |
 | [guardianDataSource](../slots/guardianDataSource.md) | 0..1 <br/> [String](../types/String.md) | The data path/source configured for this asset's Guardian | direct |
 | [guardianUrl](../slots/guardianUrl.md) | 0..1 <br/> [String](../types/String.md) | The deployed Guardian service URL for this asset | direct |
 | [policyContractDid](../slots/policyContractDid.md) | 0..1 <br/> [String](../types/String.md) | The DID of the deployed rego_policy_agent/rego_token contract pair once this ... | direct |
@@ -129,7 +138,7 @@ description: 'Fields needed to deploy an AccessRequirement''s governed entities 
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 mixin: true
 slots:
-- assetDids
+- assetBindings
 - guardianDataSource
 - guardianUrl
 - policyContractDid
@@ -154,19 +163,27 @@ description: 'Fields needed to deploy an AccessRequirement''s governed entities 
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 mixin: true
 attributes:
-  assetDids:
-    name: assetDids
-    description: Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList
-      (order-aligned — position N here corresponds to position N in entityIdList).
-      Mirrors the Django Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry.
+  assetBindings:
+    name: assetBindings
+    description: Policy Fabric Asset-registry DID(s), each paired with the Synapse
+      entity id it registers. Replaces a pair of positionally order-aligned lists
+      (dataUseModifiers-adjacent entityIdList and a since-removed flat assetDids list)
+      with an explicit pairing, so which DID belongs to which Synapse entity is structural
+      rather than convention-only. Each synapseId here should also appear in the containing
+      record's entityIdList (documented, not schema-enforced). GovernanceMixin's own
+      `rules:` are cross-slot too, but only in the simpler "value X on slot A requires
+      slot B to be present" sense; this would need the harder kind -- a positional/arity
+      correspondence between two multivalued lists -- which LinkML's `rules:` preconditions/postconditions
+      don't express, so it's left as a documented, not enforced, invariant.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: PolicyFabricMixin
     domain_of:
     - PolicyFabricMixin
-    range: string
+    range: AssetBinding
     multivalued: true
-    pattern: ^did:[a-z0-9]+:.+$
+    inlined: true
+    inlined_as_list: true
   guardianDataSource:
     name: guardianDataSource
     description: The data path/source configured for this asset's Guardian. Mirrors

@@ -14,7 +14,7 @@ _Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this grant was deri
 
 
 
-URI: [governanceduo:slot/sourceAclResourceAccessId](https://w3id.org/sage-bionetworks/governance-duo/slot/sourceAclResourceAccessId)
+URI: [sagegov:sourceAclResourceAccessId](https://sagebionetworks.org/governance/sourceAclResourceAccessId)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/sourceAclResourceAccessId](https://w3id.org/sage-bionet
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md) |
+| Slot URI | [sagegov:sourceAclResourceAccessId](https://sagebionetworks.org/governance/sourceAclResourceAccessId) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/sourceAclResourceAccessId](https://w3id.org/sage-bionet
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:sourceAclResourceAccessId |
+| self | sagegov:sourceAclResourceAccessId |
 | native | governanceduo:sourceAclResourceAccessId |
 
 
@@ -88,6 +89,7 @@ description: Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this gr
   was derived from.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:sourceAclResourceAccessId
 domain_of:
 - AccessGrant
 range: integer

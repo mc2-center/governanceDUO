@@ -14,7 +14,7 @@ _The AccessRequirement this association binds to the resource._
 
 
 
-URI: [governanceduo:slot/accessRequirement](https://w3id.org/sage-bionetworks/governance-duo/slot/accessRequirement)
+URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/accessRequirement](https://w3id.org/sage-bionetworks/go
 | --- | --- |
 | Range | [AccessRequirement](../classes/AccessRequirement.md) |
 | Domain Of | [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
+| Slot URI | [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +75,7 @@ URI: [governanceduo:slot/accessRequirement](https://w3id.org/sage-bionetworks/go
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:accessRequirement |
+| self | sagegov:accessRequirement |
 | native | governanceduo:accessRequirement |
 | close | dcterms:requires |
 
@@ -91,6 +92,7 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - dcterms:requires
 rank: 1000
+slot_uri: sagegov:accessRequirement
 domain_of:
 - AccessRequirementAssociation
 range: AccessRequirement

@@ -9,7 +9,7 @@ search:
 
 
 
-_model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the standalone CV reference model/valid_values.csv instead documents Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses. This enum keeps shared.model.csv's spelling (the attribute's actual schematic Valid Values) and carries the valid_values.csv description over unchanged — the naming mismatch between the two source CSVs is a real data-quality finding, not resolved here._
+_model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the standalone CV reference model/valid_values.csv previously documented Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch has been fixed (valid_values.csv now matches shared.model.csv's spelling, the attribute's actual schematic Valid Values)._
 
 
 
@@ -72,11 +72,10 @@ URI: [governanceduo:enum/LicenseEnum](https://w3id.org/sage-bionetworks/governan
 ```yaml
 name: LicenseEnum
 description: model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0;
-  the standalone CV reference model/valid_values.csv instead documents Apache_2/GPL_3
-  (no ".0"/"3.0" suffix) for the same two licenses. This enum keeps shared.model.csv's
-  spelling (the attribute's actual schematic Valid Values) and carries the valid_values.csv
-  description over unchanged — the naming mismatch between the two source CSVs is
-  a real data-quality finding, not resolved here.
+  the standalone CV reference model/valid_values.csv previously documented Apache_2/GPL_3
+  (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch has been fixed
+  (valid_values.csv now matches shared.model.csv's spelling, the attribute's actual
+  schematic Valid Values).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:

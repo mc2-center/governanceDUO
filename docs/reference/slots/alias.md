@@ -14,7 +14,7 @@ _The Synapse entity's alias (NODE.ALIAS), if any._
 
 
 
-URI: [governanceduo:slot/alias](https://w3id.org/sage-bionetworks/governance-duo/slot/alias)
+URI: [sagegov:alias](https://sagebionetworks.org/governance/alias)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/alias](https://w3id.org/sage-bionetworks/governance-duo
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [SynapseEntity](../classes/SynapseEntity.md) |
+| Slot URI | [sagegov:alias](https://sagebionetworks.org/governance/alias) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/alias](https://w3id.org/sage-bionetworks/governance-duo
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:alias |
+| self | sagegov:alias |
 | native | governanceduo:alias |
 
 
@@ -87,6 +88,7 @@ name: alias
 description: The Synapse entity's alias (NODE.ALIAS), if any.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:alias
 domain_of:
 - SynapseEntity
 range: string

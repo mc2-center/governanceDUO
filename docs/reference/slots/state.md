@@ -9,7 +9,7 @@ search:
 
 
 
-URI: [governanceduo:slot/state](https://w3id.org/sage-bionetworks/governance-duo/slot/state)
+URI: [sagegov:state](https://sagebionetworks.org/governance/state)
 <!-- no inheritance hierarchy -->
 
 
@@ -35,6 +35,7 @@ URI: [governanceduo:slot/state](https://w3id.org/sage-bionetworks/governance-duo
 | --- | --- |
 | Range | [SubmissionStateEnum](../enums/SubmissionStateEnum.md) |
 | Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Slot URI | [sagegov:state](https://sagebionetworks.org/governance/state) |
 
 ### Cardinality and Requirements
 
@@ -69,7 +70,7 @@ URI: [governanceduo:slot/state](https://w3id.org/sage-bionetworks/governance-duo
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:state |
+| self | sagegov:state |
 | native | governanceduo:state |
 
 
@@ -82,6 +83,7 @@ URI: [governanceduo:slot/state](https://w3id.org/sage-bionetworks/governance-duo
 name: state
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:state
 domain_of:
 - DataAccessSubmissionStatus
 range: SubmissionStateEnum

@@ -14,7 +14,7 @@ _The parent Synapse entity in the containment hierarchy (NODE.PARENT_ID) — use
 
 
 
-URI: [governanceduo:slot/parentId](https://w3id.org/sage-bionetworks/governance-duo/slot/parentId)
+URI: [sagegov:parentId](https://sagebionetworks.org/governance/parentId)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/parentId](https://w3id.org/sage-bionetworks/governance-
 | --- | --- |
 | Range | [SynapseEntity](../classes/SynapseEntity.md) |
 | Domain Of | [SynapseEntity](../classes/SynapseEntity.md) |
+| Slot URI | [sagegov:parentId](https://sagebionetworks.org/governance/parentId) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/parentId](https://w3id.org/sage-bionetworks/governance-
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:parentId |
+| self | sagegov:parentId |
 | native | governanceduo:parentId |
 | exact | dcterms:isPartOf |
 
@@ -93,6 +94,7 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 exact_mappings:
 - dcterms:isPartOf
 rank: 1000
+slot_uri: sagegov:parentId
 domain_of:
 - SynapseEntity
 range: SynapseEntity

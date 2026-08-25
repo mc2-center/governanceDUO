@@ -14,7 +14,7 @@ _A user's application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSI
 
 
 
-URI: [governanceduo:class/DataAccessSubmission](https://w3id.org/sage-bionetworks/governance-duo/class/DataAccessSubmission)
+URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataAccessSubmission)
 
 
 
@@ -62,6 +62,13 @@ URI: [governanceduo:class/DataAccessSubmission](https://w3id.org/sage-bionetwork
 ## Inheritance
 * [BaseEntity](../classes/BaseEntity.md)
     * **DataAccessSubmission**
+
+
+## Class Properties
+
+| Property | Value |
+| --- | --- |
+| Class URI | [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataAccessSubmission) |
 
 
 ## Slots
@@ -116,7 +123,7 @@ URI: [governanceduo:class/DataAccessSubmission](https://w3id.org/sage-bionetwork
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:DataAccessSubmission |
+| self | sagegov:DataAccessSubmission |
 | native | governanceduo:DataAccessSubmission |
 
 
@@ -127,7 +134,7 @@ URI: [governanceduo:class/DataAccessSubmission](https://w3id.org/sage-bionetwork
 
 ```yaml
 id: data_access_submission.555
-accessRequirementId: access_requirement.123
+accessRequirementId: access_requirement.42
 accessRequirementVersion: 1
 dataAccessRequestId: 7001
 researchProjectId: 8001
@@ -170,6 +177,20 @@ slot_usage:
     examples:
     - value: data_access_submission.555
     pattern: ^data_access_submission\.\d+$
+  createdBy:
+    name: createdBy
+    comments:
+    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
+      node (looked up by the submission's numeric creator id), not a literal -- see
+      mixins.yaml's createdBy comment.
+    slot_uri: sagegov:createdBy
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
+  etag:
+    name: etag
+    slot_uri: sagegov:etag
+class_uri: sagegov:DataAccessSubmission
 
 ```
 </details>
@@ -193,14 +214,33 @@ slot_usage:
     examples:
     - value: data_access_submission.555
     pattern: ^data_access_submission\.\d+$
+  createdBy:
+    name: createdBy
+    comments:
+    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
+      node (looked up by the submission's numeric creator id), not a literal -- see
+      mixins.yaml's createdBy comment.
+    slot_uri: sagegov:createdBy
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
+  etag:
+    name: etag
+    slot_uri: sagegov:etag
 attributes:
   accessRequirementId:
     name: accessRequirementId
     description: The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
+    comments:
+    - slot_uri intentionally reuses sagegov:accessRequirement, the same predicate
+      AccessRequirementAssociation.accessRequirement uses, even though this is a differently-named
+      LinkML slot -- so "what AccessRequirement does this concern?" is a uniform gov:accessRequirement
+      query regardless of subject class. See scripts/build_governance_graph.py.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     close_mappings:
     - dcterms:requires
     rank: 1000
+    slot_uri: sagegov:accessRequirement
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
@@ -243,10 +283,15 @@ attributes:
       way as `name` above. Distinct from ContributionMixin's contributorName, which
       is this repo's own free-text curator-provenance field, not Synapse's own numeric
       CREATED_BY column — both coexist on AccessRequirement without collision.
+    comments:
+    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
+      node (looked up by the submission's numeric creator id), not a literal -- see
+      mixins.yaml's createdBy comment.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:creator
     rank: 1000
+    slot_uri: sagegov:createdBy
     owner: DataAccessSubmission
     domain_of:
     - SynapseAccessRequirementMixin
@@ -263,6 +308,7 @@ attributes:
     exact_mappings:
     - dcterms:created
     rank: 1000
+    slot_uri: sagegov:createdOn
     owner: DataAccessSubmission
     domain_of:
     - SynapseAccessRequirementMixin
@@ -279,6 +325,7 @@ attributes:
       in governance_graph.yaml.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:etag
     owner: DataAccessSubmission
     domain_of:
     - SynapseAccessRequirementMixin
@@ -302,6 +349,7 @@ attributes:
     range: string
     required: true
     pattern: ^data_access_submission\.\d+$
+class_uri: sagegov:DataAccessSubmission
 
 ```
 </details></div>

@@ -14,7 +14,7 @@ _The user or team this grant applies to._
 
 
 
-URI: [governanceduo:slot/principal](https://w3id.org/sage-bionetworks/governance-duo/slot/principal)
+URI: [sagegov:principal](https://sagebionetworks.org/governance/principal)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/principal](https://w3id.org/sage-bionetworks/governance
 | --- | --- |
 | Range | [Principal](../classes/Principal.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md) |
+| Slot URI | [sagegov:principal](https://sagebionetworks.org/governance/principal) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +75,7 @@ URI: [governanceduo:slot/principal](https://w3id.org/sage-bionetworks/governance
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:principal |
+| self | sagegov:principal |
 | native | governanceduo:principal |
 | close | prov:agent |
 
@@ -91,6 +92,7 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - prov:agent
 rank: 1000
+slot_uri: sagegov:principal
 domain_of:
 - AccessGrant
 range: Principal

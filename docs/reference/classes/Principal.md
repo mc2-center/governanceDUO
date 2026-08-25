@@ -6,7 +6,7 @@ search:
 # Class: Principal 
 
 
-_A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID (the id of the user or team being granted access) with an explicit type discriminator, since a bare GROUP_ID doesn't distinguish the two on its own._
+_A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID (the id of the user or team being granted access) with an explicit type discriminator, since a bare GROUP_ID doesn't distinguish the two on its own. Deliberately not `is_a: BaseEntity`, and for a different reason than DataAccessSubmissionStatus's (see that class's own description): unlike AccessGrant/AccessRequirementAssociation/ DataAccessSubmission -- which mint a *synthetic* BaseEntity id specifically because their underlying Synapse tables have no single natural key for the merged, first-class thing being modeled -- GROUP_ID already *is* a real, unambiguous, already-existing natural key (Synapse's own numeric Principal/UserGroup id), so there's nothing to synthesize. It's also an integer, not a string, so reusing BaseEntity's generically string-typed `id` slot would require both a range override and renaming this attribute from principalId to literally `id` (slot_usage overrides a slot's attributes; it can't let a differently-named slot stand in for it) -- sacrificing the direct principalId <-> ACL_RESOURCE_ACCESS.GROUP_ID column traceability this schema preserves everywhere else (see SynapseAccessRequirementMixin's real-column-name convention)._
 
 
 
@@ -14,7 +14,7 @@ _A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_AC
 
 
 
-URI: [governanceduo:class/Principal](https://w3id.org/sage-bionetworks/governance-duo/class/Principal)
+URI: [sagegov:Principal](https://sagebionetworks.org/governance/Principal)
 
 
 
@@ -44,6 +44,13 @@ URI: [governanceduo:class/Principal](https://w3id.org/sage-bionetworks/governanc
 
 
 <!-- no inheritance hierarchy -->
+
+## Class Properties
+
+| Property | Value |
+| --- | --- |
+| Class URI | [sagegov:Principal](https://sagebionetworks.org/governance/Principal) |
+
 
 ## Slots
 
@@ -91,7 +98,7 @@ URI: [governanceduo:class/Principal](https://w3id.org/sage-bionetworks/governanc
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:Principal |
+| self | sagegov:Principal |
 | native | governanceduo:Principal |
 | close | prov:Agent |
 
@@ -125,15 +132,28 @@ principalType: User
 <details>
 ```yaml
 name: Principal
-description: A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID
+description: 'A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID
   (the id of the user or team being granted access) with an explicit type discriminator,
-  since a bare GROUP_ID doesn't distinguish the two on its own.
+  since a bare GROUP_ID doesn''t distinguish the two on its own. Deliberately not
+  `is_a: BaseEntity`, and for a different reason than DataAccessSubmissionStatus''s
+  (see that class''s own description): unlike AccessGrant/AccessRequirementAssociation/
+  DataAccessSubmission -- which mint a *synthetic* BaseEntity id specifically because
+  their underlying Synapse tables have no single natural key for the merged, first-class
+  thing being modeled -- GROUP_ID already *is* a real, unambiguous, already-existing
+  natural key (Synapse''s own numeric Principal/UserGroup id), so there''s nothing
+  to synthesize. It''s also an integer, not a string, so reusing BaseEntity''s generically
+  string-typed `id` slot would require both a range override and renaming this attribute
+  from principalId to literally `id` (slot_usage overrides a slot''s attributes; it
+  can''t let a differently-named slot stand in for it) -- sacrificing the direct principalId
+  <-> ACL_RESOURCE_ACCESS.GROUP_ID column traceability this schema preserves everywhere
+  else (see SynapseAccessRequirementMixin''s real-column-name convention).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - prov:Agent
 slots:
 - principalId
 - principalType
+class_uri: sagegov:Principal
 
 ```
 </details>
@@ -143,9 +163,21 @@ slots:
 <details>
 ```yaml
 name: Principal
-description: A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID
+description: 'A Synapse user or team being granted access via an ACL. Mirrors ACL_RESOURCE_ACCESS.GROUP_ID
   (the id of the user or team being granted access) with an explicit type discriminator,
-  since a bare GROUP_ID doesn't distinguish the two on its own.
+  since a bare GROUP_ID doesn''t distinguish the two on its own. Deliberately not
+  `is_a: BaseEntity`, and for a different reason than DataAccessSubmissionStatus''s
+  (see that class''s own description): unlike AccessGrant/AccessRequirementAssociation/
+  DataAccessSubmission -- which mint a *synthetic* BaseEntity id specifically because
+  their underlying Synapse tables have no single natural key for the merged, first-class
+  thing being modeled -- GROUP_ID already *is* a real, unambiguous, already-existing
+  natural key (Synapse''s own numeric Principal/UserGroup id), so there''s nothing
+  to synthesize. It''s also an integer, not a string, so reusing BaseEntity''s generically
+  string-typed `id` slot would require both a range override and renaming this attribute
+  from principalId to literally `id` (slot_usage overrides a slot''s attributes; it
+  can''t let a differently-named slot stand in for it) -- sacrificing the direct principalId
+  <-> ACL_RESOURCE_ACCESS.GROUP_ID column traceability this schema preserves everywhere
+  else (see SynapseAccessRequirementMixin''s real-column-name convention).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - prov:Agent
@@ -155,6 +187,7 @@ attributes:
     description: The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS.GROUP_ID).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:principalId
     identifier: true
     owner: Principal
     domain_of:
@@ -170,6 +203,7 @@ attributes:
     - Principal
     range: PrincipalTypeEnum
     required: true
+class_uri: sagegov:Principal
 
 ```
 </details></div>

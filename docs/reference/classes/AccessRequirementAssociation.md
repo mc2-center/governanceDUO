@@ -14,7 +14,7 @@ _Binds an AccessRequirement to a resource, recording whether the binding is dire
 
 
 
-URI: [governanceduo:class/AccessRequirementAssociation](https://w3id.org/sage-bionetworks/governance-duo/class/AccessRequirementAssociation)
+URI: [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governance/AccessRequirementAssociation)
 
 
 
@@ -76,6 +76,13 @@ URI: [governanceduo:class/AccessRequirementAssociation](https://w3id.org/sage-bi
     * **AccessRequirementAssociation**
 
 
+## Class Properties
+
+| Property | Value |
+| --- | --- |
+| Class URI | [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governance/AccessRequirementAssociation) |
+
+
 ## Slots
 
 | Name | Cardinality and Range | Description | Inheritance |
@@ -118,7 +125,7 @@ URI: [governanceduo:class/AccessRequirementAssociation](https://w3id.org/sage-bi
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:AccessRequirementAssociation |
+| self | sagegov:AccessRequirementAssociation |
 | native | governanceduo:AccessRequirementAssociation |
 
 
@@ -130,7 +137,7 @@ URI: [governanceduo:class/AccessRequirementAssociation](https://w3id.org/sage-bi
 ```yaml
 id: ar_association.001
 resource: syn10081783
-accessRequirement: access_requirement.123
+accessRequirement: access_requirement.42
 source: Synapse
 bindingType: Inherited
 
@@ -169,6 +176,7 @@ slot_usage:
     examples:
     - value: ar_association.001
     pattern: ^ar_association\.[A-Za-z0-9_-]+$
+class_uri: sagegov:AccessRequirementAssociation
 
 ```
 </details>
@@ -201,6 +209,7 @@ attributes:
     description: The SynapseEntity this grant/association applies to.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:resource
     owner: AccessRequirementAssociation
     domain_of:
     - AccessGrant
@@ -214,6 +223,7 @@ attributes:
     close_mappings:
     - dcterms:requires
     rank: 1000
+    slot_uri: sagegov:accessRequirement
     owner: AccessRequirementAssociation
     domain_of:
     - AccessRequirementAssociation
@@ -226,6 +236,7 @@ attributes:
     exact_mappings:
     - dcterms:source
     rank: 1000
+    slot_uri: sagegov:source
     owner: AccessRequirementAssociation
     domain_of:
     - AccessGrant
@@ -235,6 +246,7 @@ attributes:
     name: bindingType
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:bindingType
     owner: AccessRequirementAssociation
     domain_of:
     - AccessGrant
@@ -259,6 +271,7 @@ attributes:
     range: string
     required: true
     pattern: ^ar_association\.[A-Za-z0-9_-]+$
+class_uri: sagegov:AccessRequirementAssociation
 
 ```
 </details></div>

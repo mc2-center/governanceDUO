@@ -1,6 +1,6 @@
 # governance_duo
 
-LinkML representation of the Sage Bionetworks governanceDUO data model (Access Requirement, Resource, Schema, Study). Architecturally aligned with SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI discipline). Shaped to interoperate with sagebrain-model (https://github.com/Sage-Bionetworks/sagebrain-model) and the Data Use Ontology (DUO): real DUO terms are reused by IRI via `meaning:` CURIEs rather than re-minted, and the `sagebrain`/`biolink` prefixes below are declared so scripts/build_owl.py's output lines up with sagebrain's own namespaces the moment cross-repo linking is in scope. This is the single entry point — import this file to get the whole model, or import an individual file below for partial use.
+LinkML representation of the Sage Bionetworks governanceDUO data model (Access Requirement, Resource, Schema, Study), its Policy Fabric integration (policy_fabric.yaml), its RDF Governance Graph representation (governance_graph.yaml), and a design-only GA4GH Data Repository Service (DRS) interoperability crosswalk (drs_alignment.yaml). Architecturally aligned with SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI discipline). Shaped to interoperate with sagebrain-model (https://github.com/Sage-Bionetworks/sagebrain-model) and the Data Use Ontology (DUO): real DUO terms are reused by IRI via `meaning:` CURIEs rather than re-minted, and the `sagebrain`/`biolink` prefixes below are declared so scripts/build_owl.py's output lines up with sagebrain's own namespaces the moment cross-repo linking is in scope. This is the single entry point — import this file to get the whole model, or import an individual file below for partial use.
 
 URI: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 
@@ -12,6 +12,7 @@ Name: governance_duo
 
 | Class | Description |
 | --- | --- |
+| [AssetBinding](classes/AssetBinding.md) | One (Synapse entity id -> Policy Fabric Asset DID) pairing |
 | [BaseEntity](classes/BaseEntity.md) | Abstract root shared by every governanceDUO class |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessGrant](classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
@@ -24,6 +25,8 @@ Name: governance_duo
 | [ContributionMixin](classes/ContributionMixin.md) | Contribution/authorship tracking |
 | [CredentialRequirement](classes/CredentialRequirement.md) | One credential type a Policy Fabric policy_card requires the requester to pre... |
 | [DataAccessSubmissionStatus](classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |
+| [DrsAuthorizationBinding](classes/DrsAuthorizationBinding.md) | Crosswalks one DUO code (or Sage DUOPlus extension) to the shape of the DRS A... |
+| [DrsObjectMapping](classes/DrsObjectMapping.md) | How one Synapse entity maps onto a DRS DrsObject's id/self_uri/aliases |
 | [GovernanceMixin](classes/GovernanceMixin.md) | DUO-based data-use-modifier vocabulary and its conditional-requirement rules,... |
 | [PolicyCardBinding](classes/PolicyCardBinding.md) | One row per verified tmp-policies policy_cards/<name>/ folder: which DUO code... |
 | [PolicyCardBindingCollection](classes/PolicyCardBindingCollection.md) | Container class for policy_fabric_bindings |
@@ -46,11 +49,13 @@ Name: governance_duo
 | [activatedByAttribute](slots/activatedByAttribute.md) | The name of a Synapse annotation key that will be applied to entities release... |
 | [activationValue](slots/activationValue.md) | The value of Synapse annotation recorded under activatedByAttribute that will... |
 | [alias](slots/alias.md) | The Synapse entity's alias (NODE |
+| [aliases](slots/aliases.md) | Secondary/external identifiers for this same Synapse entity, carried in DRS's... |
 | [allowedAccountTypes](slots/allowedAccountTypes.md) | Account type(s) permitted to access the data (checked against UserPlatformCre... |
 | [allowedPurposes](slots/allowedPurposes.md) | Research purpose term(s) for which use is allowed |
 | [approvedProjects](slots/approvedProjects.md) | DID(s) of project(s) approved to use the data under this access requirement |
 | [approvedUsers](slots/approvedUsers.md) | Identifier(s) of specifically approved users |
-| [assetDids](slots/assetDids.md) | Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList ... |
+| [assetBindings](slots/assetBindings.md) | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id i... |
+| [assetDid](slots/assetDid.md) | The Policy Fabric Asset-registry DID for synapseId |
 | [attribution](slots/attribution.md) | The attribution statement for the data associated with the access requirement |
 | [bindings](slots/bindings.md) |  |
 | [bindingType](slots/bindingType.md) |  |
@@ -72,6 +77,8 @@ Name: governance_duo
 | [dataUseModifiers](slots/dataUseModifiers.md) | A list of data use modifiers that apply to the access requirement |
 | [deidentificationType](slots/deidentificationType.md) | The type of de-identification applied to the data associated with the access ... |
 | [diseaseSpecificResearch](slots/diseaseSpecificResearch.md) | The type(s) of disease research allowed by this access requirement |
+| [drsId](slots/drsId.md) | The DRS DrsObject |
+| [drsSelfUri](slots/drsSelfUri.md) | The DRS DrsObject |
 | [entityIdList](slots/entityIdList.md) | Synapse ID(s) for Synapse container(s) (e |
 | [etag](slots/etag.md) | Entity tag for optimistic concurrency control (a 36-character UUID) |
 | [geographicalRestriction](slots/geographicalRestriction.md) | The specific geographic region(s) to which use is limited by the access requi... |
@@ -95,6 +102,7 @@ Name: governance_duo
 | [notAfter](slots/notAfter.md) | ISO-8601 datetime after which use is no longer permitted |
 | [notes](slots/notes.md) | Free-text notes — used in particular to record why sourceSlot is left unset (... |
 | [parentId](slots/parentId.md) | The parent Synapse entity in the containment hierarchy (NODE |
+| [passportAuthIssuers](slots/passportAuthIssuers.md) | Mirrors DRS's Authorizations |
 | [permission](slots/permission.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE |
 | [policyCardName](slots/policyCardName.md) | The literal tmp-policies policy_cards/<name>/ folder name, e |
 | [policyContractDid](slots/policyContractDid.md) | The DID of the deployed rego_policy_agent/rego_token contract pair once this ... |
@@ -122,6 +130,7 @@ Name: governance_duo
 | [source](slots/source.md) | The system this grant/association was derived from, e |
 | [sourceAclId](slots/sourceAclId.md) | Traceability back to the literal ACL |
 | [sourceAclResourceAccessId](slots/sourceAclResourceAccessId.md) | Traceability back to the literal ACL_RESOURCE_ACCESS |
+| [sourceField](slots/sourceField.md) | When sourceSlot names an inlined class (e |
 | [sourceGeography](slots/sourceGeography.md) | The geographical source of the data associated with the access requirement |
 | [sourceSlot](slots/sourceSlot.md) | The name of the governanceDUO slot (on GovernanceMixin, Study, or the PolicyF... |
 | [speciesTypeKey](slots/speciesTypeKey.md) | The annotation key applied to a Synapse entity that contains a species identi... |
@@ -142,6 +151,8 @@ Name: governance_duo
 | [studyProjectIdentifier](slots/studyProjectIdentifier.md) | The Synapse Project identifier (synID) with which this Study is related |
 | [studySampleNumber](slots/studySampleNumber.md) | The number of specimens associated with systematic investigation into a subje... |
 | [submissionId](slots/submissionId.md) | The DataAccessSubmission this status record applies to (DATA_ACCESS_SUBMISSIO... |
+| [supportedAuthTypes](slots/supportedAuthTypes.md) | Mirrors DRS's Authorizations |
+| [synapseId](slots/synapseId.md) | A Synapse entity id |
 | [timeLimitOnUse](slots/timeLimitOnUse.md) | Time limit on the use of the data associated with the access requirement |
 | [trustedIssuerDids](slots/trustedIssuerDids.md) | DID(s) of the Verifiable Credential issuer(s) this AccessRequirement's owner ... |
 | [userSpecificRestriction](slots/userSpecificRestriction.md) | The user-specific restrictions associated with the access requirement |
@@ -154,11 +165,12 @@ Name: governance_duo
 | [AccessRequirementConcreteTypeEnum](enums/AccessRequirementConcreteTypeEnum.md) | Synapse's real AccessRequirement subclasses, verified via Sage-Bionetworks/Sy... |
 | [AccessTypeEnum](enums/AccessTypeEnum.md) | Synapse's real ACCESS_TYPE values, verified live via rest-docs |
 | [BindingTypeEnum](enums/BindingTypeEnum.md) | Whether a governance relationship (an AccessGrant or AccessRequirementAssocia... |
-| [CredentialTypeEnum](enums/CredentialTypeEnum.md) | The 14 Verifiable Credential types defined in tmp-policies/credentials/* |
+| [CredentialTypeEnum](enums/CredentialTypeEnum.md) | The 15 Verifiable Credential types defined in tmp-policies/credentials/* |
 | [DataPermissionEnum](enums/DataPermissionEnum.md) |  |
 | [DataTierEnum](enums/DataTierEnum.md) |  |
 | [DataUseModifierEnum](enums/DataUseModifierEnum.md) | Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions... |
 | [DeidentificationTypeEnum](enums/DeidentificationTypeEnum.md) | De-identification method categories |
+| [DrsAuthTypeEnum](enums/DrsAuthTypeEnum.md) | Mirrors DRS's Authorizations |
 | [GeographicalRegionEnum](enums/GeographicalRegionEnum.md) | ISO 3166-1 alpha-2 country codes |
 | [LicenseEnum](enums/LicenseEnum.md) | model/shared |
 | [PrincipalTypeEnum](enums/PrincipalTypeEnum.md) | Whether a Principal is an individual user or a team — from the design doc: "P... |

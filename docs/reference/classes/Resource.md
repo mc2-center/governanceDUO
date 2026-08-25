@@ -365,6 +365,17 @@ attributes:
         value: true
     description: The Access Requirement id(s) associated with this object. Provide
       multiple values as a comma-separated list.
+    comments:
+    - 'Deliberately an untyped string, not range: AccessRequirement: giving it a real
+      typed range would require importing access_requirement.yaml into this file,
+      but this file (like mixins.yaml) is a leaf that imports only linkml:types specifically
+      so it can never import an entity file and risk an import cycle (see the schema-level
+      description above). governance_graph.yaml can afford real typed ranges for its
+      own cross-references (e.g. accessRequirement: range: AccessRequirement) because
+      it is a single, later-loaded file that already imports everything it references
+      -- this file cannot follow that pattern without breaking its own leaf-file guarantee.
+      Same rationale applies to StudyKey below and to ResourceKey (schema.yaml)/SchemaKey
+      (resource.yaml).'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: Resource
@@ -382,6 +393,9 @@ attributes:
         value: true
     description: The Schema id corresponding to a registered JSON schema that describes
       the access conditions relevant to this Resource.
+    comments:
+    - 'Untyped string, not range: Schema -- see props.yaml''s AccessRequirementKey
+      comment for why (this file cannot import schema.yaml without risking a cycle).'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: Resource

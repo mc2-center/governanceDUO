@@ -14,7 +14,7 @@ _The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). Multivalued: a
 
 
 
-URI: [governanceduo:slot/permission](https://w3id.org/sage-bionetworks/governance-duo/slot/permission)
+URI: [sagegov:permission](https://sagebionetworks.org/governance/permission)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/permission](https://w3id.org/sage-bionetworks/governanc
 | --- | --- |
 | Range | [AccessTypeEnum](../enums/AccessTypeEnum.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md) |
+| Slot URI | [sagegov:permission](https://sagebionetworks.org/governance/permission) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +76,7 @@ URI: [governanceduo:slot/permission](https://w3id.org/sage-bionetworks/governanc
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:permission |
+| self | sagegov:permission |
 | native | governanceduo:permission |
 
 
@@ -90,6 +91,7 @@ description: 'The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). M
   a single ACL_RESOURCE_ACCESS row can carry more than one permission type.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:permission
 domain_of:
 - AccessGrant
 range: AccessTypeEnum

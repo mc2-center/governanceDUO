@@ -140,11 +140,13 @@ attributes:
   id:
     name: id
     description: 'A unique identifier for this record. Narrowed per class via `slot_usage`
-      in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml. The schematic
-      CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id,
-      Resource_id, Schema_id, Study_id) instead: schematic''s model CSV has one flat,
-      global Attribute namespace with no per-class scoping equivalent to slot_usage,
-      so four classes cannot share a bare "id" attribute there without colliding.'
+      in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml/governance_graph.yaml
+      (SynapseEntity/AccessGrant/AccessRequirementAssociation/DataAccessSubmission).
+      The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute
+      names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic''s
+      model CSV has one flat, global Attribute namespace with no per-class scoping
+      equivalent to slot_usage, so four classes cannot share a bare "id" attribute
+      there without colliding.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: dcterms:identifier
