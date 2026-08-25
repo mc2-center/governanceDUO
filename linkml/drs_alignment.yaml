@@ -1,0 +1,135 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/drs_alignment
+name: governance_duo_drs_alignment
+description: >-
+  Design-level crosswalk between governanceDUO and the GA4GH Data Repository Service
+  (DRS) API (spec: https://ga4gh.github.io/data-repository-service-schemas/docs/) —
+  not an implementation of a DRS server, and not a claim that governanceDUO exposes
+  DRS endpoints today. This schema exists to make two mappings explicit and
+  machine-checkable wherever they're used, ahead of any actual DRS integration work:
+
+  1. How a Synapse entity's several existing identifiers (SynapseEntity.id,
+     AccessRequirement.entityIdList, PolicyFabricMixin.assetBindings[].synapseId — see
+     mixins.yaml) map onto a single canonical DRS DrsObject.id/self_uri, with every
+     other identifier (the governanceDUO dotted id, the gov:-namespace individual)
+     carried in DRS's own sanctioned secondary-identifier field, `aliases` — see
+     DrsObjectMapping.
+
+  2. How a DUO code's access conditions map onto DRS's `Authorizations` discovery
+     shape (returned from `OPTIONS /objects/{object_id}`) — see DrsAuthorizationBinding.
+
+  The core insight motivating mapping 2: **GA4GH Passports/Visas and Policy Fabric's
+  Verifiable-Credential model are structurally analogous.** Both are "present a
+  signed, issuer-attested credential; evaluate its claims against a resource's
+  declared policy." DRS standardizes only the *discovery* of which issuers a server
+  will accept (`Authorizations.passport_auth_issuers`) and the *transport* of the
+  passport JWT — it explicitly leaves the claims-evaluation decision itself out of
+  scope ("it is not the responsibility of a DRS server to return a Passport, that is
+  the responsibility of a Passport Broker and outside the scope of DRS"). Policy
+  Fabric's Rego evaluator (see policy_fabric.yaml/policy_fabric_bindings.yaml) is a
+  plausible drop-in for exactly that gap: a `DataAccessSubmissionStatus.state ==
+  APPROVED` event (governance_graph.yaml) is a natural trigger for issuing a GA4GH
+  Visa (type `ControlledAccessGrants`, value = the governed dataset's `drs://` URI) to
+  the approved Principal — not implemented here, but the shape this schema's classes
+  describe is what such an issuance step would read from and write into.
+
+  Design choice for identifiers: Synapse ids (`syn<n>`) satisfy DRS's allowed id
+  charset (`[A-Za-z0-9.-_~]`) already, so they become the DRS `id` component of a
+  hostname-based `drs://<hostname>/<id>` URI directly, rather than minting a fourth
+  internal identifier scheme alongside entityIdList/assetBindings/SynapseEntity.id.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - mixins
+  - policy_fabric
+enums:
+  DrsAuthTypeEnum:
+    description: >-
+      Mirrors DRS's Authorizations.supported_types enum
+      (https://ga4gh.github.io/data-repository-service-schemas/docs/). More than one
+      can be supported and tried in sequence, per the DRS spec.
+    permissible_values:
+      None:
+        description: No authorization required — the object is fully public.
+      BasicAuth:
+        description: HTTP Basic authentication.
+      BearerAuth:
+        description: HTTP Bearer token authentication.
+      PassportAuth:
+        description: >-
+          A GA4GH Passport (a signed JWT carrying one or more Visa claims) submitted
+          as a `passports[]` array in the request body. The realistic default for all
+          DUO-governed access, given Policy Fabric already models Verifiable-Credential
+          presentation for the same conditions.
+classes:
+  DrsObjectMapping:
+    description: >-
+      How one Synapse entity maps onto a DRS DrsObject's id/self_uri/aliases. One row
+      per governed Synapse entity, not per AccessRequirement (multiple
+      AccessRequirements can govern the same entity; this mapping is per-entity).
+    slots:
+      - synapseId
+      - drsId
+      - drsSelfUri
+      - aliases
+  DrsAuthorizationBinding:
+    description: >-
+      Crosswalks one DUO code (or Sage DUOPlus extension) to the shape of the DRS
+      Authorizations record a server would return from `OPTIONS /objects/{object_id}`
+      for an object governed by that code. Mirrors PolicyCardBinding
+      (policy_fabric.yaml) — same dataUseModifier axis, different target system's
+      input shape (DRS's Authorizations discovery record vs. Policy Fabric's
+      policy_data_schema.json).
+    slots:
+      - dataUseModifier
+      - supportedAuthTypes
+      - passportAuthIssuers
+      - notes
+slots:
+  drsId:
+    description: >-
+      The DRS DrsObject.id component. Recommended to be identical to synapseId — see
+      this schema's own header comment for why a fourth internal identifier scheme
+      isn't introduced here.
+    required: true
+  drsSelfUri:
+    description: >-
+      The DRS DrsObject.self_uri — a hostname-based `drs://<hostname>/<drsId>` URI
+      (DRS's other addressing style, compact-identifier URIs resolved via
+      identifiers.org/n2t.net, is not used here since Synapse ids already resolve
+      directly against a Synapse-operated DRS host).
+    pattern: '^drs://.+$'
+    required: true
+  aliases:
+    description: >-
+      Secondary/external identifiers for this same Synapse entity, carried in DRS's
+      own sanctioned DrsObject.aliases field — e.g. the governanceDUO dotted id(s)
+      that reference this entity via entityIdList/assetBindings[].synapseId (see
+      access_requirement.yaml/mixins.yaml), and/or the corresponding
+      gov:-namespace SynapseEntity individual (see governance_graph.yaml). This is
+      the DRS-forward-compatible resolution of governanceDUO's three-parallel-
+      identifier-scheme gap (entityIdList / assetBindings.synapseId /
+      SynapseEntity.id): rather than inventing a fourth internal crosswalk, Synapse's
+      own id becomes the canonical DRS id and everything else rides in aliases.
+    multivalued: true
+  supportedAuthTypes:
+    description: >-
+      Mirrors DRS's Authorizations.supported_types for objects governed by this DUO
+      code.
+    range: DrsAuthTypeEnum
+    multivalued: true
+    ifabsent: "PassportAuth"
+  passportAuthIssuers:
+    description: >-
+      Mirrors DRS's Authorizations.passport_auth_issuers — the whitelisted set of
+      Visa `iss` issuers a client must draw from. Not populated here from a fixed
+      value: sourced, per governed AccessRequirement, from that record's own
+      PolicyFabricMixin.trustedIssuerDids (or, for institution-scoped DUO codes,
+      GovernanceMixin.institutionDids) — see mixins.yaml. GA4GH Passport Visa issuers
+      are conventionally identified as DIDs or URLs the same way those slots already
+      are.
+    multivalued: true
+    pattern: '^did:[a-z0-9]+:.+$'
