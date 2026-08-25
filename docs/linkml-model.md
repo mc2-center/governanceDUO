@@ -22,6 +22,7 @@ graph LR
     study[study.yaml]
     schema[schema.yaml]
     gg[governance_graph.yaml]
+    drs[drs_alignment.yaml]
     umbrella[governance_duo.linkml.yaml]
 
     base --> types
@@ -48,6 +49,9 @@ graph LR
     gg --> types
     gg --> base
     gg --> ar
+    drs --> types
+    drs --> mixins
+    drs --> pf
 
     umbrella --> base
     umbrella --> props
@@ -58,6 +62,7 @@ graph LR
     umbrella --> study
     umbrella --> schema
     umbrella --> gg
+    umbrella --> drs
 ```
 
 `governance_graph.yaml` depends on `mixins.yaml` transitively, through
@@ -73,13 +78,14 @@ through `access_requirement.yaml`).
 | --- | --- | --- |
 | [`base_entity.yaml`](../linkml/base_entity.yaml) | Shared abstract root | `BaseEntity` (one `id` slot, `slot_uri: dcterms:identifier`, narrowed per class via `slot_usage`) |
 | [`props.yaml`](../linkml/props.yaml) | Cross-class slots/enums reused by ≥2 entity classes | `AccessRequirementKey`, `StudyKey`; `GeographicalRegionEnum` (ISO 3166-1 alpha-2), `DeidentificationTypeEnum` |
-| [`mixins.yaml`](../linkml/mixins.yaml) | Cross-cutting slots, the DUO vocabulary, and conditional-requirement rules | `GovernanceMixin`, `ContributionMixin`, `PolicyFabricMixin`, `SynapseAccessRequirementMixin`; `DataUseModifierEnum`, `AccessTypeEnum`, `AccessRequirementConcreteTypeEnum`, `DataPermissionEnum`, `DataTierEnum`, `LicenseEnum` |
+| [`mixins.yaml`](../linkml/mixins.yaml) | Cross-cutting slots, the DUO vocabulary, and conditional-requirement rules | `GovernanceMixin`, `ContributionMixin`, `PolicyFabricMixin`, `AssetBinding`, `SynapseAccessRequirementMixin`; `DataUseModifierEnum`, `AccessTypeEnum`, `AccessRequirementConcreteTypeEnum`, `DataPermissionEnum`, `DataTierEnum`, `LicenseEnum` |
 | [`access_requirement.yaml`](../linkml/access_requirement.yaml) | `AccessRequirement` | `is_a BaseEntity` + all 4 mixins above; id pattern `^access_requirement\.\d+$` |
 | [`resource.yaml`](../linkml/resource.yaml) | `Resource` | `is_a BaseEntity` + `GovernanceMixin`; id pattern `^resource\.[A-Za-z0-9]+$` |
 | [`study.yaml`](../linkml/study.yaml) | `Study` | `is_a BaseEntity` + `GovernanceMixin`; id pattern `^study\.[A-Za-z0-9_-]+$`; several slots carry caDSR `cde_id` annotations |
 | [`schema.yaml`](../linkml/schema.yaml) | `Schema` (registered JSON-schema records) | `is_a BaseEntity`; id pattern `^schema\.[A-Za-z0-9_-]+$` |
 | [`governance_graph.yaml`](../linkml/governance_graph.yaml) | RDF/graph representation of the SageBrain "Governance Graph" design — see [Knowledge graph representation](knowledge-graph.md) | `SynapseEntity`, `Principal`, `AccessGrant`, `AccessRequirementAssociation`, `DataAccessSubmission`, `DataAccessSubmissionStatus` |
 | [`policy_fabric.yaml`](../linkml/policy_fabric.yaml) | Policy Fabric crosswalk schema — see [Policy Fabric integration](policy-fabric.md) | `PolicyCardBinding`, `CredentialRequirement`, `ReferenceValueSource`, `CredentialTypeEnum` |
+| [`drs_alignment.yaml`](../linkml/drs_alignment.yaml) | Design-only GA4GH DRS interoperability crosswalk — see [DRS interoperability](drs-interop.md) | `DrsObjectMapping`, `DrsAuthorizationBinding`, `DrsAuthTypeEnum` |
 
 Full per-class/slot/enum detail (including an auto-drawn Mermaid diagram and, where
 one exists, an embedded example) is in the [schema reference](reference/index.md).

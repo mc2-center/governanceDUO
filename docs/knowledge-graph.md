@@ -88,15 +88,33 @@ README for the workaround this needed). The per-class `.ttl` files plus a merged
 `linkml/examples/rdf/all_examples.ttl` land in `linkml/examples/rdf/`, and this merged
 file is what `make shacl-validate` checks against the SHACL shapes.
 
-## 3. `governance-graph` — a bespoke, hand-mapped ABox
+## 3. `governance-graph` — schema-driven predicates, hand-written control flow
 
-`make governance-graph` (`scripts/build_governance_graph.py`) is **not** a generic
-LinkML dump. It reads the hand-written instances in
-`linkml/examples/governance_graph/*.example.yaml` and emits Turtle in its own
-`gov:`/`syn:` namespaces, using a bespoke per-class mapping function, deliberately
-shaped to match the worked examples in the "SageBrain-Governance Graph Design" doc
-(e.g. it only emits `gov:hasApproval` when a submission's state is `APPROVED`). This
-lets `governance_graph.yaml`'s classes model the design doc's central distinction:
+`make governance-graph` (`scripts/build_governance_graph.py`) still isn't a fully
+generic LinkML dump, but it's no longer disconnected from the schema either.
+`governance_graph.yaml`'s classes/slots now declare `class_uri`/`slot_uri` under the
+`sagegov:` namespace (the same IRI space the script's `gov:` CURIE resolves to — see
+[The LinkML model](linkml-model.md)), and the script resolves every predicate/type it
+emits from those declarations at runtime (`PREDICATE()`/`TYPE()`, via `SchemaView`)
+instead of hardcoding independent `GOV.<name>` Python constants. If a slot's
+`slot_uri` changes in the schema, the script's output follows automatically —
+closing the schema/script drift risk a hand-rolled exporter otherwise carries.
+
+What's still hand-written, because no LinkML slot or generic dumper can express it:
+
+- **`Principal`** individuals have no `BaseEntity` id at all (just a bare integer
+  `principalId`), so their subject URIs (`gov:principal-<n>`) are minted directly in
+  Python, not via any schema-declared id pattern.
+- **`gov:hasApproval`** is emitted only when a cross-object join holds
+  (`DataAccessSubmissionStatus.state == APPROVED`) — join logic, not a per-slot
+  mapping.
+- **`gov:hasACL`/`gov:hasAccessRequirement`** are derived convenience triples with no
+  corresponding `governance_graph.yaml` slot.
+- The `.`/`_` → `-` id-hyphenation display convention (`grant.001` → `gov:grant-001`).
+
+The script reads the hand-written instances in
+`linkml/examples/governance_graph/*.example.yaml`. Together, this lets
+`governance_graph.yaml`'s classes model the design doc's central distinction:
 
 - **`AccessGrant`** answers *"who has which permission on this resource?"* (an ACL
   grant — mirrors `ACL`/`ACL_RESOURCE_ACCESS`).
@@ -159,7 +177,7 @@ syn:syn10081783 a gov:SynapseEntity ;
     gov:createdOn "1755000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
     gov:etag "3f9c9b8a-1a2b-4c3d-9e5f-6a7b8c9d0e1f" ;
     gov:hasACL gov:grant-001 ;
-    gov:hasAccessRequirement gov:AR-123 ;
+    gov:hasAccessRequirement gov:AR-42 ;
     gov:name "HS01_CUDC907_Run1_S2_R1_001.fastq" ;
     gov:nodeType "file" ;
     gov:parentId syn:syn2343195 .
@@ -180,11 +198,17 @@ data), using `shapes/governance_duo.shacl.ttl`.
 
 ### The `gov:`/`syn:` namespace: `make governance-graph-validate`
 
-`governance_graph_export/governance_graph.ttl` uses different namespaces than
-`shapes/governance_duo.shacl.ttl` was generated against, so the generic shapes above
-can't validate it — a shape targeting `governanceduo:AccessGrant` simply never matches
-a `gov:AccessGrant` individual. This isn't just a namespace swap either: the ABox has
-structural quirks `gen-shacl` has no way to know about —
+`governance_graph_export/governance_graph.ttl`'s individuals are typed `gov:AccessGrant`
+etc., not `governanceduo:AccessGrant` — `governance_graph.yaml`'s classes keep their
+primary identity in the `governanceduo:` namespace (their `sagegov:` `class_uri` shows
+up in `governance_duo.owl.ttl` as a `skos:exactMatch` annotation, not a replacement),
+so `shapes/governance_duo.shacl.ttl`'s `sh:targetClass governanceduo:AccessGrant`
+still never matches a `gov:AccessGrant` individual, even though its `sh:path` entries
+for `AccessGrant`'s slots now correctly use the `sagegov:` predicates (`gen-shacl`
+picks up the `slot_uri` declarations directly). The generic shapes above can't
+validate this ABox on their own. And it isn't just a namespace-selection problem
+either: the ABox has structural quirks no generic shape-compiler has a way to know
+about —
 
 - `Principal` individuals are typed `gov:Team`/`gov:User`, with an explicit
   `gov:Principal` type also asserted directly (so a plain `?x a gov:Principal` query
@@ -215,8 +239,12 @@ typed `gov:Team`/`gov:User`, on top of the explicit `gov:Principal` type they no
 carry directly).
 
 **Is there a Governance Graph TBox?** Before this pass, no — only the `governanceduo:`
-OWL file existed, and it describes `governance_graph.yaml`'s classes under
-`governanceduo:` IRIs that the ABox doesn't actually use. `shapes/governance_graph.owl.ttl`
+OWL file existed, and while `governance_graph.yaml`'s classes/slots now declare
+`sagegov:` `class_uri`/`slot_uri` (so `build_governance_graph.py` reads its predicates
+from the schema instead of hardcoding them independently — see section 3 above), the
+ABox's individuals are still typed `gov:AccessGrant`, not `governanceduo:AccessGrant`
+— `governance_graph.yaml`'s classes keep their primary identity in the `governanceduo:`
+namespace. `shapes/governance_graph.owl.ttl`
 is the first TBox for the real `gov:`/`syn:` namespace the ABox is written in. It's
 intentionally small (just enough class/subclass/domain/range structure for the SHACL
 shapes above to work and for the namespace to be self-describing) rather than a full

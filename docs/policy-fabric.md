@@ -20,7 +20,7 @@ design rationale; this page covers the resulting schema and a worked example.
 ## Schema vs. data
 
 - **`policy_fabric.yaml`** (schema) defines `PolicyCardBinding` — the shape of one
-  binding row — plus `CredentialRequirement`, `ReferenceValueSource`, and the 14-value
+  binding row — plus `CredentialRequirement`, `ReferenceValueSource`, and the 15-value
   `CredentialTypeEnum` (the Verifiable Credential types defined in
   `tmp-policies/credentials/*.schema.json`). It imports `mixins.yaml` for
   `DataUseModifierEnum`.
@@ -80,7 +80,7 @@ ever, being deployed into Policy Fabric:
 
 | Slot | Purpose |
 | --- | --- |
-| `assetDids` | Policy Fabric Asset-registry DID(s), order-aligned with `entityIdList` |
+| `assetBindings` | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id it registers (an inlined `{synapseId, assetDid}` list — see [The LinkML model](linkml-model.md)) |
 | `guardianDataSource` | The data path/source configured for this asset's Guardian |
 | `guardianUrl` | The deployed Guardian service URL for this asset |
 | `policyContractDid` | DID of the deployed `rego_policy_agent`/`rego_token` contract pair once this AR's DUO codes are exposed as a policy |
@@ -105,8 +105,9 @@ geographicalRestriction:
   - US
 institutionDids:
   - did:example:best_university
-assetDids:
-  - did:example:asset123
+assetBindings:
+  - synapseId: syn98765432
+    assetDid: did:example:asset123
 guardianDataSource: /tmp/asset_data.txt
 trustedIssuerDids:
   - did:example:sage_bionetworks_issuer
@@ -165,7 +166,7 @@ from the named `sourceSlot`) produces, in `policy_fabric_export/`:
 `allowedCountries` from `geographicalRestriction`, `allowedInstitutions` from
 `institutionDids` — exactly the tutorial's expected
 `{"allowedCountries": ["US"], "allowedInstitutions": ["did:example:best_university"]}`
-shape. `asset_registration.json`'s `did` is `assetDids[0]`, and `guardian_url` is
+shape. `asset_registration.json`'s `did` is `assetBindings[0].assetDid`, and `guardian_url` is
 `null` because this example doesn't set `guardianUrl`.
 
 ## Open items

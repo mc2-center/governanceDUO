@@ -24,7 +24,8 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 # Documentation
 
 Deeper, example-backed docs on the LinkML model, its knowledge-graph representations,
-and the Policy Fabric integration — including an auto-generated schema reference
+the Policy Fabric integration, and a design-only GA4GH Data Repository Service (DRS)
+interoperability crosswalk — including an auto-generated schema reference
 (`make docs`) — live under [`docs/`](docs/index.md), starting at
 [`docs/index.md`](docs/index.md). The LinkML/Policy Fabric/Governance Graph sections
 below are unchanged and still apply; the docs/ pages add diagrams, worked examples,
@@ -171,11 +172,14 @@ didn't — Policy Fabric's `AffiliationCredential.isMemberOf` and
 `allowedInstitutions` expect organization **DIDs**, not ROR ids, so a new companion
 slot `institutionDids` was added rather than reinterpreting the existing ROR-pattern
 field; `collaboration-required` and `publication-required` both key on a `datasetID`
-sourced from the new `PolicyFabricMixin.assetDids`. A new `PolicyFabricMixin`
-(`assetDids`, `guardianDataSource`, `guardianUrl`, `policyContractDid`,
+sourced from `PolicyFabricMixin.assetBindings[].assetDid`. A new `PolicyFabricMixin`
+(`assetBindings`, `guardianDataSource`, `guardianUrl`, `policyContractDid`,
 `trustedIssuerDids`), applied to `AccessRequirement`, mirrors the real (minimal)
 Django `Asset` model's `did`/`metadata` fields and the per-record trust choices
-Policy Fabric's "expose" step captures.
+Policy Fabric's "expose" step captures. `assetBindings` is an inlined
+`{synapseId, assetDid}` list — rather than a flat DID list positionally aligned with
+`entityIdList` by convention only — so which DID registers which Synapse entity is
+structural, not a documented-but-unenforced invariant.
 
 The remaining 16 were **documented gaps, not silent guesses**, and have since been
 closed by adding 9 new, deliberately reusable `GovernanceMixin` slots — each with
@@ -258,14 +262,24 @@ and `Principal.principalType` were checked and left unmapped rather than forced.
 predicates — run via `make governance-graph`, its output is structurally the same
 shape as the doc's own snippets (e.g. `gov:ar-association-001 a
 gov:AccessRequirementAssociation ; gov:resource syn:syn10081783 ; gov:accessRequirement
-gov:AR-123 ; gov:source gov:Synapse ; gov:bindingType gov:Inherited .`), including
+gov:AR-42 ; gov:source gov:Synapse ; gov:bindingType gov:Inherited .` — `AR-42`, not the
+doc's own `AR-123`, since this repo's example instances reuse `access_requirement.42`,
+the AccessRequirement id already defined elsewhere in `linkml/examples/`), including
 correctly *not* emitting a `gov:hasApproval` triple while Alice's submission is only
 `SUBMITTED`, not yet `APPROVED`. The LinkML schema itself registers this same
 namespace under `sagegov:`, not `gov:` — `gov:` collides with a different,
 canonical prefix (`http://gov.genealogy.net/ontology.owl#`) `linkml-lint` flagged,
-same as `ebiswo:` vs. OBO Foundry `SWO:` earlier; the export script uses the literal
-`gov:` in its own Turtle output regardless, since that's independent of the
-schema's prefix registry.
+same as `ebiswo:` vs. OBO Foundry `SWO:` earlier; the export script uses the shorter
+`gov:` CURIE in its own Turtle output regardless (both resolve to the same IRI).
+`governance_graph.yaml`'s classes/slots now declare `class_uri`/`slot_uri` under
+`sagegov:` directly, and the script resolves every predicate/type it emits from those
+declarations at runtime rather than hardcoding independent Python constants — so this
+is no longer fully independent of the schema's prefix registry the way it once was;
+see [Knowledge graph representation](docs/knowledge-graph.md) for the current
+architecture, including the `owl:sameAs` bridge the script now asserts between each
+`gov:AR-<n>` stub and its real `governanceduo:access_requirement.<n>` individual, and
+the [Governance consolidation plan](plans/governance_consolidation_and_drs_interop.md)
+for why.
 
 # Materials available in this repository
  - The modular data model CSV source files are available under `model/schematic`
