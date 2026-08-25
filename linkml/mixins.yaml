@@ -183,14 +183,34 @@ slots:
       - 'prov:generatedAtTime ("The time at which an entity was completely created
         and is available for use") matches this slot''s semantics closely, treating
         the AccessRequirement record itself as the generated prov:Entity.'
-  assetDids:
+  assetBindings:
     description: >-
-      Policy Fabric Asset-registry DID(s) for the Synapse entities in entityIdList
-      (order-aligned — position N here corresponds to position N in entityIdList).
-      Mirrors the Django Asset model's `did` field (unique per Asset) in
-      tmp-policies/tools/asset_registry.
+      Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id it
+      registers. Replaces a pair of positionally order-aligned lists
+      (dataUseModifiers-adjacent entityIdList and a since-removed flat assetDids list)
+      with an explicit pairing, so which DID belongs to which Synapse entity is
+      structural rather than convention-only. Each synapseId here should also appear
+      in the containing record's entityIdList (documented, not schema-enforced).
+      GovernanceMixin's own `rules:` are cross-slot too, but only in the simpler
+      "value X on slot A requires slot B to be present" sense; this would need the
+      harder kind -- a positional/arity correspondence between two multivalued lists
+      -- which LinkML's `rules:` preconditions/postconditions don't express, so it's
+      left as a documented, not enforced, invariant.
     multivalued: true
+    inlined: true
+    inlined_as_list: true
+    range: AssetBinding
+  synapseId:
+    description: >-
+      A Synapse entity id. Reused across contexts that reference one specific Synapse
+      entity: an AssetBinding registering it as a Policy Fabric Asset (this file), or
+      a DrsObjectMapping crosswalking it to a DRS DrsObject (drs_alignment.yaml).
+    pattern: '^syn\d+$'
+    required: true
+  assetDid:
+    description: The Policy Fabric Asset-registry DID for synapseId.
     pattern: '^did:[a-z0-9]+:.+$'
+    required: true
   guardianDataSource:
     description: >-
       The data path/source configured for this asset's Guardian. Mirrors
@@ -338,6 +358,15 @@ slots:
     range: integer
     exact_mappings:
       - dcterms:creator
+    comments:
+      - 'scripts/build_governance_graph.py emits this integer two different ways
+        depending on which class it''s on: as an IRI reference to a gov:Principal
+        node (gov:createdBy) on DataAccessSubmission -- since a submission''s creator
+        can be looked up as a first-class Principal individual -- but as a plain
+        literal (gov:createdByUserId, a distinct predicate, not gov:createdBy) on
+        SynapseEntity, which has no corresponding Principal record to link to. This
+        divergence is deliberate and documented in shapes/governance_graph.owl.ttl,
+        not a schema/export mismatch to fix.'
   createdOn:
     description: >-
       When the record was created (epoch milliseconds in the source Synapse
@@ -684,11 +713,10 @@ enums:
   LicenseEnum:
     description: >-
       model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the
-      standalone CV reference model/valid_values.csv instead documents Apache_2/GPL_3
-      (no ".0"/"3.0" suffix) for the same two licenses. This enum keeps
-      shared.model.csv's spelling (the attribute's actual schematic Valid Values) and
-      carries the valid_values.csv description over unchanged — the naming mismatch
-      between the two source CSVs is a real data-quality finding, not resolved here.
+      standalone CV reference model/valid_values.csv previously documented
+      Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch
+      has been fixed (valid_values.csv now matches shared.model.csv's spelling, the
+      attribute's actual schematic Valid Values).
     permissible_values:
       CC0:
         description: "Creative Commons Zero license, allowing for the free use of the data."
@@ -1058,11 +1086,23 @@ classes:
       pairing — see linkml/policy_fabric.yaml and policy_fabric_bindings.yaml for the
       per-DUO-code credential/reference-value crosswalk this pairs with.
     slots:
-      - assetDids
+      - assetBindings
       - guardianDataSource
       - guardianUrl
       - policyContractDid
       - trustedIssuerDids
+  AssetBinding:
+    description: >-
+      One (Synapse entity id -> Policy Fabric Asset DID) pairing. Mirrors the Django
+      Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry.
+      A plain string, not a typed `range: SynapseEntity`, for synapseId: importing
+      governance_graph.yaml (where SynapseEntity is defined) into this leaf file would
+      create the same import cycle base_entity.yaml/props.yaml/mixins.yaml are
+      designed to avoid (governance_graph.yaml already depends on mixins.yaml
+      transitively, through access_requirement.yaml).
+    slots:
+      - synapseId
+      - assetDid
   SynapseAccessRequirementMixin:
     mixin: true
     description: >-

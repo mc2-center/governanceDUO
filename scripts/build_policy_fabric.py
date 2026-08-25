@@ -73,6 +73,7 @@ def build(instance: dict, bindings: dict) -> tuple[dict, list, dict]:
                 continue
 
             source_slot = source["sourceSlot"]
+            source_field = source.get("sourceField")
             key_is_multivalued = source.get("keyIsMultivalued", True)
             values = instance.get(source_slot)
             if values is None:
@@ -84,6 +85,10 @@ def build(instance: dict, bindings: dict) -> tuple[dict, list, dict]:
                 continue
             if not isinstance(values, list):
                 values = [values]
+            if source_field is not None:
+                # sourceSlot names an inlined class (e.g. assetBindings, range
+                # AssetBinding) — pull sourceField out of each element.
+                values = [v[source_field] for v in values]
 
             if key_is_multivalued:
                 policy_data.setdefault(key, [])
@@ -93,7 +98,7 @@ def build(instance: dict, bindings: dict) -> tuple[dict, list, dict]:
             else:
                 # This Policy Fabric key is a scalar (e.g. datasetID, requiredDocumentID,
                 # notAfter) even where its governanceDUO sourceSlot is multivalued (e.g.
-                # assetDids) — take the first value, per ReferenceValueSource.keyIsMultivalued.
+                # assetBindings) — take the first value, per ReferenceValueSource.keyIsMultivalued.
                 policy_data[key] = values[0]
 
         for cred in binding.get("requiredCredentials", []):
@@ -102,9 +107,10 @@ def build(instance: dict, bindings: dict) -> tuple[dict, list, dict]:
                 seen_credentials.add(dedup_key)
                 credentials.append(cred)
 
+    asset_bindings = instance.get("assetBindings") or []
     asset_registration = {
         "name": instance.get("id", ""),
-        "did": (instance.get("assetDids") or [None])[0],
+        "did": asset_bindings[0]["assetDid"] if asset_bindings else None,
         "metadata": {
             "data_source": instance.get("guardianDataSource"),
             "guardian_url": instance.get("guardianUrl"),

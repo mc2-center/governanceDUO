@@ -12,8 +12,9 @@ geographicalRestriction:
   - US
 institutionDids:
   - did:example:best_university
-assetDids:
-  - did:example:asset123
+assetBindings:
+  - synapseId: syn98765432
+    assetDid: did:example:asset123
 guardianDataSource: /tmp/asset_data.txt
 trustedIssuerDids:
   - did:example:sage_bionetworks_issuer

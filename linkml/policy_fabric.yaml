@@ -22,7 +22,7 @@ imports:
 enums:
   CredentialTypeEnum:
     description: >-
-      The 14 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
+      The 15 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
     permissible_values:
       AffiliationCredential:
         description: "Claims: isMemberOf (DID of organization, required), typeOfMembership (string, required)."
@@ -80,6 +80,7 @@ classes:
     slots:
       - referenceValueKey
       - sourceSlot
+      - sourceField
       - keyIsMultivalued
   PolicyCardBindingCollection:
     description: >-
@@ -110,7 +111,8 @@ slots:
     description: >-
       Free-text notes — used in particular to record why sourceSlot is left unset
       (which governanceDUO slot would need to be added, and its required shape) so a
-      gap is documented rather than silently dropped.
+      gap is documented rather than silently dropped. Reused by
+      drs_alignment.yaml's DrsAuthorizationBinding for the same purpose.
     multivalued: true
   bindings:
     multivalued: true
@@ -145,6 +147,12 @@ slots:
       The name of the governanceDUO slot (on GovernanceMixin, Study, or the
       PolicyFabricMixin) that collects the value for the paired referenceValueKey.
     required: true
+  sourceField:
+    description: >-
+      When sourceSlot names an inlined class (e.g. PolicyFabricMixin.assetBindings,
+      range AssetBinding), the sub-field of each element to extract — e.g.
+      sourceSlot: assetBindings, sourceField: assetDid pulls AssetBinding.assetDid out
+      of each entry. Unset when sourceSlot is a flat scalar/list slot.
   keyIsMultivalued:
     description: >-
       True if this referenceValueKey's own policy_data_schema.json documents it as a
@@ -153,7 +161,8 @@ slots:
       ISO-8601 datetime, not a list). This is a property of the Policy Fabric key
       itself, independent of whether its governanceDUO sourceSlot happens to be
       multivalued — e.g. datasetID is scalar even though it is sourced from the
-      multivalued assetDids slot (build_policy_fabric.py takes assetDids[0]).
+      multivalued assetBindings slot (build_policy_fabric.py takes
+      assetBindings[0].assetDid).
     range: boolean
     required: true
     ifabsent: "true"
@@ -171,3 +180,11 @@ slots:
       success (every one of the 21 verified policy_cards emits "do_download" today —
       Policy Fabric has not yet diversified beyond dataset download).
     ifabsent: string(do_download)
+    comments:
+      - 'Related to, but intentionally not unified with, mixins.yaml''s AccessTypeEnum
+        (used by AccessGrant.permission and AccessRequirement.accessType): both
+        describe "what operation is being granted," but AccessTypeEnum is Synapse''s
+        own closed ACL vocabulary while this slot is Policy Fabric''s free-string Rego
+        capability-name convention -- the two vocabularies belong to different
+        external systems and may drift independently, so this stays a free string
+        rather than being coerced into AccessTypeEnum.'

@@ -69,7 +69,8 @@ bindings:
       - datasetID
     referenceValueSources:
       - referenceValueKey: datasetID
-        sourceSlot: assetDids
+        sourceSlot: assetBindings
+        sourceField: assetDid
         keyIsMultivalued: false
     requiredCredentials:
       - credentialType: TeamCredential
@@ -87,8 +88,8 @@ bindings:
     capabilityOperation: do_download
     notes:
       - "datasetID is the governed asset's own DID, not a value about collaboration itself — sourced from
-        PolicyFabricMixin.assetDids, not the existing collaborationRequired slot (which holds a PI email
-        address, an entirely different piece of information)."
+        PolicyFabricMixin.assetBindings[].assetDid, not the existing collaborationRequired slot (which holds
+        a PI email address, an entirely different piece of information)."
       - "The actual gating condition is a 5-credential chain (Team -> ProjectOwnership -> Affiliation ->
         ScopedAgreement -> Agreement); governanceDUO has no per-AccessRequirement representation of this
         chain today (out of scope for this pass — it is evidence the *requester* presents, not something the
@@ -408,7 +409,8 @@ bindings:
       - datasetID
     referenceValueSources:
       - referenceValueKey: datasetID
-        sourceSlot: assetDids
+        sourceSlot: assetBindings
+        sourceField: assetDid
         keyIsMultivalued: false
     requiredCredentials:
       - credentialType: TeamCredential
@@ -425,7 +427,7 @@ bindings:
         requiredClaims: [key]
     capabilityOperation: do_download
     notes:
-      - "Same pattern as collaboration-required (DUO:0000020): datasetID sourced from assetDids. DUO:0000019
+      - "Same pattern as collaboration-required (DUO:0000020): datasetID sourced from assetBindings[].assetDid. DUO:0000019
         (PUB) has no detail slot of its own in this repo's model, and doesn't need one — nothing about
         'publication required' itself is owner-configurable reference data in this policy_card."
 
