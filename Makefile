@@ -55,3 +55,16 @@ docs-examples:
 
 docs: docs-examples
 	gen-doc ${LINKML_SCHEMA} -d docs/reference --render-imports --example-directory docs/example_instances --subfolder-type-separation
+
+# Full docs-site preview (mkdocs + Material theme + Mermaid rendering). `docs-build`
+# always regenerates docs/reference/ first (via the `docs` target) so the preview
+# can't go stale relative to the schema. `site/` is gitignored build output.
+# Not --strict: the narrative pages deliberately link out to real source files
+# (linkml/*.yaml, scripts/*.py, ../README.md, etc.) outside docs_dir, which mkdocs's
+# strict link-checker can't resolve even though they're correct -- those links are
+# checked by the doc-link sweep in plans/*_report.md instead.
+docs-build: docs
+	mkdocs build
+
+docs-serve: docs
+	mkdocs serve

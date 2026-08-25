@@ -1,2 +1,5 @@
 linkml>=1.8
 pyshacl>=0.30
+mkdocs>=1.6
+mkdocs-material>=9.5
+mkdocs-awesome-pages-plugin>=2.9

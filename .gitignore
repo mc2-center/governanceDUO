@@ -4,3 +4,6 @@ docs/example_instances/
 
 __pycache__/
 *.pyc
+
+# `make docs-build`/`docs-serve` output (mkdocs)
+site/

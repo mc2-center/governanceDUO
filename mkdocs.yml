@@ -1,0 +1,46 @@
+site_name: governanceDUO Documentation
+site_description: >-
+  LinkML model, knowledge graph representation, Policy Fabric integration, and DRS
+  interoperability design for Sage Bionetworks' governanceDUO data governance model.
+repo_url: https://github.com/mc2-center/governanceDUO
+docs_dir: docs
+site_dir: site
+exclude_docs: |
+  example_instances/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - content.code.copy
+
+plugins:
+  - search
+  - awesome-pages
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
