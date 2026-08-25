@@ -41,3 +41,4 @@ slots:
       etc.) with which the Access Requirement is expected to be associated. Provide
       multiple values as a comma-separated list.
     multivalued: true
+    pattern: '^syn\d+$'

@@ -31,6 +31,10 @@ slots:
     description: >-
       The identifier(s) for the Resource(s) associated with this schema. Provide
       multiple values as a comma-separated list.
+    comments:
+      - 'Untyped string, not range: Resource -- see props.yaml''s AccessRequirementKey
+        comment for why (this file cannot import resource.yaml without risking a
+        cycle).'
     multivalued: true
     annotations:
       foreign_key: true

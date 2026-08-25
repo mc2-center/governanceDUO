@@ -127,7 +127,7 @@ slots:
   studyProjectIdentifier:
     description: The Synapse Project identifier (synID) with which this Study is related.
     multivalued: true
-    pattern: 'syn[0-9]+'
+    pattern: '^syn\d+$'
 enums:
   StudyIndexDateEnum:
     permissible_values:

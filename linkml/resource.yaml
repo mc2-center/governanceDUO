@@ -47,6 +47,10 @@ slots:
     description: >-
       The Schema id corresponding to a registered JSON schema that describes the
       access conditions relevant to this Resource.
+    comments:
+      - 'Untyped string, not range: Schema -- see props.yaml''s AccessRequirementKey
+        comment for why (this file cannot import schema.yaml without risking a
+        cycle).'
     annotations:
       foreign_key: true
   grantAnnotationKey:

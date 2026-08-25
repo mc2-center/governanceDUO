@@ -2,7 +2,10 @@ id: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 name: governance_duo
 description: >-
   LinkML representation of the Sage Bionetworks governanceDUO data model (Access
-  Requirement, Resource, Schema, Study). Architecturally aligned with
+  Requirement, Resource, Schema, Study), its Policy Fabric integration
+  (policy_fabric.yaml), its RDF Governance Graph representation
+  (governance_graph.yaml), and a design-only GA4GH Data Repository Service (DRS)
+  interoperability crosswalk (drs_alignment.yaml). Architecturally aligned with
   SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one
   file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI
   discipline). Shaped to interoperate with sagebrain-model
@@ -43,3 +46,4 @@ imports:
   - schema
   - study
   - governance_graph
+  - drs_alignment
