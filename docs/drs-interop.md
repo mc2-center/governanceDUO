@@ -90,5 +90,5 @@ Makefile target — this is a schema-and-docs-only design pass. If a real DRS
 integration is taken on later, `linkml/drs_alignment.yaml`'s classes are the starting
 point for generating these records from real `AccessRequirement`/`SynapseEntity`/
 `PolicyCardBinding` data instead of hand-writing them, the way
-[`scripts/build_policy_fabric.py`](../scripts/build_policy_fabric.py) already does
+[`scripts/build_policy_fabric.py`](https://github.com/mc2-center/governanceDUO/blob/main/scripts/build_policy_fabric.py) already does
 for Policy Fabric's own input shape.

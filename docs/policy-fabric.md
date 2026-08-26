@@ -14,7 +14,7 @@ turn that alignment into machine-usable inputs for the real system: a `PolicyCar
 per verified `policy_cards/<name>/` folder, and a script that walks an
 `AccessRequirement` instance's `dataUseModifiers` to build Policy Fabric's actual
 `policy_data.json`, credential list, and Asset registration record. See
-[`plans/policy_fabric_alignment.md`](../plans/policy_fabric_alignment.md) for the full
+[`plans/policy_fabric_alignment.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/policy_fabric_alignment.md) for the full
 design rationale; this page covers the resulting schema and a worked example.
 
 ## Schema vs. data
@@ -88,7 +88,7 @@ ever, being deployed into Policy Fabric:
 
 ## End-to-end worked example
 
-[`linkml/examples/access_requirement_policy_fabric.example.yaml`](../linkml/examples/access_requirement_policy_fabric.example.yaml):
+[`linkml/examples/access_requirement_policy_fabric.example.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/examples/access_requirement_policy_fabric.example.yaml):
 
 ```yaml
 id: access_requirement.101

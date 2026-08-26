@@ -127,9 +127,9 @@ Effective access = ACL permits **AND** applicable Access Requirements are satisf
 
 ### Worked example
 
-[`access_grant.example.yaml`](../linkml/examples/governance_graph/access_grant.example.yaml)
+[`access_grant.example.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/examples/governance_graph/access_grant.example.yaml)
 and
-[`synapse_entity_file.example.yaml`](../linkml/examples/governance_graph/synapse_entity_file.example.yaml):
+[`synapse_entity_file.example.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/examples/governance_graph/synapse_entity_file.example.yaml):
 
 ```yaml
 # access_grant.example.yaml
@@ -265,5 +265,5 @@ For the full class/slot/enum reference of `governance_graph.yaml` (the LinkML sc
 under `governanceduo:` IRIs), see the [schema reference](reference/index.md) — e.g.
 [`AccessGrant`](reference/classes/AccessGrant.md), [`SynapseEntity`](reference/classes/SynapseEntity.md),
 [`DataAccessSubmission`](reference/classes/DataAccessSubmission.md). For the `gov:`/`syn:`
-namespace's own TBox, read [`shapes/governance_graph.owl.ttl`](../shapes/governance_graph.owl.ttl)
+namespace's own TBox, read [`shapes/governance_graph.owl.ttl`](https://github.com/mc2-center/governanceDUO/blob/main/shapes/governance_graph.owl.ttl)
 directly — it's short.
