@@ -3,10 +3,11 @@
 This is the docs home for the `linkml/` model behind governanceDUO — the DUO-based
 governance model, its RDF/knowledge-graph representations, its Policy Fabric
 integration, and a design-only GA4GH Data Repository Service (DRS) interoperability
-crosswalk. The root [`README.md`](https://github.com/mc2-center/governanceDUO/blob/main/README.md) covers the schematic CSV pipeline,
-Synapse submission workflow, and a first pass at the first three of these topics; the
-pages here go deeper, with a full auto-generated schema reference and worked examples
-drawn from the real files in this repo.
+crosswalk. The root [`README.md`](https://github.com/mc2-center/governanceDUO/blob/main/README.md)
+covers repository layout and a first pass at the first three of these topics, and
+keeps the legacy schematic CSV pipeline and Synapse submission workflow in a
+collapsed archive section; the pages here go deeper, with a full auto-generated
+schema reference and worked examples drawn from the real files in this repo.
 
 | Page | Covers |
 | --- | --- |

@@ -1,12 +1,33 @@
+# governanceDUO
 
-The Data Use Ontology (DUO) provides a helpful framework for gating access to data managed by Sage Bionetworks on the Synapse platform. 
+LinkML model, knowledge graph representation, Policy Fabric integration, and a
+design-only GA4GH Data Repository Service (DRS) interoperability crosswalk for Sage
+Bionetworks' DUO-based data governance model on Synapse. See [`docs/`](docs/index.md)
+for the full documentation site, or the collapsed archive at the bottom of this file
+for the original DUO background and the legacy schematic CSV/Synapse-submission
+workflow.
 
-[DUO was developed by members of the Global Alliance for Genomic Health (GA4GH)](https://github.com/EBISPOT/DUO/blob/master/README.md): "DUO allows [users] to semantically tag datasets with restriction about their usage, making them discoverable automatically based on the authorization level of users, or intended usage".
+# Repository layout
 
-At Sage, we extended DUO modifiers for our use cases and incorporated [derived annotations](https://sagebionetworks.jira.com/wiki/spaces/PLFM/pages/2597617665/API+Changes+to+support+Extension+of+Data+Access+Management+to+Users+outside+of+Sage+ACT) as a way of scaling governance support on projects by assigning access requirements (ARs)* to entities based on its DUO annotation.
+| Path | Contents |
+| --- | --- |
+| [`linkml/`](linkml/governance_duo.linkml.yaml) | Source of truth: the LinkML schema (DUO governance model, Policy Fabric crosswalk, Governance Graph design), plus hand-written example instances under `linkml/examples/` |
+| [`model/`](model/) | The modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) that `linkml/` was derived from and stays aligned with |
+| [`shapes/`](shapes/) | OWL/SHACL artifacts for both schemas: `governance_duo.{owl,shacl}.ttl` (generated — `make owl`/`make shacl`) and `governance_graph.{owl,shacl}.ttl` (hand-authored) |
+| [`sage-ar-model/`](sage-ar-model/) | Generated outputs of the schematic pipeline (`make collate convert generate-json`): the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema |
+| [`governance_graph_export/`](governance_graph_export/) | Generated Turtle export of the worked Governance Graph example (`make governance-graph`) |
+| [`policy_fabric_export/`](policy_fabric_export/) | Generated Policy Fabric input JSON (`make policy-fabric`) |
+| [`access_requirement_JSON/`](access_requirement_JSON/README.md) | Per-DCC Access Requirement dictionaries and their generated conditional JSON schemas — see its own README for the format |
+| [`docs/`](docs/index.md) | The mkdocs documentation site — narrative pages plus an auto-generated schema reference (`make docs`); published to GitHub Pages via `.github/workflows/docs.yml` |
+| [`scripts/`](scripts/) | The Python build/export/validate scripts the `Makefile` drives |
+| [`plans/`](plans/) | Design plans for major changes to this repo, each with a companion `*_report.md` |
+| [`archive/`](archive/) | Legacy, pre-LinkML reference material kept for history — see the collapsed archive section below |
 
-_*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms) and/or a managed access requirement (i.e., the user must provide evidence). Managed ARs may require evidence in the form of **Authentication** (e.g., training certification, profile validation, two-factor authorization) and/or **Authorization** (e.g., intended data use (IDU) statement, data use certificate (DUC), ethics approval letter from an institutional review board (IRB) or independent ethics committee (IEC))._
-
+All generated artifacts above can be rebuilt from `linkml/` and `model/` via the
+`Makefile` (`pip install -r requirements.txt` first); see `make linkml-lint`,
+`make owl`/`shacl`/`example-rdf`/`shacl-validate`, `make policy-fabric`,
+`make governance-graph`/`governance-graph-validate`, `make validate-all`, and
+`make docs`/`docs-build`/`docs-serve`.
 
 # Resources
  - [GA4GH Products](https://www.ga4gh.org/product/data-use-ontology-duo/)
@@ -30,6 +51,12 @@ interoperability crosswalk — including an auto-generated schema reference
 [`docs/index.md`](docs/index.md). The LinkML/Policy Fabric/Governance Graph sections
 below are unchanged and still apply; the docs/ pages add diagrams, worked examples,
 and full per-class/slot/enum reference on top of them.
+
+The docs site (`mkdocs build`) is also published automatically to GitHub Pages on
+every push to `main` that touches `docs/`, `mkdocs.yml`, or `requirements.txt` (see
+[`.github/workflows/docs.yml`](.github/workflows/docs.yml)); once Pages is enabled in
+the repo settings (source: GitHub Actions) it's served at
+`https://mc2-center.github.io/governanceDUO/`.
 
 # LinkML representation
 
@@ -96,7 +123,7 @@ Build/validate targets (see `Makefile`; require `pip install -r requirements.txt
 ```
 make linkml-lint      # lint the schema (--ignore-warnings: the camelCase attribute
                        # names are intentional, see above)
-make owl              # generate governance_duo.owl.ttl (scripts/build_owl.py)
+make owl              # generate shapes/governance_duo.owl.ttl (scripts/build_owl.py)
 make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
 make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
@@ -137,9 +164,9 @@ export step. See the script's docstring for the full explanation.
 **Known follow-up, not yet done:**
 - `make convert` and `scripts/create_json_from_model.py` must be re-run (they require
   `schematic` and an authenticated `synapseclient` session, unavailable in the
-  environment this schema was built in) to refresh `sage-ar.model.jsonld` and the
-  `*_validation_schema-updated.json` files after the `Pattern` additions to
-  `model/*.model.csv`.
+  environment this schema was built in) to refresh `sage-ar-model/sage-ar.model.jsonld`
+  and the `sage-ar-model/*_validation_schema-updated.json` files after the `Pattern`
+  additions to `model/*.model.csv`.
 
 ## Policy Fabric alignment
 
@@ -282,6 +309,26 @@ the [Governance consolidation plan](plans/governance_consolidation_and_drs_inter
 for why.
 
 # Materials available in this repository
+
+The content below predates this repository's current `linkml/`-based model (see
+[LinkML representation](#linkml-representation) above) and, in places, links to files
+on a separate `ar-dictionary-schema` branch rather than the current model files
+described in [Repository layout](#repository-layout). It's kept for historical
+reference and for the still-relevant Synapse submission workflow.
+
+<details>
+<summary><b>Archive</b></summary>
+
+# governanceDUO
+
+The Data Use Ontology (DUO) provides a helpful framework for gating access to data managed by Sage Bionetworks on the Synapse platform. 
+
+[DUO was developed by members of the Global Alliance for Genomic Health (GA4GH)](https://github.com/EBISPOT/DUO/blob/master/README.md): "DUO allows [users] to semantically tag datasets with restriction about their usage, making them discoverable automatically based on the authorization level of users, or intended usage".
+
+At Sage, we extended DUO modifiers for our use cases and incorporated [derived annotations](https://sagebionetworks.jira.com/wiki/spaces/PLFM/pages/2597617665/API+Changes+to+support+Extension+of+Data+Access+Management+to+Users+outside+of+Sage+ACT) as a way of scaling governance support on projects by assigning access requirements (ARs)* to entities based on its DUO annotation. 
+
+_*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms) and/or a managed access requirement (i.e., the user must provide evidence). Managed ARs may require evidence in the form of **Authentication** (e.g., training certification, profile validation, two-factor authorization) and/or **Authorization** (e.g., intended data use (IDU) statement, data use certificate (DUC), ethics approval letter from an institutional review board (IRB) or independent ethics committee (IEC))._
+
  - The modular data model CSV source files are available under `model/schematic`
  - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
    ```
@@ -410,3 +457,5 @@ for why.
 		- Study entries for labs 7 and 9 should only be created in Synapse Projects E and F, respectively
 	
 	</details>
+
+</details>

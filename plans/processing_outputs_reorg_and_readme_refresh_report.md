@@ -1,0 +1,113 @@
+# Report: Organize processing outputs; refresh README for current repo state
+
+## File moves
+
+| From | To | Why |
+| --- | --- | --- |
+| `governance_duo.owl.ttl` | `shapes/governance_duo.owl.ttl` | Generated `make owl` output; joins its sibling `governance_duo.shacl.ttl` and the already-precedented `governance_graph.{owl,shacl}.ttl` pair in `shapes/` |
+| `sage-ar.model.csv` | `sage-ar-model/sage-ar.model.csv` | Generated `make collate` output; consolidated with the rest of the schematic-pipeline outputs |
+| `sage-ar.model.jsonld` | `sage-ar-model/sage-ar.model.jsonld` | Generated `make convert` output |
+| `AccessRequirement_validation_schema-updated.json` | `sage-ar-model/AccessRequirement_validation_schema-updated.json` | Same regeneration unit per README's "Known follow-up" note |
+| `data dictionary table` | `archive/data-dictionary-table.txt` | Pre-LinkML legacy content, confirmed via `git log --follow` (2024, predates `sage-ar.model.csv`) |
+| `metadata structure.md` | `archive/metadata-structure.md` | Same — legacy, unreferenced by any current script/doc |
+
+All done via `git mv` to preserve history.
+
+## Code/doc reference updates
+
+- `Makefile`: `CSV` var → `sage-ar-model/sage-ar.model.csv`; `owl` target `--out` →
+  `shapes/governance_duo.owl.ttl`; `shacl-validate` target `--data` → same. Also fixed
+  the now-stale `docs-build` comment/target (it claimed mkdocs `--strict` couldn't be
+  used because of out-of-`docs_dir` relative links — those links were already
+  rewritten to GitHub blob URLs in the prior session, and `--strict` now passes; the
+  target was updated to actually run `mkdocs build --strict`, matching what
+  `.github/workflows/docs.yml` runs for the published site).
+- `scripts/build_owl.py`: `--out` default and usage docstring → `shapes/governance_duo.owl.ttl`.
+- `scripts/validate_graph.py`: `--data` default, usage docstring, and one prose
+  reference → `shapes/governance_duo.owl.ttl`.
+- `scripts/create_json_from_model.py`: `DATA_MODEL_SOURCE` → `sage-ar-model/sage-ar.model.csv`.
+- `docs/knowledge-graph.md`: 4 occurrences of bare `governance_duo.owl.ttl` (mermaid
+  diagram node + 3 prose mentions) → `shapes/governance_duo.owl.ttl`, matching how
+  `shapes/governance_duo.shacl.ttl` was already written on the same lines.
+- `README.md`: `make owl` comment and the "Known follow-up, not yet done" bullet
+  updated to the new `sage-ar-model/` paths.
+
+Left unchanged (checked, found not to need updates):
+- `linkml/mixins.yaml` — two comments name `sage-ar.model.csv`/`sage-ar-model/*.json`
+  generically (no directory prefix), still accurate at the new location.
+- `plans/repo_wide_consistency_audit_report.md`, `plans/governance_consolidation_and_drs_interop_report.md`
+  — historical, point-in-time reports; not rewritten retroactively.
+- `scripts/build_owl.py` line 24 — narrative bug-history sentence naming the artifact,
+  not a path reference.
+- `access_requirement_JSON/` internal structure — flagged in the plan as a real but
+  separate inconsistency (some generated per-DCC schemas follow its documented
+  `{DCC}/dictionary/`+`{DCC}/json_schema/` layout, others sit loose at the top level),
+  not touched given uncertain downstream Synapse-binding implications.
+
+## README.md changes
+
+- Added `# governanceDUO` H1 title.
+- New `# Repository layout` section: an 11-row path→contents table covering
+  `linkml/`, `model/`, `shapes/`, `sage-ar-model/`, `governance_graph_export/`,
+  `policy_fabric_export/`, `access_requirement_JSON/`, `docs/`, `scripts/`, `plans/`,
+  `archive/`, plus a one-line pointer to the full `Makefile` target list.
+- `# Documentation` section: added a paragraph on the new GitHub Pages deploy
+  (`.github/workflows/docs.yml`), noting Pages must be switched to "GitHub Actions"
+  source in repo settings and the expected published URL
+  (`https://mc2-center.github.io/governanceDUO/`).
+- `# LinkML representation` / `## Policy Fabric alignment` / `## Governance Graph
+  alignment`: content unchanged except the two path fixes above — this material was
+  already accurate and current.
+- `# Materials available in this repository`: heading kept as a normal H1 (unmoved);
+  added a short explanatory paragraph, then wrapped its bullet list plus every
+  subsequent section (`## Submitting metadata to the database`, `## Creating
+  conditional JSON schemas from database records`, `## Using schemas to record
+  governance metadata`, `## Additional information`, including their nested
+  `<details>` blocks) inside one outer `<details><summary><b>Archive</b></summary>`
+  block running to end of file.
+
+## Tests / verification run
+
+```
+make shacl-validate            # Conforms: True (both governance_duo.owl.ttl and the example RDF)
+make governance-graph-validate # Conforms: True
+make docs-build                # mkdocs build --strict, exit 0, no warnings
+```
+
+`docs/reference/`, `governance_graph_export/governance_graph.ttl`, and
+`linkml/examples/rdf/*.ttl` all regenerated byte-identical to what's committed (no
+schema/comment content changed by this pass). `shapes/governance_duo.{owl,shacl}.ttl`
+regenerated with reordered-but-semantically-identical blank nodes during testing
+(LinkML's `gen-owl`/`gen-shacl` aren't ordering-stable across runs) — reset to the
+originally-committed bytes at their new path via `git show HEAD:<old-path>` rather
+than keep that incidental churn in the diff.
+
+`grep -c '<details>'`/`grep -c '</details>'` on `README.md`: 7/7, balanced.
+
+## docs/ follow-up pass
+
+Swept `docs/*.md` for the same staleness this reorg could have introduced (moved
+file paths, a restructured `README.md`). `docs/knowledge-graph.md`'s
+`governance_duo.owl.ttl` references were already fixed in the reorg pass above; two
+more were found and fixed here:
+
+- `docs/index.md`: intro paragraph said the root README "covers the schematic CSV
+  pipeline, Synapse submission workflow, and a first pass at the first three of
+  these topics" — no longer accurate now that content lives in a collapsed archive
+  section. Reworded to say the README "covers repository layout and a first pass at
+  the first three of these topics, and keeps the legacy schematic CSV pipeline and
+  Synapse submission workflow in a collapsed archive section."
+- `docs/use-cases.md`: "per the root README's 'Submitting metadata to the database'
+  section" → "per the root README's collapsed archive section, 'Submitting metadata
+  to the database'" — same section, now nested under `<details>`, so the reference
+  needed to say where to actually find it.
+
+`docs/linkml-model.md`, `docs/policy-fabric.md`, `docs/drs-interop.md`,
+`docs/governance-graph-sync.md`, `docs/.pages`, and `mkdocs.yml` were checked and
+found to have no reorg-related staleness. Re-ran `mkdocs build --strict` after these
+two edits: exit 0, no warnings.
+
+## Commit
+
+This work (both the reorg pass and the docs follow-up pass) was committed in one
+commit at the user's request; see `git log` for the hash.

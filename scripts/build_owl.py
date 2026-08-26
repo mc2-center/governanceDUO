@@ -30,7 +30,7 @@ combines correctly with DUO_NS's already-suffixed base IRI.
 
 Usage:
     python scripts/build_owl.py [--schema linkml/governance_duo.linkml.yaml]
-                                 [--out governance_duo.owl.ttl]
+                                 [--out shapes/governance_duo.owl.ttl]
                                  [--version 0.1.0]
 
 author: orion.banks
@@ -102,7 +102,7 @@ def main():
     )
     parser.add_argument(
         "--out",
-        default="governance_duo.owl.ttl",
+        default="shapes/governance_duo.owl.ttl",
         help="Path to write the generated Turtle file.",
     )
     parser.add_argument(

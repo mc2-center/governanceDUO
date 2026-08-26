@@ -6,7 +6,7 @@ from synapseclient.extensions.curator import (
 )
 import sys
 
-DATA_MODEL_SOURCE = "sage-ar.model.csv"
+DATA_MODEL_SOURCE = "sage-ar-model/sage-ar.model.csv"
 DATA_TYPE = sys.argv[1:] if len(sys.argv) > 1 else None
 OUTPUT_DIRECTORY = "sage-ar-model"
 

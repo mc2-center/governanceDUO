@@ -1,7 +1,7 @@
 """
 validate_graph.py
 
-Validates the governanceDUO OWL build (governance_duo.owl.ttl, produced by
+Validates the governanceDUO OWL build (shapes/governance_duo.owl.ttl, produced by
 scripts/build_owl.py) *and* the example instance data (RDF individuals produced by
 scripts/convert_examples_to_rdf.py from linkml/examples/*.example.yaml) against the
 generated SHACL shapes (shapes/governance_duo.shacl.ttl), using the same invocation
@@ -26,10 +26,10 @@ Also reused (via --ont/--data, with --instances omitted) to validate
 governance_graph_export/governance_graph.ttl against shapes/governance_graph.shacl.ttl,
 using shapes/governance_graph.owl.ttl as the ont_graph -- see the `governance-graph-
 validate` Makefile target. That ABox has no separate "schema build" file the way
-governance_duo.owl.ttl doubles as one, so only a single validation pass is run.
+shapes/governance_duo.owl.ttl doubles as one, so only a single validation pass is run.
 
 Usage:
-    python scripts/validate_graph.py [--data governance_duo.owl.ttl]
+    python scripts/validate_graph.py [--data shapes/governance_duo.owl.ttl]
                                       [--shapes shapes/governance_duo.shacl.ttl]
                                       [--ont ONT_GRAPH]
                                       [--instances INSTANCES]
@@ -66,7 +66,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Validate the governanceDUO OWL build and example instance data against the SHACL shapes."
     )
-    parser.add_argument("--data", default="governance_duo.owl.ttl")
+    parser.add_argument("--data", default="shapes/governance_duo.owl.ttl")
     parser.add_argument("--shapes", default="shapes/governance_duo.shacl.ttl")
     parser.add_argument(
         "--ont",

@@ -1,4 +1,4 @@
-CSV := sage-ar.model.csv
+CSV := sage-ar-model/sage-ar.model.csv
 CONFIG := ar_config.yml
 DATA := AccessRequirement Resource Study
 
@@ -28,7 +28,7 @@ linkml-lint:
 	linkml-lint --ignore-warnings ${LINKML_SCHEMA}
 
 owl:
-	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out governance_duo.owl.ttl
+	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out shapes/governance_duo.owl.ttl
 
 shacl:
 	gen-shacl ${LINKML_SCHEMA} > shapes/governance_duo.shacl.ttl
@@ -37,7 +37,7 @@ example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
 
 shacl-validate: owl shacl example-rdf
-	python3 scripts/validate_graph.py --data governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/rdf/all_examples.ttl
+	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/rdf/all_examples.ttl
 
 policy-fabric:
 	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
@@ -58,13 +58,12 @@ docs: docs-examples
 
 # Full docs-site preview (mkdocs + Material theme + Mermaid rendering). `docs-build`
 # always regenerates docs/reference/ first (via the `docs` target) so the preview
-# can't go stale relative to the schema. `site/` is gitignored build output.
-# Not --strict: the narrative pages deliberately link out to real source files
-# (linkml/*.yaml, scripts/*.py, ../README.md, etc.) outside docs_dir, which mkdocs's
-# strict link-checker can't resolve even though they're correct -- those links are
-# checked by the doc-link sweep in plans/*_report.md instead.
+# can't go stale relative to the schema. `site/` is gitignored build output. Narrative
+# pages link out to source files (linkml/*.yaml, scripts/*.py, etc.) outside docs_dir
+# via their GitHub blob URL rather than a relative path, so --strict is safe here and
+# is also what .github/workflows/docs.yml runs for the published Pages site.
 docs-build: docs
-	mkdocs build
+	mkdocs build --strict
 
 docs-serve: docs
 	mkdocs serve

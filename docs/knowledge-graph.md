@@ -12,7 +12,7 @@ flowchart TD
     examples["linkml/examples/*.yaml\n(hand-written instances)"]
     ggexamples["linkml/examples/governance_graph/*.yaml\n(hand-written instances)"]
 
-    schema -->|"make owl\n(scripts/build_owl.py)"| owl[governance_duo.owl.ttl]
+    schema -->|"make owl\n(scripts/build_owl.py)"| owl[shapes/governance_duo.owl.ttl]
     schema -->|"make shacl\n(gen-shacl)"| shacl[shapes/governance_duo.shacl.ttl]
     schema -->|"make example-rdf\n(scripts/convert_examples_to_rdf.py)"| abox["linkml/examples/rdf/*.ttl\n(governanceduo: namespace)"]
     examples --> abox
@@ -33,7 +33,7 @@ flowchart TD
 
 `make owl` (`scripts/build_owl.py`, wrapping LinkML's `OwlSchemaGenerator`) and
 `make shacl` (LinkML's stock `gen-shacl`) both generate directly from the schema
-itself — no instance data. `governance_duo.owl.ttl` carries classes and properties;
+itself — no instance data. `shapes/governance_duo.owl.ttl` carries classes and properties;
 `shapes/governance_duo.shacl.ttl` carries the cardinality/datatype/pattern constraints
 those classes and slots imply. `build_owl.py` additionally stamps the 8 real DUO terms
 this schema reuses by IRI with `skos:scopeNote`/`owl:versionInfo`, mirroring
@@ -192,7 +192,7 @@ pipeline different from `example-rdf`'s straight dump.
 
 ### The `governanceduo:` namespace: `make shacl-validate`
 
-Runs `scripts/validate_graph.py` (pySHACL) against `governance_duo.owl.ttl` (as both
+Runs `scripts/validate_graph.py` (pySHACL) against `shapes/governance_duo.owl.ttl` (as both
 data and ontology graph) and `linkml/examples/rdf/all_examples.ttl` (as instance
 data), using `shapes/governance_duo.shacl.ttl`.
 
@@ -201,7 +201,7 @@ data), using `shapes/governance_duo.shacl.ttl`.
 `governance_graph_export/governance_graph.ttl`'s individuals are typed `gov:AccessGrant`
 etc., not `governanceduo:AccessGrant` — `governance_graph.yaml`'s classes keep their
 primary identity in the `governanceduo:` namespace (their `sagegov:` `class_uri` shows
-up in `governance_duo.owl.ttl` as a `skos:exactMatch` annotation, not a replacement),
+up in `shapes/governance_duo.owl.ttl` as a `skos:exactMatch` annotation, not a replacement),
 so `shapes/governance_duo.shacl.ttl`'s `sh:targetClass governanceduo:AccessGrant`
 still never matches a `gov:AccessGrant` individual, even though its `sh:path` entries
 for `AccessGrant`'s slots now correctly use the `sagegov:` predicates (`gen-shacl`

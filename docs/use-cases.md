@@ -85,7 +85,8 @@ flowchart TD
 ```
 
 Two supported ways to get `Study`/`Resource`/`AccessRequirement`/`Schema` records into
-Synapse today (per the root README's "Submitting metadata to the database" section):
+Synapse today (per the root README's collapsed archive section, "Submitting metadata
+to the database"):
 
 1. **Curator Record Sets** — bind the relevant registered JSON schema to the target
    folder, create a Record Set + curation task, fill rows in the grid UI (or upload a
