@@ -19,6 +19,13 @@ only ever runs against hand-authored examples today.
 | `DataAccessSubmission` + `DataAccessSubmissionStatus` | `POST /accessRequirement/{requirementId}/submissions` (list) + `GET /dataAccessSubmission/{submissionId}` |
 | The `gov:AR-<n>` stub / `owl:sameAs` target | `GET /accessRequirement/{requirementId}` itself |
 | `Condition` | Not sourced from Synapse directly yet — derived from the DUO-core `AccessRequirement` record's `dataUseModifiers`/companion slots (`scripts/build_governance_graph.py`'s `add_access_requirement()`); requires the sync described below to exist before this can run against real data instead of the hand-authored example |
+| `AccessApproval` | `GET /accessApproval/{approvalId}`, or `GET /dataAccessSubmission/{submissionId}/userAccessApproval` from a known submission — a real, separate Synapse object from `DataAccessSubmission`/`DataAccessSubmissionStatus` |
+| `ResearchProject` | Embedded directly in `POST /accessRequirement/{requirementId}/submissions`'s `researchProjectSnapshot`, or independently via the (undocumented in this pass) ResearchProject endpoints |
+| `DataAccessRequest`/`DataAccessRenewal` | `GET /dataAccessRequest/{requestId}` (rest-docs.synapse.org's page for this object 403'd during this review; verified via the OpenAPI spec instead) |
+| `Site` | Not a Synapse object at all — derived by slugifying `ResearchProject.institution`/`DataAccessRequest.institution`/`Principal`'s `UserProfile.company` (see `scripts/build_governance_graph.py`'s `site_node_for()`) |
+| `AccessRequirementTemplate`/`IRBRequirement`/`Program` | **No real Synapse or repo source exists.** Structural capability only, populated with one illustrative example — see "Open design questions" #5 below |
+
+**Full entity-coverage audit** (every Synapse governance-domain REST object checked against what this repo models, not just the ones above): see `plans/governance_graph_open_questions.md` Section A. Reviewed-and-out-of-scope, not gaps: `RestrictableObjectDescriptor` (already served by `AccessRequirementAssociation.resource`/`entityIdList`), `VerificationSubmission` (identity verification, a different domain — no current consumer needs it), `AccessorGroup`/`AccessApprovalInfo` (batch/report DTOs, not persisted entities), `EvaluationRound` (Synapse's challenge/Evaluation-queue domain, not data-access governance).
 
 ## The critical finding: DUO conditions are not on Synapse's `AccessRequirement` object
 
@@ -184,22 +191,31 @@ This is where the design needs your input before any of the above gets built:
    missing slots?
 4. **Auth** — a `synapseclient` session via a service account/PAT, or one scoped to
    the invoking curator?
-5. **Does Sage's real governance model reuse one Access Requirement's language/
-   conditions across multiple programs/sites**, with per-site conditions layered on
-   top (an `IRBRequirement extendsTemplate` pattern, raised in review on
-   [sagebrain-infra PR #54](https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399))?
-   Checked directly and found no evidence either way: Synapse's own `AccessRequirement`
-   REST object has no template/inheritance/Program/Site-scoping field of any kind —
-   `subjectIds` is its only compositional mechanism, and that scopes to individual
-   entities, not organizational units — and `access_requirement_JSON/README.md` has no
-   template/Program/Site language either. So this can only be a real concept if it's
-   DCC-side/curated, not something derivable from Synapse's schema or this repo as it
-   stands. `Program`/`Site`/`AccessRequirementTemplate` classes would need that kind of
-   real source verified (this repo's existing, stated bar for every class it models)
-   before being added — see `plans/governance_graph_open_questions.md` for the
-   concrete next-step sources to check (the external `mc2-center-dcc` repo; AD
-   Knowledge Portal's/NF-OSI's own public governance documentation) before treating
-   this as something only a stakeholder can answer.
+5. ~~**Does Sage's real governance model reuse one Access Requirement's language/
+   conditions across multiple programs/sites**~~ **Resolved directly by the user**
+   (domain authority, not something this repo's own sources could settle): AR
+   template language isn't standardized across sites, but reuse does happen in
+   practice, and the target ontology raised in review on
+   [sagebrain-infra PR #54](https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399)
+   (`Program`/`Site`/`IRBRequirement`/`AccessRequirementTemplate`/`extendsTemplate`)
+   is confirmed as the direction to build toward. `AccessRequirementTemplate` and
+   `IRBRequirement` are now real classes in `governance_graph.yaml`, integrated with
+   this repo's existing data (`IRBRequirement.studyId` bridges to the real
+   `governanceduo:Study` example via `owl:sameAs`; `AccessRequirementTemplate.hasCondition`
+   reuses the real `Condition` nodes already minted from `access_requirement.42`'s
+   `dataUseModifiers`). What's still unchanged, and remains honestly flagged rather
+   than papered over: no real Synapse or repo data source exists for Program-level
+   (multi-site consortium) grouping or for AR-template reuse itself — checked
+   directly, `AccessRequirement`'s only compositional mechanism is `subjectIds`,
+   scoped to individual entities, not organizational units, and
+   `access_requirement_JSON/README.md` has no template/Program/Site language either.
+   `Program` and the `Program`/`Site` pairing on `IRBRequirement` therefore ship as
+   structural capability with one clearly-illustrative example instance only (the
+   same treatment thomasyu888's own PR #54 comment gave its illustrative
+   `ex:program-adkp`/`ex:site-jhu` data), ready to receive real DCC-curated data
+   once it exists rather than being populated from a guess. See
+   `plans/governance_graph_open_questions.md` Section C.2 for the full design and
+   `plans/rebac_governance_graph_alignment_report.md`-style verification.
 
 None of questions 1-4 can be verified end-to-end without live Synapse credentials,
 which this environment doesn't have — unlike everything else in this repo's docs,
