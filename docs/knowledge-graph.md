@@ -108,8 +108,20 @@ What's still hand-written, because no LinkML slot or generic dumper can express 
 - **`gov:hasApproval`** is emitted only when a cross-object join holds
   (`DataAccessSubmissionStatus.state == APPROVED`) — join logic, not a per-slot
   mapping.
-- **`gov:hasACL`/`gov:hasAccessRequirement`** are derived convenience triples with no
-  corresponding `governance_graph.yaml` slot.
+- **`gov:hasACL`/`gov:hasAccessRequirement`/`gov:hasCondition`** are derived
+  convenience triples with no corresponding `governance_graph.yaml` slot —
+  `hasCondition` specifically because the real `AccessRequirement` class lives in
+  `access_requirement.yaml`, which `governance_graph.yaml` imports (not the other way
+  around), so a slot declared there could never range over `Condition` (defined in
+  `governance_graph.yaml`) without an import cycle.
+- **`gov:Condition`** individuals (`gov:hasCondition`, `gov:conditionType`,
+  `gov:duoCode`, `gov:conditionDetail`) are minted from a *second*, separate source —
+  the real `access_requirement.yaml` `AccessRequirement` instance
+  (`linkml/examples/access_requirement.example.yaml`), not
+  `linkml/examples/governance_graph/*.example.yaml` — bridging `GovernanceMixin`'s
+  already-real DUO-condition data onto the `gov:AR-<n>` stub. See
+  `scripts/build_governance_graph.py`'s `add_access_requirement()` and
+  `plans/rebac_governance_graph_alignment.md`.
 - The `.`/`_` → `-` id-hyphenation display convention (`grant.001` → `gov:grant-001`).
 
 The script reads the hand-written instances in

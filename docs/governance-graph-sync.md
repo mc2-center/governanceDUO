@@ -18,6 +18,7 @@ only ever runs against hand-authored examples today.
 | `AccessRequirementAssociation` | `GET /entity/{id}/accessRequirement` (Access Requirements bound to that entity); `bindingType` (Direct/Inherited) resolved by comparing the entity's own ACL/AR listing against `GET /entity/{id}/benefactor` |
 | `DataAccessSubmission` + `DataAccessSubmissionStatus` | `POST /accessRequirement/{requirementId}/submissions` (list) + `GET /dataAccessSubmission/{submissionId}` |
 | The `gov:AR-<n>` stub / `owl:sameAs` target | `GET /accessRequirement/{requirementId}` itself |
+| `Condition` | Not sourced from Synapse directly yet — derived from the DUO-core `AccessRequirement` record's `dataUseModifiers`/companion slots (`scripts/build_governance_graph.py`'s `add_access_requirement()`); requires the sync described below to exist before this can run against real data instead of the hand-authored example |
 
 ## The critical finding: DUO conditions are not on Synapse's `AccessRequirement` object
 
@@ -183,7 +184,24 @@ This is where the design needs your input before any of the above gets built:
    missing slots?
 4. **Auth** — a `synapseclient` session via a service account/PAT, or one scoped to
    the invoking curator?
+5. **Does Sage's real governance model reuse one Access Requirement's language/
+   conditions across multiple programs/sites**, with per-site conditions layered on
+   top (an `IRBRequirement extendsTemplate` pattern, raised in review on
+   [sagebrain-infra PR #54](https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399))?
+   Checked directly and found no evidence either way: Synapse's own `AccessRequirement`
+   REST object has no template/inheritance/Program/Site-scoping field of any kind —
+   `subjectIds` is its only compositional mechanism, and that scopes to individual
+   entities, not organizational units — and `access_requirement_JSON/README.md` has no
+   template/Program/Site language either. So this can only be a real concept if it's
+   DCC-side/curated, not something derivable from Synapse's schema or this repo as it
+   stands. `Program`/`Site`/`AccessRequirementTemplate` classes would need that kind of
+   real source verified (this repo's existing, stated bar for every class it models)
+   before being added — see `plans/governance_graph_open_questions.md` for the
+   concrete next-step sources to check (the external `mc2-center-dcc` repo; AD
+   Knowledge Portal's/NF-OSI's own public governance documentation) before treating
+   this as something only a stakeholder can answer.
 
-None of this can be verified end-to-end without live Synapse credentials, which this
-environment doesn't have — unlike everything else in this repo's docs, which was
-checked against real, running output.
+None of questions 1-4 can be verified end-to-end without live Synapse credentials,
+which this environment doesn't have — unlike everything else in this repo's docs,
+which was checked against real, running output. Question 5 is checkable without
+credentials (public docs/repos) but wasn't fully run down in this pass.

@@ -242,6 +242,78 @@ def add_access_requirement_association(g: Graph, data: dict):
     return ar_node
 
 
+def add_access_requirement(g: Graph, data: dict, ar_node):
+    """Mints one gov:Condition individual per data["dataUseModifiers"] entry on
+    the existing gov:AR-<n> stub node (ar_node, from
+    add_access_requirement_association() above) -- surfacing GovernanceMixin's
+    DUO-condition data, already present in the real access_requirement.yaml
+    AccessRequirement instance, as first-class graph nodes rather than leaving
+    every AR stub with zero condition detail. See
+    plans/rebac_governance_graph_alignment.md for the full rationale.
+
+    gov:hasCondition itself is a derived convenience triple with no
+    governance_graph.yaml slot backing it, same as gov:hasACL/
+    gov:hasAccessRequirement above: the real AccessRequirement class lives in
+    access_requirement.yaml, which governance_graph.yaml imports (not the
+    other way around), so a slot declared there could never range over
+    Condition (defined here) without an import cycle.
+
+    GovernanceMixin.rules is read directly from the schema at runtime (via
+    SchemaView, like PREDICATE()/TYPE() elsewhere in this script) rather than
+    duplicated as a second hardcoded DUO-code-to-slot map. It's genuinely
+    many-to-many -- e.g. DUO:0000026 alone has 4 postcondition slots, and
+    requiredAgreementDocumentId is itself the postcondition for 4 different
+    codes -- so every matching rule is iterated, not just the first.
+    """
+    enum = _schemaview.get_enum("DataUseModifierEnum")
+    rules = _schemaview.get_class("GovernanceMixin").rules
+    for duo_code in data.get("dataUseModifiers", []):
+        permissible_value = enum.permissible_values.get(duo_code)
+        if permissible_value is None:
+            continue
+        shorthand = (
+            permissible_value.annotations.get("duo_shorthand")
+            if permissible_value.annotations
+            else None
+        )
+        # Real DUO codes (meaning: set) use their own duo_shorthand ("GRU",
+        # "DS", ...); the 7 Sage-local DUOPlus1-7 extensions have neither a
+        # meaning: CURIE nor a duo_shorthand, so the bare enum key stands in
+        # for conditionType instead -- see governance-graph-sync.md's own
+        # documented DUOPlus-extension boundary.
+        condition_type = shorthand.value if shorthand is not None else duo_code
+        # Node minted from the raw duo_code (not the shorthand label, which
+        # isn't guaranteed unique) plus the AR stub's own local name.
+        condition_node = GOV[f"{ar_node.rsplit('/', 1)[-1]}-condition-{duo_code.replace(':', '-')}"]
+        g.add((ar_node, GOV.hasCondition, condition_node))
+        g.add((condition_node, RDF.type, TYPE("Condition")))
+        g.add((condition_node, PREDICATE("conditionType", "Condition"), Literal(condition_type)))
+        if permissible_value.meaning:
+            g.add((condition_node, PREDICATE("duoCode", "Condition"), Literal(permissible_value.meaning)))
+        if permissible_value.description:
+            g.add(
+                (
+                    condition_node,
+                    PREDICATE("description", "Condition"),
+                    Literal(permissible_value.description),
+                )
+            )
+        for rule in rules:
+            if rule.preconditions is None:
+                continue
+            precondition = rule.preconditions.slot_conditions.get("dataUseModifiers")
+            if precondition is None or precondition.equals_string != duo_code:
+                continue
+            for companion_slot in rule.postconditions.slot_conditions:
+                values = data.get(companion_slot)
+                if not values:
+                    continue
+                if not isinstance(values, list):
+                    values = [values]
+                for value in values:
+                    g.add((condition_node, PREDICATE("conditionDetail", "Condition"), Literal(value)))
+
+
 def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("DataAccessSubmission")))
@@ -294,6 +366,16 @@ def main():
         description="Export governance_graph example instances as design-doc-shaped gov:/syn: Turtle."
     )
     parser.add_argument("--examples-dir", default="linkml/examples/governance_graph")
+    parser.add_argument(
+        "--access-requirement-example",
+        default="linkml/examples/access_requirement.example.yaml",
+        help=(
+            "The *real* access_requirement.yaml AccessRequirement instance to source "
+            "gov:Condition data from -- deliberately outside --examples-dir, since it's "
+            "a different namespace/source of truth being bridged (see "
+            "add_access_requirement())."
+        ),
+    )
     parser.add_argument("--out", default="governance_graph_export/governance_graph.ttl")
     parser.add_argument("--schema", default="linkml/governance_graph.yaml")
     args = parser.parse_args()
@@ -329,6 +411,10 @@ def main():
             add_access_grant(g, data, principal_nodes[data["principal"]])
         elif class_name == "AccessRequirementAssociation":
             ar_node = add_access_requirement_association(g, data)
+
+    ar_example_path = Path(args.access_requirement_example)
+    if ar_node is not None and ar_example_path.exists():
+        add_access_requirement(g, yaml.safe_load(ar_example_path.read_text()), ar_node)
 
     submission_node = None
     for stem, (class_name, data) in instances.items():

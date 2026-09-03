@@ -129,11 +129,31 @@ gov:PrincipalShape a sh:NodeShape ;
 
 #################################################################
 # AccessRequirement -- a stub reference node in this ABox (see
-# shapes/governance_graph.owl.ttl); no properties of its own to constrain beyond type.
+# shapes/governance_graph.owl.ttl); no properties of its own to constrain beyond type
+# and, now, its optional gov:hasCondition edges.
 #################################################################
 
 gov:AccessRequirementShape a sh:NodeShape ;
     sh:targetClass gov:AccessRequirement ;
     sh:property
         [ sh:path owl:sameAs ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
-            sh:description "Identity bridge to the corresponding governanceduo:access_requirement.<n> individual -- see shapes/governance_graph.owl.ttl." ] .
+            sh:description "Identity bridge to the corresponding governanceduo:access_requirement.<n> individual -- see shapes/governance_graph.owl.ttl." ],
+        [ sh:path gov:hasCondition ; sh:class gov:Condition ; sh:nodeKind sh:IRI ;
+            sh:description "Derived convenience triple with no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement -- see shapes/governance_graph.owl.ttl." ] .
+
+#################################################################
+# Condition -- surfaces GovernanceMixin's DUO-condition data as a first-class node
+# (see governance_graph.yaml's Condition class description and
+# scripts/build_governance_graph.py's add_access_requirement()).
+#################################################################
+
+gov:ConditionShape a sh:NodeShape ;
+    sh:targetClass gov:Condition ;
+    sh:property
+        [ sh:path gov:conditionType ; sh:datatype xsd:string ; sh:minCount 1 ;
+            sh:maxCount 1 ],
+        [ sh:path gov:duoCode ; sh:datatype xsd:string ; sh:maxCount 1 ;
+            sh:description "Absent for the 7 Sage-local DUOPlus1-7 extensions, which have no real DUO CURIE -- see governance_graph.yaml." ],
+        [ sh:path gov:description ; sh:datatype xsd:string ; sh:maxCount 1 ],
+        [ sh:path gov:conditionDetail ; sh:datatype xsd:string ;
+            sh:description "Zero or more companion-slot values -- GovernanceMixin.rules is many-to-many, so cardinality is deliberately unconstrained. See governance_graph.yaml." ] .

@@ -17,6 +17,12 @@ gov:data-access-submission-555 a gov:DataAccessSubmission ;
     gov:submittedBy gov:principal-2000001 ;
     gov:submittedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
 
+gov:AR-42-condition-DUO-0000007 a gov:Condition ;
+    gov:conditionDetail "MONDO:0004975" ;
+    gov:conditionType "DS" ;
+    gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
+    gov:duoCode "DUO:0000007" .
+
 gov:grant-001 a gov:AccessGrant ;
     gov:bindingType gov:Direct ;
     gov:createdOn "1755100000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
@@ -53,5 +59,6 @@ syn:syn10081783 a gov:SynapseEntity ;
     gov:parentId syn:syn2343195 .
 
 gov:AR-42 a gov:AccessRequirement ;
-    owl:sameAs governanceduo:access_requirement.42 .
+    owl:sameAs governanceduo:access_requirement.42 ;
+    gov:hasCondition gov:AR-42-condition-DUO-0000007 .
 

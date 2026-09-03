@@ -272,6 +272,29 @@ classes:
       - state
       - rejectedReason
       - modifiedOn
+  Condition:
+    class_uri: sagegov:Condition
+    description: >-
+      A single DUO-code-backed condition on an AccessRequirement, surfacing
+      GovernanceMixin's dataUseModifiers/companion-slot data -- already
+      present in this repo's AccessRequirement examples -- as a first-class
+      graph node instead of leaving it invisible on the gov:AccessRequirement
+      stub (see scripts/build_governance_graph.py's TYPE("AccessRequirement")
+      comment for why that stub has its own, separate node). Mirrors the
+      shape of a gov:Condition example proposed in review on sagebrain-infra
+      PR #54 (thomasyu888,
+      https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399),
+      built from real data already in this repo, not a new source of truth --
+      see plans/rebac_governance_graph_alignment.md for the full rationale.
+      Not `is_a: BaseEntity`: like DataAccessSubmissionStatus, it has no
+      independent identifier of its own in Synapse's schema -- it's keyed
+      structurally by (AccessRequirement, duoCode/conditionType), not a
+      synthesized dotted id.
+    slots:
+      - conditionType
+      - duoCode
+      - description
+      - conditionDetail
 slots:
   nodeType:
     slot_uri: sagegov:nodeType
@@ -434,3 +457,40 @@ slots:
     range: integer
     exact_mappings:
       - dcterms:modified
+  conditionType:
+    slot_uri: sagegov:conditionType
+    description: >-
+      A short label for this condition. For the 24 real DUO codes in
+      DataUseModifierEnum, this is that code's own duo_shorthand annotation
+      (e.g. "GRU", "COL"); the 7 Sage-local DUOPlus1-7 extensions have no
+      duo_shorthand/meaning: CURIE at all, so their bare enum key (e.g.
+      "DUOPlus1") is used instead -- see scripts/build_governance_graph.py.
+  duoCode:
+    slot_uri: sagegov:duoCode
+    description: >-
+      The real DUO CURIE this condition represents, when one exists.
+      Deliberately not required: the 7 Sage-local DUOPlus1-7 extensions in
+      DataUseModifierEnum have no meaning: CURIE at all -- see conditionType
+      above for how those are represented instead.
+    range: DataUseModifierEnum
+  description:
+    slot_uri: sagegov:description
+    description: >-
+      Human-readable description of this condition, taken directly from
+      DataUseModifierEnum.permissible_values[code]'s own description: text,
+      not re-authored here.
+    exact_mappings:
+      - dcterms:description
+  conditionDetail:
+    slot_uri: sagegov:conditionDetail
+    description: >-
+      Zero or more companion-slot values from the source AccessRequirement,
+      one per GovernanceMixin.rules entry whose precondition matches this
+      condition's duoCode/conditionType and whose postcondition slot is
+      actually populated on the instance (e.g. the geographicalRestriction
+      value(s) for DUO:0000022). Multivalued because GovernanceMixin.rules is
+      genuinely many-to-many -- some codes have multiple companion slots,
+      some companion slots serve multiple codes -- not because any single
+      condition's own detail is inherently list-valued. See
+      scripts/build_governance_graph.py.
+    multivalued: true

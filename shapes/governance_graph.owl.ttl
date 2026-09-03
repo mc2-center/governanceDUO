@@ -59,7 +59,10 @@ gov:DataAccessSubmission a owl:Class ;
     rdfs:comment "Mirrors governanceduo:DataAccessSubmission. DataAccessSubmissionStatus has no class of its own here: its state/rejectedReason/modifiedOn (the latter as gov:statusModifiedOn) are merged onto this same individual, per governance_graph.yaml's own note that DataAccessSubmissionStatus has no independent identifier in Synapse's schema. Field/predicate names throughout were corrected to match Synapse's live Submission/SubmissionStatus REST objects, not the original DATA_ACCESS_SUBMISSION(_STATUS) table-column guess -- see governance_graph.yaml's corrected descriptions on both classes." .
 
 gov:AccessRequirement a owl:Class ;
-    rdfs:comment "Stub reference class for AccessRequirement individuals named from an AccessRequirementAssociation/DataAccessSubmission -- not the full governanceduo:AccessRequirement record." .
+    rdfs:comment "Stub reference class for AccessRequirement individuals named from an AccessRequirementAssociation/DataAccessSubmission -- not the full governanceduo:AccessRequirement record. Optionally has gov:hasCondition edges to gov:Condition individuals -- see scripts/build_governance_graph.py's add_access_requirement()." .
+
+gov:Condition a owl:Class ;
+    rdfs:comment "Mirrors governance_graph.yaml's Condition class: a single DUO-code-backed condition on an AccessRequirement, surfacing GovernanceMixin's dataUseModifiers/companion-slot data (already present in this repo's AccessRequirement examples) as a first-class node instead of leaving it invisible on the gov:AccessRequirement stub. Not is_a BaseEntity -- like DataAccessSubmissionStatus, it has no independent identifier of its own; it's keyed structurally by (AccessRequirement, duoCode)." .
 
 gov:Principal a owl:Class ;
     rdfs:comment "Mirrors governanceduo:Principal. Individuals are typed gov:Principal explicitly, plus gov:Team or gov:User (see below) matching the design doc's own worked examples." .
@@ -187,3 +190,28 @@ gov:hasApproval a owl:ObjectProperty ;
     rdfs:domain gov:Principal ;
     rdfs:range gov:AccessRequirement ;
     rdfs:comment "Emitted only when the paired DataAccessSubmissionStatus.state is APPROVED -- mirrors the design doc's simplified gov:hasApproval predicate." .
+
+gov:hasCondition a owl:ObjectProperty ;
+    rdfs:domain gov:AccessRequirement ;
+    rdfs:range gov:Condition ;
+    rdfs:comment "Derived convenience triple emitted alongside each Condition, same as gov:hasACL/gov:hasAccessRequirement above; not its own governance_graph.yaml slot (the real AccessRequirement class lives in access_requirement.yaml, which governance_graph.yaml imports -- not the other way around -- so a slot declared there could never range over Condition, defined here, without an import cycle). See scripts/build_governance_graph.py's add_access_requirement()." .
+
+gov:conditionType a owl:DatatypeProperty ;
+    rdfs:domain gov:Condition ;
+    rdfs:range xsd:string ;
+    rdfs:comment "The DUO code's own duo_shorthand annotation (e.g. \"GRU\", \"DS\") for the 24 real DUO codes; the bare DataUseModifierEnum key (e.g. \"DUOPlus1\") for the 7 Sage-local extensions, which have no duo_shorthand at all." .
+
+gov:duoCode a owl:DatatypeProperty ;
+    rdfs:domain gov:Condition ;
+    rdfs:range xsd:string ;
+    rdfs:comment "The real DUO CURIE (DataUseModifierEnum's meaning:), when one exists -- absent for the 7 Sage-local DUOPlus1-7 extensions." .
+
+gov:description a owl:DatatypeProperty ;
+    rdfs:domain gov:Condition ;
+    rdfs:range xsd:string ;
+    rdfs:comment "DataUseModifierEnum.permissible_values[code]'s own description: text, not re-authored." .
+
+gov:conditionDetail a owl:DatatypeProperty ;
+    rdfs:domain gov:Condition ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Zero or more companion-slot values from the source AccessRequirement, one per GovernanceMixin.rules entry matching this Condition's duoCode -- see governance_graph.yaml and scripts/build_governance_graph.py's add_access_requirement()." .

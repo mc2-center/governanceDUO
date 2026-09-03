@@ -62,6 +62,7 @@ URI: [governanceduo:enum/DataUseModifierEnum](https://w3id.org/sage-bionetworks/
 | ---  | --- |
 | [dataUseModifiers](../slots/dataUseModifiers.md) | A list of data use modifiers that apply to the access requirement |
 | [dataUseModifier](../slots/dataUseModifier.md) | The DUO code (or Sage DUOPlus extension) this binding documents |
+| [duoCode](../slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
 
 
 

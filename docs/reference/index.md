@@ -22,6 +22,7 @@ Name: governance_duo
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Schema](classes/Schema.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Study](classes/Study.md) | Studies associated with a grant |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SynapseEntity](classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |
+| [Condition](classes/Condition.md) | A single DUO-code-backed condition on an AccessRequirement, surfacing Governa... |
 | [ContributionMixin](classes/ContributionMixin.md) | Contribution/authorship tracking |
 | [CredentialRequirement](classes/CredentialRequirement.md) | One credential type a Policy Fabric policy_card requires the requester to pre... |
 | [DataAccessSubmissionStatus](classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |
@@ -62,6 +63,8 @@ Name: governance_duo
 | [capabilityOperation](slots/capabilityOperation.md) | The "name" field of the Capability Granted this policy_card's Rego emits on s... |
 | [collaborationRequired](slots/collaborationRequired.md) | If collaboration is required for the access requirement, provide the PI email... |
 | [concreteType](slots/concreteType.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT |
+| [conditionDetail](slots/conditionDetail.md) | Zero or more companion-slot values from the source AccessRequirement, one per... |
+| [conditionType](slots/conditionType.md) | A short label for this condition |
 | [contributionDate](slots/contributionDate.md) | The date on which the access requirement was added |
 | [contributorName](slots/contributorName.md) | The name of the person who added this access requirement |
 | [createdBy](slots/createdBy.md) | Synapse numeric user id of the record's creator |
@@ -75,9 +78,11 @@ Name: governance_duo
 | [dataUseModifier](slots/dataUseModifier.md) | The DUO code (or Sage DUOPlus extension) this binding documents |
 | [dataUseModifiers](slots/dataUseModifiers.md) | A list of data use modifiers that apply to the access requirement |
 | [deidentificationType](slots/deidentificationType.md) | The type of de-identification applied to the data associated with the access ... |
+| [description](slots/description.md) | Human-readable description of this condition, taken directly from DataUseModi... |
 | [diseaseSpecificResearch](slots/diseaseSpecificResearch.md) | The type(s) of disease research allowed by this access requirement |
 | [drsId](slots/drsId.md) | The DRS DrsObject |
 | [drsSelfUri](slots/drsSelfUri.md) | The DRS DrsObject |
+| [duoCode](slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
 | [entityIdList](slots/entityIdList.md) | Synapse ID(s) for Synapse container(s) (e |
 | [etag](slots/etag.md) | Entity tag for optimistic concurrency control (a 36-character UUID) |
 | [geographicalRestriction](slots/geographicalRestriction.md) | The specific geographic region(s) to which use is limited by the access requi... |
