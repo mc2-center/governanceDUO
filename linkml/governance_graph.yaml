@@ -220,6 +220,15 @@ classes:
       DATA_ACCESS_SUBMISSION. Represents the design doc's "user satisfaction"
       side of an Access Requirement (gov:hasSignedAgreement / gov:hasApproval)
       as an explicit, auditable record rather than a precomputed boolean.
+
+      Field names below were corrected to match Synapse's live REST API object
+      (`org.sagebionetworks.repo.model.dataaccess.Submission`, per the OpenAPI
+      spec), not just the original DATA_ACCESS_SUBMISSION table-column guess:
+      the live API names the submitter/timestamp fields `submittedBy`/
+      `submittedOn` (not `createdBy`/`createdOn`), the originating request
+      `requestId` (not `dataAccessRequestId`), and exposes `modifiedBy` directly
+      on Submission itself -- moved here from DataAccessSubmissionStatus, which
+      does not carry it in the live API (see that class's own description).
     slot_usage:
       id:
         description: >-
@@ -229,23 +238,16 @@ classes:
         pattern: '^data_access_submission\.\d+$'
         examples:
           - value: data_access_submission.555
-      createdBy:
-        slot_uri: sagegov:createdBy
-        comments:
-          - 'On DataAccessSubmission specifically, this is an IRI reference to a
-            sagegov:Principal node (looked up by the submission''s numeric creator
-            id), not a literal -- see mixins.yaml''s createdBy comment.'
-      createdOn:
-        slot_uri: sagegov:createdOn
       etag:
         slot_uri: sagegov:etag
     slots:
       - accessRequirementId
       - accessRequirementVersion
-      - dataAccessRequestId
+      - requestId
       - researchProjectId
-      - createdBy
-      - createdOn
+      - submittedBy
+      - submittedOn
+      - modifiedBy
       - etag
   DataAccessSubmissionStatus:
     description: >-
@@ -254,13 +256,21 @@ classes:
       own in Synapse's schema (only a SUBMISSION_ID foreign key) — modeled here
       as a plain class keyed by submissionId, not a BaseEntity subclass, for the
       same reason.
+
+      Slots corrected against Synapse's live `SubmissionStatus` REST object
+      (`org.sagebionetworks.repo.model.dataaccess.SubmissionStatus`): it carries
+      only `submissionId`/`submittedBy`/`rejectedReason`/`state`/`modifiedOn` --
+      no `createdBy`/`createdOn`/`modifiedBy` at all (those were this schema's
+      earlier, DB-table-column-based guess; `modifiedBy` is real but lives on
+      `Submission` itself -- see DataAccessSubmission above). `submittedBy` is
+      intentionally not re-declared here even though the live object carries
+      it: it would be redundant with DataAccessSubmission.submittedBy on the
+      same merged RDF subject (see scripts/build_governance_graph.py's merge
+      design).
     slots:
       - submissionId
       - state
-      - reason
-      - createdBy
-      - createdOn
-      - modifiedBy
+      - rejectedReason
       - modifiedOn
 slots:
   nodeType:
@@ -363,8 +373,13 @@ slots:
       The version of the AccessRequirement this submission was made against
       (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_VERSION).
     range: integer
-  dataAccessRequestId:
-    description: The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID).
+  requestId:
+    slot_uri: sagegov:requestId
+    description: >-
+      The originating data access request id. Synapse's live API names this
+      field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`),
+      not `dataAccessRequestId`; the underlying DB column is
+      DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
     range: integer
   researchProjectId:
     description: The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
@@ -380,14 +395,37 @@ slots:
     slot_uri: sagegov:state
     range: SubmissionStateEnum
     required: true
-  reason:
-    slot_uri: sagegov:reason
+  rejectedReason:
+    slot_uri: sagegov:rejectedReason
     description: >-
-      The reason for the current state (e.g. a rejection reason). Stored as
-      DATA_ACCESS_SUBMISSION_STATUS.REASON, a BINARY column in Synapse; modeled
-      here as a plain string.
+      The reason this submission was rejected, if it was. Synapse's live API
+      names this field `rejectedReason`
+      (`org.sagebionetworks.repo.model.dataaccess.SubmissionStatus`), not
+      `reason`; stored as DATA_ACCESS_SUBMISSION_STATUS.REASON (a BINARY
+      column) in the underlying table.
+  submittedBy:
+    slot_uri: sagegov:submittedBy
+    description: >-
+      Synapse numeric user id of who submitted this record
+      (`Submission.submittedBy` in Synapse's live REST API). Emitted as an IRI
+      reference to a sagegov:Principal node (looked up by this numeric id), not
+      a literal -- see scripts/build_governance_graph.py.
+    range: integer
+  submittedOn:
+    slot_uri: sagegov:submittedOn
+    description: >-
+      When this record was submitted (epoch milliseconds; `Submission.submittedOn`
+      in Synapse's live REST API).
+    range: integer
   modifiedBy:
-    description: Synapse numeric user id of who last modified this status record.
+    slot_uri: sagegov:modifiedBy
+    description: >-
+      Synapse numeric user id of who last modified this submission's status
+      (`Submission.modifiedBy` in Synapse's live REST API -- moved here from
+      DataAccessSubmissionStatus, which does not carry this field live; see
+      DataAccessSubmissionStatus's own description). Emitted as an IRI
+      reference to a sagegov:Principal node, not a literal, mirroring
+      submittedBy above.
     range: integer
     close_mappings:
       - dcterms:contributor

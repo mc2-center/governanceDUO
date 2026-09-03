@@ -8,6 +8,8 @@ search:
 
 _A user's application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION. Represents the design doc's "user satisfaction" side of an Access Requirement (gov:hasSignedAgreement / gov:hasApproval) as an explicit, auditable record rather than a precomputed boolean._
 
+_Field names below were corrected to match Synapse's live REST API object (`org.sagebionetworks.repo.model.dataaccess.Submission`, per the OpenAPI spec), not just the original DATA_ACCESS_SUBMISSION table-column guess: the live API names the submitter/timestamp fields `submittedBy`/ `submittedOn` (not `createdBy`/`createdOn`), the originating request `requestId` (not `dataAccessRequestId`), and exposes `modifiedBy` directly on Submission itself -- moved here from DataAccessSubmissionStatus, which does not carry it in the live API (see that class's own description)._
+
 
 
 <div data-search-exclude markdown="1">
@@ -40,17 +42,19 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
         
       DataAccessSubmission : accessRequirementVersion
         
-      DataAccessSubmission : createdBy
-        
-      DataAccessSubmission : createdOn
-        
-      DataAccessSubmission : dataAccessRequestId
-        
       DataAccessSubmission : etag
         
       DataAccessSubmission : id
         
+      DataAccessSubmission : modifiedBy
+        
+      DataAccessSubmission : requestId
+        
       DataAccessSubmission : researchProjectId
+        
+      DataAccessSubmission : submittedBy
+        
+      DataAccessSubmission : submittedOn
         
       
 ```
@@ -77,10 +81,11 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 | ---  | --- | --- | --- |
 | [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
 | [accessRequirementVersion](../slots/accessRequirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this submission was made against (DATA_A... | direct |
-| [dataAccessRequestId](../slots/dataAccessRequestId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The originating data access request id (DATA_ACCESS_SUBMISSION | direct |
+| [requestId](../slots/requestId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The originating data access request id | direct |
 | [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The research project id this submission is associated with (DATA_ACCESS_SUBMI... | direct |
-| [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | direct |
-| [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
+| [submittedBy](../slots/submittedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who submitted this record (`Submission | direct |
+| [submittedOn](../slots/submittedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was submitted (epoch milliseconds; `Submission | direct |
+| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this submission's status (`Submi... | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique identifier for this submission (schematic-schema-style dotted string... | [BaseEntity](../classes/BaseEntity.md) |
 
@@ -136,10 +141,11 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 id: data_access_submission.555
 accessRequirementId: access_requirement.42
 accessRequirementVersion: 1
-dataAccessRequestId: 7001
+requestId: 7001
 researchProjectId: 8001
-createdBy: 2000001
-createdOn: 1755200000000
+submittedBy: 2000001
+submittedOn: 1755200000000
+modifiedBy: 2000001
 etag: 1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f
 
 ```
@@ -155,18 +161,26 @@ etag: 1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f
 <details>
 ```yaml
 name: DataAccessSubmission
-description: A user's application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION.
-  Represents the design doc's "user satisfaction" side of an Access Requirement (gov:hasSignedAgreement
+description: 'A user''s application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION.
+  Represents the design doc''s "user satisfaction" side of an Access Requirement (gov:hasSignedAgreement
   / gov:hasApproval) as an explicit, auditable record rather than a precomputed boolean.
+
+  Field names below were corrected to match Synapse''s live REST API object (`org.sagebionetworks.repo.model.dataaccess.Submission`,
+  per the OpenAPI spec), not just the original DATA_ACCESS_SUBMISSION table-column
+  guess: the live API names the submitter/timestamp fields `submittedBy`/ `submittedOn`
+  (not `createdBy`/`createdOn`), the originating request `requestId` (not `dataAccessRequestId`),
+  and exposes `modifiedBy` directly on Submission itself -- moved here from DataAccessSubmissionStatus,
+  which does not carry it in the live API (see that class''s own description).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 is_a: BaseEntity
 slots:
 - accessRequirementId
 - accessRequirementVersion
-- dataAccessRequestId
+- requestId
 - researchProjectId
-- createdBy
-- createdOn
+- submittedBy
+- submittedOn
+- modifiedBy
 - etag
 slot_usage:
   id:
@@ -177,16 +191,6 @@ slot_usage:
     examples:
     - value: data_access_submission.555
     pattern: ^data_access_submission\.\d+$
-  createdBy:
-    name: createdBy
-    comments:
-    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
-      node (looked up by the submission's numeric creator id), not a literal -- see
-      mixins.yaml's createdBy comment.
-    slot_uri: sagegov:createdBy
-  createdOn:
-    name: createdOn
-    slot_uri: sagegov:createdOn
   etag:
     name: etag
     slot_uri: sagegov:etag
@@ -200,9 +204,16 @@ class_uri: sagegov:DataAccessSubmission
 <details>
 ```yaml
 name: DataAccessSubmission
-description: A user's application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION.
-  Represents the design doc's "user satisfaction" side of an Access Requirement (gov:hasSignedAgreement
+description: 'A user''s application against an AccessRequirement. Mirrors DATA_ACCESS_SUBMISSION.
+  Represents the design doc''s "user satisfaction" side of an Access Requirement (gov:hasSignedAgreement
   / gov:hasApproval) as an explicit, auditable record rather than a precomputed boolean.
+
+  Field names below were corrected to match Synapse''s live REST API object (`org.sagebionetworks.repo.model.dataaccess.Submission`,
+  per the OpenAPI spec), not just the original DATA_ACCESS_SUBMISSION table-column
+  guess: the live API names the submitter/timestamp fields `submittedBy`/ `submittedOn`
+  (not `createdBy`/`createdOn`), the originating request `requestId` (not `dataAccessRequestId`),
+  and exposes `modifiedBy` directly on Submission itself -- moved here from DataAccessSubmissionStatus,
+  which does not carry it in the live API (see that class''s own description).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 is_a: BaseEntity
 slot_usage:
@@ -214,16 +225,6 @@ slot_usage:
     examples:
     - value: data_access_submission.555
     pattern: ^data_access_submission\.\d+$
-  createdBy:
-    name: createdBy
-    comments:
-    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
-      node (looked up by the submission's numeric creator id), not a literal -- see
-      mixins.yaml's createdBy comment.
-    slot_uri: sagegov:createdBy
-  createdOn:
-    name: createdOn
-    slot_uri: sagegov:createdOn
   etag:
     name: etag
     slot_uri: sagegov:etag
@@ -256,11 +257,14 @@ attributes:
     domain_of:
     - DataAccessSubmission
     range: integer
-  dataAccessRequestId:
-    name: dataAccessRequestId
-    description: The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID).
+  requestId:
+    name: requestId
+    description: The originating data access request id. Synapse's live API names
+      this field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`),
+      not `dataAccessRequestId`; the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:requestId
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
@@ -277,45 +281,44 @@ attributes:
     domain_of:
     - DataAccessSubmission
     range: integer
-  createdBy:
-    name: createdBy
-    description: Synapse numeric user id of the record's creator. Shared the same
-      way as `name` above. Distinct from ContributionMixin's contributorName, which
-      is this repo's own free-text curator-provenance field, not Synapse's own numeric
-      CREATED_BY column — both coexist on AccessRequirement without collision.
-    comments:
-    - On DataAccessSubmission specifically, this is an IRI reference to a sagegov:Principal
-      node (looked up by the submission's numeric creator id), not a literal -- see
-      mixins.yaml's createdBy comment.
+  submittedBy:
+    name: submittedBy
+    description: Synapse numeric user id of who submitted this record (`Submission.submittedBy`
+      in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal
+      node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
-    exact_mappings:
-    - dcterms:creator
     rank: 1000
-    slot_uri: sagegov:createdBy
+    slot_uri: sagegov:submittedBy
     owner: DataAccessSubmission
     domain_of:
-    - SynapseAccessRequirementMixin
-    - SynapseEntity
     - DataAccessSubmission
-    - DataAccessSubmissionStatus
     range: integer
-  createdOn:
-    name: createdOn
-    description: When the record was created (epoch milliseconds in the source Synapse
-      tables). Shared the same way as `name` above. Distinct from ContributionMixin's
-      contributionDate for the same reason as createdBy above.
+  submittedOn:
+    name: submittedOn
+    description: When this record was submitted (epoch milliseconds; `Submission.submittedOn`
+      in Synapse's live REST API).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
-    exact_mappings:
-    - dcterms:created
     rank: 1000
-    slot_uri: sagegov:createdOn
+    slot_uri: sagegov:submittedOn
     owner: DataAccessSubmission
     domain_of:
-    - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - AccessGrant
     - DataAccessSubmission
-    - DataAccessSubmissionStatus
+    range: integer
+  modifiedBy:
+    name: modifiedBy
+    description: Synapse numeric user id of who last modified this submission's status
+      (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus,
+      which does not carry this field live; see DataAccessSubmissionStatus's own description).
+      Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
+      submittedBy above.
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    close_mappings:
+    - dcterms:contributor
+    rank: 1000
+    slot_uri: sagegov:modifiedBy
+    owner: DataAccessSubmission
+    domain_of:
+    - DataAccessSubmission
     range: integer
   etag:
     name: etag

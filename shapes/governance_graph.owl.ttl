@@ -56,7 +56,7 @@ gov:AccessRequirementAssociation a owl:Class ;
     rdfs:comment "Mirrors governanceduo:AccessRequirementAssociation." .
 
 gov:DataAccessSubmission a owl:Class ;
-    rdfs:comment "Mirrors governanceduo:DataAccessSubmission. DataAccessSubmissionStatus has no class of its own here: its state/reason/createdBy/createdOn/modifiedBy/modifiedOn (as gov:statusCreatedBy/gov:statusCreatedOn/gov:statusModifiedBy/gov:statusModifiedOn) are merged onto this same individual, per governance_graph.yaml's own note that DataAccessSubmissionStatus has no independent identifier in Synapse's schema." .
+    rdfs:comment "Mirrors governanceduo:DataAccessSubmission. DataAccessSubmissionStatus has no class of its own here: its state/rejectedReason/modifiedOn (the latter as gov:statusModifiedOn) are merged onto this same individual, per governance_graph.yaml's own note that DataAccessSubmissionStatus has no independent identifier in Synapse's schema. Field/predicate names throughout were corrected to match Synapse's live Submission/SubmissionStatus REST objects, not the original DATA_ACCESS_SUBMISSION(_STATUS) table-column guess -- see governance_graph.yaml's corrected descriptions on both classes." .
 
 gov:AccessRequirement a owl:Class ;
     rdfs:comment "Stub reference class for AccessRequirement individuals named from an AccessRequirementAssociation/DataAccessSubmission -- not the full governanceduo:AccessRequirement record." .
@@ -102,36 +102,32 @@ gov:sourceAclResourceAccessId a owl:DatatypeProperty ;
 
 gov:createdOn a owl:DatatypeProperty ;
     rdfs:range xsd:long ;
-    rdfs:comment "Epoch milliseconds. Used by SynapseEntity, AccessGrant, and DataAccessSubmission." .
-
-gov:createdBy a owl:ObjectProperty ;
-    rdfs:range gov:Principal ;
-    rdfs:comment "The submission's own creator, as an IRI reference to a gov:Principal node. Used by DataAccessSubmission; do not confuse with gov:statusCreatedBy below (the same submission's DataAccessSubmissionStatus row can have a different creator, e.g. an ACT reviewer) or gov:createdByUserId (a raw literal id, not a Principal reference)." .
+    rdfs:comment "Epoch milliseconds. Used by SynapseEntity and AccessGrant. DataAccessSubmission uses gov:submittedOn instead -- Synapse's live Submission REST object names that field submittedOn, not createdOn (see governance_graph.yaml's corrected description)." .
 
 gov:createdByUserId a owl:DatatypeProperty ;
     rdfs:domain gov:SynapseEntity ;
     rdfs:range xsd:integer ;
-    rdfs:comment "A raw Synapse numeric user id (NODE.CREATED_BY), kept separate from the IRI-valued gov:createdBy so this property can be a clean, single-range owl:DatatypeProperty." .
+    rdfs:comment "A raw Synapse numeric user id (NODE.CREATED_BY)." .
 
-gov:statusCreatedBy a owl:ObjectProperty ;
+gov:submittedBy a owl:ObjectProperty ;
     rdfs:domain gov:DataAccessSubmission ;
     rdfs:range gov:Principal ;
-    rdfs:comment "DataAccessSubmissionStatus's own creator (merged onto the DataAccessSubmission individual -- see gov:DataAccessSubmission's comment), as an IRI reference to a gov:Principal node. Distinct from gov:createdBy, which is the submission's own creator." .
+    rdfs:comment "The submission's own submitter, as an IRI reference to a gov:Principal node. Synapse's live Submission REST object names this field submittedBy, not createdBy (see governance_graph.yaml's corrected description). Do not confuse with gov:modifiedBy below (the same submission's status can later be modified by a different Principal, e.g. an ACT reviewer) or gov:createdByUserId (a raw literal id on SynapseEntity, not a Principal reference)." .
 
-gov:statusModifiedBy a owl:ObjectProperty ;
-    rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range gov:Principal ;
-    rdfs:comment "DataAccessSubmissionStatus's own last-modifier, as an IRI reference to a gov:Principal node." .
-
-gov:statusCreatedOn a owl:DatatypeProperty ;
+gov:submittedOn a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessSubmission ;
     rdfs:range xsd:long ;
-    rdfs:comment "DataAccessSubmissionStatus's own creation timestamp (epoch milliseconds). Distinct from gov:createdOn, the submission's own creation timestamp." .
+    rdfs:comment "Epoch milliseconds. Synapse's live Submission REST object names this field submittedOn, not createdOn." .
+
+gov:modifiedBy a owl:ObjectProperty ;
+    rdfs:domain gov:DataAccessSubmission ;
+    rdfs:range gov:Principal ;
+    rdfs:comment "Who last modified this submission's status, as an IRI reference to a gov:Principal node. Synapse's live Submission REST object carries this field directly on Submission itself, not on DataAccessSubmissionStatus (which has no such field live) -- see governance_graph.yaml's corrected description." .
 
 gov:statusModifiedOn a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessSubmission ;
     rdfs:range xsd:long ;
-    rdfs:comment "DataAccessSubmissionStatus's own last-modified timestamp (epoch milliseconds)." .
+    rdfs:comment "DataAccessSubmissionStatus's own last-modified timestamp (epoch milliseconds) -- the one status/audit field Synapse's live SubmissionStatus REST object actually carries independently of Submission itself." .
 
 gov:accessRequirement a owl:ObjectProperty ;
     rdfs:range gov:AccessRequirement ;
@@ -141,9 +137,10 @@ gov:state a owl:ObjectProperty ;
     rdfs:domain gov:DataAccessSubmission ;
     rdfs:comment "Range: a SubmissionStateEnum value minted as its own IRI (gov:SUBMITTED/APPROVED/REJECTED/CANCELLED)." .
 
-gov:reason a owl:DatatypeProperty ;
+gov:rejectedReason a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    rdfs:comment "Synapse's live SubmissionStatus REST object names this field rejectedReason, not reason (see governance_graph.yaml's corrected description)." .
 
 gov:principalId a owl:DatatypeProperty ;
     rdfs:domain gov:Principal ;

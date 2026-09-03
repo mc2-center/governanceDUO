@@ -28,8 +28,6 @@ URI: [governanceduo:slot/createdOn](https://w3id.org/sage-bionetworks/governance
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
 | [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
 | [AccessGrant](../classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |  yes  |
-| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
-| [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |  no  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -44,7 +42,7 @@ URI: [governanceduo:slot/createdOn](https://w3id.org/sage-bionetworks/governance
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [AccessGrant](../classes/AccessGrant.md), [DataAccessSubmission](../classes/DataAccessSubmission.md), [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [AccessGrant](../classes/AccessGrant.md) |
 
 ### Cardinality and Requirements
 
@@ -101,8 +99,6 @@ domain_of:
 - SynapseAccessRequirementMixin
 - SynapseEntity
 - AccessGrant
-- DataAccessSubmission
-- DataAccessSubmissionStatus
 range: integer
 
 ```

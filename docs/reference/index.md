@@ -68,7 +68,6 @@ Name: governance_duo
 | [createdOn](slots/createdOn.md) | When the record was created (epoch milliseconds in the source Synapse tables) |
 | [credentialType](slots/credentialType.md) |  |
 | [currentRevNum](slots/currentRevNum.md) | The current revision number of the record |
-| [dataAccessRequestId](slots/dataAccessRequestId.md) | The originating data access request id (DATA_ACCESS_SUBMISSION |
 | [dataPermission](slots/dataPermission.md) | The permissions associated with the data under the access requirement |
 | [dataTier](slots/dataTier.md) | The tier of data access associated with the access requirement |
 | [dataTypeKey](slots/dataTypeKey.md) | The annotation key applied to a Synapse entity that contains a data type iden... |
@@ -94,7 +93,7 @@ Name: governance_duo
 | [keyIsMultivalued](slots/keyIsMultivalued.md) | True if this referenceValueKey's own policy_data_schema |
 | [license](slots/license.md) | The license under which the data associated with the access requirement is sh... |
 | [maxRevNum](slots/maxRevNum.md) | The maximum revision number of this Synapse entity (NODE |
-| [modifiedBy](slots/modifiedBy.md) | Synapse numeric user id of who last modified this status record |
+| [modifiedBy](slots/modifiedBy.md) | Synapse numeric user id of who last modified this submission's status (`Submi... |
 | [modifiedOn](slots/modifiedOn.md) | When this status record was last modified (epoch milliseconds) |
 | [name](slots/name.md) | A Synapse-native display name |
 | [nodeType](slots/nodeType.md) | The kind of Synapse entity (NODE |
@@ -112,11 +111,12 @@ Name: governance_duo
 | [principalType](slots/principalType.md) |  |
 | [prohibitedPurposes](slots/prohibitedPurposes.md) | Research purpose term(s) for which use is explicitly disallowed |
 | [publicationMoratorium](slots/publicationMoratorium.md) | End date of the publication moratorium associated with the access requirement |
-| [reason](slots/reason.md) | The reason for the current state (e |
 | [referenceValueKey](slots/referenceValueKey.md) | One of the containing binding's referenceValueKeys, e |
 | [referenceValueKeys](slots/referenceValueKeys.md) | The policy_data_schema |
 | [referenceValueSources](slots/referenceValueSources.md) |  |
 | [registeredSchemaUrl](slots/registeredSchemaUrl.md) | URL associated with the annotation schema that will be applied to the resourc... |
+| [rejectedReason](slots/rejectedReason.md) | The reason this submission was rejected, if it was |
+| [requestId](slots/requestId.md) | The originating data access request id |
 | [requiredAgreementDocumentId](slots/requiredAgreementDocumentId.md) | DID of the terms/agreement document the requester must accept before this acc... |
 | [requiredClaims](slots/requiredClaims.md) | Dot-path claim name(s) this policy_card's Rego logic actually reads, e |
 | [requiredCredentials](slots/requiredCredentials.md) |  |
@@ -151,6 +151,8 @@ Name: governance_duo
 | [studyProjectIdentifier](slots/studyProjectIdentifier.md) | The Synapse Project identifier (synID) with which this Study is related |
 | [studySampleNumber](slots/studySampleNumber.md) | The number of specimens associated with systematic investigation into a subje... |
 | [submissionId](slots/submissionId.md) | The DataAccessSubmission this status record applies to (DATA_ACCESS_SUBMISSIO... |
+| [submittedBy](slots/submittedBy.md) | Synapse numeric user id of who submitted this record (`Submission |
+| [submittedOn](slots/submittedOn.md) | When this record was submitted (epoch milliseconds; `Submission |
 | [supportedAuthTypes](slots/supportedAuthTypes.md) | Mirrors DRS's Authorizations |
 | [synapseId](slots/synapseId.md) | A Synapse entity id |
 | [timeLimitOnUse](slots/timeLimitOnUse.md) | Time limit on the use of the data associated with the access requirement |

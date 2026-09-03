@@ -6,7 +6,7 @@ search:
 # Slot: modifiedBy 
 
 
-_Synapse numeric user id of who last modified this status record._
+_Synapse numeric user id of who last modified this submission's status (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's own description). Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring submittedBy above._
 
 
 
@@ -14,7 +14,7 @@ _Synapse numeric user id of who last modified this status record._
 
 
 
-URI: [governanceduo:slot/modifiedBy](https://w3id.org/sage-bionetworks/governance-duo/slot/modifiedBy)
+URI: [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy)
 <!-- no inheritance hierarchy -->
 
 
@@ -25,7 +25,7 @@ URI: [governanceduo:slot/modifiedBy](https://w3id.org/sage-bionetworks/governanc
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |  no  |
+| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  no  |
 
 
 
@@ -39,7 +39,8 @@ URI: [governanceduo:slot/modifiedBy](https://w3id.org/sage-bionetworks/governanc
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Slot URI | [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/modifiedBy](https://w3id.org/sage-bionetworks/governanc
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:modifiedBy |
+| self | sagegov:modifiedBy |
 | native | governanceduo:modifiedBy |
 | close | dcterms:contributor |
 
@@ -85,13 +86,18 @@ URI: [governanceduo:slot/modifiedBy](https://w3id.org/sage-bionetworks/governanc
 <details>
 ```yaml
 name: modifiedBy
-description: Synapse numeric user id of who last modified this status record.
+description: Synapse numeric user id of who last modified this submission's status
+  (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus,
+  which does not carry this field live; see DataAccessSubmissionStatus's own description).
+  Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
+  submittedBy above.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - dcterms:contributor
 rank: 1000
+slot_uri: sagegov:modifiedBy
 domain_of:
-- DataAccessSubmissionStatus
+- DataAccessSubmission
 range: integer
 
 ```

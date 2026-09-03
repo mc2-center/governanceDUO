@@ -214,16 +214,20 @@ about —
   `gov:Principal` type also asserted directly (so a plain `?x a gov:Principal` query
   works without relying on `rdfs:subClassOf` reasoning) — `gov:Team`/`gov:User` are
   still declared `rdfs:subClassOf gov:Principal` in the TBox too, as a robustness net
-- `DataAccessSubmissionStatus`'s `state`/`reason`/`createdBy`/`createdOn`/`modifiedBy`/
-  `modifiedOn` are merged onto the `DataAccessSubmission` individual, not a separate
-  node — the last four via their own `gov:statusCreatedBy`/`gov:statusCreatedOn`/
-  `gov:statusModifiedBy`/`gov:statusModifiedOn` predicates, kept distinct from
-  `DataAccessSubmission`'s own `gov:createdBy`/`gov:createdOn` since a submission and
-  its status can have different creators (e.g. an ACT reviewer vs. the requester)
-- `gov:createdBy` is always an IRI reference to a `gov:Principal` node
-  (`DataAccessSubmission`, and now `gov:statusCreatedBy`/`gov:statusModifiedBy`);
+- `DataAccessSubmissionStatus`'s `state`/`rejectedReason`/`modifiedOn` are merged onto
+  the `DataAccessSubmission` individual, not a separate node — `modifiedOn` via its own
+  `gov:statusModifiedOn` predicate. Field names here were corrected to match Synapse's
+  live `Submission`/`SubmissionStatus` REST objects, not the original
+  `DATA_ACCESS_SUBMISSION(_STATUS)` table-column guess: the live API has no separate
+  `createdBy`/`createdOn` on `SubmissionStatus` at all, and names `DataAccessSubmission`'s
+  own submitter/timestamp fields `gov:submittedBy`/`gov:submittedOn` (not
+  `gov:createdBy`/`gov:createdOn`); `gov:modifiedBy` (who last changed the status) is
+  real but lives directly on `DataAccessSubmission`, not on `DataAccessSubmissionStatus`
+- `gov:submittedBy`/`gov:modifiedBy` are always IRI references to a `gov:Principal`
+  node (both on `DataAccessSubmission` — a submission and its later status change can
+  have different Principals, e.g. an ACT reviewer vs. the requester);
   `SynapseEntity`'s raw Synapse user id is a separate literal predicate,
-  `gov:createdByUserId`, so `gov:createdBy` itself never mixes literals and IRIs
+  `gov:createdByUserId`, so neither mixes literals and IRIs
 - `gov:accessRequirement` is reused as the predicate for both
   `AccessRequirementAssociation.accessRequirement` and
   `DataAccessSubmission.accessRequirementId`

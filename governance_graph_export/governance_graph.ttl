@@ -11,13 +11,11 @@ gov:ar-association-001 a gov:AccessRequirementAssociation ;
 
 gov:data-access-submission-555 a gov:DataAccessSubmission ;
     gov:accessRequirement gov:AR-42 ;
-    gov:createdBy gov:principal-2000001 ;
-    gov:createdOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:modifiedBy gov:principal-2000001 ;
     gov:state gov:SUBMITTED ;
-    gov:statusCreatedBy gov:principal-2000001 ;
-    gov:statusCreatedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:statusModifiedBy gov:principal-2000001 ;
-    gov:statusModifiedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
+    gov:statusModifiedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:submittedBy gov:principal-2000001 ;
+    gov:submittedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
 
 gov:grant-001 a gov:AccessGrant ;
     gov:bindingType gov:Direct ;
@@ -40,6 +38,10 @@ syn:syn2343195 a gov:SynapseEntity ;
     gov:name "NF2-related schwannomatosis RNA-seq study" ;
     gov:nodeType "project" .
 
+gov:principal-2000001 a gov:Principal,
+        gov:User ;
+    gov:principalId 2000001 .
+
 syn:syn10081783 a gov:SynapseEntity ;
     gov:createdByUserId 1000001 ;
     gov:createdOn "1755000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
@@ -52,8 +54,4 @@ syn:syn10081783 a gov:SynapseEntity ;
 
 gov:AR-42 a gov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.42 .
-
-gov:principal-2000001 a gov:Principal,
-        gov:User ;
-    gov:principalId 2000001 .
 

@@ -376,8 +376,6 @@ attributes:
     domain_of:
     - SynapseAccessRequirementMixin
     - SynapseEntity
-    - DataAccessSubmission
-    - DataAccessSubmissionStatus
     range: integer
   createdOn:
     name: createdOn
@@ -394,8 +392,6 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
-    - DataAccessSubmission
-    - DataAccessSubmissionStatus
     range: integer
   id:
     name: id

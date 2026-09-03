@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: reason 
+# Slot: rejectedReason 
 
 
-_The reason for the current state (e.g. a rejection reason). Stored as DATA_ACCESS_SUBMISSION_STATUS.REASON, a BINARY column in Synapse; modeled here as a plain string._
+_The reason this submission was rejected, if it was. Synapse's live API names this field `rejectedReason` (`org.sagebionetworks.repo.model.dataaccess.SubmissionStatus`), not `reason`; stored as DATA_ACCESS_SUBMISSION_STATUS.REASON (a BINARY column) in the underlying table._
 
 
 
@@ -14,7 +14,7 @@ _The reason for the current state (e.g. a rejection reason). Stored as DATA_ACCE
 
 
 
-URI: [sagegov:reason](https://sagebionetworks.org/governance/reason)
+URI: [sagegov:rejectedReason](https://sagebionetworks.org/governance/rejectedReason)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [sagegov:reason](https://sagebionetworks.org/governance/reason)
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
-| Slot URI | [sagegov:reason](https://sagebionetworks.org/governance/reason) |
+| Slot URI | [sagegov:rejectedReason](https://sagebionetworks.org/governance/rejectedReason) |
 
 ### Cardinality and Requirements
 
@@ -74,8 +74,8 @@ URI: [sagegov:reason](https://sagebionetworks.org/governance/reason)
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | sagegov:reason |
-| native | governanceduo:reason |
+| self | sagegov:rejectedReason |
+| native | governanceduo:rejectedReason |
 
 
 
@@ -84,13 +84,14 @@ URI: [sagegov:reason](https://sagebionetworks.org/governance/reason)
 
 <details>
 ```yaml
-name: reason
-description: The reason for the current state (e.g. a rejection reason). Stored as
-  DATA_ACCESS_SUBMISSION_STATUS.REASON, a BINARY column in Synapse; modeled here as
-  a plain string.
+name: rejectedReason
+description: The reason this submission was rejected, if it was. Synapse's live API
+  names this field `rejectedReason` (`org.sagebionetworks.repo.model.dataaccess.SubmissionStatus`),
+  not `reason`; stored as DATA_ACCESS_SUBMISSION_STATUS.REASON (a BINARY column) in
+  the underlying table.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: sagegov:reason
+slot_uri: sagegov:rejectedReason
 domain_of:
 - DataAccessSubmissionStatus
 range: string

@@ -248,42 +248,38 @@ def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     # accessRequirementId's slot_uri intentionally resolves to the same predicate
     # AccessRequirementAssociation.accessRequirement uses (see governance_graph.yaml).
     g.add((subject, PREDICATE("accessRequirementId", "DataAccessSubmission"), ar_node))
-    g.add((subject, PREDICATE("createdBy", "DataAccessSubmission"), GOV[f"principal-{data['createdBy']}"]))
-    g.add((subject, PREDICATE("createdOn", "DataAccessSubmission"), Literal(data["createdOn"], datatype=XSD.long)))
+    # submittedBy/submittedOn (not createdBy/createdOn) -- Synapse's live
+    # Submission REST object names these fields submittedBy/submittedOn; see
+    # governance_graph.yaml's corrected DataAccessSubmission description.
+    g.add((subject, PREDICATE("submittedBy", "DataAccessSubmission"), GOV[f"principal-{data['submittedBy']}"]))
+    g.add((subject, PREDICATE("submittedOn", "DataAccessSubmission"), Literal(data["submittedOn"], datatype=XSD.long)))
+    if data.get("modifiedBy") is not None:
+        # Synapse's live API places modifiedBy on Submission itself, not on
+        # DataAccessSubmissionStatus (which carries no such field live) -- see
+        # add_data_access_submission_status below and governance_graph.yaml's
+        # corrected description on both classes.
+        g.add((subject, PREDICATE("modifiedBy", "DataAccessSubmission"), GOV[f"principal-{data['modifiedBy']}"]))
     if approved:
         # Mirrors the design doc's simplified gov:hasApproval predicate -- only
         # emitted once the real, richer submission-status workflow (below) says
         # APPROVED, not merely SUBMITTED. Cross-object join logic, not schema-declarable.
-        g.add((GOV[f"principal-{data['createdBy']}"], GOV.hasApproval, ar_node))
+        g.add((GOV[f"principal-{data['submittedBy']}"], GOV.hasApproval, ar_node))
 
 
 def add_data_access_submission_status(g: Graph, data: dict, submission_node) -> bool:
     # DataAccessSubmissionStatus has no independent node of its own (see
-    # governance_graph.yaml) -- its state/reason/audit fields are merged onto the
-    # DataAccessSubmission subject. Its own createdBy/modifiedBy use the distinct
-    # gov:statusCreatedBy/gov:statusModifiedBy predicates (IRI references to a
-    # Principal node, mirroring add_data_access_submission's gov:createdBy) rather
-    # than gov:createdBy itself: DataAccessSubmission.createdBy already occupies that
-    # predicate on this same subject, and the status row's creator/modifier can
-    # legitimately be a different Principal (e.g. an ACT reviewer, not the requester).
-    # DataAccessSubmissionStatus has no class_uri (see governance_graph.yaml -- it's
-    # merged, not its own individual), so state/reason/statusCreatedBy/etc. have no
+    # governance_graph.yaml) -- its state/rejectedReason/modifiedOn fields are
+    # merged onto the DataAccessSubmission subject. Synapse's live
+    # SubmissionStatus REST object carries no createdBy/createdOn/modifiedBy of
+    # its own (that was this schema's earlier, DB-table-column-based guess,
+    # since corrected) -- modifiedBy is real but lives on Submission itself,
+    # handled in add_data_access_submission above, not here.
+    # DataAccessSubmissionStatus has no class_uri (see governance_graph.yaml --
+    # it's merged, not its own individual), so state/rejectedReason/etc. have no
     # PREDICATE() entry to resolve either; kept as bare GOV.<name> constants.
     g.add((submission_node, GOV.state, GOV[data["state"]]))
-    if data.get("reason"):
-        g.add((submission_node, GOV.reason, Literal(data["reason"])))
-    if data.get("createdBy") is not None:
-        g.add(
-            (submission_node, GOV.statusCreatedBy, GOV[f"principal-{data['createdBy']}"])
-        )
-    if data.get("createdOn") is not None:
-        g.add(
-            (submission_node, GOV.statusCreatedOn, Literal(data["createdOn"], datatype=XSD.long))
-        )
-    if data.get("modifiedBy") is not None:
-        g.add(
-            (submission_node, GOV.statusModifiedBy, GOV[f"principal-{data['modifiedBy']}"])
-        )
+    if data.get("rejectedReason"):
+        g.add((submission_node, GOV.rejectedReason, Literal(data["rejectedReason"])))
     if data.get("modifiedOn") is not None:
         g.add(
             (submission_node, GOV.statusModifiedOn, Literal(data["modifiedOn"], datatype=XSD.long))

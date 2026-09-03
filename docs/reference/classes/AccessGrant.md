@@ -325,8 +325,6 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
-    - DataAccessSubmission
-    - DataAccessSubmissionStatus
     range: integer
   sourceAclId:
     name: sourceAclId

@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: dataAccessRequestId 
+# Slot: submittedBy 
 
 
-_The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID)._
+_Synapse numeric user id of who submitted this record (`Submission.submittedBy` in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py._
 
 
 
@@ -14,7 +14,7 @@ _The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQU
 
 
 
-URI: [governanceduo:slot/dataAccessRequestId](https://w3id.org/sage-bionetworks/governance-duo/slot/dataAccessRequestId)
+URI: [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/dataAccessRequestId](https://w3id.org/sage-bionetworks/
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Slot URI | [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy) |
 
 ### Cardinality and Requirements
 
@@ -73,8 +74,8 @@ URI: [governanceduo:slot/dataAccessRequestId](https://w3id.org/sage-bionetworks/
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:dataAccessRequestId |
-| native | governanceduo:dataAccessRequestId |
+| self | sagegov:submittedBy |
+| native | governanceduo:submittedBy |
 
 
 
@@ -83,10 +84,13 @@ URI: [governanceduo:slot/dataAccessRequestId](https://w3id.org/sage-bionetworks/
 
 <details>
 ```yaml
-name: dataAccessRequestId
-description: The originating data access request id (DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID).
+name: submittedBy
+description: Synapse numeric user id of who submitted this record (`Submission.submittedBy`
+  in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal
+  node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:submittedBy
 domain_of:
 - DataAccessSubmission
 range: integer

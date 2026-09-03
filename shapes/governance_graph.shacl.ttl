@@ -90,9 +90,12 @@ gov:AccessRequirementAssociationShape a sh:NodeShape ;
             sh:in ( gov:Direct gov:Inherited ) ] .
 
 #################################################################
-# DataAccessSubmission (DataAccessSubmissionStatus's state/reason/audit fields merge
-# in here -- see governance_graph.yaml's own note that DataAccessSubmissionStatus has
-# no independent identifier in Synapse's schema)
+# DataAccessSubmission (DataAccessSubmissionStatus's state/rejectedReason/modifiedOn
+# fields merge in here -- see governance_graph.yaml's own note that
+# DataAccessSubmissionStatus has no independent identifier in Synapse's schema.
+# Field names/shapes here were corrected to match Synapse's live Submission/
+# SubmissionStatus REST objects -- see governance_graph.yaml's corrected
+# descriptions on both classes.)
 #################################################################
 
 gov:DataAccessSubmissionShape a sh:NodeShape ;
@@ -101,19 +104,16 @@ gov:DataAccessSubmissionShape a sh:NodeShape ;
         [ sh:path gov:accessRequirement ; sh:class gov:AccessRequirement ;
             sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
             sh:description "Sources DataAccessSubmission.accessRequirementId via the same gov:accessRequirement predicate AccessRequirementAssociation uses -- see shapes/governance_graph.owl.ttl." ],
-        [ sh:path gov:createdBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
+        [ sh:path gov:submittedBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
             sh:minCount 1 ; sh:maxCount 1 ;
-            sh:description "An IRI reference to a gov:Principal node, not a literal integer -- governance_graph.yaml declares this slot's range as integer; the ABox deliberately links to the creator's Principal individual instead. See shapes/governance_graph.owl.ttl." ],
-        [ sh:path gov:createdOn ; sh:datatype xsd:long ; sh:maxCount 1 ],
+            sh:description "An IRI reference to a gov:Principal node, not a literal integer -- governance_graph.yaml declares this slot's range as integer; the ABox deliberately links to the submitter's Principal individual instead. See shapes/governance_graph.owl.ttl." ],
+        [ sh:path gov:submittedOn ; sh:datatype xsd:long ; sh:maxCount 1 ],
+        [ sh:path gov:modifiedBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
+            sh:maxCount 1 ;
+            sh:description "Synapse's live Submission REST object carries modifiedBy directly, not DataAccessSubmissionStatus (which has no such field live) -- see shapes/governance_graph.owl.ttl." ],
         [ sh:path gov:state ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
             sh:in ( gov:SUBMITTED gov:APPROVED gov:REJECTED gov:CANCELLED ) ],
-        [ sh:path gov:reason ; sh:datatype xsd:string ; sh:maxCount 1 ],
-        [ sh:path gov:statusCreatedBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
-            sh:maxCount 1 ;
-            sh:description "DataAccessSubmissionStatus's own creator -- kept separate from gov:createdBy since the two can legitimately differ (e.g. an ACT reviewer vs. the requester)." ],
-        [ sh:path gov:statusModifiedBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
-            sh:maxCount 1 ],
-        [ sh:path gov:statusCreatedOn ; sh:datatype xsd:long ; sh:maxCount 1 ],
+        [ sh:path gov:rejectedReason ; sh:datatype xsd:string ; sh:maxCount 1 ],
         [ sh:path gov:statusModifiedOn ; sh:datatype xsd:long ; sh:maxCount 1 ] .
 
 #################################################################
