@@ -42,6 +42,8 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
         click AccessRequirementAssociation href "../../classes/AccessRequirementAssociation/"
       BaseEntity <|-- DataAccessSubmission
         click DataAccessSubmission href "../../classes/DataAccessSubmission/"
+      BaseEntity <|-- AccessApproval
+        click AccessApproval href "../../classes/AccessApproval/"
       
       BaseEntity : id
         
@@ -62,6 +64,7 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
     * [AccessGrant](../classes/AccessGrant.md)
     * [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md)
     * [DataAccessSubmission](../classes/DataAccessSubmission.md)
+    * [AccessApproval](../classes/AccessApproval.md)
 
 
 ## Slots

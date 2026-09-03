@@ -83,6 +83,16 @@ enums:
     permissible_values:
       User: {}
       Team: {}
+  ApprovalStateEnum:
+    description: >-
+      Synapse's real AccessApproval state values
+      (org.sagebionetworks.repo.model.ApprovalState), verified directly
+      against the OpenAPI spec -- APPROVED/REVOKED only. A distinct, smaller
+      enum from SubmissionStateEnum above; do not conflate the two even though
+      both happen to include "APPROVED".
+    permissible_values:
+      APPROVED: {}
+      REVOKED: {}
 classes:
   SynapseEntity:
     is_a: BaseEntity
@@ -147,6 +157,7 @@ classes:
       principalId <-> ACL_RESOURCE_ACCESS.GROUP_ID column traceability this schema
       preserves everywhere else (see SynapseAccessRequirementMixin's real-column-name
       convention).
+
     close_mappings:
       - prov:Agent
     slots:
@@ -295,6 +306,52 @@ classes:
       - duoCode
       - description
       - conditionDetail
+  AccessApproval:
+    is_a: BaseEntity
+    class_uri: sagegov:AccessApproval
+    description: >-
+      Records that a Principal has been approved for access under an
+      AccessRequirement. Mirrors Synapse's real AccessApproval REST object
+      (org.sagebionetworks.repo.model.AccessApproval) -- a *separate* object
+      from DataAccessSubmission/DataAccessSubmissionStatus (the workflow/audit
+      trail that produces one), verified directly against
+      rest-docs.synapse.org and the OpenAPI spec. Maps onto the target
+      ontology (proposed in review on sagebrain-infra PR #54) as gov:Approval:
+      gov:satisfies (requirementId), gov:heldBy (accessorId), gov:status
+      (this class's own status slot -- range ApprovalStateEnum, deliberately
+      not the shared "state" slot, which ranges over the unrelated
+      SubmissionStateEnum), gov:expiresAt (expiredOn).
+
+      gov:hasApproval (Principal -> AccessRequirement) is re-derived from this
+      class (status == APPROVED) as the primary source going forward -- see
+      add_access_approval() in build_governance_graph.py. The existing
+      DataAccessSubmissionStatus-sourced gov:hasApproval edge is left as-is,
+      not replaced (authorize.py's SPARQL contract touches neither). See
+      plans/governance_graph_open_questions.md Section B.
+    slot_usage:
+      id:
+        description: >-
+          A synthetic identifier for this approval record (Synapse's real
+          AccessApproval.id, traced via sourceApprovalId below, has no
+          dotted-string form of its own -- mirrors this repo's id convention
+          for every other BaseEntity here).
+        pattern: '^access_approval\.\d+$'
+        examples:
+          - value: access_approval.9001
+      createdOn:
+        slot_uri: sagegov:createdOn
+      etag:
+        slot_uri: sagegov:etag
+    slots:
+      - requirementId
+      - requirementVersion
+      - submitterId
+      - accessorId
+      - status
+      - expiredOn
+      - createdOn
+      - sourceApprovalId
+      - etag
 slots:
   nodeType:
     slot_uri: sagegov:nodeType
@@ -494,3 +551,63 @@ slots:
       condition's own detail is inherently list-valued. See
       scripts/build_governance_graph.py.
     multivalued: true
+  requirementId:
+    slot_uri: sagegov:satisfies
+    description: >-
+      The AccessRequirement this approval satisfies (AccessApproval.requirementId
+      in Synapse's live REST API). Distinct LinkML slot from
+      AccessRequirementAssociation.accessRequirement/
+      DataAccessSubmission.accessRequirementId (which share
+      sagegov:accessRequirement) -- this one maps onto the target ontology's
+      gov:satisfies predicate instead, since AccessApproval specifically
+      represents *satisfaction* of a requirement, not just a binding or an
+      application against it.
+    range: AccessRequirement
+    required: true
+  requirementVersion:
+    slot_uri: sagegov:requirementVersion
+    description: >-
+      The version of the AccessRequirement this approval satisfies
+      (AccessApproval.requirementVersion).
+    range: integer
+  submitterId:
+    slot_uri: sagegov:submittedBy
+    description: >-
+      Synapse numeric user id of who performed the actions to gain this
+      approval (AccessApproval.submitterId). Reuses DataAccessSubmission's
+      sagegov:submittedBy predicate -- same real-world concept (who acted on
+      the governance workflow), emitted as an IRI reference to a
+      sagegov:Principal node, not a literal.
+    range: integer
+  accessorId:
+    slot_uri: sagegov:heldBy
+    description: >-
+      Synapse numeric id of the Principal approved for access
+      (AccessApproval.accessorId). Emitted as an IRI reference to a
+      sagegov:Principal node, mapping onto the target ontology's gov:heldBy
+      predicate.
+    range: integer
+    required: true
+  status:
+    slot_uri: sagegov:status
+    description: >-
+      The state of this approval (AccessApproval.state in Synapse's live REST
+      API -- renamed to "status" here specifically to avoid colliding with
+      DataAccessSubmission/Status's own "state" slot, which ranges over the
+      unrelated SubmissionStateEnum). Maps onto the target ontology's
+      gov:status.
+    range: ApprovalStateEnum
+    required: true
+  expiredOn:
+    slot_uri: sagegov:expiresAt
+    description: >-
+      When this approval will expire (epoch milliseconds;
+      AccessApproval.expiredOn in Synapse's live REST API). Maps onto the
+      target ontology's gov:expiresAt -- the real field
+      plans/rebac_governance_graph_alignment.md's first draft was wrong to
+      call an unsourceable gap; see that plan's corrected Grounding section.
+    range: integer
+  sourceApprovalId:
+    slot_uri: sagegov:sourceApprovalId
+    description: Traceability back to the literal AccessApproval.id row this record was derived from.
+    range: integer

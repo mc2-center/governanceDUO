@@ -97,6 +97,7 @@ EXAMPLE_CLASSES = {
     "access_requirement_association": "AccessRequirementAssociation",
     "data_access_submission": "DataAccessSubmission",
     "data_access_submission_status": "DataAccessSubmissionStatus",
+    "access_approval": "AccessApproval",
 }
 
 _schemaview: SchemaView | None = None
@@ -264,7 +265,12 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
     many-to-many -- e.g. DUO:0000026 alone has 4 postcondition slots, and
     requiredAgreementDocumentId is itself the postcondition for 4 different
     codes -- so every matching rule is iterated, not just the first.
+
+    Returns the list of Condition nodes minted, so callers (e.g.
+    add_access_requirement_template()) can reuse the same real Condition
+    individuals elsewhere rather than re-deriving or duplicating them.
     """
+    condition_nodes = []
     enum = _schemaview.get_enum("DataUseModifierEnum")
     rules = _schemaview.get_class("GovernanceMixin").rules
     for duo_code in data.get("dataUseModifiers", []):
@@ -285,6 +291,7 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
         # Node minted from the raw duo_code (not the shorthand label, which
         # isn't guaranteed unique) plus the AR stub's own local name.
         condition_node = GOV[f"{ar_node.rsplit('/', 1)[-1]}-condition-{duo_code.replace(':', '-')}"]
+        condition_nodes.append(condition_node)
         g.add((ar_node, GOV.hasCondition, condition_node))
         g.add((condition_node, RDF.type, TYPE("Condition")))
         g.add((condition_node, PREDICATE("conditionType", "Condition"), Literal(condition_type)))
@@ -312,6 +319,40 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
                     values = [values]
                 for value in values:
                     g.add((condition_node, PREDICATE("conditionDetail", "Condition"), Literal(value)))
+    return condition_nodes
+
+
+def add_access_approval(g: Graph, data: dict, principal_nodes: dict) -> bool:
+    """Mints a gov:AccessApproval node -- see governance_graph.yaml's own
+    class description for why this is a *separate* real Synapse object from
+    DataAccessSubmission/Status, not a rename or duplicate of it.
+
+    Returns whether status == APPROVED, so the caller can emit gov:hasApproval
+    from this node (the primary, authoritative source going forward -- see
+    plans/governance_graph_open_questions.md Section B) alongside the
+    existing DataAccessSubmissionStatus-derived edge, which is left as-is.
+    """
+    subject = gov_id(data["id"])
+    ar_node = GOV[data["requirementId"].replace("access_requirement.", "AR-")]
+    g.add((subject, RDF.type, TYPE("AccessApproval")))
+    g.add((subject, PREDICATE("requirementId", "AccessApproval"), ar_node))
+    if data.get("requirementVersion") is not None:
+        g.add((subject, PREDICATE("requirementVersion", "AccessApproval"), Literal(data["requirementVersion"])))
+    g.add((subject, PREDICATE("submitterId", "AccessApproval"), principal_nodes[data["submitterId"]]))
+    accessor_node = principal_nodes[data["accessorId"]]
+    g.add((subject, PREDICATE("accessorId", "AccessApproval"), accessor_node))
+    g.add((subject, PREDICATE("status", "AccessApproval"), GOV[data["status"]]))
+    if data.get("expiredOn") is not None:
+        g.add((subject, PREDICATE("expiredOn", "AccessApproval"), Literal(data["expiredOn"], datatype=XSD.long)))
+    if data.get("createdOn") is not None:
+        g.add((subject, PREDICATE("createdOn", "AccessApproval"), Literal(data["createdOn"], datatype=XSD.long)))
+    if data.get("sourceApprovalId") is not None:
+        g.add((subject, PREDICATE("sourceApprovalId", "AccessApproval"), Literal(data["sourceApprovalId"])))
+    if data.get("etag") is not None:
+        g.add((subject, PREDICATE("etag", "AccessApproval"), Literal(data["etag"])))
+    if data["status"] == "APPROVED":
+        g.add((accessor_node, GOV.hasApproval, ar_node))
+    return data["status"] == "APPROVED"
 
 
 def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
@@ -415,6 +456,10 @@ def main():
     ar_example_path = Path(args.access_requirement_example)
     if ar_node is not None and ar_example_path.exists():
         add_access_requirement(g, yaml.safe_load(ar_example_path.read_text()), ar_node)
+
+    for stem, (class_name, data) in instances.items():
+        if class_name == "AccessApproval":
+            add_access_approval(g, data, principal_nodes)
 
     submission_node = None
     for stem, (class_name, data) in instances.items():

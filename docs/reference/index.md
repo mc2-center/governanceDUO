@@ -14,6 +14,7 @@ Name: governance_duo
 | --- | --- |
 | [AssetBinding](classes/AssetBinding.md) | One (Synapse entity id -> Policy Fabric Asset DID) pairing |
 | [BaseEntity](classes/BaseEntity.md) | Abstract root shared by every governanceDUO class |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessApproval](classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessGrant](classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirementAssociation](classes/AccessRequirementAssociation.md) | Binds an AccessRequirement to a resource, recording whether the binding is di... |
@@ -42,6 +43,7 @@ Name: governance_duo
 
 | Slot | Description |
 | --- | --- |
+| [accessorId](slots/accessorId.md) | Synapse numeric id of the Principal approved for access (AccessApproval |
 | [accessRequirement](slots/accessRequirement.md) | The AccessRequirement this association binds to the resource |
 | [accessRequirementId](slots/accessRequirementId.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... |
 | [AccessRequirementKey](slots/AccessRequirementKey.md) | The Access Requirement id(s) associated with this object |
@@ -85,6 +87,7 @@ Name: governance_duo
 | [duoCode](slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
 | [entityIdList](slots/entityIdList.md) | Synapse ID(s) for Synapse container(s) (e |
 | [etag](slots/etag.md) | Entity tag for optimistic concurrency control (a 36-character UUID) |
+| [expiredOn](slots/expiredOn.md) | When this approval will expire (epoch milliseconds; AccessApproval |
 | [geographicalRestriction](slots/geographicalRestriction.md) | The specific geographic region(s) to which use is limited by the access requi... |
 | [grantAnnotationKey](slots/grantAnnotationKey.md) | The annotation key applied to a Synapse entity that contains a grant identifi... |
 | [grantAnnotationValue](slots/grantAnnotationValue.md) | The value that will be assigned to the key provided under grantAnnotationKey |
@@ -126,6 +129,8 @@ Name: governance_duo
 | [requiredClaims](slots/requiredClaims.md) | Dot-path claim name(s) this policy_card's Rego logic actually reads, e |
 | [requiredCredentials](slots/requiredCredentials.md) |  |
 | [requiredProfileStatuses](slots/requiredProfileStatuses.md) | Profile status value(s) a requester's account must have (checked against User... |
+| [requirementId](slots/requirementId.md) | The AccessRequirement this approval satisfies (AccessApproval |
+| [requirementVersion](slots/requirementVersion.md) | The version of the AccessRequirement this approval satisfies (AccessApproval |
 | [researchProjectId](slots/researchProjectId.md) | The research project id this submission is associated with (DATA_ACCESS_SUBMI... |
 | [researchSpecificRestrictions](slots/researchSpecificRestrictions.md) | Research-specific restrictions associated with the access requirement |
 | [resource](slots/resource.md) | The SynapseEntity this grant/association applies to |
@@ -135,12 +140,14 @@ Name: governance_duo
 | [source](slots/source.md) | The system this grant/association was derived from, e |
 | [sourceAclId](slots/sourceAclId.md) | Traceability back to the literal ACL |
 | [sourceAclResourceAccessId](slots/sourceAclResourceAccessId.md) | Traceability back to the literal ACL_RESOURCE_ACCESS |
+| [sourceApprovalId](slots/sourceApprovalId.md) | Traceability back to the literal AccessApproval |
 | [sourceField](slots/sourceField.md) | When sourceSlot names an inlined class (e |
 | [sourceGeography](slots/sourceGeography.md) | The geographical source of the data associated with the access requirement |
 | [sourceSlot](slots/sourceSlot.md) | The name of the governanceDUO slot (on GovernanceMixin, Study, or the PolicyF... |
 | [speciesTypeKey](slots/speciesTypeKey.md) | The annotation key applied to a Synapse entity that contains a species identi... |
 | [speciesTypeValue](slots/speciesTypeValue.md) | The value that will be assigned to the key provided under speciesTypeKey |
 | [state](slots/state.md) |  |
+| [status](slots/status.md) | The state of this approval (AccessApproval |
 | [studyAnnotationKey](slots/studyAnnotationKey.md) | The annotation key applied to a Synapse entity that contains a study identifi... |
 | [studyAnnotationValue](slots/studyAnnotationValue.md) | The value that will be assigned to the key provided under studyAnnotationKey |
 | [studyDbgapAccessionId](slots/studyDbgapAccessionId.md) | A stable unique alphanumeric identifier assigned to a study and any objects b... |
@@ -158,6 +165,7 @@ Name: governance_duo
 | [submissionId](slots/submissionId.md) | The DataAccessSubmission this status record applies to (DATA_ACCESS_SUBMISSIO... |
 | [submittedBy](slots/submittedBy.md) | Synapse numeric user id of who submitted this record (`Submission |
 | [submittedOn](slots/submittedOn.md) | When this record was submitted (epoch milliseconds; `Submission |
+| [submitterId](slots/submitterId.md) | Synapse numeric user id of who performed the actions to gain this approval (A... |
 | [supportedAuthTypes](slots/supportedAuthTypes.md) | Mirrors DRS's Authorizations |
 | [synapseId](slots/synapseId.md) | A Synapse entity id |
 | [timeLimitOnUse](slots/timeLimitOnUse.md) | Time limit on the use of the data associated with the access requirement |
@@ -171,6 +179,7 @@ Name: governance_duo
 | --- | --- |
 | [AccessRequirementConcreteTypeEnum](enums/AccessRequirementConcreteTypeEnum.md) | Synapse's real AccessRequirement subclasses, verified via Sage-Bionetworks/Sy... |
 | [AccessTypeEnum](enums/AccessTypeEnum.md) | Synapse's real ACCESS_TYPE values, verified live via rest-docs |
+| [ApprovalStateEnum](enums/ApprovalStateEnum.md) | Synapse's real AccessApproval state values (org |
 | [BindingTypeEnum](enums/BindingTypeEnum.md) | Whether a governance relationship (an AccessGrant or AccessRequirementAssocia... |
 | [CredentialTypeEnum](enums/CredentialTypeEnum.md) | The 15 Verifiable Credential types defined in tmp-policies/credentials/* |
 | [DataPermissionEnum](enums/DataPermissionEnum.md) |  |

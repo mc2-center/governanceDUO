@@ -64,6 +64,9 @@ gov:AccessRequirement a owl:Class ;
 gov:Condition a owl:Class ;
     rdfs:comment "Mirrors governance_graph.yaml's Condition class: a single DUO-code-backed condition on an AccessRequirement, surfacing GovernanceMixin's dataUseModifiers/companion-slot data (already present in this repo's AccessRequirement examples) as a first-class node instead of leaving it invisible on the gov:AccessRequirement stub. Not is_a BaseEntity -- like DataAccessSubmissionStatus, it has no independent identifier of its own; it's keyed structurally by (AccessRequirement, duoCode)." .
 
+gov:AccessApproval a owl:Class ;
+    rdfs:comment "Mirrors governanceduo:AccessApproval -- a real, separate Synapse REST object from DataAccessSubmission/DataAccessSubmissionStatus (the workflow/audit trail that produces one). gov:hasApproval is re-derived from this class (status == APPROVED) as the primary source going forward; the existing DataAccessSubmissionStatus-derived edge is left as-is. See plans/governance_graph_open_questions.md Section B." .
+
 gov:Principal a owl:Class ;
     rdfs:comment "Mirrors governanceduo:Principal. Individuals are typed gov:Principal explicitly, plus gov:Team or gov:User (see below) matching the design doc's own worked examples." .
 
@@ -215,3 +218,31 @@ gov:conditionDetail a owl:DatatypeProperty ;
     rdfs:domain gov:Condition ;
     rdfs:range xsd:string ;
     rdfs:comment "Zero or more companion-slot values from the source AccessRequirement, one per GovernanceMixin.rules entry matching this Condition's duoCode -- see governance_graph.yaml and scripts/build_governance_graph.py's add_access_requirement()." .
+
+gov:satisfies a owl:ObjectProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:range gov:AccessRequirement ;
+    rdfs:comment "AccessApproval.requirementId, mapped onto the target ontology's gov:satisfies -- distinct from gov:accessRequirement (used by AccessRequirementAssociation/DataAccessSubmission), since AccessApproval specifically represents satisfaction of a requirement." .
+
+gov:requirementVersion a owl:DatatypeProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:range xsd:integer .
+
+gov:heldBy a owl:ObjectProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:range gov:Principal ;
+    rdfs:comment "AccessApproval.accessorId, mapped onto the target ontology's gov:heldBy." .
+
+gov:status a owl:ObjectProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:comment "Range: an ApprovalStateEnum value minted as its own IRI (gov:APPROVED/REVOKED) -- deliberately not gov:state, which is DataAccessSubmission's SubmissionStateEnum-valued predicate. Mapped onto the target ontology's gov:status." .
+
+gov:expiresAt a owl:DatatypeProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:range xsd:long ;
+    rdfs:comment "AccessApproval.expiredOn, mapped onto the target ontology's gov:expiresAt -- the real field plans/rebac_governance_graph_alignment.md's first draft was wrong to call an unsourceable gap." .
+
+gov:sourceApprovalId a owl:DatatypeProperty ;
+    rdfs:domain gov:AccessApproval ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Traceability back to the literal AccessApproval.id row this record was derived from." .

@@ -212,6 +212,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - DataAccessSubmission
+    - AccessApproval
     range: string
   currentRevNum:
     name: currentRevNum
@@ -294,6 +295,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
+    - AccessApproval
     range: integer
 
 ```

@@ -3,6 +3,17 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix syn: <https://www.synapse.org/Synapse:> .
 
+gov:access-approval-9001 a gov:AccessApproval ;
+    gov:createdOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:etag "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a" ;
+    gov:expiresAt "1786736000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:heldBy gov:principal-2000001 ;
+    gov:requirementVersion 1 ;
+    gov:satisfies gov:AR-42 ;
+    gov:sourceApprovalId 55001 ;
+    gov:status gov:APPROVED ;
+    gov:submittedBy gov:principal-2000001 .
+
 gov:ar-association-001 a gov:AccessRequirementAssociation ;
     gov:accessRequirement gov:AR-42 ;
     gov:bindingType gov:Inherited ;
@@ -44,10 +55,6 @@ syn:syn2343195 a gov:SynapseEntity ;
     gov:name "NF2-related schwannomatosis RNA-seq study" ;
     gov:nodeType "project" .
 
-gov:principal-2000001 a gov:Principal,
-        gov:User ;
-    gov:principalId 2000001 .
-
 syn:syn10081783 a gov:SynapseEntity ;
     gov:createdByUserId 1000001 ;
     gov:createdOn "1755000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
@@ -57,6 +64,11 @@ syn:syn10081783 a gov:SynapseEntity ;
     gov:name "HS01_CUDC907_Run1_S2_R1_001.fastq" ;
     gov:nodeType "file" ;
     gov:parentId syn:syn2343195 .
+
+gov:principal-2000001 a gov:Principal,
+        gov:User ;
+    gov:hasApproval gov:AR-42 ;
+    gov:principalId 2000001 .
 
 gov:AR-42 a gov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.42 ;

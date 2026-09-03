@@ -157,3 +157,30 @@ gov:ConditionShape a sh:NodeShape ;
         [ sh:path gov:description ; sh:datatype xsd:string ; sh:maxCount 1 ],
         [ sh:path gov:conditionDetail ; sh:datatype xsd:string ;
             sh:description "Zero or more companion-slot values -- GovernanceMixin.rules is many-to-many, so cardinality is deliberately unconstrained. See governance_graph.yaml." ] .
+
+#################################################################
+# AccessApproval -- a real, separate Synapse object from
+# DataAccessSubmission/DataAccessSubmissionStatus (see governance_graph.yaml's
+# own class description). gov:hasApproval, re-derived from this class, is
+# validated on PrincipalShape below, same treatment as the existing
+# DataAccessSubmissionStatus-derived edge.
+#################################################################
+
+gov:AccessApprovalShape a sh:NodeShape ;
+    sh:targetClass gov:AccessApproval ;
+    sh:property
+        [ sh:path gov:satisfies ; sh:class gov:AccessRequirement ; sh:nodeKind sh:IRI ;
+            sh:minCount 1 ; sh:maxCount 1 ],
+        [ sh:path gov:requirementVersion ; sh:datatype xsd:integer ; sh:maxCount 1 ],
+        [ sh:path gov:submittedBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
+            sh:minCount 1 ; sh:maxCount 1 ;
+            sh:description "AccessApproval.submitterId, reusing DataAccessSubmission's sagegov:submittedBy predicate -- see shapes/governance_graph.owl.ttl." ],
+        [ sh:path gov:heldBy ; sh:class gov:Principal ; sh:nodeKind sh:IRI ;
+            sh:minCount 1 ; sh:maxCount 1 ],
+        [ sh:path gov:status ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
+            sh:in ( gov:APPROVED gov:REVOKED ) ;
+            sh:description "ApprovalStateEnum -- distinct from DataAccessSubmission's SubmissionStateEnum-valued gov:state, despite sharing the value gov:APPROVED." ],
+        [ sh:path gov:expiresAt ; sh:datatype xsd:long ; sh:maxCount 1 ],
+        [ sh:path gov:createdOn ; sh:datatype xsd:long ; sh:maxCount 1 ],
+        [ sh:path gov:sourceApprovalId ; sh:datatype xsd:integer ; sh:maxCount 1 ],
+        [ sh:path gov:etag ; sh:datatype xsd:string ; sh:maxCount 1 ] .

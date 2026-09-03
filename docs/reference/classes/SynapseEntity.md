@@ -356,6 +356,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - DataAccessSubmission
+    - AccessApproval
     range: string
   createdBy:
     name: createdBy
@@ -392,6 +393,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
+    - AccessApproval
     range: integer
   id:
     name: id

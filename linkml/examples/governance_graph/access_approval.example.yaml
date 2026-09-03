@@ -1,0 +1,10 @@
+id: access_approval.9001
+requirementId: access_requirement.42
+requirementVersion: 1
+submitterId: 2000001
+accessorId: 2000001
+status: APPROVED
+expiredOn: 1786736000000
+createdOn: 1755200000000
+sourceApprovalId: 55001
+etag: 2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a

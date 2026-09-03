@@ -291,6 +291,7 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | ---  | --- | --- | --- |
 | [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) | [accessRequirement](../slots/accessRequirement.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
+| [AccessApproval](../classes/AccessApproval.md) | [requirementId](../slots/requirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
 
 
 
@@ -983,6 +984,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - DataAccessSubmission
+    - AccessApproval
     range: string
   currentRevNum:
     name: currentRevNum
@@ -1065,6 +1067,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
+    - AccessApproval
     range: integer
   id:
     name: id

@@ -28,6 +28,7 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
 | [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
+| [AccessApproval](../classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -42,7 +43,7 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [DataAccessSubmission](../classes/DataAccessSubmission.md), [AccessApproval](../classes/AccessApproval.md) |
 
 ### Cardinality and Requirements
 
@@ -97,6 +98,7 @@ domain_of:
 - SynapseAccessRequirementMixin
 - SynapseEntity
 - DataAccessSubmission
+- AccessApproval
 range: string
 
 ```

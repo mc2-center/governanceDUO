@@ -334,6 +334,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - DataAccessSubmission
+    - AccessApproval
     range: string
   id:
     name: id

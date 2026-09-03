@@ -325,6 +325,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - AccessGrant
+    - AccessApproval
     range: integer
   sourceAclId:
     name: sourceAclId
