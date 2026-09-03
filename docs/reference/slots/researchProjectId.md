@@ -6,7 +6,7 @@ search:
 # Slot: researchProjectId 
 
 
-_The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID). Range is now `ResearchProject` (was a bare integer literal until that class existed -- see plans/governance_graph_open_questions.md Section C) -- emitted as an IRI reference to the real `gov:research-project-<n>` node._
+_The research project this submission/request is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID / RequestInterface.researchProjectId). Range is now `ResearchProject` (was a bare integer literal until that class existed -- see plans/governance_graph_open_questions.md Section C) -- emitted as an IRI reference to the real `gov:research-project-<n>` node. Shared predicate across DataAccessSubmission and DataAccessRequest, both of which reference the same real-world ResearchProject._
 
 
 
@@ -26,6 +26,7 @@ URI: [sagegov:researchProject](https://sagebionetworks.org/governance/researchPr
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  no  |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  no  |
 
 
 
@@ -39,7 +40,7 @@ URI: [sagegov:researchProject](https://sagebionetworks.org/governance/researchPr
 | Property | Value |
 | --- | --- |
 | Range | [ResearchProject](../classes/ResearchProject.md) |
-| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
 | Slot URI | [sagegov:researchProject](https://sagebionetworks.org/governance/researchProject) |
 
 ### Cardinality and Requirements
@@ -89,10 +90,12 @@ URI: [sagegov:researchProject](https://sagebionetworks.org/governance/researchPr
 <details>
 ```yaml
 name: researchProjectId
-description: The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
-  Range is now `ResearchProject` (was a bare integer literal until that class existed
-  -- see plans/governance_graph_open_questions.md Section C) -- emitted as an IRI
-  reference to the real `gov:research-project-<n>` node.
+description: The research project this submission/request is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID
+  / RequestInterface.researchProjectId). Range is now `ResearchProject` (was a bare
+  integer literal until that class existed -- see plans/governance_graph_open_questions.md
+  Section C) -- emitted as an IRI reference to the real `gov:research-project-<n>`
+  node. Shared predicate across DataAccessSubmission and DataAccessRequest, both of
+  which reference the same real-world ResearchProject.
 comments:
 - DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably the full
   submission form data) is not modeled as a structured field.
@@ -101,6 +104,7 @@ rank: 1000
 slot_uri: sagegov:researchProject
 domain_of:
 - DataAccessSubmission
+- DataAccessRequest
 range: ResearchProject
 
 ```

@@ -99,6 +99,7 @@ EXAMPLE_CLASSES = {
     "data_access_submission_status": "DataAccessSubmissionStatus",
     "access_approval": "AccessApproval",
     "research_project": "ResearchProject",
+    "data_access_request": "DataAccessRequest",
 }
 
 _schemaview: SchemaView | None = None
@@ -408,6 +409,40 @@ def add_research_project(g: Graph, data: dict, principal_nodes: dict):
     return subject
 
 
+def add_data_access_request(g: Graph, data: dict, principal_nodes: dict, research_project_node):
+    subject = gov_id(data["id"])
+    ar_node = GOV[data["accessRequirementId"].replace("access_requirement.", "AR-")]
+    g.add((subject, RDF.type, TYPE("DataAccessRequest")))
+    g.add((subject, PREDICATE("accessRequirementId", "DataAccessRequest"), ar_node))
+    if research_project_node is not None:
+        g.add((subject, PREDICATE("researchProjectId", "DataAccessRequest"), research_project_node))
+    site_node = site_node_for(g, data.get("institution"))
+    if site_node is not None:
+        g.add((subject, GOV.affiliatedWith, site_node))
+    for slot in (
+        "requestPrincipalInvestigatorName",
+        "requestPrincipalInvestigatorEmail",
+        "requestSigningOfficialName",
+        "requestSigningOfficialEmail",
+        "requestConcreteType",
+        "publication",
+        "summaryOfUse",
+    ):
+        if data.get(slot):
+            g.add((subject, PREDICATE(slot, "DataAccessRequest"), Literal(data[slot])))
+    if data.get("createdBy") is not None:
+        g.add((subject, PREDICATE("createdBy", "DataAccessRequest"), principal_nodes[data["createdBy"]]))
+    if data.get("createdOn") is not None:
+        g.add((subject, PREDICATE("createdOn", "DataAccessRequest"), Literal(data["createdOn"], datatype=XSD.long)))
+    if data.get("modifiedBy") is not None:
+        g.add((subject, PREDICATE("modifiedBy", "DataAccessRequest"), principal_nodes[data["modifiedBy"]]))
+    if data.get("modifiedOn") is not None:
+        g.add((subject, PREDICATE("modifiedOn", "DataAccessRequest"), Literal(data["modifiedOn"], datatype=XSD.long)))
+    if data.get("etag") is not None:
+        g.add((subject, PREDICATE("etag", "DataAccessRequest"), Literal(data["etag"])))
+    return subject
+
+
 def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("DataAccessSubmission")))
@@ -419,6 +454,11 @@ def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     # governance_graph.yaml's corrected DataAccessSubmission description.
     g.add((subject, PREDICATE("submittedBy", "DataAccessSubmission"), GOV[f"principal-{data['submittedBy']}"]))
     g.add((subject, PREDICATE("submittedOn", "DataAccessSubmission"), Literal(data["submittedOn"], datatype=XSD.long)))
+    if data.get("requestId"):
+        # Now a real gov:DataAccessRequest-<n> node (was a bare integer literal
+        # until that class existed) -- see governance_graph.yaml's requestId
+        # description and plans/governance_graph_open_questions.md Section C.1.
+        g.add((subject, PREDICATE("requestId", "DataAccessSubmission"), gov_id(data["requestId"])))
     if data.get("researchProjectId"):
         g.add((subject, PREDICATE("researchProjectId", "DataAccessSubmission"), gov_id(data["researchProjectId"])))
     if data.get("modifiedBy") is not None:
@@ -517,6 +557,10 @@ def main():
     for stem, (class_name, data) in instances.items():
         if class_name == "ResearchProject":
             research_project_node = add_research_project(g, data, principal_nodes)
+
+    for stem, (class_name, data) in instances.items():
+        if class_name == "DataAccessRequest":
+            add_data_access_request(g, data, principal_nodes, research_project_node)
 
     for stem, (class_name, data) in instances.items():
         if class_name == "AccessApproval":

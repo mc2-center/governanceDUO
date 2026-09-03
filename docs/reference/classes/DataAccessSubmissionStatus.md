@@ -217,6 +217,7 @@ attributes:
     owner: DataAccessSubmissionStatus
     domain_of:
     - DataAccessSubmissionStatus
+    - DataAccessRequest
     range: integer
 
 ```

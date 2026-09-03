@@ -405,22 +405,83 @@ classes:
   Site:
     class_uri: sagegov:Site
     description: >-
-      An institution real Synapse data associates with a ResearchProject or
-      User-type Principal. Synapse never gives a stable Site id, only a
-      free-text institution/company name string (ResearchProject.institution /
-      UserProfile.company -- both real fields hold the same shape), so
+      An institution real Synapse data associates with a ResearchProject,
+      DataAccessRequest, or User-type Principal. Synapse never gives a stable
+      Site id, only a free-text institution/company name string
+      (ResearchProject.institution / DataAccessRequest.institution /
+      UserProfile.company -- all three real fields hold the same shape), so
       gov:Site nodes are minted deterministically by slugifying that name
       (see site_node_for() in build_governance_graph.py) -- the same "derive
       a stable node from real but non-id-shaped data" pattern
       add_principal() already uses for bare integer ids. Not `is_a:
       BaseEntity` for the same reason. gov:affiliatedWith (from
-      ResearchProject/Principal to this class) is a derived convenience
-      triple with no governance_graph.yaml slot backing it, same as
-      gov:hasACL/gov:hasAccessRequirement/gov:hasCondition -- it's never
+      ResearchProject/DataAccessRequest/Principal to this class) is a derived
+      convenience triple with no governance_graph.yaml slot backing it, same
+      as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition -- it's never
       present in any source data, only computed by the script. See
       plans/governance_graph_open_questions.md Section C.
     slots:
       - institution
+  DataAccessRequest:
+    is_a: BaseEntity
+    class_uri: sagegov:DataAccessRequest
+    description: >-
+      A user's draft/submitted request against an AccessRequirement, behind a
+      DataAccessSubmission. Mirrors Synapse's real RequestInterface/Request/
+      Renewal REST objects (org.sagebionetworks.repo.model.dataaccess),
+      verified against the OpenAPI spec directly -- rest-docs.synapse.org's
+      page for this object 403'd, so the spec was the only source (see
+      plans/governance_graph_open_questions.md Section C.1). Field names
+      deliberately differ from DataAccessSubmission's (corrected) ones:
+      RequestInterface genuinely uses createdBy/createdOn/modifiedBy/
+      modifiedOn, not submittedBy/submittedOn -- these are two different real
+      Synapse objects, not the same field-naming convention applied twice.
+
+      `principalInvestigator`/`signingOfficial` are real nested sub-objects in
+      the live API (userId/name/institutionalEmail and
+      name/institutionalEmail respectively), flattened here into literal
+      slots rather than given their own nested classes: neither has an
+      independent identifier of its own, and nothing else in this graph needs
+      to reference them individually. `signingOfficial` in particular is a
+      plausible seed for richer Site-level-authority modeling later, noted as
+      future work rather than built now that Principal.company/
+      gov:affiliatedWith covers the more general per-Principal case with real
+      data already.
+    slot_usage:
+      id:
+        description: >-
+          A unique identifier for this request (schematic-schema-style dotted
+          string wrapping Synapse's own string RequestInterface.id, same id
+          convention as DataAccessSubmission/ResearchProject).
+        pattern: '^data_access_request\.\d+$'
+        examples:
+          - value: data_access_request.7001
+      createdBy:
+        slot_uri: sagegov:createdBy
+        comments:
+          - 'Reuses ResearchProject''s sagegov:createdBy predicate -- both are
+            the "who authored this record" concept, emitted as an IRI
+            reference to a sagegov:Principal node.'
+      createdOn:
+        slot_uri: sagegov:createdOn
+      etag:
+        slot_uri: sagegov:etag
+    slots:
+      - accessRequirementId
+      - researchProjectId
+      - institution
+      - requestPrincipalInvestigatorName
+      - requestPrincipalInvestigatorEmail
+      - requestSigningOfficialName
+      - requestSigningOfficialEmail
+      - createdBy
+      - createdOn
+      - modifiedBy
+      - modifiedOn
+      - etag
+      - requestConcreteType
+      - publication
+      - summaryOfUse
 slots:
   nodeType:
     slot_uri: sagegov:nodeType
@@ -525,19 +586,26 @@ slots:
   requestId:
     slot_uri: sagegov:requestId
     description: >-
-      The originating data access request id. Synapse's live API names this
+      The originating data access request. Synapse's live API names this
       field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`),
       not `dataAccessRequestId`; the underlying DB column is
-      DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
-    range: integer
+      DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID. Range is now
+      `DataAccessRequest` (was a bare integer literal until that class
+      existed -- see plans/governance_graph_open_questions.md Section C.1) --
+      emitted as an IRI reference to the real `gov:DataAccessRequest-<n>`
+      node.
+    range: DataAccessRequest
   researchProjectId:
     slot_uri: sagegov:researchProject
     description: >-
-      The research project this submission is associated with
-      (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID). Range is now
-      `ResearchProject` (was a bare integer literal until that class existed
-      -- see plans/governance_graph_open_questions.md Section C) -- emitted
-      as an IRI reference to the real `gov:research-project-<n>` node.
+      The research project this submission/request is associated with
+      (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID /
+      RequestInterface.researchProjectId). Range is now `ResearchProject`
+      (was a bare integer literal until that class existed -- see
+      plans/governance_graph_open_questions.md Section C) -- emitted as an
+      IRI reference to the real `gov:research-project-<n>` node. Shared
+      predicate across DataAccessSubmission and DataAccessRequest, both of
+      which reference the same real-world ResearchProject.
     range: ResearchProject
     comments:
       - 'DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably
@@ -721,3 +789,41 @@ slots:
     description: >-
       A few short paragraphs explaining how the controlled data will be used
       (ResearchProject.intendedDataUseStatement).
+  requestPrincipalInvestigatorName:
+    slot_uri: sagegov:requestPrincipalInvestigatorName
+    description: >-
+      Flattened from the live API's nested principalInvestigator.name
+      (org.sagebionetworks.repo.model.dataaccess.PrincipalInvestigator) -- see
+      DataAccessRequest's own class description for why this is flattened
+      rather than given a nested class.
+  requestPrincipalInvestigatorEmail:
+    slot_uri: sagegov:requestPrincipalInvestigatorEmail
+    description: Flattened from the live API's nested principalInvestigator.institutionalEmail.
+  requestSigningOfficialName:
+    slot_uri: sagegov:requestSigningOfficialName
+    description: >-
+      Flattened from the live API's nested signingOfficial.name
+      (org.sagebionetworks.repo.model.dataaccess.SigningOfficial).
+  requestSigningOfficialEmail:
+    slot_uri: sagegov:requestSigningOfficialEmail
+    description: Flattened from the live API's nested signingOfficial.institutionalEmail.
+  requestConcreteType:
+    slot_uri: sagegov:requestConcreteType
+    description: >-
+      Which kind of request this is -- literally "Request" or "Renewal"
+      (RequestInterface.concreteType in Synapse's live REST API). Deliberately
+      not named/typed the same as AccessRequirement's own concreteType slot
+      (mixins.yaml, range AccessRequirementConcreteTypeEnum) -- these are two
+      unrelated real Synapse concreteType fields on two different objects.
+  publication:
+    slot_uri: sagegov:publication
+    description: >-
+      Link(s) to publications that used the controlled data
+      (Renewal.publication in Synapse's live REST API). Only present on
+      renewal instances (requestConcreteType == "Renewal").
+  summaryOfUse:
+    slot_uri: sagegov:summaryOfUse
+    description: >-
+      Summary of how the data has been used (Renewal.summaryOfUse in
+      Synapse's live REST API). Only present on renewal instances
+      (requestConcreteType == "Renewal").

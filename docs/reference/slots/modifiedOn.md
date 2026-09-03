@@ -26,6 +26,7 @@ URI: [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |  no  |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  no  |
 
 
 
@@ -39,7 +40,7 @@ URI: [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn)
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
 | Slot URI | [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn) |
 
 ### Cardinality and Requirements
@@ -98,6 +99,7 @@ rank: 1000
 slot_uri: sagegov:modifiedOn
 domain_of:
 - DataAccessSubmissionStatus
+- DataAccessRequest
 range: integer
 
 ```

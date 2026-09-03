@@ -6,7 +6,7 @@ search:
 # Class: Site 
 
 
-_An institution real Synapse data associates with a ResearchProject or User-type Principal. Synapse never gives a stable Site id, only a free-text institution/company name string (ResearchProject.institution / UserProfile.company -- both real fields hold the same shape), so gov:Site nodes are minted deterministically by slugifying that name (see site_node_for() in build_governance_graph.py) -- the same "derive a stable node from real but non-id-shaped data" pattern add_principal() already uses for bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith (from ResearchProject/Principal to this class) is a derived convenience triple with no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition -- it's never present in any source data, only computed by the script. See plans/governance_graph_open_questions.md Section C._
+_An institution real Synapse data associates with a ResearchProject, DataAccessRequest, or User-type Principal. Synapse never gives a stable Site id, only a free-text institution/company name string (ResearchProject.institution / DataAccessRequest.institution / UserProfile.company -- all three real fields hold the same shape), so gov:Site nodes are minted deterministically by slugifying that name (see site_node_for() in build_governance_graph.py) -- the same "derive a stable node from real but non-id-shaped data" pattern add_principal() already uses for bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith (from ResearchProject/DataAccessRequest/Principal to this class) is a derived convenience triple with no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition -- it's never present in any source data, only computed by the script. See plans/governance_graph_open_questions.md Section C._
 
 
 
@@ -96,15 +96,16 @@ URI: [sagegov:Site](https://sagebionetworks.org/governance/Site)
 <details>
 ```yaml
 name: Site
-description: 'An institution real Synapse data associates with a ResearchProject or
-  User-type Principal. Synapse never gives a stable Site id, only a free-text institution/company
-  name string (ResearchProject.institution / UserProfile.company -- both real fields
-  hold the same shape), so gov:Site nodes are minted deterministically by slugifying
-  that name (see site_node_for() in build_governance_graph.py) -- the same "derive
-  a stable node from real but non-id-shaped data" pattern add_principal() already
-  uses for bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith
-  (from ResearchProject/Principal to this class) is a derived convenience triple with
-  no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition
+description: 'An institution real Synapse data associates with a ResearchProject,
+  DataAccessRequest, or User-type Principal. Synapse never gives a stable Site id,
+  only a free-text institution/company name string (ResearchProject.institution /
+  DataAccessRequest.institution / UserProfile.company -- all three real fields hold
+  the same shape), so gov:Site nodes are minted deterministically by slugifying that
+  name (see site_node_for() in build_governance_graph.py) -- the same "derive a stable
+  node from real but non-id-shaped data" pattern add_principal() already uses for
+  bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith
+  (from ResearchProject/DataAccessRequest/Principal to this class) is a derived convenience
+  triple with no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition
   -- it''s never present in any source data, only computed by the script. See plans/governance_graph_open_questions.md
   Section C.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
@@ -120,15 +121,16 @@ class_uri: sagegov:Site
 <details>
 ```yaml
 name: Site
-description: 'An institution real Synapse data associates with a ResearchProject or
-  User-type Principal. Synapse never gives a stable Site id, only a free-text institution/company
-  name string (ResearchProject.institution / UserProfile.company -- both real fields
-  hold the same shape), so gov:Site nodes are minted deterministically by slugifying
-  that name (see site_node_for() in build_governance_graph.py) -- the same "derive
-  a stable node from real but non-id-shaped data" pattern add_principal() already
-  uses for bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith
-  (from ResearchProject/Principal to this class) is a derived convenience triple with
-  no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition
+description: 'An institution real Synapse data associates with a ResearchProject,
+  DataAccessRequest, or User-type Principal. Synapse never gives a stable Site id,
+  only a free-text institution/company name string (ResearchProject.institution /
+  DataAccessRequest.institution / UserProfile.company -- all three real fields hold
+  the same shape), so gov:Site nodes are minted deterministically by slugifying that
+  name (see site_node_for() in build_governance_graph.py) -- the same "derive a stable
+  node from real but non-id-shaped data" pattern add_principal() already uses for
+  bare integer ids. Not `is_a: BaseEntity` for the same reason. gov:affiliatedWith
+  (from ResearchProject/DataAccessRequest/Principal to this class) is a derived convenience
+  triple with no governance_graph.yaml slot backing it, same as gov:hasACL/gov:hasAccessRequirement/gov:hasCondition
   -- it''s never present in any source data, only computed by the script. See plans/governance_graph_open_questions.md
   Section C.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
@@ -147,6 +149,7 @@ attributes:
     domain_of:
     - ResearchProject
     - Site
+    - DataAccessRequest
     range: string
 class_uri: sagegov:Site
 

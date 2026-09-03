@@ -50,6 +50,15 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
         
       DataAccessSubmission : requestId
         
+          
+    
+        
+        
+        DataAccessSubmission --> "0..1" DataAccessRequest : requestId
+        click DataAccessRequest href "../../classes/DataAccessRequest/"
+    
+
+        
       DataAccessSubmission : researchProjectId
         
           
@@ -90,8 +99,8 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 | ---  | --- | --- | --- |
 | [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
 | [accessRequirementVersion](../slots/accessRequirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this submission was made against (DATA_A... | direct |
-| [requestId](../slots/requestId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The originating data access request id | direct |
-| [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [ResearchProject](../classes/ResearchProject.md) | The research project this submission is associated with (DATA_ACCESS_SUBMISSI... | direct |
+| [requestId](../slots/requestId.md) | 0..1 <br/> [DataAccessRequest](../classes/DataAccessRequest.md) | The originating data access request | direct |
+| [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [ResearchProject](../classes/ResearchProject.md) | The research project this submission/request is associated with (DATA_ACCESS_... | direct |
 | [submittedBy](../slots/submittedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who submitted this record (`Submission | direct |
 | [submittedOn](../slots/submittedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was submitted (epoch milliseconds; `Submission | direct |
 | [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this record | direct |
@@ -150,7 +159,7 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 id: data_access_submission.555
 accessRequirementId: access_requirement.42
 accessRequirementVersion: 1
-requestId: 7001
+requestId: data_access_request.7001
 researchProjectId: research_project.8001
 submittedBy: 2000001
 submittedOn: 1755200000000
@@ -255,6 +264,7 @@ attributes:
     domain_of:
     - DataAccessSubmission
     - ResearchProject
+    - DataAccessRequest
     range: AccessRequirement
     required: true
   accessRequirementVersion:
@@ -269,22 +279,27 @@ attributes:
     range: integer
   requestId:
     name: requestId
-    description: The originating data access request id. Synapse's live API names
-      this field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`),
+    description: The originating data access request. Synapse's live API names this
+      field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`),
       not `dataAccessRequestId`; the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
+      Range is now `DataAccessRequest` (was a bare integer literal until that class
+      existed -- see plans/governance_graph_open_questions.md Section C.1) -- emitted
+      as an IRI reference to the real `gov:DataAccessRequest-<n>` node.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:requestId
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
-    range: integer
+    range: DataAccessRequest
   researchProjectId:
     name: researchProjectId
-    description: The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
-      Range is now `ResearchProject` (was a bare integer literal until that class
-      existed -- see plans/governance_graph_open_questions.md Section C) -- emitted
-      as an IRI reference to the real `gov:research-project-<n>` node.
+    description: The research project this submission/request is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID
+      / RequestInterface.researchProjectId). Range is now `ResearchProject` (was a
+      bare integer literal until that class existed -- see plans/governance_graph_open_questions.md
+      Section C) -- emitted as an IRI reference to the real `gov:research-project-<n>`
+      node. Shared predicate across DataAccessSubmission and DataAccessRequest, both
+      of which reference the same real-world ResearchProject.
     comments:
     - DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably the
       full submission form data) is not modeled as a structured field.
@@ -294,6 +309,7 @@ attributes:
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
+    - DataAccessRequest
     range: ResearchProject
   submittedBy:
     name: submittedBy
@@ -334,6 +350,7 @@ attributes:
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
+    - DataAccessRequest
     range: integer
   etag:
     name: etag
@@ -351,6 +368,7 @@ attributes:
     - DataAccessSubmission
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: string
   id:
     name: id

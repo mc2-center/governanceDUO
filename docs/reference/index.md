@@ -18,6 +18,7 @@ Name: governance_duo
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessGrant](classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirementAssociation](classes/AccessRequirementAssociation.md) | Binds an AccessRequirement to a resource, recording whether the binding is di... |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DataAccessRequest](classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DataAccessSubmission](classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ResearchProject](classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Resource](classes/Resource.md) | Information that is relevant to resource access conditions |
@@ -36,7 +37,7 @@ Name: governance_duo
 | [PolicyFabricMixin](classes/PolicyFabricMixin.md) | Fields needed to deploy an AccessRequirement's governed entities into Policy ... |
 | [Principal](classes/Principal.md) | A Synapse user or team being granted access via an ACL |
 | [ReferenceValueSource](classes/ReferenceValueSource.md) | One (referenceValueKey -> governanceDUO slot) mapping |
-| [Site](classes/Site.md) | An institution real Synapse data associates with a ResearchProject or User-ty... |
+| [Site](classes/Site.md) | An institution real Synapse data associates with a ResearchProject, DataAcces... |
 | [SynapseAccessRequirementMixin](classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |
 
 
@@ -124,20 +125,26 @@ Name: governance_duo
 | [principalType](slots/principalType.md) |  |
 | [prohibitedPurposes](slots/prohibitedPurposes.md) | Research purpose term(s) for which use is explicitly disallowed |
 | [projectLead](slots/projectLead.md) | The person leading this research project (ResearchProject |
+| [publication](slots/publication.md) | Link(s) to publications that used the controlled data (Renewal |
 | [publicationMoratorium](slots/publicationMoratorium.md) | End date of the publication moratorium associated with the access requirement |
 | [referenceValueKey](slots/referenceValueKey.md) | One of the containing binding's referenceValueKeys, e |
 | [referenceValueKeys](slots/referenceValueKeys.md) | The policy_data_schema |
 | [referenceValueSources](slots/referenceValueSources.md) |  |
 | [registeredSchemaUrl](slots/registeredSchemaUrl.md) | URL associated with the annotation schema that will be applied to the resourc... |
 | [rejectedReason](slots/rejectedReason.md) | The reason this submission was rejected, if it was |
-| [requestId](slots/requestId.md) | The originating data access request id |
+| [requestConcreteType](slots/requestConcreteType.md) | Which kind of request this is -- literally "Request" or "Renewal" (RequestInt... |
+| [requestId](slots/requestId.md) | The originating data access request |
+| [requestPrincipalInvestigatorEmail](slots/requestPrincipalInvestigatorEmail.md) | Flattened from the live API's nested principalInvestigator |
+| [requestPrincipalInvestigatorName](slots/requestPrincipalInvestigatorName.md) | Flattened from the live API's nested principalInvestigator |
+| [requestSigningOfficialEmail](slots/requestSigningOfficialEmail.md) | Flattened from the live API's nested signingOfficial |
+| [requestSigningOfficialName](slots/requestSigningOfficialName.md) | Flattened from the live API's nested signingOfficial |
 | [requiredAgreementDocumentId](slots/requiredAgreementDocumentId.md) | DID of the terms/agreement document the requester must accept before this acc... |
 | [requiredClaims](slots/requiredClaims.md) | Dot-path claim name(s) this policy_card's Rego logic actually reads, e |
 | [requiredCredentials](slots/requiredCredentials.md) |  |
 | [requiredProfileStatuses](slots/requiredProfileStatuses.md) | Profile status value(s) a requester's account must have (checked against User... |
 | [requirementId](slots/requirementId.md) | The AccessRequirement this approval satisfies (AccessApproval |
 | [requirementVersion](slots/requirementVersion.md) | The version of the AccessRequirement this approval satisfies (AccessApproval |
-| [researchProjectId](slots/researchProjectId.md) | The research project this submission is associated with (DATA_ACCESS_SUBMISSI... |
+| [researchProjectId](slots/researchProjectId.md) | The research project this submission/request is associated with (DATA_ACCESS_... |
 | [researchSpecificRestrictions](slots/researchSpecificRestrictions.md) | Research-specific restrictions associated with the access requirement |
 | [resource](slots/resource.md) | The SynapseEntity this grant/association applies to |
 | [ResourceKey](slots/ResourceKey.md) | The identifier(s) for the Resource(s) associated with this schema |
@@ -172,6 +179,7 @@ Name: governance_duo
 | [submittedBy](slots/submittedBy.md) | Synapse numeric user id of who submitted this record (`Submission |
 | [submittedOn](slots/submittedOn.md) | When this record was submitted (epoch milliseconds; `Submission |
 | [submitterId](slots/submitterId.md) | Synapse numeric user id of who performed the actions to gain this approval (A... |
+| [summaryOfUse](slots/summaryOfUse.md) | Summary of how the data has been used (Renewal |
 | [supportedAuthTypes](slots/supportedAuthTypes.md) | Mirrors DRS's Authorizations |
 | [synapseId](slots/synapseId.md) | A Synapse entity id |
 | [timeLimitOnUse](slots/timeLimitOnUse.md) | Time limit on the use of the data associated with the access requirement |

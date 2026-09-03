@@ -327,6 +327,7 @@ attributes:
     - AccessGrant
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: integer
   sourceAclId:
     name: sourceAclId

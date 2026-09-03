@@ -6,7 +6,7 @@ search:
 # Slot: requestId 
 
 
-_The originating data access request id. Synapse's live API names this field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`), not `dataAccessRequestId`; the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID._
+_The originating data access request. Synapse's live API names this field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`), not `dataAccessRequestId`; the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID. Range is now `DataAccessRequest` (was a bare integer literal until that class existed -- see plans/governance_graph_open_questions.md Section C.1) -- emitted as an IRI reference to the real `gov:DataAccessRequest-<n>` node._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:requestId](https://sagebionetworks.org/governance/requestId)
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
+| Range | [DataAccessRequest](../classes/DataAccessRequest.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
 | Slot URI | [sagegov:requestId](https://sagebionetworks.org/governance/requestId) |
 
@@ -85,15 +85,18 @@ URI: [sagegov:requestId](https://sagebionetworks.org/governance/requestId)
 <details>
 ```yaml
 name: requestId
-description: The originating data access request id. Synapse's live API names this
-  field `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`), not
-  `dataAccessRequestId`; the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
+description: The originating data access request. Synapse's live API names this field
+  `requestId` (`org.sagebionetworks.repo.model.dataaccess.Submission`), not `dataAccessRequestId`;
+  the underlying DB column is DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID. Range
+  is now `DataAccessRequest` (was a bare integer literal until that class existed
+  -- see plans/governance_graph_open_questions.md Section C.1) -- emitted as an IRI
+  reference to the real `gov:DataAccessRequest-<n>` node.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:requestId
 domain_of:
 - DataAccessSubmission
-range: integer
+range: DataAccessRequest
 
 ```
 </details></div>

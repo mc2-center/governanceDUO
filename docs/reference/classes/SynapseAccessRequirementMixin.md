@@ -214,6 +214,7 @@ attributes:
     - DataAccessSubmission
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: string
   currentRevNum:
     name: currentRevNum
@@ -282,6 +283,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - ResearchProject
+    - DataAccessRequest
     range: integer
   createdOn:
     name: createdOn
@@ -299,6 +301,7 @@ attributes:
     - AccessGrant
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: integer
 
 ```

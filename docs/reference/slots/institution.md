@@ -26,7 +26,8 @@ URI: [sagegov:institution](https://sagebionetworks.org/governance/institution)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  no  |
-| [Site](../classes/Site.md) | An institution real Synapse data associates with a ResearchProject or User-ty... |  no  |
+| [Site](../classes/Site.md) | An institution real Synapse data associates with a ResearchProject, DataAcces... |  no  |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  no  |
 
 
 
@@ -40,7 +41,7 @@ URI: [sagegov:institution](https://sagebionetworks.org/governance/institution)
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [ResearchProject](../classes/ResearchProject.md), [Site](../classes/Site.md) |
+| Domain Of | [ResearchProject](../classes/ResearchProject.md), [Site](../classes/Site.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
 | Slot URI | [sagegov:institution](https://sagebionetworks.org/governance/institution) |
 
 ### Cardinality and Requirements
@@ -97,6 +98,7 @@ slot_uri: sagegov:institution
 domain_of:
 - ResearchProject
 - Site
+- DataAccessRequest
 range: string
 
 ```

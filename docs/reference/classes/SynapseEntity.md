@@ -358,6 +358,7 @@ attributes:
     - DataAccessSubmission
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: string
   createdBy:
     name: createdBy
@@ -379,6 +380,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - ResearchProject
+    - DataAccessRequest
     range: integer
   createdOn:
     name: createdOn
@@ -397,6 +399,7 @@ attributes:
     - AccessGrant
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: integer
   id:
     name: id

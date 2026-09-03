@@ -1,0 +1,14 @@
+id: data_access_request.7001
+accessRequirementId: access_requirement.42
+researchProjectId: research_project.8001
+institution: Mount Sinai
+requestPrincipalInvestigatorName: Jane Doe
+requestPrincipalInvestigatorEmail: jane.doe@mountsinai.org
+requestSigningOfficialName: John Smith
+requestSigningOfficialEmail: john.smith@mountsinai.org
+createdBy: 2000001
+createdOn: 1755140000000
+modifiedBy: 2000001
+modifiedOn: 1755150000000
+etag: 5d6e7f8a-9b0c-4d2e-9f3a-4b5c6d7e8f9a
+requestConcreteType: Request

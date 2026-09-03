@@ -71,7 +71,10 @@ gov:ResearchProject a owl:Class ;
     rdfs:comment "Mirrors governanceduo:ResearchProject. Replaces the bare researchProjectId FK integer literal DataAccessSubmission/DataAccessRequest previously carried with a real node + edge." .
 
 gov:Site a owl:Class ;
-    rdfs:comment "An institution real Synapse data associates with a ResearchProject or User-type Principal -- minted deterministically by slugifying a free-text institution/company name string (no stable Site id exists anywhere in Synapse's schema). See scripts/build_governance_graph.py's site_node_for()." .
+    rdfs:comment "An institution real Synapse data associates with a ResearchProject, DataAccessRequest, or User-type Principal -- minted deterministically by slugifying a free-text institution/company name string (no stable Site id exists anywhere in Synapse's schema). See scripts/build_governance_graph.py's site_node_for()." .
+
+gov:DataAccessRequest a owl:Class ;
+    rdfs:comment "Mirrors governanceduo:DataAccessRequest (Synapse's real RequestInterface/Request/Renewal REST objects). Field names deliberately differ from DataAccessSubmission's: this object genuinely uses createdBy/createdOn/modifiedBy/modifiedOn, not submittedBy/submittedOn." .
 
 gov:Principal a owl:Class ;
     rdfs:comment "Mirrors governanceduo:Principal. Individuals are typed gov:Principal explicitly, plus gov:Team or gov:User (see below) matching the design doc's own worked examples." .
@@ -274,7 +277,44 @@ gov:createdBy a owl:ObjectProperty ;
     rdfs:range gov:Principal ;
     rdfs:comment "Who authored this record, as an IRI reference to a gov:Principal node. Used by ResearchProject and DataAccessRequest -- distinct from gov:submittedBy (the workflow-submission-action concept, used by DataAccessSubmission/AccessApproval) and gov:createdByUserId (a raw literal id, used by SynapseEntity)." .
 
-gov:researchProject a owl:ObjectProperty ;
+gov:requestId a owl:ObjectProperty ;
     rdfs:domain gov:DataAccessSubmission ;
+    rdfs:range gov:DataAccessRequest ;
+    rdfs:comment "Now a real gov:DataAccessRequest node (was a bare integer literal until that class existed) -- see plans/governance_graph_open_questions.md Section C.1." .
+
+gov:researchProject a owl:ObjectProperty ;
     rdfs:range gov:ResearchProject ;
-    rdfs:comment "DataAccessSubmission.researchProjectId -- now a real node (was a bare integer literal until ResearchProject existed)." .
+    rdfs:comment "Shared predicate for DataAccessSubmission.researchProjectId and DataAccessRequest.researchProjectId -- both real fields reference the same real-world ResearchProject. Now a real node (was a bare integer literal)." .
+
+gov:requestPrincipalInvestigatorName a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Flattened from the live API's nested principalInvestigator.name -- see governance_graph.yaml's DataAccessRequest description for why this is flattened rather than given a nested class." .
+
+gov:requestPrincipalInvestigatorEmail a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string .
+
+gov:requestSigningOfficialName a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Flattened from the live API's nested signingOfficial.name." .
+
+gov:requestSigningOfficialEmail a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string .
+
+gov:requestConcreteType a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string ;
+    rdfs:comment "\"Request\" or \"Renewal\" -- deliberately not the same property as gov:concreteType would be (AccessRequirement's own concreteType has a completely different real Synapse meaning/enum)." .
+
+gov:publication a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Only present on renewal instances (requestConcreteType == \"Renewal\")." .
+
+gov:summaryOfUse a owl:DatatypeProperty ;
+    rdfs:domain gov:DataAccessRequest ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Only present on renewal instances (requestConcreteType == \"Renewal\")." .

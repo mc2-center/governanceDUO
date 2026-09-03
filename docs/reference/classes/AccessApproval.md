@@ -331,6 +331,7 @@ attributes:
     - AccessGrant
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: integer
   sourceApprovalId:
     name: sourceApprovalId
@@ -359,6 +360,7 @@ attributes:
     - DataAccessSubmission
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: string
   id:
     name: id

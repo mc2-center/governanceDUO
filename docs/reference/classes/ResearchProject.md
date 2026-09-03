@@ -93,6 +93,7 @@ URI: [sagegov:ResearchProject](https://sagebionetworks.org/governance/ResearchPr
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | [researchProjectId](../slots/researchProjectId.md) | range | [ResearchProject](../classes/ResearchProject.md) |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | [researchProjectId](../slots/researchProjectId.md) | range | [ResearchProject](../classes/ResearchProject.md) |
 
 
 
@@ -238,6 +239,7 @@ attributes:
     domain_of:
     - DataAccessSubmission
     - ResearchProject
+    - DataAccessRequest
     range: AccessRequirement
     required: true
   institution:
@@ -254,6 +256,7 @@ attributes:
     domain_of:
     - ResearchProject
     - Site
+    - DataAccessRequest
     range: string
   projectLead:
     name: projectLead
@@ -297,6 +300,7 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - ResearchProject
+    - DataAccessRequest
     range: integer
   createdOn:
     name: createdOn
@@ -315,6 +319,7 @@ attributes:
     - AccessGrant
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: integer
   etag:
     name: etag
@@ -332,6 +337,7 @@ attributes:
     - DataAccessSubmission
     - AccessApproval
     - ResearchProject
+    - DataAccessRequest
     range: string
   id:
     name: id
