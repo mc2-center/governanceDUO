@@ -1,0 +1,9 @@
+# Illustrative structural example -- no real Synapse/repo data source exists
+# for AR-template reuse itself. Its hasCondition edges are wired in by
+# build_governance_graph.py directly from the real Condition data already
+# minted from access_requirement.42's dataUseModifiers (see
+# add_access_requirement() / add_access_requirement_template()), not
+# independently authored here. See
+# plans/governance_graph_open_questions.md Section C.2.
+id: access_requirement_template.ar-genomics
+domain: genomics

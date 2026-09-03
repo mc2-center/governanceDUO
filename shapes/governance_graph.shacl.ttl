@@ -220,7 +220,9 @@ gov:ResearchProjectShape a sh:NodeShape ;
 gov:SiteShape a sh:NodeShape ;
     sh:targetClass gov:Site ;
     sh:property
-        [ sh:path gov:institution ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+        [ sh:path gov:institution ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ],
+        [ sh:path gov:participatesIn ; sh:class gov:Program ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
+            sh:description "Illustrative-only -- see gov:Program's own description." ] .
 
 #################################################################
 # DataAccessRequest
@@ -246,3 +248,35 @@ gov:DataAccessRequestShape a sh:NodeShape ;
             sh:in ( "Request" "Renewal" ) ],
         [ sh:path gov:publication ; sh:datatype xsd:string ; sh:maxCount 1 ],
         [ sh:path gov:summaryOfUse ; sh:datatype xsd:string ; sh:maxCount 1 ] .
+
+#################################################################
+# AccessRequirementTemplate / IRBRequirement / Program -- the target-ontology
+# direction confirmed by the user (see
+# plans/governance_graph_open_questions.md Section C.2). Program and the
+# Program/Site-reuse pairing are illustrative-only; AccessRequirementTemplate
+# and IRBRequirement's studyId/hasCondition are real integration points.
+#################################################################
+
+gov:AccessRequirementTemplateShape a sh:NodeShape ;
+    sh:targetClass gov:AccessRequirementTemplate ;
+    sh:property
+        [ sh:path gov:domain ; sh:datatype xsd:string ; sh:maxCount 1 ],
+        [ sh:path gov:hasCondition ; sh:class gov:Condition ; sh:nodeKind sh:IRI ;
+            sh:description "Reuses the real gov:Condition individuals add_access_requirement() already mints -- see governance_graph.yaml." ] .
+
+gov:IRBRequirementShape a sh:NodeShape ;
+    sh:targetClass gov:IRBRequirement ;
+    sh:property
+        [ sh:path owl:sameAs ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
+            sh:description "Identity bridge to the corresponding real governanceduo:Study individual." ],
+        [ sh:path gov:extendsTemplate ; sh:class gov:AccessRequirementTemplate ; sh:nodeKind sh:IRI ; sh:maxCount 1 ],
+        [ sh:path gov:arType ; sh:datatype xsd:string ; sh:maxCount 1 ],
+        [ sh:path gov:language ; sh:datatype xsd:string ; sh:maxCount 1 ],
+        [ sh:path gov:scopedToProgram ; sh:class gov:Program ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
+            sh:description "Illustrative-only -- see gov:Program's own description." ],
+        [ sh:path gov:scopedToSite ; sh:class gov:Site ; sh:nodeKind sh:IRI ; sh:maxCount 1 ] .
+
+gov:ProgramShape a sh:NodeShape ;
+    sh:targetClass gov:Program ;
+    sh:property
+        [ sh:path gov:name ; sh:datatype xsd:string ; sh:maxCount 1 ] .

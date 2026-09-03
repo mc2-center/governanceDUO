@@ -18,8 +18,11 @@ Name: governance_duo
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessGrant](classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirementAssociation](classes/AccessRequirementAssociation.md) | Binds an AccessRequirement to a resource, recording whether the binding is di... |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirementTemplate](classes/AccessRequirementTemplate.md) | A reusable set of DUO-backed Conditions an IRBRequirement can extend |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DataAccessRequest](classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DataAccessSubmission](classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[IRBRequirement](classes/IRBRequirement.md) | A site/program-specific instantiation of an AccessRequirementTemplate, per th... |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Program](classes/Program.md) | A multi-site research consortium (e |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ResearchProject](classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Resource](classes/Resource.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Schema](classes/Schema.md) | Information that is relevant to resource access conditions |
@@ -60,6 +63,7 @@ Name: governance_duo
 | [allowedPurposes](slots/allowedPurposes.md) | Research purpose term(s) for which use is allowed |
 | [approvedProjects](slots/approvedProjects.md) | DID(s) of project(s) approved to use the data under this access requirement |
 | [approvedUsers](slots/approvedUsers.md) | Identifier(s) of specifically approved users |
+| [arType](slots/arType.md) | Free-text access requirement type, e |
 | [assetBindings](slots/assetBindings.md) | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id i... |
 | [assetDid](slots/assetDid.md) | The Policy Fabric Asset-registry DID for synapseId |
 | [attribution](slots/attribution.md) | The attribution statement for the data associated with the access requirement |
@@ -86,18 +90,21 @@ Name: governance_duo
 | [deidentificationType](slots/deidentificationType.md) | The type of de-identification applied to the data associated with the access ... |
 | [description](slots/description.md) | Human-readable description of this condition, taken directly from DataUseModi... |
 | [diseaseSpecificResearch](slots/diseaseSpecificResearch.md) | The type(s) of disease research allowed by this access requirement |
+| [domain](slots/domain.md) | Free-text research domain this template applies to, e |
 | [drsId](slots/drsId.md) | The DRS DrsObject |
 | [drsSelfUri](slots/drsSelfUri.md) | The DRS DrsObject |
 | [duoCode](slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
 | [entityIdList](slots/entityIdList.md) | Synapse ID(s) for Synapse container(s) (e |
 | [etag](slots/etag.md) | Entity tag for optimistic concurrency control (a 36-character UUID) |
 | [expiredOn](slots/expiredOn.md) | When this approval will expire (epoch milliseconds; AccessApproval |
+| [extendsTemplate](slots/extendsTemplate.md) | The AccessRequirementTemplate this IRBRequirement extends |
 | [geographicalRestriction](slots/geographicalRestriction.md) | The specific geographic region(s) to which use is limited by the access requi... |
 | [grantAnnotationKey](slots/grantAnnotationKey.md) | The annotation key applied to a Synapse entity that contains a grant identifi... |
 | [grantAnnotationValue](slots/grantAnnotationValue.md) | The value that will be assigned to the key provided under grantAnnotationKey |
 | [grantNumber](slots/grantNumber.md) | The identifier associated with the award funding this study |
 | [guardianDataSource](slots/guardianDataSource.md) | The data path/source configured for this asset's Guardian |
 | [guardianUrl](slots/guardianUrl.md) | The deployed Guardian service URL for this asset |
+| [hasCondition](slots/hasCondition.md) | The DUO-backed Conditions this template reuses -- the same gov:Condition clas... |
 | [id](slots/id.md) | A unique identifier for this record |
 | [institution](slots/institution.md) | Institution/company name, verbatim from Synapse (ResearchProject |
 | [institutionDids](slots/institutionDids.md) | Institutions with specific restrictions associated with the access requiremen... |
@@ -105,6 +112,7 @@ Name: governance_duo
 | [intendedDataUseStatement](slots/intendedDataUseStatement.md) | A few short paragraphs explaining how the controlled data will be used (Resea... |
 | [isTwoFaRequired](slots/isTwoFaRequired.md) | Whether two-factor authentication is required (ACCESS_REQUIREMENT |
 | [keyIsMultivalued](slots/keyIsMultivalued.md) | True if this referenceValueKey's own policy_data_schema |
+| [language](slots/language.md) | Free-text consent/IRB language for this requirement |
 | [license](slots/license.md) | The license under which the data associated with the access requirement is sh... |
 | [maxRevNum](slots/maxRevNum.md) | The maximum revision number of this Synapse entity (NODE |
 | [modifiedBy](slots/modifiedBy.md) | Synapse numeric user id of who last modified this record |
@@ -115,6 +123,7 @@ Name: governance_duo
 | [notAfter](slots/notAfter.md) | ISO-8601 datetime after which use is no longer permitted |
 | [notes](slots/notes.md) | Free-text notes — used in particular to record why sourceSlot is left unset (... |
 | [parentId](slots/parentId.md) | The parent Synapse entity in the containment hierarchy (NODE |
+| [participatesIn](slots/participatesIn.md) | The Program a Site participates in |
 | [passportAuthIssuers](slots/passportAuthIssuers.md) | Mirrors DRS's Authorizations |
 | [permission](slots/permission.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE |
 | [policyCardName](slots/policyCardName.md) | The literal tmp-policies policy_cards/<name>/ folder name, e |
@@ -150,6 +159,8 @@ Name: governance_duo
 | [ResourceKey](slots/ResourceKey.md) | The identifier(s) for the Resource(s) associated with this schema |
 | [SchemaKey](slots/SchemaKey.md) | The Schema id corresponding to a registered JSON schema that describes the ac... |
 | [schemaUrl](slots/schemaUrl.md) | The registered URL associated with the access requirement JSON schema |
+| [scopedToProgram](slots/scopedToProgram.md) | The Program this IRBRequirement is scoped to |
+| [scopedToSite](slots/scopedToSite.md) | The Site this IRBRequirement is scoped to |
 | [source](slots/source.md) | The system this grant/association was derived from, e |
 | [sourceAclId](slots/sourceAclId.md) | Traceability back to the literal ACL |
 | [sourceAclResourceAccessId](slots/sourceAclResourceAccessId.md) | Traceability back to the literal ACL_RESOURCE_ACCESS |
@@ -168,6 +179,7 @@ Name: governance_duo
 | [studyDeidentificationMethodSoftware](slots/studyDeidentificationMethodSoftware.md) | Software that was used to de-identify the data (if used) |
 | [studyDeidentificationType](slots/studyDeidentificationType.md) | General description of the de-identification method |
 | [studyDescription](slots/studyDescription.md) | Description of the study, including the types of experimental assays, model s... |
+| [studyId](slots/studyId.md) | The Study (this repo's real governanceduo:Study class, study |
 | [studyIndexDate](slots/studyIndexDate.md) | The reference event associated with timepoints in this study |
 | [studyInvestigator](slots/studyInvestigator.md) | Investigator(s) associated with the project |
 | [StudyKey](slots/StudyKey.md) | The Study id(s) associated with this object |

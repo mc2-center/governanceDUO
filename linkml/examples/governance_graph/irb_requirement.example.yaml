@@ -1,0 +1,14 @@
+# Illustrative -- studyId/extendsTemplate/scopedToSite are real bridges to
+# this repo's actual Study/Condition data; the Program/site-reuse pairing
+# itself is illustrative, matching the same treatment thomasyu888's own
+# sagebrain-infra PR #54 comment gave its ex:program-adkp/ex:site-jhu
+# example data. See plans/governance_graph_open_questions.md Section C.2.
+id: irb_requirement.irb-genomics-adkp
+extendsTemplate: access_requirement_template.ar-genomics
+arType: IRB
+studyId: study.mc2-jax-5xfad
+language: >-
+  Illustrative ADKP-specific consent language -- not sourced from a real IRB
+  document.
+scopedToProgram: program.adkp
+institution: Mount Sinai

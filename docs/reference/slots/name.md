@@ -27,6 +27,7 @@ URI: [governanceduo:slot/name](https://w3id.org/sage-bionetworks/governance-duo/
 | --- | --- | --- |
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
 | [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
+| [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -41,7 +42,7 @@ URI: [governanceduo:slot/name](https://w3id.org/sage-bionetworks/governance-duo/
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [Program](../classes/Program.md) |
 
 ### Cardinality and Requirements
 
@@ -97,6 +98,7 @@ rank: 1000
 domain_of:
 - SynapseAccessRequirementMixin
 - SynapseEntity
+- Program
 range: string
 
 ```

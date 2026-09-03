@@ -76,6 +76,15 @@ gov:Site a owl:Class ;
 gov:DataAccessRequest a owl:Class ;
     rdfs:comment "Mirrors governanceduo:DataAccessRequest (Synapse's real RequestInterface/Request/Renewal REST objects). Field names deliberately differ from DataAccessSubmission's: this object genuinely uses createdBy/createdOn/modifiedBy/modifiedOn, not submittedBy/submittedOn." .
 
+gov:AccessRequirementTemplate a owl:Class ;
+    rdfs:comment "A reusable set of DUO-backed Conditions an IRBRequirement can extend. Illustrative structural capability -- no real Synapse or repo data source exists for AR-template reuse itself; its hasCondition edges reuse real gov:Condition individuals already minted from access_requirement.42's dataUseModifiers." .
+
+gov:IRBRequirement a owl:Class ;
+    rdfs:comment "A site/program-specific instantiation of an AccessRequirementTemplate, per the target ontology proposed in review on sagebrain-infra PR #54 (thomasyu888). Bridges to this repo's real governanceduo:Study individual via owl:sameAs." .
+
+gov:Program a owl:Class ;
+    rdfs:comment "A multi-site research consortium (e.g. AD Knowledge Portal, NF-OSI). Illustrative-only -- no real Synapse or repo data source exists for Program-level grouping. Do not conflate with the real governanceduo:Study class, which models a single research study one level more granular than a Program." .
+
 gov:Principal a owl:Class ;
     rdfs:comment "Mirrors governanceduo:Principal. Individuals are typed gov:Principal explicitly, plus gov:Team or gov:User (see below) matching the design doc's own worked examples." .
 
@@ -166,8 +175,8 @@ gov:parentId a owl:ObjectProperty ;
     rdfs:range gov:SynapseEntity .
 
 gov:name a owl:DatatypeProperty ;
-    rdfs:domain gov:SynapseEntity ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    rdfs:comment "Used by SynapseEntity (NODE.NAME) and Program (its own display name, e.g. \"AD Knowledge Portal\")." .
 
 gov:nodeType a owl:DatatypeProperty ;
     rdfs:domain gov:SynapseEntity ;
@@ -318,3 +327,33 @@ gov:summaryOfUse a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessRequest ;
     rdfs:range xsd:string ;
     rdfs:comment "Only present on renewal instances (requestConcreteType == \"Renewal\")." .
+
+gov:domain a owl:DatatypeProperty ;
+    rdfs:domain gov:AccessRequirementTemplate ;
+    rdfs:range xsd:string .
+
+gov:extendsTemplate a owl:ObjectProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:range gov:AccessRequirementTemplate .
+
+gov:arType a owl:DatatypeProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:range xsd:string .
+
+gov:language a owl:DatatypeProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:range xsd:string .
+
+gov:scopedToProgram a owl:ObjectProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:range gov:Program ;
+    rdfs:comment "Illustrative-only -- see gov:Program's own class comment." .
+
+gov:scopedToSite a owl:ObjectProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:range gov:Site .
+
+gov:participatesIn a owl:ObjectProperty ;
+    rdfs:domain gov:Site ;
+    rdfs:range gov:Program ;
+    rdfs:comment "Illustrative-only -- see gov:Program's own class comment." .

@@ -257,6 +257,7 @@ attributes:
     - ResearchProject
     - Site
     - DataAccessRequest
+    - IRBRequirement
     range: string
   projectLead:
     name: projectLead

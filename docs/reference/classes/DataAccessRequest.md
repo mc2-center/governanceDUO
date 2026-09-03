@@ -338,6 +338,7 @@ attributes:
     - ResearchProject
     - Site
     - DataAccessRequest
+    - IRBRequirement
     range: string
   requestPrincipalInvestigatorName:
     name: requestPrincipalInvestigatorName

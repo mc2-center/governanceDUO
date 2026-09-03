@@ -100,6 +100,9 @@ EXAMPLE_CLASSES = {
     "access_approval": "AccessApproval",
     "research_project": "ResearchProject",
     "data_access_request": "DataAccessRequest",
+    "program": "Program",
+    "access_requirement_template": "AccessRequirementTemplate",
+    "irb_requirement": "IRBRequirement",
 }
 
 _schemaview: SchemaView | None = None
@@ -443,6 +446,55 @@ def add_data_access_request(g: Graph, data: dict, principal_nodes: dict, researc
     return subject
 
 
+def add_access_requirement_template(g: Graph, data: dict, condition_nodes: list):
+    """Illustrative structural example -- see governance_graph.yaml's
+    AccessRequirementTemplate description. hasCondition edges reuse the *real*
+    Condition nodes add_access_requirement() already minted from
+    access_requirement.42's dataUseModifiers, rather than duplicating or
+    fabricating template-specific condition data."""
+    subject = gov_id(data["id"])
+    g.add((subject, RDF.type, TYPE("AccessRequirementTemplate")))
+    if data.get("domain"):
+        g.add((subject, PREDICATE("domain", "AccessRequirementTemplate"), Literal(data["domain"])))
+    for condition_node in condition_nodes:
+        g.add((subject, PREDICATE("hasCondition", "AccessRequirementTemplate"), condition_node))
+    return subject
+
+
+def add_program(g: Graph, data: dict):
+    """Illustrative structural example -- see governance_graph.yaml's Program
+    description. No real Synapse/repo data source exists for Program-level
+    grouping."""
+    subject = gov_id(data["id"])
+    g.add((subject, RDF.type, TYPE("Program")))
+    if data.get("name"):
+        g.add((subject, PREDICATE("name", "Program"), Literal(data["name"])))
+    return subject
+
+
+def add_irb_requirement(g: Graph, data: dict, template_node, program_nodes: dict):
+    """studyId bridges to this repo's real governanceduo:Study individual via
+    owl:sameAs, the same pattern add_access_requirement_association() uses
+    for gov:AR-<n> <-> governanceduo:access_requirement.<n> -- see
+    governance_graph.yaml's IRBRequirement description."""
+    subject = gov_id(data["id"])
+    g.add((subject, RDF.type, TYPE("IRBRequirement")))
+    if template_node is not None:
+        g.add((subject, PREDICATE("extendsTemplate", "IRBRequirement"), template_node))
+    if data.get("arType"):
+        g.add((subject, PREDICATE("arType", "IRBRequirement"), Literal(data["arType"])))
+    if data.get("studyId"):
+        g.add((subject, OWL.sameAs, GOVERNANCEDUO[data["studyId"]]))
+    if data.get("language"):
+        g.add((subject, PREDICATE("language", "IRBRequirement"), Literal(data["language"])))
+    if data.get("scopedToProgram") and data["scopedToProgram"] in program_nodes:
+        g.add((subject, PREDICATE("scopedToProgram", "IRBRequirement"), program_nodes[data["scopedToProgram"]]))
+    site_node = site_node_for(g, data.get("institution"))
+    if site_node is not None:
+        g.add((subject, PREDICATE("scopedToSite", "IRBRequirement"), site_node))
+    return subject
+
+
 def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("DataAccessSubmission")))
@@ -565,6 +617,20 @@ def main():
     for stem, (class_name, data) in instances.items():
         if class_name == "AccessApproval":
             add_access_approval(g, data, principal_nodes)
+
+    program_nodes = {}
+    for stem, (class_name, data) in instances.items():
+        if class_name == "Program":
+            program_nodes[data["id"]] = add_program(g, data)
+
+    template_node = None
+    for stem, (class_name, data) in instances.items():
+        if class_name == "AccessRequirementTemplate":
+            template_node = add_access_requirement_template(g, data, condition_nodes)
+
+    for stem, (class_name, data) in instances.items():
+        if class_name == "IRBRequirement":
+            add_irb_requirement(g, data, template_node, program_nodes)
 
     submission_node = None
     for stem, (class_name, data) in instances.items():

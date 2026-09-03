@@ -278,6 +278,7 @@ attributes:
     domain_of:
     - SynapseAccessRequirementMixin
     - SynapseEntity
+    - Program
     range: string
   nodeType:
     name: nodeType

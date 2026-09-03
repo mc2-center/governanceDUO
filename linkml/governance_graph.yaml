@@ -422,6 +422,7 @@ classes:
       plans/governance_graph_open_questions.md Section C.
     slots:
       - institution
+      - participatesIn
   DataAccessRequest:
     is_a: BaseEntity
     class_uri: sagegov:DataAccessRequest
@@ -482,6 +483,90 @@ classes:
       - requestConcreteType
       - publication
       - summaryOfUse
+  AccessRequirementTemplate:
+    is_a: BaseEntity
+    class_uri: sagegov:AccessRequirementTemplate
+    description: >-
+      A reusable set of DUO-backed Conditions an IRBRequirement can extend.
+      **Honest grounding note**: no real Synapse or repo data source exists
+      for AR-template reuse itself -- verified directly that Synapse's
+      AccessRequirement has no template/inheritance mechanism at all, only
+      subjectIds. This class ships as structural capability, populated with
+      one illustrative example that reuses real Condition data (see
+      hasCondition below), not presented as sourced from a specific real AR.
+      `is_a: BaseEntity` for a synthetic dotted id, same reasoning as
+      AccessGrant/AccessRequirementAssociation: no single natural key exists
+      for "this template" as a first-class thing. See
+      plans/governance_graph_open_questions.md Section C.2.
+    slot_usage:
+      id:
+        description: A synthetic identifier for this template.
+        pattern: '^access_requirement_template\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: access_requirement_template.ar-genomics
+    slots:
+      - domain
+      - hasCondition
+  IRBRequirement:
+    is_a: BaseEntity
+    class_uri: sagegov:IRBRequirement
+    description: >-
+      A site/program-specific instantiation of an AccessRequirementTemplate,
+      per the target ontology proposed in review on sagebrain-infra PR #54
+      (thomasyu888,
+      https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399).
+      studyId bridges to this repo's existing, *real* governanceduo:Study
+      class via the same owl:sameAs pattern
+      add_access_requirement_association() already uses for gov:AR-<n> <->
+      governanceduo:access_requirement.<n> -- Study has a real example
+      (study.mc2-jax-5xfad) and a real AccessRequirementKey link to an
+      AccessRequirement, so this is a genuine integration point, not an
+      invented one. `institution` (reusing ResearchProject/DataAccessRequest's
+      own slot) drives `scopedToSite` the same way it drives
+      `gov:affiliatedWith` elsewhere -- not independently re-emitted.
+      `is_a: BaseEntity` for a synthetic dotted id, same reasoning as
+      AccessRequirementTemplate above. See
+      plans/governance_graph_open_questions.md Section C.2.
+    slot_usage:
+      id:
+        description: A synthetic identifier for this IRB requirement instance.
+        pattern: '^irb_requirement\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: irb_requirement.irb-genomics-adkp
+    slots:
+      - extendsTemplate
+      - arType
+      - studyId
+      - language
+      - scopedToProgram
+      - scopedToSite
+      - institution
+  Program:
+    is_a: BaseEntity
+    class_uri: sagegov:Program
+    description: >-
+      A multi-site research consortium (e.g. AD Knowledge Portal, NF-OSI).
+      **Honest grounding note**: no real Synapse or repo data source exists
+      for Program-level grouping -- ships as structural capability with one
+      clearly-illustrative example instance, the same treatment
+      thomasyu888's own PR #54 comment gave its illustrative
+      ex:program-adkp/ex:site-jhu data (the whole PR is explicitly a
+      concept/PoC). Do not conflate this with the existing, real
+      governanceduo:Study class, which models a single research study one
+      level more granular than a Program -- see IRBRequirement's studyId
+      description. `is_a: BaseEntity` for a synthetic dotted id, same
+      reasoning as AccessRequirementTemplate above. See
+      plans/governance_graph_open_questions.md Section C.2.
+    slot_usage:
+      id:
+        description: A synthetic identifier for this program.
+        pattern: '^program\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: program.adkp
+      name:
+        slot_uri: sagegov:name
+    slots:
+      - name
 slots:
   nodeType:
     slot_uri: sagegov:nodeType
@@ -827,3 +912,47 @@ slots:
       Summary of how the data has been used (Renewal.summaryOfUse in
       Synapse's live REST API). Only present on renewal instances
       (requestConcreteType == "Renewal").
+  domain:
+    slot_uri: sagegov:domain
+    description: Free-text research domain this template applies to, e.g. "genomics".
+  hasCondition:
+    slot_uri: sagegov:hasCondition
+    description: >-
+      The DUO-backed Conditions this template reuses -- the same gov:Condition
+      class add_access_requirement() already mints from real dataUseModifiers
+      data (see plans/rebac_governance_graph_alignment.md), attached here to
+      an AccessRequirementTemplate instead of (or in addition to) an
+      AccessRequirement stub.
+    range: Condition
+    multivalued: true
+  extendsTemplate:
+    slot_uri: sagegov:extendsTemplate
+    description: The AccessRequirementTemplate this IRBRequirement extends.
+    range: AccessRequirementTemplate
+  arType:
+    slot_uri: sagegov:arType
+    description: Free-text access requirement type, e.g. "IRB".
+  studyId:
+    description: >-
+      The Study (this repo's real governanceduo:Study class, study.yaml) this
+      IRBRequirement's language was authored for. Bridged via owl:sameAs in
+      build_governance_graph.py, not this slot's own slot_uri -- Study lives
+      in a different namespace already bridged the same way AccessRequirement
+      stubs are (see add_access_requirement_association()).
+  language:
+    slot_uri: sagegov:language
+    description: Free-text consent/IRB language for this requirement.
+  scopedToProgram:
+    slot_uri: sagegov:scopedToProgram
+    description: The Program this IRBRequirement is scoped to. Illustrative-only -- see Program's own description.
+    range: Program
+  scopedToSite:
+    slot_uri: sagegov:scopedToSite
+    description: The Site this IRBRequirement is scoped to.
+    range: Site
+  participatesIn:
+    slot_uri: sagegov:participatesIn
+    description: >-
+      The Program a Site participates in. Illustrative-only -- see Program's
+      own description.
+    range: Program

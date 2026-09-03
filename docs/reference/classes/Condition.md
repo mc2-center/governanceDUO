@@ -69,6 +69,13 @@ URI: [sagegov:Condition](https://sagebionetworks.org/governance/Condition)
 
 
 
+## Usages
+
+| used by | used in | type | used |
+| ---  | --- | --- | --- |
+| [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md) | [hasCondition](../slots/hasCondition.md) | range | [Condition](../classes/Condition.md) |
+
+
 
 
 

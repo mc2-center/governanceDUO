@@ -972,6 +972,7 @@ attributes:
     domain_of:
     - SynapseAccessRequirementMixin
     - SynapseEntity
+    - Program
     range: string
   etag:
     name: etag

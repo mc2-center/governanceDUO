@@ -26,6 +26,17 @@ URI: [sagegov:Site](https://sagebionetworks.org/governance/Site)
     click Site href "../../classes/Site/"
       Site : institution
         
+      Site : participatesIn
+        
+          
+    
+        
+        
+        Site --> "0..1" Program : participatesIn
+        click Program href "../../classes/Program/"
+    
+
+        
       
 ```
 
@@ -46,9 +57,17 @@ URI: [sagegov:Site](https://sagebionetworks.org/governance/Site)
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [institution](../slots/institution.md) | 0..1 <br/> [String](../types/String.md) | Institution/company name, verbatim from Synapse (ResearchProject | direct |
+| [participatesIn](../slots/participatesIn.md) | 0..1 <br/> [Program](../classes/Program.md) | The Program a Site participates in | direct |
 
 
 
+
+
+## Usages
+
+| used by | used in | type | used |
+| ---  | --- | --- | --- |
+| [IRBRequirement](../classes/IRBRequirement.md) | [scopedToSite](../slots/scopedToSite.md) | range | [Site](../classes/Site.md) |
 
 
 
@@ -111,6 +130,7 @@ description: 'An institution real Synapse data associates with a ResearchProject
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 slots:
 - institution
+- participatesIn
 class_uri: sagegov:Site
 
 ```
@@ -150,7 +170,19 @@ attributes:
     - ResearchProject
     - Site
     - DataAccessRequest
+    - IRBRequirement
     range: string
+  participatesIn:
+    name: participatesIn
+    description: The Program a Site participates in. Illustrative-only -- see Program's
+      own description.
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    slot_uri: sagegov:participatesIn
+    owner: Site
+    domain_of:
+    - Site
+    range: Program
 class_uri: sagegov:Site
 
 ```

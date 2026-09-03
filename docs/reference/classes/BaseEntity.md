@@ -48,6 +48,12 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
         click ResearchProject href "../../classes/ResearchProject/"
       BaseEntity <|-- DataAccessRequest
         click DataAccessRequest href "../../classes/DataAccessRequest/"
+      BaseEntity <|-- AccessRequirementTemplate
+        click AccessRequirementTemplate href "../../classes/AccessRequirementTemplate/"
+      BaseEntity <|-- IRBRequirement
+        click IRBRequirement href "../../classes/IRBRequirement/"
+      BaseEntity <|-- Program
+        click Program href "../../classes/Program/"
       
       BaseEntity : id
         
@@ -71,6 +77,9 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
     * [AccessApproval](../classes/AccessApproval.md)
     * [ResearchProject](../classes/ResearchProject.md)
     * [DataAccessRequest](../classes/DataAccessRequest.md)
+    * [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md)
+    * [IRBRequirement](../classes/IRBRequirement.md)
+    * [Program](../classes/Program.md)
 
 
 ## Slots

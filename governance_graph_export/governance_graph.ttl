@@ -30,11 +30,17 @@ gov:data-access-submission-555 a gov:DataAccessSubmission ;
     gov:submittedBy gov:principal-2000001 ;
     gov:submittedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
 
-gov:AR-42-condition-DUO-0000007 a gov:Condition ;
-    gov:conditionDetail "MONDO:0004975" ;
-    gov:conditionType "DS" ;
-    gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
-    gov:duoCode "DUO:0000007" .
+gov:irb-requirement-irb-genomics-adkp a gov:IRBRequirement ;
+    owl:sameAs governanceduo:study.mc2-jax-5xfad ;
+    gov:arType "IRB" ;
+    gov:extendsTemplate gov:access-requirement-template-ar-genomics ;
+    gov:language "Illustrative ADKP-specific consent language -- not sourced from a real IRB document." ;
+    gov:scopedToProgram gov:program-adkp ;
+    gov:scopedToSite gov:site-mount-sinai .
+
+gov:access-requirement-template-ar-genomics a gov:AccessRequirementTemplate ;
+    gov:domain "genomics" ;
+    gov:hasCondition gov:AR-42-condition-DUO-0000007 .
 
 gov:data-access-request-7001 a gov:DataAccessRequest ;
     gov:accessRequirement gov:AR-42 ;
@@ -65,12 +71,21 @@ gov:principal-9000001 a gov:Principal,
         gov:Team ;
     gov:principalId 9000001 .
 
+gov:program-adkp a gov:Program ;
+    gov:name "AD Knowledge Portal" .
+
 syn:syn2343195 a gov:SynapseEntity ;
     gov:createdByUserId 1000002 ;
     gov:createdOn "1700000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
     gov:etag "8b7c6d5e-4f3a-4b2c-8d1e-0f9a8b7c6d5e" ;
     gov:name "NF2-related schwannomatosis RNA-seq study" ;
     gov:nodeType "project" .
+
+gov:AR-42-condition-DUO-0000007 a gov:Condition ;
+    gov:conditionDetail "MONDO:0004975" ;
+    gov:conditionType "DS" ;
+    gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
+    gov:duoCode "DUO:0000007" .
 
 gov:research-project-8001 a gov:ResearchProject ;
     gov:accessRequirement gov:AR-42 ;

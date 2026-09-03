@@ -37,6 +37,9 @@ URI: [dcterms:identifier](http://purl.org/dc/terms/identifier)
 | [AccessApproval](../classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |  yes  |
 | [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  yes  |
 | [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  yes  |
+| [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md) | A reusable set of DUO-backed Conditions an IRBRequirement can extend |  yes  |
+| [IRBRequirement](../classes/IRBRequirement.md) | A site/program-specific instantiation of an AccessRequirementTemplate, per th... |  yes  |
+| [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
 
 
 
