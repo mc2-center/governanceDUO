@@ -26,6 +26,7 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  no  |
+| [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  no  |
 
 
 
@@ -39,7 +40,7 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 | Property | Value |
 | --- | --- |
 | Range | [AccessRequirement](../classes/AccessRequirement.md) |
-| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md), [ResearchProject](../classes/ResearchProject.md) |
 | Slot URI | [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement) |
 
 ### Cardinality and Requirements
@@ -104,6 +105,7 @@ rank: 1000
 slot_uri: sagegov:accessRequirement
 domain_of:
 - DataAccessSubmission
+- ResearchProject
 range: AccessRequirement
 required: true
 

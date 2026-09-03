@@ -67,6 +67,12 @@ gov:Condition a owl:Class ;
 gov:AccessApproval a owl:Class ;
     rdfs:comment "Mirrors governanceduo:AccessApproval -- a real, separate Synapse REST object from DataAccessSubmission/DataAccessSubmissionStatus (the workflow/audit trail that produces one). gov:hasApproval is re-derived from this class (status == APPROVED) as the primary source going forward; the existing DataAccessSubmissionStatus-derived edge is left as-is. See plans/governance_graph_open_questions.md Section B." .
 
+gov:ResearchProject a owl:Class ;
+    rdfs:comment "Mirrors governanceduo:ResearchProject. Replaces the bare researchProjectId FK integer literal DataAccessSubmission/DataAccessRequest previously carried with a real node + edge." .
+
+gov:Site a owl:Class ;
+    rdfs:comment "An institution real Synapse data associates with a ResearchProject or User-type Principal -- minted deterministically by slugifying a free-text institution/company name string (no stable Site id exists anywhere in Synapse's schema). See scripts/build_governance_graph.py's site_node_for()." .
+
 gov:Principal a owl:Class ;
     rdfs:comment "Mirrors governanceduo:Principal. Individuals are typed gov:Principal explicitly, plus gov:Team or gov:User (see below) matching the design doc's own worked examples." .
 
@@ -246,3 +252,29 @@ gov:sourceApprovalId a owl:DatatypeProperty ;
     rdfs:domain gov:AccessApproval ;
     rdfs:range xsd:integer ;
     rdfs:comment "Traceability back to the literal AccessApproval.id row this record was derived from." .
+
+gov:affiliatedWith a owl:ObjectProperty ;
+    rdfs:range gov:Site ;
+    rdfs:comment "Derived convenience triple emitted alongside a minted gov:Site node, same as gov:hasACL/gov:hasCondition above; not its own governance_graph.yaml slot. Domain: ResearchProject, DataAccessRequest, and User-type Principal (UserProfile.company has no Team equivalent). See scripts/build_governance_graph.py's site_node_for()." .
+
+gov:institution a owl:DatatypeProperty ;
+    rdfs:domain gov:Site ;
+    rdfs:range xsd:string ;
+    rdfs:comment "The Site node's own display name. On ResearchProject/DataAccessRequest, the same underlying string only drives a gov:affiliatedWith edge -- it is not independently re-emitted as a literal on those subjects." .
+
+gov:projectLead a owl:DatatypeProperty ;
+    rdfs:domain gov:ResearchProject ;
+    rdfs:range xsd:string .
+
+gov:intendedDataUseStatement a owl:DatatypeProperty ;
+    rdfs:domain gov:ResearchProject ;
+    rdfs:range xsd:string .
+
+gov:createdBy a owl:ObjectProperty ;
+    rdfs:range gov:Principal ;
+    rdfs:comment "Who authored this record, as an IRI reference to a gov:Principal node. Used by ResearchProject and DataAccessRequest -- distinct from gov:submittedBy (the workflow-submission-action concept, used by DataAccessSubmission/AccessApproval) and gov:createdByUserId (a raw literal id, used by SynapseEntity)." .
+
+gov:researchProject a owl:ObjectProperty ;
+    rdfs:domain gov:DataAccessSubmission ;
+    rdfs:range gov:ResearchProject ;
+    rdfs:comment "DataAccessSubmission.researchProjectId -- now a real node (was a bare integer literal until ResearchProject existed)." .

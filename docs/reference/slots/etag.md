@@ -29,6 +29,7 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
 | [AccessApproval](../classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |  yes  |
+| [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -43,7 +44,7 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [DataAccessSubmission](../classes/DataAccessSubmission.md), [AccessApproval](../classes/AccessApproval.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [DataAccessSubmission](../classes/DataAccessSubmission.md), [AccessApproval](../classes/AccessApproval.md), [ResearchProject](../classes/ResearchProject.md) |
 
 ### Cardinality and Requirements
 
@@ -99,6 +100,7 @@ domain_of:
 - SynapseEntity
 - DataAccessSubmission
 - AccessApproval
+- ResearchProject
 range: string
 
 ```

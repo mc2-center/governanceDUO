@@ -1,0 +1,11 @@
+id: research_project.8001
+accessRequirementId: access_requirement.42
+institution: Mount Sinai
+projectLead: Jane Doe
+intendedDataUseStatement: >-
+  Investigating tumor microenvironment signaling in a genetically engineered
+  mouse model cohort, for the purposes described in the associated Access
+  Requirement.
+createdBy: 2000001
+createdOn: 1755150000000
+etag: 4c5d6e7f-8a9b-4c1d-9e2f-3a4b5c6d7e8f

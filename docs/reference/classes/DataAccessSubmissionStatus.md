@@ -67,7 +67,7 @@ URI: [governanceduo:class/DataAccessSubmissionStatus](https://w3id.org/sage-bion
 | [submissionId](../slots/submissionId.md) | 1 <br/> [DataAccessSubmission](../classes/DataAccessSubmission.md) | The DataAccessSubmission this status record applies to (DATA_ACCESS_SUBMISSIO... | direct |
 | [state](../slots/state.md) | 1 <br/> [SubmissionStateEnum](../enums/SubmissionStateEnum.md) |  | direct |
 | [rejectedReason](../slots/rejectedReason.md) | 0..1 <br/> [String](../types/String.md) | The reason this submission was rejected, if it was | direct |
-| [modifiedOn](../slots/modifiedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this status record was last modified (epoch milliseconds) | direct |
+| [modifiedOn](../slots/modifiedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was last modified (epoch milliseconds) | direct |
 
 
 
@@ -204,11 +204,16 @@ attributes:
     range: string
   modifiedOn:
     name: modifiedOn
-    description: When this status record was last modified (epoch milliseconds).
+    description: When this record was last modified (epoch milliseconds). On DataAccessSubmissionStatus
+      this is emitted under the distinct gov:statusModifiedOn predicate instead (a
+      bare constant in build_governance_graph.py, not resolved via this slot_uri --
+      see that class's own description); DataAccessRequest resolves it via this slot's
+      own sagegov:modifiedOn directly.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:modified
     rank: 1000
+    slot_uri: sagegov:modifiedOn
     owner: DataAccessSubmissionStatus
     domain_of:
     - DataAccessSubmissionStatus

@@ -19,6 +19,7 @@ Name: governance_duo
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirementAssociation](classes/AccessRequirementAssociation.md) | Binds an AccessRequirement to a resource, recording whether the binding is di... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DataAccessSubmission](classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ResearchProject](classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Resource](classes/Resource.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Schema](classes/Schema.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Study](classes/Study.md) | Studies associated with a grant |
@@ -35,6 +36,7 @@ Name: governance_duo
 | [PolicyFabricMixin](classes/PolicyFabricMixin.md) | Fields needed to deploy an AccessRequirement's governed entities into Policy ... |
 | [Principal](classes/Principal.md) | A Synapse user or team being granted access via an ACL |
 | [ReferenceValueSource](classes/ReferenceValueSource.md) | One (referenceValueKey -> governanceDUO slot) mapping |
+| [Site](classes/Site.md) | An institution real Synapse data associates with a ResearchProject or User-ty... |
 | [SynapseAccessRequirementMixin](classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |
 
 
@@ -64,6 +66,7 @@ Name: governance_duo
 | [bindingType](slots/bindingType.md) |  |
 | [capabilityOperation](slots/capabilityOperation.md) | The "name" field of the Capability Granted this policy_card's Rego emits on s... |
 | [collaborationRequired](slots/collaborationRequired.md) | If collaboration is required for the access requirement, provide the PI email... |
+| [company](slots/company.md) | Institution/company name, verbatim from Synapse's real UserProfile |
 | [concreteType](slots/concreteType.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT |
 | [conditionDetail](slots/conditionDetail.md) | Zero or more companion-slot values from the source AccessRequirement, one per... |
 | [conditionType](slots/conditionType.md) | A short label for this condition |
@@ -95,14 +98,16 @@ Name: governance_duo
 | [guardianDataSource](slots/guardianDataSource.md) | The data path/source configured for this asset's Guardian |
 | [guardianUrl](slots/guardianUrl.md) | The deployed Guardian service URL for this asset |
 | [id](slots/id.md) | A unique identifier for this record |
+| [institution](slots/institution.md) | Institution/company name, verbatim from Synapse (ResearchProject |
 | [institutionDids](slots/institutionDids.md) | Institutions with specific restrictions associated with the access requiremen... |
 | [institutionSpecificRestriction](slots/institutionSpecificRestriction.md) | Institutions with specific restrictions associated with the access requiremen... |
+| [intendedDataUseStatement](slots/intendedDataUseStatement.md) | A few short paragraphs explaining how the controlled data will be used (Resea... |
 | [isTwoFaRequired](slots/isTwoFaRequired.md) | Whether two-factor authentication is required (ACCESS_REQUIREMENT |
 | [keyIsMultivalued](slots/keyIsMultivalued.md) | True if this referenceValueKey's own policy_data_schema |
 | [license](slots/license.md) | The license under which the data associated with the access requirement is sh... |
 | [maxRevNum](slots/maxRevNum.md) | The maximum revision number of this Synapse entity (NODE |
-| [modifiedBy](slots/modifiedBy.md) | Synapse numeric user id of who last modified this submission's status (`Submi... |
-| [modifiedOn](slots/modifiedOn.md) | When this status record was last modified (epoch milliseconds) |
+| [modifiedBy](slots/modifiedBy.md) | Synapse numeric user id of who last modified this record |
+| [modifiedOn](slots/modifiedOn.md) | When this record was last modified (epoch milliseconds) |
 | [name](slots/name.md) | A Synapse-native display name |
 | [nodeType](slots/nodeType.md) | The kind of Synapse entity (NODE |
 | [nonprofitLegalForms](slots/nonprofitLegalForms.md) | Legal entity form(s) qualifying as not-for-profit, coded per ISO 20275:2017 (... |
@@ -118,6 +123,7 @@ Name: governance_duo
 | [principalId](slots/principalId.md) | The Synapse numeric id of the user or team (ACL_RESOURCE_ACCESS |
 | [principalType](slots/principalType.md) |  |
 | [prohibitedPurposes](slots/prohibitedPurposes.md) | Research purpose term(s) for which use is explicitly disallowed |
+| [projectLead](slots/projectLead.md) | The person leading this research project (ResearchProject |
 | [publicationMoratorium](slots/publicationMoratorium.md) | End date of the publication moratorium associated with the access requirement |
 | [referenceValueKey](slots/referenceValueKey.md) | One of the containing binding's referenceValueKeys, e |
 | [referenceValueKeys](slots/referenceValueKeys.md) | The policy_data_schema |
@@ -131,7 +137,7 @@ Name: governance_duo
 | [requiredProfileStatuses](slots/requiredProfileStatuses.md) | Profile status value(s) a requester's account must have (checked against User... |
 | [requirementId](slots/requirementId.md) | The AccessRequirement this approval satisfies (AccessApproval |
 | [requirementVersion](slots/requirementVersion.md) | The version of the AccessRequirement this approval satisfies (AccessApproval |
-| [researchProjectId](slots/researchProjectId.md) | The research project id this submission is associated with (DATA_ACCESS_SUBMI... |
+| [researchProjectId](slots/researchProjectId.md) | The research project this submission is associated with (DATA_ACCESS_SUBMISSI... |
 | [researchSpecificRestrictions](slots/researchSpecificRestrictions.md) | Research-specific restrictions associated with the access requirement |
 | [resource](slots/resource.md) | The SynapseEntity this grant/association applies to |
 | [ResourceKey](slots/ResourceKey.md) | The identifier(s) for the Resource(s) associated with this schema |

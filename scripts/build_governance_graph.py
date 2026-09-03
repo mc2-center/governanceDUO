@@ -98,6 +98,7 @@ EXAMPLE_CLASSES = {
     "data_access_submission": "DataAccessSubmission",
     "data_access_submission_status": "DataAccessSubmissionStatus",
     "access_approval": "AccessApproval",
+    "research_project": "ResearchProject",
 }
 
 _schemaview: SchemaView | None = None
@@ -132,6 +133,25 @@ def gov_id(value: str):
     schema-declarable (see module docstring) -- a display-convention rename, not a
     distinct identifier scheme."""
     return GOV[value.replace(".", "-").replace("_", "-")]
+
+
+def site_node_for(g: Graph, institution: str | None):
+    """Mints (or returns the existing) gov:Site node for an institution/company
+    name -- ResearchProject.institution, DataAccessRequest.institution, and
+    Principal.company all hold the same free-text shape, with no stable Site id
+    of its own anywhere in Synapse's schema (see governance_graph.yaml's Site
+    class description). Slugified deterministically so the same institution
+    name always converges on the same node, however many real sources name it
+    (not schema-declarable -- this id-minting shape has no LinkML pattern
+    equivalent, same reasoning as add_principal()'s bare-integer minting).
+    Returns None (emits nothing) when institution is falsy."""
+    if not institution:
+        return None
+    slug = "-".join(institution.strip().lower().split())
+    subject = GOV[f"site-{slug}"]
+    g.add((subject, RDF.type, TYPE("Site")))
+    g.add((subject, PREDICATE("institution", "Site"), Literal(institution)))
+    return subject
 
 
 # Literal SynapseEntity slots emitted as-is (auto-typed by rdflib from the YAML's own
@@ -188,6 +208,12 @@ def add_principal(g: Graph, data: dict):
     # Permissible-value-typed: see module docstring's note on PrincipalTypeEnum.
     g.add((subject, RDF.type, GOV[data["principalType"]]))
     g.add((subject, PREDICATE("principalId", "Principal"), Literal(data["principalId"])))
+    # UserProfile.company only exists for individual users -- Synapse's real
+    # Team object has no institution/affiliation field at all (verified
+    # directly; see governance_graph.yaml's Principal.company description).
+    site_node = site_node_for(g, data.get("company"))
+    if site_node is not None:
+        g.add((subject, GOV.affiliatedWith, site_node))
     return subject
 
 
@@ -355,6 +381,33 @@ def add_access_approval(g: Graph, data: dict, principal_nodes: dict) -> bool:
     return data["status"] == "APPROVED"
 
 
+def add_research_project(g: Graph, data: dict, principal_nodes: dict):
+    subject = gov_id(data["id"])
+    ar_node = GOV[data["accessRequirementId"].replace("access_requirement.", "AR-")]
+    g.add((subject, RDF.type, TYPE("ResearchProject")))
+    g.add((subject, PREDICATE("accessRequirementId", "ResearchProject"), ar_node))
+    site_node = site_node_for(g, data.get("institution"))
+    if site_node is not None:
+        g.add((subject, GOV.affiliatedWith, site_node))
+    if data.get("projectLead"):
+        g.add((subject, PREDICATE("projectLead", "ResearchProject"), Literal(data["projectLead"])))
+    if data.get("intendedDataUseStatement"):
+        g.add(
+            (
+                subject,
+                PREDICATE("intendedDataUseStatement", "ResearchProject"),
+                Literal(data["intendedDataUseStatement"]),
+            )
+        )
+    if data.get("createdBy") is not None:
+        g.add((subject, PREDICATE("createdBy", "ResearchProject"), principal_nodes[data["createdBy"]]))
+    if data.get("createdOn") is not None:
+        g.add((subject, PREDICATE("createdOn", "ResearchProject"), Literal(data["createdOn"], datatype=XSD.long)))
+    if data.get("etag") is not None:
+        g.add((subject, PREDICATE("etag", "ResearchProject"), Literal(data["etag"])))
+    return subject
+
+
 def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("DataAccessSubmission")))
@@ -366,6 +419,8 @@ def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
     # governance_graph.yaml's corrected DataAccessSubmission description.
     g.add((subject, PREDICATE("submittedBy", "DataAccessSubmission"), GOV[f"principal-{data['submittedBy']}"]))
     g.add((subject, PREDICATE("submittedOn", "DataAccessSubmission"), Literal(data["submittedOn"], datatype=XSD.long)))
+    if data.get("researchProjectId"):
+        g.add((subject, PREDICATE("researchProjectId", "DataAccessSubmission"), gov_id(data["researchProjectId"])))
     if data.get("modifiedBy") is not None:
         # Synapse's live API places modifiedBy on Submission itself, not on
         # DataAccessSubmissionStatus (which carries no such field live) -- see
@@ -453,9 +508,15 @@ def main():
         elif class_name == "AccessRequirementAssociation":
             ar_node = add_access_requirement_association(g, data)
 
+    condition_nodes = []
     ar_example_path = Path(args.access_requirement_example)
     if ar_node is not None and ar_example_path.exists():
-        add_access_requirement(g, yaml.safe_load(ar_example_path.read_text()), ar_node)
+        condition_nodes = add_access_requirement(g, yaml.safe_load(ar_example_path.read_text()), ar_node)
+
+    research_project_node = None
+    for stem, (class_name, data) in instances.items():
+        if class_name == "ResearchProject":
+            research_project_node = add_research_project(g, data, principal_nodes)
 
     for stem, (class_name, data) in instances.items():
         if class_name == "AccessApproval":

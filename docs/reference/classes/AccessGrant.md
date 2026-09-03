@@ -326,6 +326,7 @@ attributes:
     - SynapseEntity
     - AccessGrant
     - AccessApproval
+    - ResearchProject
     range: integer
   sourceAclId:
     name: sourceAclId

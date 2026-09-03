@@ -292,6 +292,7 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) | [accessRequirement](../slots/accessRequirement.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
 | [AccessApproval](../classes/AccessApproval.md) | [requirementId](../slots/requirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
+| [ResearchProject](../classes/ResearchProject.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
 
 
 
@@ -985,6 +986,7 @@ attributes:
     - SynapseEntity
     - DataAccessSubmission
     - AccessApproval
+    - ResearchProject
     range: string
   currentRevNum:
     name: currentRevNum
@@ -1052,6 +1054,7 @@ attributes:
     domain_of:
     - SynapseAccessRequirementMixin
     - SynapseEntity
+    - ResearchProject
     range: integer
   createdOn:
     name: createdOn
@@ -1068,6 +1071,7 @@ attributes:
     - SynapseEntity
     - AccessGrant
     - AccessApproval
+    - ResearchProject
     range: integer
   id:
     name: id

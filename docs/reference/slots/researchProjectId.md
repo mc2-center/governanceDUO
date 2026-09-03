@@ -6,7 +6,7 @@ search:
 # Slot: researchProjectId 
 
 
-_The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID)._
+_The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID). Range is now `ResearchProject` (was a bare integer literal until that class existed -- see plans/governance_graph_open_questions.md Section C) -- emitted as an IRI reference to the real `gov:research-project-<n>` node._
 
 
 
@@ -14,7 +14,7 @@ _The research project id this submission is associated with (DATA_ACCESS_SUBMISS
 
 
 
-URI: [governanceduo:slot/researchProjectId](https://w3id.org/sage-bionetworks/governance-duo/slot/researchProjectId)
+URI: [sagegov:researchProject](https://sagebionetworks.org/governance/researchProject)
 <!-- no inheritance hierarchy -->
 
 
@@ -38,8 +38,9 @@ URI: [governanceduo:slot/researchProjectId](https://w3id.org/sage-bionetworks/go
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
+| Range | [ResearchProject](../classes/ResearchProject.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
+| Slot URI | [sagegov:researchProject](https://sagebionetworks.org/governance/researchProject) |
 
 ### Cardinality and Requirements
 
@@ -77,7 +78,7 @@ URI: [governanceduo:slot/researchProjectId](https://w3id.org/sage-bionetworks/go
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:researchProjectId |
+| self | sagegov:researchProject |
 | native | governanceduo:researchProjectId |
 
 
@@ -88,15 +89,19 @@ URI: [governanceduo:slot/researchProjectId](https://w3id.org/sage-bionetworks/go
 <details>
 ```yaml
 name: researchProjectId
-description: The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
+description: The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
+  Range is now `ResearchProject` (was a bare integer literal until that class existed
+  -- see plans/governance_graph_open_questions.md Section C) -- emitted as an IRI
+  reference to the real `gov:research-project-<n>` node.
 comments:
 - DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably the full
   submission form data) is not modeled as a structured field.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
+slot_uri: sagegov:researchProject
 domain_of:
 - DataAccessSubmission
-range: integer
+range: ResearchProject
 
 ```
 </details></div>

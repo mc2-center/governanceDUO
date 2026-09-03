@@ -52,6 +52,15 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
         
       DataAccessSubmission : researchProjectId
         
+          
+    
+        
+        
+        DataAccessSubmission --> "0..1" ResearchProject : researchProjectId
+        click ResearchProject href "../../classes/ResearchProject/"
+    
+
+        
       DataAccessSubmission : submittedBy
         
       DataAccessSubmission : submittedOn
@@ -82,10 +91,10 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 | [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
 | [accessRequirementVersion](../slots/accessRequirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this submission was made against (DATA_A... | direct |
 | [requestId](../slots/requestId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The originating data access request id | direct |
-| [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [Integer](../types/Integer.md) | The research project id this submission is associated with (DATA_ACCESS_SUBMI... | direct |
+| [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [ResearchProject](../classes/ResearchProject.md) | The research project this submission is associated with (DATA_ACCESS_SUBMISSI... | direct |
 | [submittedBy](../slots/submittedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who submitted this record (`Submission | direct |
 | [submittedOn](../slots/submittedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was submitted (epoch milliseconds; `Submission | direct |
-| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this submission's status (`Submi... | direct |
+| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this record | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique identifier for this submission (schematic-schema-style dotted string... | [BaseEntity](../classes/BaseEntity.md) |
 
@@ -142,7 +151,7 @@ id: data_access_submission.555
 accessRequirementId: access_requirement.42
 accessRequirementVersion: 1
 requestId: 7001
-researchProjectId: 8001
+researchProjectId: research_project.8001
 submittedBy: 2000001
 submittedOn: 1755200000000
 modifiedBy: 2000001
@@ -245,6 +254,7 @@ attributes:
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
+    - ResearchProject
     range: AccessRequirement
     required: true
   accessRequirementVersion:
@@ -271,16 +281,20 @@ attributes:
     range: integer
   researchProjectId:
     name: researchProjectId
-    description: The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
+    description: The research project this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
+      Range is now `ResearchProject` (was a bare integer literal until that class
+      existed -- see plans/governance_graph_open_questions.md Section C) -- emitted
+      as an IRI reference to the real `gov:research-project-<n>` node.
     comments:
     - DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably the
       full submission form data) is not modeled as a structured field.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:researchProject
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
-    range: integer
+    range: ResearchProject
   submittedBy:
     name: submittedBy
     description: Synapse numeric user id of who submitted this record (`Submission.submittedBy`
@@ -306,9 +320,10 @@ attributes:
     range: integer
   modifiedBy:
     name: modifiedBy
-    description: Synapse numeric user id of who last modified this submission's status
-      (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus,
-      which does not carry this field live; see DataAccessSubmissionStatus's own description).
+    description: Synapse numeric user id of who last modified this record. On DataAccessSubmission,
+      this is `Submission.modifiedBy` in Synapse's live REST API (moved here from
+      DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's
+      own description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
       Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
       submittedBy above.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
@@ -335,6 +350,7 @@ attributes:
     - SynapseEntity
     - DataAccessSubmission
     - AccessApproval
+    - ResearchProject
     range: string
   id:
     name: id

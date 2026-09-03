@@ -6,7 +6,7 @@ search:
 # Slot: modifiedBy 
 
 
-_Synapse numeric user id of who last modified this submission's status (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's own description). Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring submittedBy above._
+_Synapse numeric user id of who last modified this record. On DataAccessSubmission, this is `Submission.modifiedBy` in Synapse's live REST API (moved here from DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's own description); on DataAccessRequest, it's `RequestInterface.modifiedBy`. Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring submittedBy above._
 
 
 
@@ -86,11 +86,11 @@ URI: [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy)
 <details>
 ```yaml
 name: modifiedBy
-description: Synapse numeric user id of who last modified this submission's status
-  (`Submission.modifiedBy` in Synapse's live REST API -- moved here from DataAccessSubmissionStatus,
-  which does not carry this field live; see DataAccessSubmissionStatus's own description).
-  Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
-  submittedBy above.
+description: Synapse numeric user id of who last modified this record. On DataAccessSubmission,
+  this is `Submission.modifiedBy` in Synapse's live REST API (moved here from DataAccessSubmissionStatus,
+  which does not carry this field live; see DataAccessSubmissionStatus's own description);
+  on DataAccessRequest, it's `RequestInterface.modifiedBy`. Emitted as an IRI reference
+  to a sagegov:Principal node, not a literal, mirroring submittedBy above.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - dcterms:contributor

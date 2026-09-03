@@ -330,6 +330,7 @@ attributes:
     - SynapseEntity
     - AccessGrant
     - AccessApproval
+    - ResearchProject
     range: integer
   sourceApprovalId:
     name: sourceApprovalId
@@ -357,6 +358,7 @@ attributes:
     - SynapseEntity
     - DataAccessSubmission
     - AccessApproval
+    - ResearchProject
     range: string
   id:
     name: id

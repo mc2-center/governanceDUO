@@ -158,11 +158,20 @@ classes:
       preserves everywhere else (see SynapseAccessRequirementMixin's real-column-name
       convention).
 
+      `company` mirrors Synapse's real UserProfile.company field ("This
+      person's current affiliation") -- a genuine per-Principal institution
+      signal, verified directly against the OpenAPI spec, resolving the
+      target ontology's gov:affiliatedWith (Principal -> Site) as real data,
+      not just an aspiration (see
+      plans/governance_graph_open_questions.md Section C). Only meaningful for
+      `principalType: User`: Synapse's real Team object has no
+      institution/affiliation field of its own.
     close_mappings:
       - prov:Agent
     slots:
       - principalId
       - principalType
+      - company
   AccessGrant:
     is_a: BaseEntity
     class_uri: sagegov:AccessGrant
@@ -352,6 +361,66 @@ classes:
       - createdOn
       - sourceApprovalId
       - etag
+  ResearchProject:
+    is_a: BaseEntity
+    class_uri: sagegov:ResearchProject
+    description: >-
+      Documents the research context/justification behind a
+      DataAccessRequest (and, by extension, a DataAccessSubmission). Mirrors
+      Synapse's real ResearchProject REST object
+      (org.sagebionetworks.repo.model.dataaccess.ResearchProject), verified
+      against rest-docs.synapse.org and the OpenAPI spec. Replaces the bare
+      researchProjectId FK integer literal DataAccessSubmission previously
+      carried with a real node + edge. See
+      plans/governance_graph_open_questions.md Section C.
+    slot_usage:
+      id:
+        description: >-
+          A unique identifier for this research project (schematic-schema-style
+          dotted string wrapping Synapse's own string ResearchProject.id, same
+          id convention as DataAccessSubmission).
+        pattern: '^research_project\.\d+$'
+        examples:
+          - value: research_project.8001
+      createdBy:
+        slot_uri: sagegov:createdBy
+        comments:
+          - 'ResearchProject.createdBy is the "who authored this record"
+            concept, emitted as an IRI reference to a sagegov:Principal node
+            -- distinct from DataAccessSubmission''s sagegov:submittedBy
+            (the workflow-submission-action concept) and
+            SynapseEntity''s sagegov:createdByUserId (a raw literal).'
+      createdOn:
+        slot_uri: sagegov:createdOn
+      etag:
+        slot_uri: sagegov:etag
+    slots:
+      - accessRequirementId
+      - institution
+      - projectLead
+      - intendedDataUseStatement
+      - createdBy
+      - createdOn
+      - etag
+  Site:
+    class_uri: sagegov:Site
+    description: >-
+      An institution real Synapse data associates with a ResearchProject or
+      User-type Principal. Synapse never gives a stable Site id, only a
+      free-text institution/company name string (ResearchProject.institution /
+      UserProfile.company -- both real fields hold the same shape), so
+      gov:Site nodes are minted deterministically by slugifying that name
+      (see site_node_for() in build_governance_graph.py) -- the same "derive
+      a stable node from real but non-id-shaped data" pattern
+      add_principal() already uses for bare integer ids. Not `is_a:
+      BaseEntity` for the same reason. gov:affiliatedWith (from
+      ResearchProject/Principal to this class) is a derived convenience
+      triple with no governance_graph.yaml slot backing it, same as
+      gov:hasACL/gov:hasAccessRequirement/gov:hasCondition -- it's never
+      present in any source data, only computed by the script. See
+      plans/governance_graph_open_questions.md Section C.
+    slots:
+      - institution
 slots:
   nodeType:
     slot_uri: sagegov:nodeType
@@ -462,8 +531,14 @@ slots:
       DATA_ACCESS_SUBMISSION.DATA_ACCESS_REQUEST_ID.
     range: integer
   researchProjectId:
-    description: The research project id this submission is associated with (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID).
-    range: integer
+    slot_uri: sagegov:researchProject
+    description: >-
+      The research project this submission is associated with
+      (DATA_ACCESS_SUBMISSION.RESEARCH_PROJECT_ID). Range is now
+      `ResearchProject` (was a bare integer literal until that class existed
+      -- see plans/governance_graph_open_questions.md Section C) -- emitted
+      as an IRI reference to the real `gov:research-project-<n>` node.
+    range: ResearchProject
     comments:
       - 'DATA_ACCESS_SUBMISSION.SUBMISSION_SERIALIZED (a BINARY blob, presumably
         the full submission form data) is not modeled as a structured field.'
@@ -500,17 +575,25 @@ slots:
   modifiedBy:
     slot_uri: sagegov:modifiedBy
     description: >-
-      Synapse numeric user id of who last modified this submission's status
-      (`Submission.modifiedBy` in Synapse's live REST API -- moved here from
-      DataAccessSubmissionStatus, which does not carry this field live; see
-      DataAccessSubmissionStatus's own description). Emitted as an IRI
-      reference to a sagegov:Principal node, not a literal, mirroring
-      submittedBy above.
+      Synapse numeric user id of who last modified this record. On
+      DataAccessSubmission, this is `Submission.modifiedBy` in Synapse's live
+      REST API (moved here from DataAccessSubmissionStatus, which does not
+      carry this field live; see DataAccessSubmissionStatus's own
+      description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
+      Emitted as an IRI reference to a sagegov:Principal node, not a literal,
+      mirroring submittedBy above.
     range: integer
     close_mappings:
       - dcterms:contributor
   modifiedOn:
-    description: When this status record was last modified (epoch milliseconds).
+    slot_uri: sagegov:modifiedOn
+    description: >-
+      When this record was last modified (epoch milliseconds). On
+      DataAccessSubmissionStatus this is emitted under the distinct
+      gov:statusModifiedOn predicate instead (a bare constant in
+      build_governance_graph.py, not resolved via this slot_uri -- see that
+      class's own description); DataAccessRequest resolves it via this slot's
+      own sagegov:modifiedOn directly.
     range: integer
     exact_mappings:
       - dcterms:modified
@@ -551,6 +634,15 @@ slots:
       condition's own detail is inherently list-valued. See
       scripts/build_governance_graph.py.
     multivalued: true
+  company:
+    slot_uri: sagegov:company
+    description: >-
+      Institution/company name, verbatim from Synapse's real
+      UserProfile.company field ("This person's current affiliation").
+      Consumed by build_governance_graph.py's site_node_for() to derive a
+      gov:affiliatedWith edge to a gov:Site node -- not independently
+      re-emitted as its own literal predicate on the Principal subject. Only
+      meaningful for `principalType: User`.
   requirementId:
     slot_uri: sagegov:satisfies
     description: >-
@@ -611,3 +703,21 @@ slots:
     slot_uri: sagegov:sourceApprovalId
     description: Traceability back to the literal AccessApproval.id row this record was derived from.
     range: integer
+  institution:
+    slot_uri: sagegov:institution
+    description: >-
+      Institution/company name, verbatim from Synapse
+      (ResearchProject.institution / DataAccessRequest.institution -- both
+      real fields hold the same free-text shape as UserProfile.company
+      above). On ResearchProject/DataAccessRequest, consumed by
+      site_node_for() to derive a gov:affiliatedWith edge, not independently
+      re-emitted; on Site itself, this is the node's own display name and IS
+      emitted directly.
+  projectLead:
+    slot_uri: sagegov:projectLead
+    description: The person leading this research project (ResearchProject.projectLead).
+  intendedDataUseStatement:
+    slot_uri: sagegov:intendedDataUseStatement
+    description: >-
+      A few short paragraphs explaining how the controlled data will be used
+      (ResearchProject.intendedDataUseStatement).

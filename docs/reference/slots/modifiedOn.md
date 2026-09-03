@@ -6,7 +6,7 @@ search:
 # Slot: modifiedOn 
 
 
-_When this status record was last modified (epoch milliseconds)._
+_When this record was last modified (epoch milliseconds). On DataAccessSubmissionStatus this is emitted under the distinct gov:statusModifiedOn predicate instead (a bare constant in build_governance_graph.py, not resolved via this slot_uri -- see that class's own description); DataAccessRequest resolves it via this slot's own sagegov:modifiedOn directly._
 
 
 
@@ -14,7 +14,7 @@ _When this status record was last modified (epoch milliseconds)._
 
 
 
-URI: [governanceduo:slot/modifiedOn](https://w3id.org/sage-bionetworks/governance-duo/slot/modifiedOn)
+URI: [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,6 +40,7 @@ URI: [governanceduo:slot/modifiedOn](https://w3id.org/sage-bionetworks/governanc
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) |
+| Slot URI | [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn) |
 
 ### Cardinality and Requirements
 
@@ -73,7 +74,7 @@ URI: [governanceduo:slot/modifiedOn](https://w3id.org/sage-bionetworks/governanc
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:modifiedOn |
+| self | sagegov:modifiedOn |
 | native | governanceduo:modifiedOn |
 | exact | dcterms:modified |
 
@@ -85,11 +86,16 @@ URI: [governanceduo:slot/modifiedOn](https://w3id.org/sage-bionetworks/governanc
 <details>
 ```yaml
 name: modifiedOn
-description: When this status record was last modified (epoch milliseconds).
+description: When this record was last modified (epoch milliseconds). On DataAccessSubmissionStatus
+  this is emitted under the distinct gov:statusModifiedOn predicate instead (a bare
+  constant in build_governance_graph.py, not resolved via this slot_uri -- see that
+  class's own description); DataAccessRequest resolves it via this slot's own sagegov:modifiedOn
+  directly.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 exact_mappings:
 - dcterms:modified
 rank: 1000
+slot_uri: sagegov:modifiedOn
 domain_of:
 - DataAccessSubmissionStatus
 range: integer
