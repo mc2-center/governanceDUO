@@ -474,9 +474,9 @@ def add_program(g: Graph, data: dict):
 
 def add_irb_requirement(g: Graph, data: dict, template_node, program_nodes: dict):
     """studyId bridges to this repo's real governanceduo:Study individual via
-    owl:sameAs, the same pattern add_access_requirement_association() uses
-    for gov:AR-<n> <-> governanceduo:access_requirement.<n> -- see
-    governance_graph.yaml's IRBRequirement description."""
+    owl:sameAs -- governance_graph.yaml declares studyId's slot_uri as
+    owl:sameAs itself (see that slot's description), so PREDICATE() resolves
+    it like any other slot rather than a hardcoded OWL.sameAs constant."""
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("IRBRequirement")))
     if template_node is not None:
@@ -484,7 +484,7 @@ def add_irb_requirement(g: Graph, data: dict, template_node, program_nodes: dict
     if data.get("arType"):
         g.add((subject, PREDICATE("arType", "IRBRequirement"), Literal(data["arType"])))
     if data.get("studyId"):
-        g.add((subject, OWL.sameAs, GOVERNANCEDUO[data["studyId"]]))
+        g.add((subject, PREDICATE("studyId", "IRBRequirement"), GOVERNANCEDUO[data["studyId"]]))
     if data.get("language"):
         g.add((subject, PREDICATE("language", "IRBRequirement"), Literal(data["language"])))
     if data.get("scopedToProgram") and data["scopedToProgram"] in program_nodes:
