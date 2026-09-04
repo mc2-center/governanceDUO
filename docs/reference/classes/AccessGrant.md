@@ -77,10 +77,6 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
         
       AccessGrant : source
         
-      AccessGrant : sourceAclId
-        
-      AccessGrant : sourceAclResourceAccessId
-        
       
 ```
 
@@ -110,8 +106,6 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
 | [source](../slots/source.md) | 0..1 <br/> [String](../types/String.md) | The system this grant/association was derived from, e | direct |
 | [bindingType](../slots/bindingType.md) | 1 <br/> [BindingTypeEnum](../enums/BindingTypeEnum.md) |  | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
-| [sourceAclId](../slots/sourceAclId.md) | 0..1 <br/> [Integer](../types/Integer.md) | Traceability back to the literal ACL | direct |
-| [sourceAclResourceAccessId](../slots/sourceAclResourceAccessId.md) | 0..1 <br/> [Integer](../types/Integer.md) | Traceability back to the literal ACL_RESOURCE_ACCESS | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this grant record (Synapse's ACL/ ACL_RESOURCE_ACC... | [BaseEntity](../classes/BaseEntity.md) |
 
 
@@ -165,8 +159,6 @@ permission:
 source: Synapse
 bindingType: Direct
 createdOn: 1755100000000
-sourceAclId: 42001
-sourceAclResourceAccessId: 42101
 
 ```
 
@@ -198,15 +190,18 @@ slots:
 - source
 - bindingType
 - createdOn
-- sourceAclId
-- sourceAclResourceAccessId
 slot_usage:
   id:
     name: id
-    description: A synthetic identifier for this grant record (Synapse's ACL/ ACL_RESOURCE_ACCESS
-      tables have their own internal numeric ids, traced via sourceAclId/sourceAclResourceAccessId
-      below, but no single natural key for "this grant" as a first-class thing — the
-      design doc itself mints one, e.g. gov:grant-001).
+    description: 'A synthetic identifier for this grant record (Synapse''s ACL/ ACL_RESOURCE_ACCESS
+      tables have their own internal numeric ids, but no single natural key for "this
+      grant" as a first-class thing — the design doc itself mints one, e.g. gov:grant-001).
+      Those internal ids have no public REST equivalent to trace back to -- confirmed
+      directly against rest-docs.synapse.org: AccessControlList.id is the entity id,
+      not a separate ACL-record id, and ResourceAccess has only principalId/ accessType,
+      no row id at all -- see plans/governance_graph_ingestion.md Section 1 for why
+      sourceAclId/ sourceAclResourceAccessId were removed rather than kept as permanently
+      unpopulatable fields.'
     examples:
     - value: grant.001
     pattern: ^grant\.[A-Za-z0-9_-]+$
@@ -236,10 +231,15 @@ is_a: BaseEntity
 slot_usage:
   id:
     name: id
-    description: A synthetic identifier for this grant record (Synapse's ACL/ ACL_RESOURCE_ACCESS
-      tables have their own internal numeric ids, traced via sourceAclId/sourceAclResourceAccessId
-      below, but no single natural key for "this grant" as a first-class thing — the
-      design doc itself mints one, e.g. gov:grant-001).
+    description: 'A synthetic identifier for this grant record (Synapse''s ACL/ ACL_RESOURCE_ACCESS
+      tables have their own internal numeric ids, but no single natural key for "this
+      grant" as a first-class thing — the design doc itself mints one, e.g. gov:grant-001).
+      Those internal ids have no public REST equivalent to trace back to -- confirmed
+      directly against rest-docs.synapse.org: AccessControlList.id is the entity id,
+      not a separate ACL-record id, and ResourceAccess has only principalId/ accessType,
+      no row id at all -- see plans/governance_graph_ingestion.md Section 1 for why
+      sourceAclId/ sourceAclResourceAccessId were removed rather than kept as permanently
+      unpopulatable fields.'
     examples:
     - value: grant.001
     pattern: ^grant\.[A-Za-z0-9_-]+$
@@ -329,34 +329,17 @@ attributes:
     - ResearchProject
     - DataAccessRequest
     range: integer
-  sourceAclId:
-    name: sourceAclId
-    description: Traceability back to the literal ACL.ID row this grant was derived
-      from.
-    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
-    rank: 1000
-    slot_uri: sagegov:sourceAclId
-    owner: AccessGrant
-    domain_of:
-    - AccessGrant
-    range: integer
-  sourceAclResourceAccessId:
-    name: sourceAclResourceAccessId
-    description: Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this
-      grant was derived from.
-    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
-    rank: 1000
-    slot_uri: sagegov:sourceAclResourceAccessId
-    owner: AccessGrant
-    domain_of:
-    - AccessGrant
-    range: integer
   id:
     name: id
-    description: A synthetic identifier for this grant record (Synapse's ACL/ ACL_RESOURCE_ACCESS
-      tables have their own internal numeric ids, traced via sourceAclId/sourceAclResourceAccessId
-      below, but no single natural key for "this grant" as a first-class thing — the
-      design doc itself mints one, e.g. gov:grant-001).
+    description: 'A synthetic identifier for this grant record (Synapse''s ACL/ ACL_RESOURCE_ACCESS
+      tables have their own internal numeric ids, but no single natural key for "this
+      grant" as a first-class thing — the design doc itself mints one, e.g. gov:grant-001).
+      Those internal ids have no public REST equivalent to trace back to -- confirmed
+      directly against rest-docs.synapse.org: AccessControlList.id is the entity id,
+      not a separate ACL-record id, and ResourceAccess has only principalId/ accessType,
+      no row id at all -- see plans/governance_graph_ingestion.md Section 1 for why
+      sourceAclId/ sourceAclResourceAccessId were removed rather than kept as permanently
+      unpopulatable fields.'
     examples:
     - value: grant.001
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo

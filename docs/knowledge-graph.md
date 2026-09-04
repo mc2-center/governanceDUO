@@ -157,8 +157,6 @@ permission:
 source: Synapse
 bindingType: Direct
 createdOn: 1755100000000
-sourceAclId: 42001
-sourceAclResourceAccessId: 42101
 ```
 
 ```yaml
@@ -184,9 +182,7 @@ gov:grant-001 a gov:AccessGrant ;
     gov:permission gov:DOWNLOAD ;
     gov:principal gov:principal-9000001 ;
     gov:resource syn:syn10081783 ;
-    gov:source gov:Synapse ;
-    gov:sourceAclId 42001 ;
-    gov:sourceAclResourceAccessId 42101 .
+    gov:source gov:Synapse .
 
 syn:syn10081783 a gov:SynapseEntity ;
     gov:createdByUserId 1000001 ;

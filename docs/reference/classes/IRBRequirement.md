@@ -87,6 +87,7 @@ URI: [sagegov:IRBRequirement](https://sagebionetworks.org/governance/IRBRequirem
 | Property | Value |
 | --- | --- |
 | Class URI | [sagegov:IRBRequirement](https://sagebionetworks.org/governance/IRBRequirement) |
+| Tree Root | Yes |
 
 
 ## Slots
@@ -181,6 +182,7 @@ slot_usage:
     - value: irb_requirement.irb-genomics-adkp
     pattern: ^irb_requirement\.[A-Za-z0-9_-]+$
 class_uri: sagegov:IRBRequirement
+tree_root: true
 
 ```
 </details>
@@ -316,6 +318,7 @@ attributes:
     required: true
     pattern: ^irb_requirement\.[A-Za-z0-9_-]+$
 class_uri: sagegov:IRBRequirement
+tree_root: true
 
 ```
 </details></div>

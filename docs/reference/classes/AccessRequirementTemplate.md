@@ -59,6 +59,7 @@ URI: [sagegov:AccessRequirementTemplate](https://sagebionetworks.org/governance/
 | Property | Value |
 | --- | --- |
 | Class URI | [sagegov:AccessRequirementTemplate](https://sagebionetworks.org/governance/AccessRequirementTemplate) |
+| Tree Root | Yes |
 
 
 ## Slots
@@ -147,6 +148,7 @@ slot_usage:
     - value: access_requirement_template.ar-genomics
     pattern: ^access_requirement_template\.[A-Za-z0-9_-]+$
 class_uri: sagegov:AccessRequirementTemplate
+tree_root: true
 
 ```
 </details>
@@ -217,6 +219,7 @@ attributes:
     required: true
     pattern: ^access_requirement_template\.[A-Za-z0-9_-]+$
 class_uri: sagegov:AccessRequirementTemplate
+tree_root: true
 
 ```
 </details></div>

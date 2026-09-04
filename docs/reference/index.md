@@ -164,8 +164,6 @@ Name: governance_duo
 | [scopedToProgram](slots/scopedToProgram.md) | The Program this IRBRequirement is scoped to |
 | [scopedToSite](slots/scopedToSite.md) | The Site this IRBRequirement is scoped to |
 | [source](slots/source.md) | The system this grant/association was derived from, e |
-| [sourceAclId](slots/sourceAclId.md) | Traceability back to the literal ACL |
-| [sourceAclResourceAccessId](slots/sourceAclResourceAccessId.md) | Traceability back to the literal ACL_RESOURCE_ACCESS |
 | [sourceApprovalId](slots/sourceApprovalId.md) | Traceability back to the literal AccessApproval |
 | [sourceField](slots/sourceField.md) | When sourceSlot names an inlined class (e |
 | [sourceGeography](slots/sourceGeography.md) | The geographical source of the data associated with the access requirement |

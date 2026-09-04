@@ -48,6 +48,7 @@ URI: [sagegov:Program](https://sagebionetworks.org/governance/Program)
 | Property | Value |
 | --- | --- |
 | Class URI | [sagegov:Program](https://sagebionetworks.org/governance/Program) |
+| Tree Root | Yes |
 
 
 ## Slots
@@ -139,6 +140,7 @@ slot_usage:
     name: name
     slot_uri: sagegov:name
 class_uri: sagegov:Program
+tree_root: true
 
 ```
 </details>
@@ -204,6 +206,7 @@ attributes:
     required: true
     pattern: ^program\.[A-Za-z0-9_-]+$
 class_uri: sagegov:Program
+tree_root: true
 
 ```
 </details></div>
