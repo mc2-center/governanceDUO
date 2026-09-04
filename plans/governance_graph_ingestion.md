@@ -8,10 +8,14 @@ things a first pass got wrong or left open — corrected live against
 rest-docs.synapse.org this session, not left as stubs — see "Corrections from the
 prior pass" below.
 
-**Section 5's schema changes are implemented** (2026-09-04) — see
-`governance_graph_ingestion_report.md`. Everything else here (the sync script itself,
-Sections 2/4/6's design) remains future work; this plan is guidance for building it,
-not a description of something that exists yet.
+**Section 5's schema changes are implemented, and so is the sync script**
+(2026-09-04) — `scripts/sync_governance_graph.py`, following Sections 2/4/6's
+design; see `governance_graph_ingestion_report.md` for both phases, including two
+pull-order simplifications and one real bug the build surfaced that this plan text
+didn't anticipate. Untested against live Synapse (no credentials in this
+environment) — verified instead with mocked REST responses and a real pySHACL pass
+against the hand-authored shapes; a live smoke test is still the right next step
+before trusting this in production.
 
 Context
 
