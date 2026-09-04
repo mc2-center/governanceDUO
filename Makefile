@@ -48,6 +48,16 @@ governance-graph:
 governance-graph-validate: governance-graph
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
 
+# Real Synapse data, not the hand-authored examples above -- requires an ACT
+# (or validated-reviewer) synapseclient login. See
+# plans/governance_graph_ingestion.md for the full design.
+# Usage: make sync-governance-graph ENTITY_IDS="syn10081783 syn2343195"
+sync-governance-graph:
+	python3 scripts/sync_governance_graph.py $(ENTITY_IDS)
+
+sync-governance-graph-validate:
+	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph_synced.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
+
 validate-all: shacl-validate governance-graph-validate
 
 docs-examples:
