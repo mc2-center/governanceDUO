@@ -24,8 +24,6 @@ dump cannot reproduce it:
     per-slot mapping.
   - `gov:hasACL`/`gov:hasAccessRequirement` are derived convenience triples with no
     corresponding governance_graph.yaml slot at all.
-  - `gov:AR-<n> owl:sameAs governanceduo:access_requirement.<n>` bridges the two
-    namespaces' AccessRequirement individuals — see shapes/governance_graph.owl.ttl.
   - The `.`/`_` → `-` id-hyphenation display convention (`grant.001` → `gov:grant-001`,
     see gov_id() below) is a rename of an existing dotted id, not a mapping any
     class/slot URI declaration could express.
@@ -261,15 +259,18 @@ def add_access_requirement_association(g: Graph, data: dict):
     g.add((SYN[data["resource"]], GOV.hasAccessRequirement, ar_node))
     # NOT TYPE("AccessRequirement"): that class is defined in access_requirement.yaml
     # and its real class_uri is (correctly) governanceduo:AccessRequirement -- ar_node
-    # is a local gov:-namespace stub type for the same real-world thing (bridged via
-    # owl:sameAs below), not a use of AccessRequirement's own declared URI.
-    g.add((ar_node, RDF.type, GOV.AccessRequirement))
+    # is its own AccessRequirementReference individual, a local gov:-namespace stub
+    # for the same real-world thing, deliberately kept a different type from the real
+    # AccessRequirement and bridged to it only via the sameAs slot below (see
+    # AccessRequirementReference's class description and
+    # plans/access_requirement_reference_class.md for why).
+    g.add((ar_node, RDF.type, TYPE("AccessRequirementReference")))
     # data["accessRequirement"] (e.g. "access_requirement.42") is the pre-hyphenation
     # id already, in the exact form scripts/convert_examples_to_rdf.py dumps it under
     # the governanceduo: namespace -- asserting identity here, rather than leaving the
     # two namespaces' AccessRequirement individuals implicitly "the same thing" by
-    # convention only (see shapes/governance_graph.owl.ttl).
-    g.add((ar_node, OWL.sameAs, GOVERNANCEDUO[data["accessRequirement"]]))
+    # convention only.
+    g.add((ar_node, PREDICATE("sameAs", "AccessRequirementReference"), GOVERNANCEDUO[data["accessRequirement"]]))
     return ar_node
 
 
@@ -282,12 +283,13 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
     every AR stub with zero condition detail. See
     plans/rebac_governance_graph_alignment.md for the full rationale.
 
-    gov:hasCondition itself is a derived convenience triple with no
-    governance_graph.yaml slot backing it, same as gov:hasACL/
-    gov:hasAccessRequirement above: the real AccessRequirement class lives in
-    access_requirement.yaml, which governance_graph.yaml imports (not the
-    other way around), so a slot declared there could never range over
-    Condition (defined here) without an import cycle.
+    gov:hasCondition is a real AccessRequirementReference slot (unlike gov:hasACL/
+    gov:hasAccessRequirement above, which stay bare GOV constants): it's declared on
+    AccessRequirementReference, not the real AccessRequirement class -- the real
+    AccessRequirement lives in access_requirement.yaml, which governance_graph.yaml
+    imports (not the other way around), so a slot declared *there* could never range
+    over Condition (defined here) without an import cycle. AccessRequirementReference
+    carries no such constraint, since it's owned by this same file.
 
     GovernanceMixin.rules is read directly from the schema at runtime (via
     SchemaView, like PREDICATE()/TYPE() elsewhere in this script) rather than
@@ -322,7 +324,7 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
         # isn't guaranteed unique) plus the AR stub's own local name.
         condition_node = GOV[f"{ar_node.rsplit('/', 1)[-1]}-condition-{duo_code.replace(':', '-')}"]
         condition_nodes.append(condition_node)
-        g.add((ar_node, GOV.hasCondition, condition_node))
+        g.add((ar_node, PREDICATE("hasCondition", "AccessRequirementReference"), condition_node))
         g.add((condition_node, RDF.type, TYPE("Condition")))
         g.add((condition_node, PREDICATE("conditionType", "Condition"), Literal(condition_type)))
         if permissible_value.meaning:

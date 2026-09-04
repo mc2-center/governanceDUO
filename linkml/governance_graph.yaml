@@ -233,6 +233,27 @@ classes:
       - accessRequirement
       - source
       - bindingType
+  AccessRequirementReference:
+    class_uri: sagegov:AccessRequirement
+    description: >-
+      The gov:AR-<n> stub build_governance_graph.py's
+      add_access_requirement_association() mints for every real AccessRequirement it
+      encounters -- a local, gov:-namespace node standing in for the real
+      governanceduo:AccessRequirement (defined in access_requirement.yaml, which
+      this file imports -- not the other way around), bridged to it via this class's
+      own sameAs slot rather than sharing its type. Every slot elsewhere in this
+      schema that actually holds this stub's IRI (AccessRequirementAssociation.
+      accessRequirement, the shared accessRequirementId, AccessApproval.requirementId)
+      ranges over this class, not the real AccessRequirement -- see
+      plans/access_requirement_reference_class.md for why keeping the two types
+      separate, rather than giving the real AccessRequirement this class's class_uri
+      directly, is deliberate. Not `is_a: BaseEntity`: like Condition/
+      DataAccessSubmissionStatus, it has no independent identifier of its own -- it's
+      a re-serialization of the real AccessRequirement's own id via gov_id(), not a
+      new entity.
+    slots:
+      - sameAs
+      - hasCondition
   DataAccessSubmission:
     is_a: BaseEntity
     class_uri: sagegov:DataAccessSubmission
@@ -644,8 +665,11 @@ slots:
     range: integer
   accessRequirement:
     slot_uri: sagegov:accessRequirement
-    description: The AccessRequirement this association binds to the resource.
-    range: AccessRequirement
+    description: >-
+      The AccessRequirement this association binds to the resource. range is
+      AccessRequirementReference (the gov:AR-<n> stub), not the real
+      AccessRequirement itself -- see that class's own description.
+    range: AccessRequirementReference
     required: true
     close_mappings:
       - dcterms:requires
@@ -653,8 +677,10 @@ slots:
     slot_uri: sagegov:accessRequirement
     description: >-
       The AccessRequirement this submission is an application against
-      (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
-    range: AccessRequirement
+      (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID). range is
+      AccessRequirementReference (the gov:AR-<n> stub), not the real
+      AccessRequirement itself -- see that class's own description.
+    range: AccessRequirementReference
     required: true
     close_mappings:
       - dcterms:requires
@@ -807,8 +833,10 @@ slots:
       sagegov:accessRequirement) -- this one maps onto the target ontology's
       gov:satisfies predicate instead, since AccessApproval specifically
       represents *satisfaction* of a requirement, not just a binding or an
-      application against it.
-    range: AccessRequirement
+      application against it. range is AccessRequirementReference (the gov:AR-<n>
+      stub), not the real AccessRequirement itself -- see that class's own
+      description.
+    range: AccessRequirementReference
     required: true
   requirementVersion:
     slot_uri: sagegov:requirementVersion
@@ -919,13 +947,27 @@ slots:
   hasCondition:
     slot_uri: sagegov:hasCondition
     description: >-
-      The DUO-backed Conditions this template reuses -- the same gov:Condition
-      class add_access_requirement() already mints from real dataUseModifiers
-      data (see plans/rebac_governance_graph_alignment.md), attached here to
-      an AccessRequirementTemplate instead of (or in addition to) an
-      AccessRequirement stub.
+      The DUO-backed Conditions this attaches to -- gov:Condition individuals
+      add_access_requirement() mints from real dataUseModifiers data (see
+      plans/rebac_governance_graph_alignment.md). Shared by AccessRequirementReference
+      (the AR stub these Conditions are minted onto in the first place) and
+      AccessRequirementTemplate (which reuses the same real Condition nodes).
     range: Condition
     multivalued: true
+  sameAs:
+    slot_uri: owl:sameAs
+    range: uriorcurie
+    required: true
+    description: >-
+      Bridges this AccessRequirementReference stub to the real
+      governanceduo:AccessRequirement individual with the same underlying id --
+      add_access_requirement_association() mints both from the same source id via
+      gov_id()/the plain dotted form respectively. range is the untyped uriorcurie,
+      not AccessRequirement itself, for the same reason IRBRequirement.studyId uses
+      it: the referenced individual is never asserted (type or otherwise) in this
+      ABox -- its full definition lives only in the separately-built
+      linkml/examples/rdf/ graph -- so an sh:class AccessRequirement constraint would
+      fail against this graph alone even when the reference is entirely correct.
   extendsTemplate:
     slot_uri: sagegov:extendsTemplate
     description: The AccessRequirementTemplate this IRBRequirement extends.
