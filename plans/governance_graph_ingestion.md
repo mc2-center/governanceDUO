@@ -310,6 +310,52 @@ removal itself.
 2. Everything else structural about the sync (module location, cadence, auth,
    warn-vs-block) is resolved in Section 2 — nothing left pending there.
 
+7. Impact on graph content: do these changes create edge gaps, and can we still
+   determine access?
+
+Checked directly against what the graph's own access-determination logic actually
+needs — none of Sections 1-6's changes weaken it. "Effective access = ACL permits AND
+applicable Access Requirements are satisfied" (the design doc's own formula) resolves
+from exactly three things, all fully Synapse-sourced and untouched by anything above:
+
+1. `AccessGrant` (`GET /entity/{id}/acl`) — does an ACL grant give principal P (or a
+   Team P belongs to) permission on resource R?
+2. `AccessRequirementAssociation` (`GET /entity/{id}/accessRequirement`) — is an AR
+   bound to R?
+3. `gov:hasApproval` — asserted directly from `DataAccessSubmissionStatus.state ==
+   APPROVED` (`add_data_access_submission()`) *or* `AccessApproval.status ==
+   APPROVED` (`add_access_approval()`) — has P specifically satisfied that AR?
+
+Per change:
+
+- **`sourceAclId`/`sourceAclResourceAccessId` removal**: no impact at all. These are
+  leaf literals on `AccessGrant`, not edges — `resource`/`principal`/`permission`/
+  `bindingType` are untouched.
+- **`ResearchProject` via `Submission.researchProjectSnapshot`**: a net improvement,
+  not a gap — covers every submitter's `ResearchProject`, where the original
+  owner-only endpoint would only ever have populated the sync credential's own.
+- **`DataAccessRequest`'s owner-only fields**: a real gap, but a thin node, not a
+  broken edge. `add_data_access_submission()` already emits
+  `gov:data-access-submission-555 gov:requestId gov:data-access-request-7001` as a
+  real edge, because the bare `requestId` comes from `Submission` itself, which the
+  sync does have. What's missing is everything *on* that target node for a request
+  the sync doesn't own (`institution`, PI/signing-official contacts,
+  `requestConcreteType`) — pure reviewer-facing justification/context, never read by
+  the three-step determination above.
+- **Dropping annotation-parsed Conditions**: a real gap only for an AR with no
+  curator-authored `AccessRequirement` record yet — its
+  `AccessRequirementReference` stub exists with no `Condition`/`hasCondition` data
+  attached (a warning, not a broken query, per the warn-don't-block decision). Where
+  a curator-authored record *does* exist, `Condition` minting is unchanged.
+  `Condition`/`dataUseModifiers` describe what an AR's terms *are* (for Policy
+  Fabric, compliance review, human-readable display) — never read to decide whether
+  an approval already on file counts.
+
+Bottom line: the honest gaps this plan accepts (`DataAccessRequest` context data,
+`Condition` data for not-yet-curated ARs) sit one layer outside the "who can access
+what" query — they cost auditability/compliance-narrative completeness, not
+authorization correctness.
+
 Housekeeping (already done as part of the consolidation)
 
 - `docs/governance-graph-sync.md` and `plans/governance_graph_ingestion_sourcing.md`
