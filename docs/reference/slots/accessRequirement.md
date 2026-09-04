@@ -6,7 +6,7 @@ search:
 # Slot: accessRequirement 
 
 
-_The AccessRequirement this association binds to the resource._
+_The AccessRequirement this association binds to the resource. range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement itself -- see that class's own description._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 
 | Property | Value |
 | --- | --- |
-| Range | [AccessRequirement](../classes/AccessRequirement.md) |
+| Range | [AccessRequirementReference](../classes/AccessRequirementReference.md) |
 | Domain Of | [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
 | Slot URI | [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement) |
 
@@ -87,7 +87,9 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 <details>
 ```yaml
 name: accessRequirement
-description: The AccessRequirement this association binds to the resource.
+description: The AccessRequirement this association binds to the resource. range is
+  AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement
+  itself -- see that class's own description.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 close_mappings:
 - dcterms:requires
@@ -95,7 +97,7 @@ rank: 1000
 slot_uri: sagegov:accessRequirement
 domain_of:
 - AccessRequirementAssociation
-range: AccessRequirement
+range: AccessRequirementReference
 required: true
 
 ```

@@ -6,7 +6,7 @@ search:
 # Slot: requirementId 
 
 
-_The AccessRequirement this approval satisfies (AccessApproval.requirementId in Synapse's live REST API). Distinct LinkML slot from AccessRequirementAssociation.accessRequirement/ DataAccessSubmission.accessRequirementId (which share sagegov:accessRequirement) -- this one maps onto the target ontology's gov:satisfies predicate instead, since AccessApproval specifically represents *satisfaction* of a requirement, not just a binding or an application against it._
+_The AccessRequirement this approval satisfies (AccessApproval.requirementId in Synapse's live REST API). Distinct LinkML slot from AccessRequirementAssociation.accessRequirement/ DataAccessSubmission.accessRequirementId (which share sagegov:accessRequirement) -- this one maps onto the target ontology's gov:satisfies predicate instead, since AccessApproval specifically represents *satisfaction* of a requirement, not just a binding or an application against it. range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement itself -- see that class's own description._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:satisfies](https://sagebionetworks.org/governance/satisfies)
 
 | Property | Value |
 | --- | --- |
-| Range | [AccessRequirement](../classes/AccessRequirement.md) |
+| Range | [AccessRequirementReference](../classes/AccessRequirementReference.md) |
 | Domain Of | [AccessApproval](../classes/AccessApproval.md) |
 | Slot URI | [sagegov:satisfies](https://sagebionetworks.org/governance/satisfies) |
 
@@ -91,13 +91,15 @@ description: The AccessRequirement this approval satisfies (AccessApproval.requi
   DataAccessSubmission.accessRequirementId (which share sagegov:accessRequirement)
   -- this one maps onto the target ontology's gov:satisfies predicate instead, since
   AccessApproval specifically represents *satisfaction* of a requirement, not just
-  a binding or an application against it.
+  a binding or an application against it. range is AccessRequirementReference (the
+  gov:AR-<n> stub), not the real AccessRequirement itself -- see that class's own
+  description.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:satisfies
 domain_of:
 - AccessApproval
-range: AccessRequirement
+range: AccessRequirementReference
 required: true
 
 ```

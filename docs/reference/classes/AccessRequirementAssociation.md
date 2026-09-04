@@ -33,8 +33,8 @@ URI: [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governan
     
         
         
-        AccessRequirementAssociation --> "1" AccessRequirement : accessRequirement
-        click AccessRequirement href "../../classes/AccessRequirement/"
+        AccessRequirementAssociation --> "1" AccessRequirementReference : accessRequirement
+        click AccessRequirementReference href "../../classes/AccessRequirementReference/"
     
 
         
@@ -88,7 +88,7 @@ URI: [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governan
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [resource](../slots/resource.md) | 1 <br/> [SynapseEntity](../classes/SynapseEntity.md) | The SynapseEntity this grant/association applies to | direct |
-| [accessRequirement](../slots/accessRequirement.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this association binds to the resource | direct |
+| [accessRequirement](../slots/accessRequirement.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this association binds to the resource | direct |
 | [source](../slots/source.md) | 0..1 <br/> [String](../types/String.md) | The system this grant/association was derived from, e | direct |
 | [bindingType](../slots/bindingType.md) | 1 <br/> [BindingTypeEnum](../enums/BindingTypeEnum.md) |  | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this association record | [BaseEntity](../classes/BaseEntity.md) |
@@ -218,7 +218,9 @@ attributes:
     required: true
   accessRequirement:
     name: accessRequirement
-    description: The AccessRequirement this association binds to the resource.
+    description: The AccessRequirement this association binds to the resource. range
+      is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement
+      itself -- see that class's own description.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     close_mappings:
     - dcterms:requires
@@ -227,7 +229,7 @@ attributes:
     owner: AccessRequirementAssociation
     domain_of:
     - AccessRequirementAssociation
-    range: AccessRequirement
+    range: AccessRequirementReference
     required: true
   source:
     name: source

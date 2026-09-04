@@ -285,17 +285,6 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 
 
 
-## Usages
-
-| used by | used in | type | used |
-| ---  | --- | --- | --- |
-| [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) | [accessRequirement](../slots/accessRequirement.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
-| [DataAccessSubmission](../classes/DataAccessSubmission.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
-| [AccessApproval](../classes/AccessApproval.md) | [requirementId](../slots/requirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
-| [ResearchProject](../classes/ResearchProject.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
-| [DataAccessRequest](../classes/DataAccessRequest.md) | [accessRequirementId](../slots/accessRequirementId.md) | range | [AccessRequirement](../classes/AccessRequirement.md) |
-
-
 
 
 

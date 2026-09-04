@@ -45,8 +45,8 @@ URI: [sagegov:AccessApproval](https://sagebionetworks.org/governance/AccessAppro
     
         
         
-        AccessApproval --> "1" AccessRequirement : requirementId
-        click AccessRequirement href "../../classes/AccessRequirement/"
+        AccessApproval --> "1" AccessRequirementReference : requirementId
+        click AccessRequirementReference href "../../classes/AccessRequirementReference/"
     
 
         
@@ -90,7 +90,7 @@ URI: [sagegov:AccessApproval](https://sagebionetworks.org/governance/AccessAppro
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [requirementId](../slots/requirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this approval satisfies (AccessApproval | direct |
+| [requirementId](../slots/requirementId.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this approval satisfies (AccessApproval | direct |
 | [requirementVersion](../slots/requirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this approval satisfies (AccessApproval | direct |
 | [submitterId](../slots/submitterId.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who performed the actions to gain this approval (A... | direct |
 | [accessorId](../slots/accessorId.md) | 1 <br/> [Integer](../types/Integer.md) | Synapse numeric id of the Principal approved for access (AccessApproval | direct |
@@ -242,14 +242,16 @@ attributes:
       DataAccessSubmission.accessRequirementId (which share sagegov:accessRequirement)
       -- this one maps onto the target ontology's gov:satisfies predicate instead,
       since AccessApproval specifically represents *satisfaction* of a requirement,
-      not just a binding or an application against it.
+      not just a binding or an application against it. range is AccessRequirementReference
+      (the gov:AR-<n> stub), not the real AccessRequirement itself -- see that class's
+      own description.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:satisfies
     owner: AccessApproval
     domain_of:
     - AccessApproval
-    range: AccessRequirement
+    range: AccessRequirementReference
     required: true
   requirementVersion:
     name: requirementVersion

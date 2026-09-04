@@ -12,6 +12,7 @@ Name: governance_duo
 
 | Class | Description |
 | --- | --- |
+| [AccessRequirementReference](classes/AccessRequirementReference.md) | The gov:AR-<n> stub build_governance_graph |
 | [AssetBinding](classes/AssetBinding.md) | One (Synapse entity id -> Policy Fabric Asset DID) pairing |
 | [BaseEntity](classes/BaseEntity.md) | Abstract root shared by every governanceDUO class |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessApproval](classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |
@@ -104,7 +105,7 @@ Name: governance_duo
 | [grantNumber](slots/grantNumber.md) | The identifier associated with the award funding this study |
 | [guardianDataSource](slots/guardianDataSource.md) | The data path/source configured for this asset's Guardian |
 | [guardianUrl](slots/guardianUrl.md) | The deployed Guardian service URL for this asset |
-| [hasCondition](slots/hasCondition.md) | The DUO-backed Conditions this template reuses -- the same gov:Condition clas... |
+| [hasCondition](slots/hasCondition.md) | The DUO-backed Conditions this attaches to -- gov:Condition individuals add_a... |
 | [id](slots/id.md) | A unique identifier for this record |
 | [institution](slots/institution.md) | Institution/company name, verbatim from Synapse (ResearchProject |
 | [institutionDids](slots/institutionDids.md) | Institutions with specific restrictions associated with the access requiremen... |
@@ -157,6 +158,7 @@ Name: governance_duo
 | [researchSpecificRestrictions](slots/researchSpecificRestrictions.md) | Research-specific restrictions associated with the access requirement |
 | [resource](slots/resource.md) | The SynapseEntity this grant/association applies to |
 | [ResourceKey](slots/ResourceKey.md) | The identifier(s) for the Resource(s) associated with this schema |
+| [sameAs](slots/sameAs.md) | Bridges this AccessRequirementReference stub to the real governanceduo:Access... |
 | [SchemaKey](slots/SchemaKey.md) | The Schema id corresponding to a registered JSON schema that describes the ac... |
 | [schemaUrl](slots/schemaUrl.md) | The registered URL associated with the access requirement JSON schema |
 | [scopedToProgram](slots/scopedToProgram.md) | The Program this IRBRequirement is scoped to |

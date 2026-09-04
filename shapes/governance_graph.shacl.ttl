@@ -9,27 +9,29 @@
 ## governanceduo:-stays-primary claim this comment used to make here does not hold.
 ## But swapping that generated pair in for this file was tried directly (validating
 ## governance_graph_export/governance_graph.ttl against governance_duo.shacl.ttl/
-## .owl.ttl with no hand-authored shapes at all) and produced 48 violations, because
-## the mismatch isn't about namespace identity -- it's that this ABox's own RDF
-## conventions diverge from what a generic LinkML dump assumes: enum values are
-## minted as their own IRI individuals (sagegov:Synapse, sagegov:DOWNLOAD, ...) where
-## gen-shacl expects sh:in string literals; createdBy/modifiedBy/submittedBy/heldBy
-## are emitted as sagegov:Principal IRI references where the schema's slot range is a
-## bare integer; DataAccessSubmission and DataAccessSubmissionStatus are merged onto
-## one RDF subject by the script but stay two separate classes (and closed shapes) in
-## the schema; Team/User are asserted via rdf:type rather than a principalType slot
-## value; and AccessRequirement itself (owned by access_requirement.yaml, not this
-## file, and lacking its own class_uri) accounts for all 5 ClassConstraintComponent
-## misses on its own. None of that is fixable by better class_uri/namespace
-## annotation -- it reflects this ABox's deliberate choice to mirror the SageBrain
-## Governance Graph Design doc's own literal RDF snippets rather than LinkML's
-## generic literal-enum/single-subject-per-class conventions. On top of that, this
-## file still has to express the parts of the ABox with no LinkML slot behind them at
-## all: Principal's bare-integer id minting, the hasACL/hasAccessRequirement/
-## hasApproval derived triples, or the id-hyphenation display convention (see
-## build_governance_graph.py's module docstring). This file exists specifically to
-## target gov:-namespaced classes and cover those gaps -- validating what the script
-## actually emits, not a hypothetical fully-generic mapping.
+## .owl.ttl with no hand-authored shapes at all) and, even after adding
+## AccessRequirementReference (see plans/access_requirement_reference_class.md --
+## closes the 5 ClassConstraintComponent misses AccessRequirement's own class_uri-less
+## identity used to cause here, plus the hasCondition/sameAs gaps on that same stub),
+## still produced 42 violations, because most of the mismatch was never about
+## namespace identity -- it's that this ABox's own RDF conventions diverge from what a
+## generic LinkML dump assumes: enum values are minted as their own IRI individuals
+## (sagegov:Synapse, sagegov:DOWNLOAD, ...) where gen-shacl expects sh:in string
+## literals; createdBy/modifiedBy/submittedBy/heldBy are emitted as sagegov:Principal
+## IRI references where the schema's slot range is a bare integer;
+## DataAccessSubmission and DataAccessSubmissionStatus are merged onto one RDF subject
+## by the script but stay two separate classes (and closed shapes) in the schema;
+## Team/User are asserted via rdf:type rather than a principalType slot value. None of
+## that is fixable by better class_uri/namespace annotation -- it reflects this ABox's
+## deliberate choice to mirror the SageBrain Governance Graph Design doc's own literal
+## RDF snippets rather than LinkML's generic literal-enum/single-subject-per-class
+## conventions. On top of that, this file still has to express the parts of the ABox
+## with no LinkML slot behind them at all: Principal's bare-integer id minting, the
+## hasACL/hasAccessRequirement/hasApproval derived triples, or the id-hyphenation
+## display convention (see build_governance_graph.py's module docstring). This file
+## exists specifically to target gov:-namespaced classes and cover those gaps --
+## validating what the script actually emits, not a hypothetical fully-generic
+## mapping.
 ##
 ## Run via `make governance-graph-validate` (scripts/validate_graph.py, pySHACL,
 ## inference="none", with shapes/governance_graph.owl.ttl passed as ont_graph so

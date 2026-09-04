@@ -35,8 +35,8 @@ URI: [sagegov:DataAccessRequest](https://sagebionetworks.org/governance/DataAcce
     
         
         
-        DataAccessRequest --> "1" AccessRequirement : accessRequirementId
-        click AccessRequirement href "../../classes/AccessRequirement/"
+        DataAccessRequest --> "1" AccessRequirementReference : accessRequirementId
+        click AccessRequirementReference href "../../classes/AccessRequirementReference/"
     
 
         
@@ -102,7 +102,7 @@ URI: [sagegov:DataAccessRequest](https://sagebionetworks.org/governance/DataAcce
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
+| [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
 | [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [ResearchProject](../classes/ResearchProject.md) | The research project this submission/request is associated with (DATA_ACCESS_... | direct |
 | [institution](../slots/institution.md) | 0..1 <br/> [String](../types/String.md) | Institution/company name, verbatim from Synapse (ResearchProject | direct |
 | [requestPrincipalInvestigatorName](../slots/requestPrincipalInvestigatorName.md) | 0..1 <br/> [String](../types/String.md) | Flattened from the live API's nested principalInvestigator | direct |
@@ -287,6 +287,8 @@ attributes:
   accessRequirementId:
     name: accessRequirementId
     description: The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
+      range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement
+      itself -- see that class's own description.
     comments:
     - slot_uri intentionally reuses sagegov:accessRequirement, the same predicate
       AccessRequirementAssociation.accessRequirement uses, even though this is a differently-named
@@ -302,7 +304,7 @@ attributes:
     - DataAccessSubmission
     - ResearchProject
     - DataAccessRequest
-    range: AccessRequirement
+    range: AccessRequirementReference
     required: true
   researchProjectId:
     name: researchProjectId

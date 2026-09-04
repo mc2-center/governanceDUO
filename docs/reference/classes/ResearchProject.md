@@ -33,8 +33,8 @@ URI: [sagegov:ResearchProject](https://sagebionetworks.org/governance/ResearchPr
     
         
         
-        ResearchProject --> "1" AccessRequirement : accessRequirementId
-        click AccessRequirement href "../../classes/AccessRequirement/"
+        ResearchProject --> "1" AccessRequirementReference : accessRequirementId
+        click AccessRequirementReference href "../../classes/AccessRequirementReference/"
     
 
         
@@ -75,7 +75,7 @@ URI: [sagegov:ResearchProject](https://sagebionetworks.org/governance/ResearchPr
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirement](../classes/AccessRequirement.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
+| [accessRequirementId](../slots/accessRequirementId.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this submission is an application against (DATA_ACCESS_... | direct |
 | [institution](../slots/institution.md) | 0..1 <br/> [String](../types/String.md) | Institution/company name, verbatim from Synapse (ResearchProject | direct |
 | [projectLead](../slots/projectLead.md) | 0..1 <br/> [String](../types/String.md) | The person leading this research project (ResearchProject | direct |
 | [intendedDataUseStatement](../slots/intendedDataUseStatement.md) | 0..1 <br/> [String](../types/String.md) | A few short paragraphs explaining how the controlled data will be used (Resea... | direct |
@@ -225,6 +225,8 @@ attributes:
   accessRequirementId:
     name: accessRequirementId
     description: The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
+      range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement
+      itself -- see that class's own description.
     comments:
     - slot_uri intentionally reuses sagegov:accessRequirement, the same predicate
       AccessRequirementAssociation.accessRequirement uses, even though this is a differently-named
@@ -240,7 +242,7 @@ attributes:
     - DataAccessSubmission
     - ResearchProject
     - DataAccessRequest
-    range: AccessRequirement
+    range: AccessRequirementReference
     required: true
   institution:
     name: institution

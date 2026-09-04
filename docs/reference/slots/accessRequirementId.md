@@ -6,7 +6,7 @@ search:
 # Slot: accessRequirementId 
 
 
-_The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID)._
+_The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID). range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement itself -- see that class's own description._
 
 
 
@@ -40,7 +40,7 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 
 | Property | Value |
 | --- | --- |
-| Range | [AccessRequirement](../classes/AccessRequirement.md) |
+| Range | [AccessRequirementReference](../classes/AccessRequirementReference.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md), [ResearchProject](../classes/ResearchProject.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
 | Slot URI | [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRequirement) |
 
@@ -94,6 +94,8 @@ URI: [sagegov:accessRequirement](https://sagebionetworks.org/governance/accessRe
 ```yaml
 name: accessRequirementId
 description: The AccessRequirement this submission is an application against (DATA_ACCESS_SUBMISSION.ACCESS_REQUIREMENT_ID).
+  range is AccessRequirementReference (the gov:AR-<n> stub), not the real AccessRequirement
+  itself -- see that class's own description.
 comments:
 - slot_uri intentionally reuses sagegov:accessRequirement, the same predicate AccessRequirementAssociation.accessRequirement
   uses, even though this is a differently-named LinkML slot -- so "what AccessRequirement
@@ -108,7 +110,7 @@ domain_of:
 - DataAccessSubmission
 - ResearchProject
 - DataAccessRequest
-range: AccessRequirement
+range: AccessRequirementReference
 required: true
 
 ```

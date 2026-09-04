@@ -108,12 +108,16 @@ What's still hand-written, because no LinkML slot or generic dumper can express 
 - **`gov:hasApproval`** is emitted only when a cross-object join holds
   (`DataAccessSubmissionStatus.state == APPROVED`) — join logic, not a per-slot
   mapping.
-- **`gov:hasACL`/`gov:hasAccessRequirement`/`gov:hasCondition`** are derived
-  convenience triples with no corresponding `governance_graph.yaml` slot —
-  `hasCondition` specifically because the real `AccessRequirement` class lives in
-  `access_requirement.yaml`, which `governance_graph.yaml` imports (not the other way
-  around), so a slot declared there could never range over `Condition` (defined in
-  `governance_graph.yaml`) without an import cycle.
+- **`gov:hasACL`/`gov:hasAccessRequirement`** are derived convenience triples with no
+  corresponding `governance_graph.yaml` slot — pure inverses of already-declared
+  slots (`AccessGrant.resource`/`AccessRequirementAssociation.resource`), not
+  independently-sourced facts, so giving them their own slot would just be a second
+  way to assert the same fact with nothing enforcing the two stay consistent. See
+  `plans/access_requirement_reference_class.md`'s "Explicitly out of scope" section
+  for the fuller reasoning. `gov:hasCondition` *is* a real slot now, declared on
+  `AccessRequirementReference` (the `gov:AR-<n>` stub's own class, added specifically
+  so this — and the stub's own `owl:sameAs` bridge — could stop being undeclared
+  gaps; see that same plan).
 - **`gov:Condition`** individuals (`gov:hasCondition`, `gov:conditionType`,
   `gov:duoCode`, `gov:conditionDetail`) are minted from a *second*, separate source —
   the real `access_requirement.yaml` `AccessRequirement` instance

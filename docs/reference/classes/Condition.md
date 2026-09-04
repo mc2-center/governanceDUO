@@ -73,6 +73,7 @@ URI: [sagegov:Condition](https://sagebionetworks.org/governance/Condition)
 
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
+| [AccessRequirementReference](../classes/AccessRequirementReference.md) | [hasCondition](../slots/hasCondition.md) | range | [Condition](../classes/Condition.md) |
 | [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md) | [hasCondition](../slots/hasCondition.md) | range | [Condition](../classes/Condition.md) |
 
 

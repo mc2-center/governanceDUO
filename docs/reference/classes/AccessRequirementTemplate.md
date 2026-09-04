@@ -66,7 +66,7 @@ URI: [sagegov:AccessRequirementTemplate](https://sagebionetworks.org/governance/
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [domain](../slots/domain.md) | 0..1 <br/> [String](../types/String.md) | Free-text research domain this template applies to, e | direct |
-| [hasCondition](../slots/hasCondition.md) | * <br/> [Condition](../classes/Condition.md) | The DUO-backed Conditions this template reuses -- the same gov:Condition clas... | direct |
+| [hasCondition](../slots/hasCondition.md) | * <br/> [Condition](../classes/Condition.md) | The DUO-backed Conditions this attaches to -- gov:Condition individuals add_a... | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this template | [BaseEntity](../classes/BaseEntity.md) |
 
 
@@ -187,15 +187,17 @@ attributes:
     range: string
   hasCondition:
     name: hasCondition
-    description: The DUO-backed Conditions this template reuses -- the same gov:Condition
-      class add_access_requirement() already mints from real dataUseModifiers data
-      (see plans/rebac_governance_graph_alignment.md), attached here to an AccessRequirementTemplate
-      instead of (or in addition to) an AccessRequirement stub.
+    description: The DUO-backed Conditions this attaches to -- gov:Condition individuals
+      add_access_requirement() mints from real dataUseModifiers data (see plans/rebac_governance_graph_alignment.md).
+      Shared by AccessRequirementReference (the AR stub these Conditions are minted
+      onto in the first place) and AccessRequirementTemplate (which reuses the same
+      real Condition nodes).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:hasCondition
     owner: AccessRequirementTemplate
     domain_of:
+    - AccessRequirementReference
     - AccessRequirementTemplate
     range: Condition
     multivalued: true
