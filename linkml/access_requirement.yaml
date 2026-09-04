@@ -4,6 +4,7 @@ description: LinkML representation of the AccessRequirement component.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
+  sagegov: https://sagebionetworks.org/governance/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -16,6 +17,7 @@ classes:
     description: >-
       Representation of a Synapse Access Requirement and its relationships to
       entities, grants, and projects.
+    class_uri: sagegov:AccessRequirement
     is_a: BaseEntity
     mixins:
       - GovernanceMixin

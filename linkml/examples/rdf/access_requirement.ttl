@@ -1,7 +1,8 @@
 @prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
 
-governanceduo:access_requirement.42 a governanceduo:AccessRequirement ;
+governanceduo:access_requirement.42 a sagegov:AccessRequirement ;
     governanceduo:StudyKey "study.mc2-jax-5xfad" ;
     governanceduo:contributionDate "2026-01-15" ;
     governanceduo:contributorName "Jane Doe" ;
