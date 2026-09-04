@@ -438,6 +438,7 @@ attributes:
     - Schema
     range: string
     multivalued: true
+    pattern: ^study\.[A-Za-z0-9_-]+$
   entityIdList:
     name: entityIdList
     description: Synapse ID(s) for Synapse container(s) (e.g. Project, Dataset, Folder,

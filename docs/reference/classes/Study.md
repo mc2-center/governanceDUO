@@ -400,7 +400,10 @@ attributes:
       it is a single, later-loaded file that already imports everything it references
       -- this file cannot follow that pattern without breaking its own leaf-file guarantee.
       Same rationale applies to StudyKey below and to ResourceKey (schema.yaml)/SchemaKey
-      (resource.yaml).'
+      (resource.yaml). The pattern above (matching AccessRequirement.id''s own slot_usage
+      pattern in access_requirement.yaml) is the cycle-free substitute: it catches
+      a malformed id without needing a typed range at all -- the same approach already
+      used for entityIdList in that same file. See plans/identifier_update.md.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: Study
@@ -410,6 +413,7 @@ attributes:
     - Study
     range: string
     multivalued: true
+    pattern: ^access_requirement\.\d+$
   grantNumber:
     name: grantNumber
     description: The identifier associated with the award funding this study.

@@ -46,6 +46,13 @@ URI: [governanceduo:slot/ResourceKey](https://w3id.org/sage-bionetworks/governan
 | Property | Value |
 | --- | --- |
 | Multivalued | Yes |
+### Value Constraints
+
+| Property | Value |
+| --- | --- |
+| Regex Pattern | `^resource\.[A-Za-z0-9]+$` |
+
+
 
 
 
@@ -56,7 +63,7 @@ URI: [governanceduo:slot/ResourceKey](https://w3id.org/sage-bionetworks/governan
 
 ## Comments
 
-* Untyped string, not range: Resource -- see props.yaml's AccessRequirementKey comment for why (this file cannot import resource.yaml without risking a cycle).
+* Untyped string, not range: Resource -- see props.yaml's AccessRequirementKey comment for why (this file cannot import resource.yaml without risking a cycle). The pattern below (matching Resource.id's own slot_usage pattern in resource.yaml) is the cycle-free substitute. See plans/identifier_update.md.
 
 
 
@@ -104,13 +111,16 @@ description: The identifier(s) for the Resource(s) associated with this schema. 
   multiple values as a comma-separated list.
 comments:
 - 'Untyped string, not range: Resource -- see props.yaml''s AccessRequirementKey comment
-  for why (this file cannot import resource.yaml without risking a cycle).'
+  for why (this file cannot import resource.yaml without risking a cycle). The pattern
+  below (matching Resource.id''s own slot_usage pattern in resource.yaml) is the cycle-free
+  substitute. See plans/identifier_update.md.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - Schema
 range: string
 multivalued: true
+pattern: ^resource\.[A-Za-z0-9]+$
 
 ```
 </details></div>

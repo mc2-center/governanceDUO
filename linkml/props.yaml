@@ -17,6 +17,7 @@ slots:
       The Access Requirement id(s) associated with this object. Provide multiple
       values as a comma-separated list.
     multivalued: true
+    pattern: '^access_requirement\.\d+$'
     annotations:
       foreign_key: true
     comments:
@@ -30,12 +31,17 @@ slots:
         later-loaded file that already imports everything it references -- this
         file cannot follow that pattern without breaking its own leaf-file
         guarantee. Same rationale applies to StudyKey below and to ResourceKey
-        (schema.yaml)/SchemaKey (resource.yaml).'
+        (schema.yaml)/SchemaKey (resource.yaml). The pattern above (matching
+        AccessRequirement.id''s own slot_usage pattern in access_requirement.yaml)
+        is the cycle-free substitute: it catches a malformed id without needing a
+        typed range at all -- the same approach already used for entityIdList in
+        that same file. See plans/identifier_update.md.'
   StudyKey:
     description: >-
       The Study id(s) associated with this object. Provide multiple values as a
       comma-separated list.
     multivalued: true
+    pattern: '^study\.[A-Za-z0-9_-]+$'
     annotations:
       foreign_key: true
 enums:

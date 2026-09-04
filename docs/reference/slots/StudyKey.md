@@ -48,6 +48,13 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 | Property | Value |
 | --- | --- |
 | Multivalued | Yes |
+### Value Constraints
+
+| Property | Value |
+| --- | --- |
+| Regex Pattern | `^study\.[A-Za-z0-9_-]+$` |
+
+
 
 
 
@@ -108,6 +115,7 @@ domain_of:
 - Schema
 range: string
 multivalued: true
+pattern: ^study\.[A-Za-z0-9_-]+$
 
 ```
 </details></div>

@@ -50,7 +50,10 @@ slots:
     comments:
       - 'Untyped string, not range: Schema -- see props.yaml''s AccessRequirementKey
         comment for why (this file cannot import schema.yaml without risking a
-        cycle).'
+        cycle). The pattern below (matching Schema.id''s own slot_usage pattern in
+        schema.yaml) is the cycle-free substitute. See
+        plans/identifier_update.md.'
+    pattern: '^schema\.[A-Za-z0-9_-]+$'
     annotations:
       foreign_key: true
   grantAnnotationKey:

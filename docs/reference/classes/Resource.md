@@ -357,6 +357,7 @@ attributes:
     - Schema
     range: string
     multivalued: true
+    pattern: ^study\.[A-Za-z0-9_-]+$
   AccessRequirementKey:
     name: AccessRequirementKey
     annotations:
@@ -375,7 +376,10 @@ attributes:
       it is a single, later-loaded file that already imports everything it references
       -- this file cannot follow that pattern without breaking its own leaf-file guarantee.
       Same rationale applies to StudyKey below and to ResourceKey (schema.yaml)/SchemaKey
-      (resource.yaml).'
+      (resource.yaml). The pattern above (matching AccessRequirement.id''s own slot_usage
+      pattern in access_requirement.yaml) is the cycle-free substitute: it catches
+      a malformed id without needing a typed range at all -- the same approach already
+      used for entityIdList in that same file. See plans/identifier_update.md.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: Resource
@@ -385,6 +389,7 @@ attributes:
     - Study
     range: string
     multivalued: true
+    pattern: ^access_requirement\.\d+$
   SchemaKey:
     name: SchemaKey
     annotations:
@@ -395,13 +400,16 @@ attributes:
       the access conditions relevant to this Resource.
     comments:
     - 'Untyped string, not range: Schema -- see props.yaml''s AccessRequirementKey
-      comment for why (this file cannot import schema.yaml without risking a cycle).'
+      comment for why (this file cannot import schema.yaml without risking a cycle).
+      The pattern below (matching Schema.id''s own slot_usage pattern in schema.yaml)
+      is the cycle-free substitute. See plans/identifier_update.md.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: Resource
     domain_of:
     - Resource
     range: string
+    pattern: ^schema\.[A-Za-z0-9_-]+$
   grantAnnotationKey:
     name: grantAnnotationKey
     description: The annotation key applied to a Synapse entity that contains a grant

@@ -34,8 +34,11 @@ slots:
     comments:
       - 'Untyped string, not range: Resource -- see props.yaml''s AccessRequirementKey
         comment for why (this file cannot import resource.yaml without risking a
-        cycle).'
+        cycle). The pattern below (matching Resource.id''s own slot_usage pattern
+        in resource.yaml) is the cycle-free substitute. See
+        plans/identifier_update.md.'
     multivalued: true
+    pattern: '^resource\.[A-Za-z0-9]+$'
     annotations:
       foreign_key: true
   schemaUrl:
