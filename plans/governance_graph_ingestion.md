@@ -6,7 +6,12 @@ full: `docs/governance-graph-sync.md` (deleted) and
 `plans/governance_graph_ingestion_sourcing.md` (deleted). It also revises several
 things a first pass got wrong or left open — corrected live against
 rest-docs.synapse.org this session, not left as stubs — see "Corrections from the
-prior pass" below. Nothing here is implemented yet.
+prior pass" below.
+
+**Section 5's schema changes are implemented** (2026-09-04) — see
+`governance_graph_ingestion_report.md`. Everything else here (the sync script itself,
+Sections 2/4/6's design) remains future work; this plan is guidance for building it,
+not a description of something that exists yet.
 
 Context
 
