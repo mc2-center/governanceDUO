@@ -230,16 +230,6 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     g.add((subject, PREDICATE("bindingType", "AccessGrant"), GOV[data["bindingType"]]))
     if data.get("createdOn") is not None:
         g.add((subject, PREDICATE("createdOn", "AccessGrant"), Literal(data["createdOn"], datatype=XSD.long)))
-    if data.get("sourceAclId") is not None:
-        g.add((subject, PREDICATE("sourceAclId", "AccessGrant"), Literal(data["sourceAclId"])))
-    if data.get("sourceAclResourceAccessId") is not None:
-        g.add(
-            (
-                subject,
-                PREDICATE("sourceAclResourceAccessId", "AccessGrant"),
-                Literal(data["sourceAclResourceAccessId"]),
-            )
-        )
     # design doc: "syn10081783 -- hasACL --> ACL:syn10081783 -- (grants) --> ...";
     # this repo's AccessGrant *is* the grant record itself, so the derived
     # convenience triple points hasACL directly at it. No governance_graph.yaml slot

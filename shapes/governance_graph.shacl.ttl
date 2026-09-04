@@ -89,9 +89,7 @@ gov:AccessGrantShape a sh:NodeShape ;
         [ sh:path gov:source ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ],
         [ sh:path gov:bindingType ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
             sh:in ( gov:Direct gov:Inherited ) ],
-        [ sh:path gov:createdOn ; sh:datatype xsd:long ; sh:maxCount 1 ],
-        [ sh:path gov:sourceAclId ; sh:datatype xsd:integer ; sh:maxCount 1 ],
-        [ sh:path gov:sourceAclResourceAccessId ; sh:datatype xsd:integer ; sh:maxCount 1 ] .
+        [ sh:path gov:createdOn ; sh:datatype xsd:long ; sh:maxCount 1 ] .
 
 #################################################################
 # AccessRequirementAssociation

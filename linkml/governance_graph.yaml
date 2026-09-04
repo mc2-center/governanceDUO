@@ -190,10 +190,16 @@ classes:
       id:
         description: >-
           A synthetic identifier for this grant record (Synapse's ACL/
-          ACL_RESOURCE_ACCESS tables have their own internal numeric ids, traced
-          via sourceAclId/sourceAclResourceAccessId below, but no single
-          natural key for "this grant" as a first-class thing — the design doc
-          itself mints one, e.g. gov:grant-001).
+          ACL_RESOURCE_ACCESS tables have their own internal numeric ids, but no
+          single natural key for "this grant" as a first-class thing — the design
+          doc itself mints one, e.g. gov:grant-001). Those internal ids have no
+          public REST equivalent to trace back to -- confirmed directly against
+          rest-docs.synapse.org: AccessControlList.id is the entity id, not a
+          separate ACL-record id, and ResourceAccess has only principalId/
+          accessType, no row id at all -- see
+          plans/governance_graph_ingestion.md Section 1 for why sourceAclId/
+          sourceAclResourceAccessId were removed rather than kept as permanently
+          unpopulatable fields.
         pattern: '^grant\.[A-Za-z0-9_-]+$'
         examples:
           - value: grant.001
@@ -206,8 +212,6 @@ classes:
       - source
       - bindingType
       - createdOn
-      - sourceAclId
-      - sourceAclResourceAccessId
   AccessRequirementAssociation:
     is_a: BaseEntity
     class_uri: sagegov:AccessRequirementAssociation
@@ -520,6 +524,7 @@ classes:
       AccessGrant/AccessRequirementAssociation: no single natural key exists
       for "this template" as a first-class thing. See
       plans/governance_graph_open_questions.md Section C.2.
+    tree_root: true
     slot_usage:
       id:
         description: A synthetic identifier for this template.
@@ -549,6 +554,7 @@ classes:
       `is_a: BaseEntity` for a synthetic dotted id, same reasoning as
       AccessRequirementTemplate above. See
       plans/governance_graph_open_questions.md Section C.2.
+    tree_root: true
     slot_usage:
       id:
         description: A synthetic identifier for this IRB requirement instance.
@@ -579,6 +585,7 @@ classes:
       description. `is_a: BaseEntity` for a synthetic dotted id, same
       reasoning as AccessRequirementTemplate above. See
       plans/governance_graph_open_questions.md Section C.2.
+    tree_root: true
     slot_usage:
       id:
         description: A synthetic identifier for this program.
@@ -655,14 +662,6 @@ slots:
     slot_uri: sagegov:bindingType
     range: BindingTypeEnum
     required: true
-  sourceAclId:
-    slot_uri: sagegov:sourceAclId
-    description: Traceability back to the literal ACL.ID row this grant was derived from.
-    range: integer
-  sourceAclResourceAccessId:
-    slot_uri: sagegov:sourceAclResourceAccessId
-    description: Traceability back to the literal ACL_RESOURCE_ACCESS.ID row this grant was derived from.
-    range: integer
   accessRequirement:
     slot_uri: sagegov:accessRequirement
     description: >-

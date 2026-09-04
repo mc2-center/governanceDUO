@@ -6,5 +6,3 @@ permission:
 source: Synapse
 bindingType: Direct
 createdOn: 1755100000000
-sourceAclId: 42001
-sourceAclResourceAccessId: 42101

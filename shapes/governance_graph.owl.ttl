@@ -116,14 +116,6 @@ gov:source a rdf:Property ;
 gov:bindingType a owl:ObjectProperty ;
     rdfs:comment "Range: a BindingTypeEnum value minted as its own IRI (gov:Direct or gov:Inherited)." .
 
-gov:sourceAclId a owl:DatatypeProperty ;
-    rdfs:domain gov:AccessGrant ;
-    rdfs:range xsd:integer .
-
-gov:sourceAclResourceAccessId a owl:DatatypeProperty ;
-    rdfs:domain gov:AccessGrant ;
-    rdfs:range xsd:integer .
-
 gov:createdOn a owl:DatatypeProperty ;
     rdfs:range xsd:long ;
     rdfs:comment "Epoch milliseconds. Used by SynapseEntity and AccessGrant. DataAccessSubmission uses gov:submittedOn instead -- Synapse's live Submission REST object names that field submittedOn, not createdOn (see governance_graph.yaml's corrected description)." .
