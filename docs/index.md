@@ -14,7 +14,7 @@ schema reference and worked examples drawn from the real files in this repo.
 | [Use cases, data sources, and the submission pipeline](use-cases.md) | What each part of this model is for, where its data is meant to come from, and what's actually operational vs. design-only today |
 | [The LinkML model](linkml-model.md) | Module layout, import graph, DUO term reuse, id→URI minting, `GovernanceMixin`'s conditional rules |
 | [Knowledge graph representation](knowledge-graph.md) | The three distinct RDF artifacts this repo produces, why they differ, and how they're validated |
-| [Sourcing the Governance Graph from Synapse](governance-graph-sync.md) | Design-only: which real Synapse APIs would populate the Governance Graph, why DUO conditions can't come from the same source, and how it'd bridge to Policy Fabric |
+| [Governance Graph ingestion plan](https://github.com/mc2-center/governanceDUO/blob/main/plans/governance_graph_ingestion.md) | Plan, not a docs page: which real Synapse APIs would populate the Governance Graph, why DUO conditions can't come from the same source, which attributes need curator-spreadsheet input instead, and the proposed schemas for those curator tables |
 | [Policy Fabric integration](policy-fabric.md) | `policy_fabric.yaml`/`policy_fabric_bindings.yaml`, `PolicyFabricMixin`, and an end-to-end worked example |
 | [DRS interoperability](drs-interop.md) | Design-only crosswalk to the GA4GH Data Repository Service API's object/authorization model — no running integration |
 | [Schema reference](reference/index.md) | Auto-generated (`make docs`) — every class, slot, enum, and type, each with a Mermaid diagram and, where one exists, an embedded example instance |

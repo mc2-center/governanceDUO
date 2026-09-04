@@ -3,7 +3,6 @@ nav:
   - use-cases.md
   - linkml-model.md
   - knowledge-graph.md
-  - governance-graph-sync.md
   - policy-fabric.md
   - drs-interop.md
   - reference

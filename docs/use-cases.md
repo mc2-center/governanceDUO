@@ -117,9 +117,10 @@ can run unassisted.
   against the hand-authored examples under `linkml/examples/governance_graph/`. The
   schema is verified-correct against real Synapse table columns *in anticipation* of
   such a pipeline, not because one exists — see
-  [Sourcing the Governance Graph from Synapse](governance-graph-sync.md) for a design
-  of what that pipeline would look like and how it'd bridge to Policy Fabric/DUO-core
-  outputs.
+  [`plans/governance_graph_ingestion.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/governance_graph_ingestion.md)
+  for a design of what that pipeline would look like, how it'd bridge to Policy
+  Fabric/DUO-core outputs, and which attributes need curator-spreadsheet input
+  instead of a live Synapse pull.
 - **Policy Fabric**: `make policy-fabric` is a manual, repo-maintainer-run command
   against one `AccessRequirement` example at a time — nothing in the curator
   submission flow above automatically triggers it when a new AR record is submitted.
