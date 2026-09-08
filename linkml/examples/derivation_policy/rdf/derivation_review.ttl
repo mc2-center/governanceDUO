@@ -1,0 +1,20 @@
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+governanceduo:derivation_review.001 a governanceduo:DerivationReview ;
+    governanceduo:activity <activity.1001> ;
+    governanceduo:inputLabels [ a governanceduo:ControlLabel ;
+            governanceduo:computedFrom <activity.1001> ;
+            governanceduo:computedOn 1755300000000 ;
+            governanceduo:dataTier "Controlled" ;
+            governanceduo:sourceAccessRequirements <access_requirement.42> ;
+            governanceduo:subject <syn10081783> ],
+        [ a governanceduo:ControlLabel ;
+            governanceduo:computedFrom <activity.1001> ;
+            governanceduo:computedOn 1755300000000 ;
+            governanceduo:dataTier "Controlled" ;
+            governanceduo:sourceAccessRequirements <access_requirement.99> ;
+            governanceduo:subject <syn40000002> ] ;
+    governanceduo:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (access_requirement.42, access_requirement.99), both Controlled tier. Pending ACT review." ;
+    governanceduo:reviewStatus "Flagged" .
+

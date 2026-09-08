@@ -1,0 +1,240 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/derivation_policy
+name: governance_duo_derivation_policy
+description: >-
+  The Derivation Policy Graph (Layer 4 of plans/prov_o_integration.md) — explicitly
+  NOT a PROV-O extension. Per the analysis this repo's plan formalizes: PROV-O
+  gives you derivation ancestry, not propagation policy ("it doesn't decide
+  propagation rules... that's a policy design question your team has to answer
+  explicitly — PROV-O just gives you the edges to enforce whatever rule you pick").
+  This file is this repo's own vocabulary, riding on top of the Provenance Graph
+  (provenance.yaml) and Governance Graph (governance_graph.yaml) the same way
+  Policy Fabric (policy_fabric.yaml) already rides on top of GovernanceMixin — a
+  repo-local layer consuming ontology-backed data, not part of the ontology itself.
+  See plans/prov_o_integration.md Section 4-5 for the full design, and Section 5
+  specifically for why this does not overlap with Policy Fabric (Policy Fabric
+  answers "did this one requester satisfy this one AR's condition" at request time;
+  this file answers "should this derivation activity's combination of inputs have
+  been allowed at all" at derivation time).
+
+  `DerivationRule` is honestly ungrounded: no real Synapse or repo data source
+  enumerates datatype/tier combination rules today — it ships as structural
+  capability with illustrative examples only, the same treatment
+  governance_graph.yaml's own AccessRequirementTemplate/Program/Site/IRBRequirement
+  already got for the identical reason (see that file's "Honest grounding note").
+  Populated by governance/DCC policy owners as an explicit editorial act, never
+  inferred.
+
+  `ControlLabel`/`DerivationReview` reference `SynapseEntity`/`AccessRequirementReference`/
+  `Activity` individuals via untyped `uriorcurie`, not typed class ranges, for the
+  same cross-ABox reason provenance.yaml's `Activity.generated`/`Usage.entity`
+  already do: those individuals live in separate example/ABox pipelines
+  (linkml/examples/governance_graph/, linkml/examples/provenance/) and are never
+  asserted in this file's own example-rdf ABox.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - provenance
+  - governance_graph
+  - mixins
+enums:
+  DerivationReviewStatusEnum:
+    description: >-
+      Workflow state of a DerivationReview — the same enum-per-workflow-state
+      convention ApprovalStateEnum/SubmissionStateEnum already use in
+      governance_graph.yaml, deliberately a distinct enum from both (do not
+      conflate).
+    permissible_values:
+      Flagged:
+        description: >-
+          Minted automatically (scripts/build_derivation_policy.py) because the
+          source Activity's inputs carry disjoint sourceAccessRequirements sets —
+          not yet looked at by a person.
+      Reviewed:
+        description: A person has looked at this combination but not yet recorded a decision.
+      Approved:
+        description: The combination was reviewed and judged safe to permit.
+      Denied:
+        description: The combination was reviewed and judged unsafe; access to the derived output should be blocked.
+classes:
+  DerivationRule:
+    is_a: BaseEntity
+    class_uri: governanceduo:DerivationRule
+    description: >-
+      A policy row keyed by a combination of DataTierEnum values, answering "may
+      these tiers be joined/derived from together, and if so, what tier does the
+      result carry?" — the note's own paragraph-21 combinatorial question "at a
+      datatype/processing level." See this schema's own "Honest grounding note"
+      above.
+    slot_usage:
+      id:
+        description: A synthetic identifier for this rule.
+        pattern: '^derivation_rule\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: derivation_rule.controlled-plus-controlled
+    slots:
+      - inputDataTiers
+      - permitted
+      - resultingDataTier
+      - requiresReview
+      - rationale
+  ControlLabel:
+    class_uri: governanceduo:ControlLabel
+    description: >-
+      A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum
+      rank across an entity's full derivation ancestry, computed once when the
+      entity is created/derived rather than re-walked live on every query (the
+      note's own paragraph-18 design: "a control label computed once... stored as
+      an attribute on the node, not recomputed live on every query"). Not `is_a:
+      BaseEntity`: has no independent Synapse-sourced identifier of its own, same
+      reasoning as Condition — like Condition,
+      scripts/build_derivation_policy.py mints a real, stable per-subject IRI node
+      for it at the script level even though the LinkML schema itself has no `id`
+      slot to hang one off of.
+    slot_usage:
+      dataTier:
+        description: >-
+          Reuses GovernanceMixin's shared dataTier slot (mixins.yaml) — the same
+          "tier of data access associated with" concept, computed here rather than
+          declared. Narrowed to single-valued (GovernanceMixin's own dataTier is
+          multivalued, since a single AccessRequirement can name more than one
+          tier) since a ControlLabel carries exactly one, precomputed rank.
+          slot_uri set explicitly here: the base dataTier slot (mixins.yaml)
+          declares none of its own, and scripts/build_derivation_policy.py's
+          PREDICATE() reuse (from build_governance_graph.py) requires one.
+        slot_uri: governanceduo:dataTier
+        multivalued: false
+        required: true
+    slots:
+      - subject
+      - dataTier
+      - sourceAccessRequirements
+      - computedFrom
+      - computedOn
+  DerivationReview:
+    is_a: BaseEntity
+    class_uri: governanceduo:DerivationReview
+    description: >-
+      An auditable record minted whenever a derivation Activity's inputs carry
+      ControlLabels citing disjoint sourceAccessRequirements sets — the note's own
+      paragraph-12 "composite risk from independent grants" case, flagged by
+      pattern (scripts/build_derivation_policy.py) rather than inferred, and its
+      own proposed storage mechanism (paragraph 21): "the access rule could then be
+      stored as a node in the graph for later review/retrieval."
+    slot_usage:
+      id:
+        description: A synthetic identifier for this review record.
+        pattern: '^derivation_review\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: derivation_review.001
+    slots:
+      - activity
+      - inputLabels
+      - reviewStatus
+      - reviewedBy
+      - reviewedOn
+      - reviewNotes
+slots:
+  inputDataTiers:
+    slot_uri: governanceduo:inputDataTiers
+    description: The combination of input DataTierEnum values this rule governs.
+    range: DataTierEnum
+    multivalued: true
+    required: true
+  permitted:
+    slot_uri: governanceduo:permitted
+    description: Whether this combination of inputDataTiers may be joined/derived from together at all.
+    range: boolean
+    required: true
+  resultingDataTier:
+    slot_uri: governanceduo:resultingDataTier
+    description: >-
+      The DataTierEnum the derived output carries when permitted. Defaults to
+      max(inputDataTiers) per the note's own recommendation, but a rule may
+      explicitly override it for a specific combination (e.g. an aggregation that
+      demonstrably reduces sensitivity below its inputs' max).
+    range: DataTierEnum
+  requiresReview:
+    slot_uri: governanceduo:requiresReview
+    description: >-
+      Whether this combination is only conditionally permitted, pending a human
+      DerivationReview, rather than flatly permitted/denied.
+    range: boolean
+  rationale:
+    slot_uri: governanceduo:rationale
+    description: Free-text justification for this rule's permitted/resultingDataTier values.
+  subject:
+    slot_uri: governanceduo:subject
+    description: >-
+      The SynapseEntity this ControlLabel labels. range is uriorcurie, not
+      SynapseEntity — see this schema's own description.
+    range: uriorcurie
+    required: true
+  sourceAccessRequirements:
+    slot_uri: governanceduo:sourceAccessRequirements
+    description: >-
+      Every AccessRequirement contributing to this label's dataTier, across the
+      subject's full derivation ancestry — what lets a later composite-risk check
+      tell whether two ControlLabels trace back to the same AR or to genuinely
+      different ones (the note's paragraph-12 case). range is uriorcurie, not
+      AccessRequirementReference — see this schema's own description.
+    range: uriorcurie
+    multivalued: true
+  computedFrom:
+    slot_uri: governanceduo:computedFrom
+    description: >-
+      The Activity this label was (re)computed from. range is uriorcurie, not
+      Activity — see this schema's own description. Also the staleness signal
+      Section 7 of plans/prov_o_integration.md relies on: if an AR named in
+      sourceAccessRequirements is later revoked, any label computed before that
+      point is provably stale.
+    range: uriorcurie
+  computedOn:
+    slot_uri: governanceduo:computedOn
+    description: When this ControlLabel was (re)computed (epoch milliseconds).
+    range: integer
+  activity:
+    slot_uri: governanceduo:activity
+    description: >-
+      The derivation Activity being reviewed. range is uriorcurie, not Activity —
+      see this schema's own description.
+    range: uriorcurie
+    required: true
+  inputLabels:
+    slot_uri: governanceduo:inputLabels
+    description: >-
+      The ControlLabels (one per input entity of the Activity above) whose
+      disjoint sourceAccessRequirements triggered this review. Inlined, not
+      referenced by id — ControlLabel has no independent identifier of its own
+      (see that class's own description), so embedding is the only option, not a
+      cross-ABox concern the way Activity/SynapseEntity references are.
+    range: ControlLabel
+    multivalued: true
+    required: true
+  reviewStatus:
+    slot_uri: governanceduo:reviewStatus
+    description: >-
+      This review's workflow state. Deliberately not named `status`: that slot
+      name is already bound to ApprovalStateEnum on AccessApproval in
+      governance_graph.yaml — a distinct, unrelated enum; do not conflate.
+    range: DerivationReviewStatusEnum
+    required: true
+  reviewedBy:
+    slot_uri: governanceduo:reviewedBy
+    description: >-
+      Synapse numeric user id of who recorded reviewStatus, when it is
+      Reviewed/Approved/Denied. range integer, mirroring
+      createdBy/modifiedBy/submittedBy's own raw-id convention rather than a typed
+      Principal reference — see provenance.yaml's own description for why.
+    range: integer
+  reviewedOn:
+    slot_uri: governanceduo:reviewedOn
+    description: When reviewStatus was last recorded (epoch milliseconds).
+    range: integer
+  reviewNotes:
+    slot_uri: governanceduo:reviewNotes
+    description: Free-text notes from the reviewer.

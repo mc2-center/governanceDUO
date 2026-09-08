@@ -1,0 +1,26 @@
+# Illustrative: activity.1001 (see linkml/examples/provenance/activity.example.yaml
+# -- referenced here by id only, not asserted in this file's own ABox, same
+# cross-ABox convention this schema's own description documents) used two
+# Controlled-tier inputs whose ControlLabels cite different, non-overlapping
+# AccessRequirements -- the composite-risk case plans/prov_o_integration.md
+# Section 4/paragraph-12 describes, flagged automatically by
+# scripts/build_derivation_policy.py, not inferred by hand here.
+id: derivation_review.001
+activity: activity.1001
+inputLabels:
+  - subject: syn10081783
+    dataTier: Controlled
+    sourceAccessRequirements:
+      - access_requirement.42
+    computedFrom: activity.1001
+    computedOn: 1755300000000
+  - subject: syn40000002
+    dataTier: Controlled
+    sourceAccessRequirements:
+      - access_requirement.99
+    computedFrom: activity.1001
+    computedOn: 1755300000000
+reviewStatus: Flagged
+reviewNotes: >-
+  Auto-flagged: inputs bound to disjoint AccessRequirements (access_requirement.42,
+  access_requirement.99), both Controlled tier. Pending ACT review.

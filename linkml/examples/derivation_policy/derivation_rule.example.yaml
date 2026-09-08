@@ -1,0 +1,16 @@
+# Illustrative -- no real Synapse/repo data source enumerates datatype/tier
+# combination rules today; see derivation_policy.yaml's own "Honest grounding
+# note". Populated as a policy-owner editorial decision, not inferred.
+id: derivation_rule.controlled-plus-controlled
+inputDataTiers:
+  - Controlled
+  - Controlled
+permitted: true
+resultingDataTier: Controlled
+requiresReview: true
+rationale: >-
+  Joining two Controlled-tier inputs is not flatly denied, but routes to human
+  ACT review (DerivationReview) rather than auto-approval, since two
+  independently-approved Controlled datasets combined can expose a
+  re-identification risk neither grant alone authorized -- the composite-risk
+  case plans/prov_o_integration.md Section 4 describes.
