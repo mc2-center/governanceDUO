@@ -54,6 +54,9 @@ from rdflib import Graph
 EXAMPLE_CLASSES = {
     "access_requirement": "AccessRequirement",
     "study": "Study",
+    "activity": "Activity",
+    "derivation_rule": "DerivationRule",
+    "derivation_review": "DerivationReview",
 }
 
 

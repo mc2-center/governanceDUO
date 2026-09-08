@@ -4,8 +4,11 @@ description: >-
   LinkML representation of the Sage Bionetworks governanceDUO data model (Access
   Requirement, Resource, Schema, Study), its Policy Fabric integration
   (policy_fabric.yaml), its RDF Governance Graph representation
-  (governance_graph.yaml), and a design-only GA4GH Data Repository Service (DRS)
-  interoperability crosswalk (drs_alignment.yaml). Architecturally aligned with
+  (governance_graph.yaml), a Provenance Graph layering real PROV-O structure on top
+  of it (provenance.yaml) plus a Derivation Policy Graph consuming that lineage
+  (derivation_policy.yaml — see plans/prov_o_integration.md), and a design-only
+  GA4GH Data Repository Service (DRS) interoperability crosswalk
+  (drs_alignment.yaml). Architecturally aligned with
   SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one
   file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI
   discipline). Shaped to interoperate with sagebrain-model
@@ -46,4 +49,6 @@ imports:
   - schema
   - study
   - governance_graph
+  - provenance
+  - derivation_policy
   - drs_alignment
