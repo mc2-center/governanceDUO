@@ -404,6 +404,7 @@ attributes:
     - SynapseEntity
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -423,6 +424,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   modifiedBy:
     name: modifiedBy
@@ -441,6 +443,7 @@ attributes:
     domain_of:
     - DataAccessSubmission
     - DataAccessRequest
+    - Activity
     range: integer
   modifiedOn:
     name: modifiedOn
@@ -458,6 +461,7 @@ attributes:
     domain_of:
     - DataAccessSubmissionStatus
     - DataAccessRequest
+    - Activity
     range: integer
   etag:
     name: etag
@@ -476,6 +480,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   requestConcreteType:
     name: requestConcreteType

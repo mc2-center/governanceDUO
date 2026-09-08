@@ -797,6 +797,7 @@ attributes:
     owner: Study
     domain_of:
     - GovernanceMixin
+    - ControlLabel
     range: DataTierEnum
     multivalued: true
   license:

@@ -26,6 +26,7 @@ URI: [governanceduo:slot/dataTier](https://w3id.org/sage-bionetworks/governance-
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [GovernanceMixin](../classes/GovernanceMixin.md) | DUO-based data-use-modifier vocabulary and its conditional-requirement rules,... |  no  |
+| [ControlLabel](../classes/ControlLabel.md) | A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum ran... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  no  |
 | [Study](../classes/Study.md) | Studies associated with a grant |  no  |
@@ -42,7 +43,7 @@ URI: [governanceduo:slot/dataTier](https://w3id.org/sage-bionetworks/governance-
 | Property | Value |
 | --- | --- |
 | Range | [DataTierEnum](../enums/DataTierEnum.md) |
-| Domain Of | [GovernanceMixin](../classes/GovernanceMixin.md) |
+| Domain Of | [GovernanceMixin](../classes/GovernanceMixin.md), [ControlLabel](../classes/ControlLabel.md) |
 
 ### Cardinality and Requirements
 
@@ -108,6 +109,7 @@ exact_mappings:
 rank: 1000
 domain_of:
 - GovernanceMixin
+- ControlLabel
 range: DataTierEnum
 multivalued: true
 

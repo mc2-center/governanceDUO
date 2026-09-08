@@ -218,6 +218,7 @@ attributes:
     domain_of:
     - DataAccessSubmissionStatus
     - DataAccessRequest
+    - Activity
     range: integer
 
 ```

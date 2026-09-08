@@ -17,6 +17,7 @@ workflow.
 | [`sage-ar-model/`](sage-ar-model/) | Generated outputs of the schematic pipeline (`make collate convert generate-json`): the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema |
 | [`governance_graph_export/`](governance_graph_export/) | Generated Turtle export of the worked Governance Graph example (`make governance-graph`) |
 | [`policy_fabric_export/`](policy_fabric_export/) | Generated Policy Fabric input JSON (`make policy-fabric`) |
+| [`derivation_policy_export/`](derivation_policy_export/) | Generated Turtle export of computed `ControlLabel`/`DerivationReview` individuals (`make derivation-policy`) — see `linkml/provenance.yaml`/`linkml/derivation_policy.yaml` and `plans/prov_o_integration.md` |
 | [`access_requirement_JSON/`](access_requirement_JSON/README.md) | Per-DCC Access Requirement dictionaries and their generated conditional JSON schemas — see its own README for the format |
 | [`docs/`](docs/index.md) | The mkdocs documentation site — narrative pages plus an auto-generated schema reference (`make docs`); published to GitHub Pages via `.github/workflows/docs.yml` |
 | [`scripts/`](scripts/) | The Python build/export/validate scripts the `Makefile` drives |
@@ -282,6 +283,20 @@ entry at all for DPV (the Data Privacy Vocabulary); this fallback (validated
 against DPV, PROV, and SKOS) is now built into the `ols-term-annotator` skill
 itself as `lov-vocab-search`/`lov-term-search`. `bindingType`, submission `state`,
 and `Principal.principalType` were checked and left unmapped rather than forced.
+
+Those `prov:` mappings above are annotation-only (`skos:closeMatch`, not real graph
+structure). `linkml/provenance.yaml` turns them into real structure for entities that
+actually have derivation: `Activity`/`Usage` reuse real `prov:Activity`/`prov:Usage`/
+`prov:used`/`prov:qualifiedUsage`/`prov:entity`/`prov:generated` IRIs directly (by
+IRI, never re-minted, the same convention as the DUO terms above), grounded in
+Synapse's own real provenance feature (`Activity`/`Used`/`UsedEntity`/`UsedURL`,
+`GET /entity/{id}/generatedBy` — verified live against rest-docs.synapse.org, not
+guessed). `linkml/derivation_policy.yaml` layers a separate, explicitly non-PROV-O
+policy vocabulary (`DerivationRule`/`ControlLabel`/`DerivationReview`) on top, to
+flag composite-access-risk derivations across independently-approved
+AccessRequirements. See `plans/prov_o_integration.md` for the full design, and
+`docs/knowledge-graph.md`'s "Provenance Graph and Derivation Policy Graph" section for
+the build/validate commands.
 
 `scripts/build_governance_graph.py` exports the worked example under
 `linkml/examples/governance_graph/` (recreating the design doc's own `syn10081783`/

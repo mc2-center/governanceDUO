@@ -203,6 +203,7 @@ attributes:
     owner: Condition
     domain_of:
     - Condition
+    - Activity
     range: string
   conditionDetail:
     name: conditionDetail

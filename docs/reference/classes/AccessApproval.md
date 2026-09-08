@@ -334,6 +334,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   sourceApprovalId:
     name: sourceApprovalId
@@ -363,6 +364,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   id:
     name: id

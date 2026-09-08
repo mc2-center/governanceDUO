@@ -279,6 +279,8 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - Program
+    - Activity
+    - Usage
     range: string
   nodeType:
     name: nodeType
@@ -360,6 +362,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   createdBy:
     name: createdBy
@@ -382,6 +385,7 @@ attributes:
     - SynapseEntity
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -401,6 +405,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   id:
     name: id

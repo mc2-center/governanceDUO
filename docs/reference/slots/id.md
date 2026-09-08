@@ -40,6 +40,9 @@ URI: [dcterms:identifier](http://purl.org/dc/terms/identifier)
 | [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md) | A reusable set of DUO-backed Conditions an IRBRequirement can extend |  yes  |
 | [IRBRequirement](../classes/IRBRequirement.md) | A site/program-specific instantiation of an AccessRequirementTemplate, per th... |  yes  |
 | [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
+| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  yes  |
+| [DerivationRule](../classes/DerivationRule.md) | A policy row keyed by a combination of DataTierEnum values, answering "may th... |  yes  |
+| [DerivationReview](../classes/DerivationReview.md) | An auditable record minted whenever a derivation Activity's inputs carry Cont... |  yes  |
 
 
 

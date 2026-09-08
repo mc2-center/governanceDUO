@@ -189,6 +189,8 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - Program
+    - Activity
+    - Usage
     range: string
   id:
     name: id

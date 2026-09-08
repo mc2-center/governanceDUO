@@ -304,6 +304,7 @@ attributes:
     - SynapseEntity
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -323,6 +324,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   etag:
     name: etag
@@ -341,6 +343,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   id:
     name: id

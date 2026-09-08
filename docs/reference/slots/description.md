@@ -26,6 +26,7 @@ URI: [sagegov:description](https://sagebionetworks.org/governance/description)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [Condition](../classes/Condition.md) | A single DUO-code-backed condition on an AccessRequirement, surfacing Governa... |  no  |
+| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  no  |
 
 
 
@@ -39,7 +40,7 @@ URI: [sagegov:description](https://sagebionetworks.org/governance/description)
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [Condition](../classes/Condition.md) |
+| Domain Of | [Condition](../classes/Condition.md), [Activity](../classes/Activity.md) |
 | Slot URI | [sagegov:description](https://sagebionetworks.org/governance/description) |
 
 ### Cardinality and Requirements
@@ -95,6 +96,7 @@ rank: 1000
 slot_uri: sagegov:description
 domain_of:
 - Condition
+- Activity
 range: string
 
 ```

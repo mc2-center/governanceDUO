@@ -54,6 +54,12 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
         click IRBRequirement href "../../classes/IRBRequirement/"
       BaseEntity <|-- Program
         click Program href "../../classes/Program/"
+      BaseEntity <|-- Activity
+        click Activity href "../../classes/Activity/"
+      BaseEntity <|-- DerivationRule
+        click DerivationRule href "../../classes/DerivationRule/"
+      BaseEntity <|-- DerivationReview
+        click DerivationReview href "../../classes/DerivationReview/"
       
       BaseEntity : id
         
@@ -80,6 +86,9 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
     * [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md)
     * [IRBRequirement](../classes/IRBRequirement.md)
     * [Program](../classes/Program.md)
+    * [Activity](../classes/Activity.md)
+    * [DerivationRule](../classes/DerivationRule.md)
+    * [DerivationReview](../classes/DerivationReview.md)
 
 
 ## Slots

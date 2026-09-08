@@ -199,6 +199,8 @@ attributes:
     - SynapseAccessRequirementMixin
     - SynapseEntity
     - Program
+    - Activity
+    - Usage
     range: string
   etag:
     name: etag
@@ -216,6 +218,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   currentRevNum:
     name: currentRevNum
@@ -285,6 +288,7 @@ attributes:
     - SynapseEntity
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -303,6 +307,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: integer
 
 ```

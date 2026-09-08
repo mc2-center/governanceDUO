@@ -1144,6 +1144,7 @@ attributes:
     owner: GovernanceMixin
     domain_of:
     - GovernanceMixin
+    - ControlLabel
     range: DataTierEnum
     multivalued: true
   license:

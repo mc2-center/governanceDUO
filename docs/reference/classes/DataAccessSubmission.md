@@ -353,6 +353,7 @@ attributes:
     domain_of:
     - DataAccessSubmission
     - DataAccessRequest
+    - Activity
     range: integer
   etag:
     name: etag
@@ -371,6 +372,7 @@ attributes:
     - AccessApproval
     - ResearchProject
     - DataAccessRequest
+    - Activity
     range: string
   id:
     name: id

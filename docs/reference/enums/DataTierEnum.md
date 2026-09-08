@@ -28,6 +28,8 @@ URI: [governanceduo:enum/DataTierEnum](https://w3id.org/sage-bionetworks/governa
 | Name | Description |
 | ---  | --- |
 | [dataTier](../slots/dataTier.md) | The tier of data access associated with the access requirement |
+| [inputDataTiers](../slots/inputDataTiers.md) | The combination of input DataTierEnum values this rule governs |
+| [resultingDataTier](../slots/resultingDataTier.md) | The DataTierEnum the derived output carries when permitted |
 
 
 

@@ -275,7 +275,65 @@ make governance-graph-validate
 runs `scripts/build_governance_graph.py` then `scripts/validate_graph.py --data
 governance_graph_export/governance_graph.ttl --shapes
 shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl`. `make
-validate-all` runs both this and `shacl-validate`.
+validate-all` runs both this and `shacl-validate`, plus the two layers below.
+
+## 4. Provenance Graph and Derivation Policy Graph
+
+Two more layers, added per [`plans/prov_o_integration.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/prov_o_integration.md):
+a **Provenance Graph** (`linkml/provenance.yaml`) giving PROV-O-native lineage
+structure, and a **Derivation Policy Graph** (`linkml/derivation_policy.yaml`)
+consuming that lineage to compute per-entity sensitivity labels and flag
+composite-access-risk derivations. Both are imported into
+`governance_duo.linkml.yaml` (like `governance_graph.yaml` already is), so `make
+owl`/`make shacl` already regenerate their shapes as part of
+`shapes/governance_duo.owl.ttl`/`.shacl.ttl` — unlike `governance_graph.yaml`,
+neither needs its own hand-authored shapes file: their classes stay in the
+`governanceduo:` namespace (no `gov:`/`syn:`-style reserialization), so a plain
+`gen-owl`/`gen-shacl` pass over the whole schema already covers them correctly.
+
+**Provenance Graph.** `Activity`/`Usage` mirror Synapse's real native provenance
+feature (`org.sagebionetworks.repo.model.provenance.Activity`/`Used`/`UsedEntity`/
+`UsedURL`, and `GET /entity/{id}/generatedBy`) — verified live against
+rest-docs.synapse.org, not guessed — and reuse real `prov:Activity`/`prov:Usage`/
+`prov:used`/`prov:qualifiedUsage`/`prov:entity`/`prov:generated` IRIs directly as
+`class_uri`/`slot_uri`, the same "reuse external terms by IRI, never re-mint"
+convention this repo's README already documents for DUO terms — confirmed
+empirically: a plain `RDFLibDumper` call on an `Activity` instance emits `a
+prov:Activity`/`a prov:Usage` with no extra code. `prov:wasDerivedFrom` is a derived
+convenience edge with no LinkML slot behind it (same treatment as `gov:hasACL`
+above) — computed by `scripts/sync_provenance_graph.add_was_derived_from()` from
+`Activity.generated` + non-executed `Usage.entity` pairs.
+
+```sh
+make provenance-example-rdf   # linkml/examples/provenance/*.example.yaml -> linkml/examples/provenance/rdf/
+make provenance-validate      # + SHACL validation against shapes/governance_duo.{owl,shacl}.ttl
+make sync-provenance-graph ENTITY_IDS="syn10081783"   # real Synapse data (requires synapseclient login)
+```
+
+**Derivation Policy Graph.** Explicitly *not* a PROV-O extension: `DerivationRule`,
+`ControlLabel`, and `DerivationReview` are this repo's own vocabulary, riding on top
+of the Provenance Graph the same way Policy Fabric already rides on top of
+`GovernanceMixin`. `scripts/build_derivation_policy.py` runs two deliberately
+separate passes — computing `ControlLabel` (a precomputed, per-entity max-sensitivity
+tier across its full `wasDerivedFrom` ancestry, walking `DerivationRule` overrides at
+each join point) and then `DerivationReview` (flagging any multi-input `Activity`
+whose inputs' `ControlLabel`s cite disjoint `AccessRequirement`s — the "composite
+risk from independent grants" case) — never one blurred computation. `DerivationRule`
+is honestly ungrounded today: no real Synapse/repo data source enumerates
+datatype-combination policy, so it ships as structural capability with illustrative
+examples only, the same treatment `AccessRequirementTemplate`/`Program`/`Site`
+already got above for the identical reason.
+
+```sh
+make derivation-policy-example-rdf   # linkml/examples/derivation_policy/*.example.yaml -> .../rdf/
+make derivation-policy-validate      # + SHACL validation
+make derivation-policy               # computes ControlLabel/DerivationReview into derivation_policy_export/
+```
+
+Neither layer builds a query-time enforcement/filtering system, and neither resolves
+what happens to a `ControlLabel` when the `AccessRequirement` it was computed from is
+later revoked — both are explicit open questions, not solved here; see
+`plans/prov_o_integration.md` Sections 6–7.
 
 For the full class/slot/enum reference of `governance_graph.yaml` (the LinkML schema,
 under `governanceduo:` IRIs), see the [schema reference](reference/index.md) — e.g.

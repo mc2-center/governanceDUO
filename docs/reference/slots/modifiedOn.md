@@ -27,6 +27,7 @@ URI: [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn)
 | --- | --- | --- |
 | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md) | The approval-workflow state of a DataAccessSubmission |  no  |
 | [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  no  |
+| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  no  |
 
 
 
@@ -40,7 +41,7 @@ URI: [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn)
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
+| Domain Of | [DataAccessSubmissionStatus](../classes/DataAccessSubmissionStatus.md), [DataAccessRequest](../classes/DataAccessRequest.md), [Activity](../classes/Activity.md) |
 | Slot URI | [sagegov:modifiedOn](https://sagebionetworks.org/governance/modifiedOn) |
 
 ### Cardinality and Requirements
@@ -100,6 +101,7 @@ slot_uri: sagegov:modifiedOn
 domain_of:
 - DataAccessSubmissionStatus
 - DataAccessRequest
+- Activity
 range: integer
 
 ```

@@ -27,6 +27,7 @@ URI: [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy)
 | --- | --- | --- |
 | [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  no  |
 | [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  no  |
+| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  no  |
 
 
 
@@ -40,7 +41,7 @@ URI: [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy)
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md), [DataAccessRequest](../classes/DataAccessRequest.md) |
+| Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md), [DataAccessRequest](../classes/DataAccessRequest.md), [Activity](../classes/Activity.md) |
 | Slot URI | [sagegov:modifiedBy](https://sagebionetworks.org/governance/modifiedBy) |
 
 ### Cardinality and Requirements
@@ -100,6 +101,7 @@ slot_uri: sagegov:modifiedBy
 domain_of:
 - DataAccessSubmission
 - DataAccessRequest
+- Activity
 range: integer
 
 ```
