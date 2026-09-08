@@ -58,7 +58,42 @@ sync-governance-graph:
 sync-governance-graph-validate:
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph_synced.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
 
-validate-all: shacl-validate governance-graph-validate
+# Provenance Graph (linkml/provenance.yaml) and Derivation Policy Graph
+# (linkml/derivation_policy.yaml) -- see plans/prov_o_integration.md. Both are
+# imported into governance_duo.linkml.yaml (like governance_graph.yaml already is),
+# so `make owl`/`make shacl` already regenerate their shapes as part of
+# shapes/governance_duo.owl.ttl/.shacl.ttl -- no separate shapes files needed, only
+# separate example-instance/RDF/validation passes, one per layer.
+provenance-example-rdf:
+	python3 scripts/convert_examples_to_rdf.py --examples-dir linkml/examples/provenance --out-dir linkml/examples/provenance/rdf
+
+provenance-validate: owl shacl provenance-example-rdf
+	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/provenance/rdf/all_examples.ttl
+
+# Real Synapse provenance data (Activity/used/generatedBy), not the hand-authored
+# examples above -- requires the same synapseclient login as sync-governance-graph.
+# Usage: make sync-provenance-graph ENTITY_IDS="syn10081783 syn2343195"
+sync-provenance-graph:
+	python3 scripts/sync_provenance_graph.py $(ENTITY_IDS)
+
+derivation-policy-example-rdf:
+	python3 scripts/convert_examples_to_rdf.py --examples-dir linkml/examples/derivation_policy --out-dir linkml/examples/derivation_policy/rdf
+
+derivation-policy-validate: owl shacl derivation-policy-example-rdf
+	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/derivation_policy/rdf/all_examples.ttl
+
+# Computes ControlLabel/DerivationReview from a Provenance Graph + Governance Graph.
+# Defaults to the illustrative example-driven builds (linkml/examples/provenance/rdf/
+# all_examples.ttl + governance_graph_export/governance_graph.ttl, both built by the
+# targets above/governance-graph) so this works with no live Synapse access; pass
+# PROVENANCE_GRAPH=provenance_graph_export/provenance_graph_synced.ttl (after
+# sync-provenance-graph) for real data.
+PROVENANCE_GRAPH := linkml/examples/provenance/rdf/all_examples.ttl
+GOVERNANCE_GRAPH := governance_graph_export/governance_graph.ttl
+derivation-policy: provenance-example-rdf governance-graph
+	python3 scripts/build_derivation_policy.py --provenance-graph $(PROVENANCE_GRAPH) --governance-graph $(GOVERNANCE_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
+
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances
