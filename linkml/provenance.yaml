@@ -1,0 +1,159 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/provenance
+name: governance_duo_provenance
+description: >-
+  The Provenance Graph (Layer 3 of plans/prov_o_integration.md): real PROV-O
+  structure for Synapse's native provenance feature, layered on top of the
+  Governance Graph (governance_graph.yaml). Grounded directly against
+  org.sagebionetworks.repo.model.provenance.Activity/Used/UsedEntity/UsedURL and
+  GET /entity/{id}/generatedBy — both verified live against rest-docs.synapse.org
+  this pass, not guessed. `Activity`/`Usage` reuse real prov:Activity/prov:Usage/
+  prov:used/prov:qualifiedUsage/prov:entity/prov:generated IRIs directly, the same
+  "reuse external terms by IRI, never re-mint" convention this repo's README already
+  documents for DUO terms.
+
+  Deliberately one-directional: this file imports governance_graph (for
+  SynapseEntity/Principal) so Activity can reference them; governance_graph does NOT
+  import this file back, to avoid a cycle. That's also why the generated-by
+  relationship is modeled as Activity.generated (prov:generated) rather than a
+  wasGeneratedBy slot added onto SynapseEntity itself — prov:generated and
+  prov:wasGeneratedBy are formally inverse properties describing the same fact, and
+  this direction needs no edit to governance_graph.yaml at all.
+
+  Activity.generated and Usage.entity are `uriorcurie`, not typed `SynapseEntity`,
+  for the same reason IRBRequirement.studyId / AccessRequirementReference.sameAs
+  already are in governance_graph.yaml: the referenced SynapseEntity individual
+  lives in a separate example/ABox pipeline (linkml/examples/governance_graph/,
+  merged only by scripts/build_governance_graph.py) and is never asserted in this
+  schema's own example-rdf ABox (linkml/examples/rdf/), so a typed sh:class
+  constraint would fail against a reference that is otherwise entirely correct.
+  Activity.createdBy/modifiedBy reuse the existing global `createdBy`/`modifiedBy`
+  slots (mixins.yaml/governance_graph.yaml) unmodified — both are already plain
+  `integer` (a raw Synapse user id, exact_mappings dcterms:creator/dcterms:contributor),
+  never a typed Principal reference, for the identical reason
+  DataAccessSubmission.submittedBy/modifiedBy already are: resolving that id to an
+  IRI-referenced Principal node is script-only behavior (see
+  scripts/build_governance_graph.py), not something the generic schema-driven RDF
+  dump does.
+
+  What is NOT verified this pass: whether real DCC Synapse entities actually have
+  Activity records populated in practice — Synapse's provenance feature is opt-in,
+  and most files have never had it filled in. This schema and its examples are
+  structural capability, grounded in a real, confirmed API; population rates need a
+  live smoke test before this is trusted in production. See
+  plans/prov_o_integration.md Section 1.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+  prov: http://www.w3.org/ns/prov#
+  sagegov: https://sagebionetworks.org/governance/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - governance_graph
+classes:
+  Activity:
+    is_a: BaseEntity
+    class_uri: prov:Activity
+    description: >-
+      Mirrors Synapse's real Activity object
+      (org.sagebionetworks.repo.model.provenance.Activity — id/name/description/
+      etag/createdOn/modifiedOn/createdBy/modifiedBy/used — verified directly
+      against rest-docs.synapse.org). Returned by GET /entity/{id}/generatedBy and
+      GET /entity/{id}/version/{versionNumber}/generatedBy (both confirmed to
+      exist, both OAuth `view` scope — the same auth tier
+      scripts/sync_governance_graph.py already requires, no new credential type
+      needed). See plans/prov_o_integration.md Section 1.
+    slot_usage:
+      id:
+        description: >-
+          A unique identifier for this activity (schematic-schema-style dotted
+          string wrapping Synapse's own string Activity.id, same id convention as
+          DataAccessSubmission/ResearchProject in governance_graph.yaml).
+        pattern: '^activity\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: activity.1001
+    slots:
+      - name
+      - description
+      - etag
+      - createdOn
+      - modifiedOn
+      - createdBy
+      - modifiedBy
+      - generated
+      - qualifiedUsage
+  Usage:
+    class_uri: prov:Usage
+    description: >-
+      Flattens Synapse's real Used interface and its two implementations —
+      UsedEntity (+ reference.targetId/targetVersionNumber) and UsedURL (+ url/name),
+      both verified against rest-docs.synapse.org — into one class, the same
+      flattening governance_graph.yaml's DataAccessRequest already does for
+      principalInvestigator/signingOfficial (neither branch has an independent
+      identifier, and nothing else in this graph needs to reference one
+      individually; only one branch is populated per instance). Not `is_a:
+      BaseEntity`: keyed structurally by its parent Activity's qualifiedUsage list,
+      same reasoning as Condition/DataAccessSubmissionStatus. Maps onto PROV-O's
+      own qualification pattern: prov:Usage is a real PROV-O class for exactly this
+      "Activity used this Entity, plus extra detail" shape
+      (prov:qualifiedUsage / prov:entity), not an invented parallel structure.
+    slots:
+      - wasExecuted
+      - entity
+      - entityVersionNumber
+      - url
+      - name
+slots:
+  generated:
+    slot_uri: prov:generated
+    description: >-
+      The SynapseEntity this Activity produced. range is the untyped uriorcurie,
+      not SynapseEntity itself — see this schema's own description for why (the
+      referenced individual is never asserted in this schema's own example-rdf
+      ABox).
+    range: uriorcurie
+  qualifiedUsage:
+    slot_uri: prov:qualifiedUsage
+    description: >-
+      The Usage records (mirroring Activity.used) describing what this Activity
+      consumed, and whether each was executed rather than merely used as input
+      data.
+    range: Usage
+    multivalued: true
+  wasExecuted:
+    slot_uri: sagegov:wasExecuted
+    description: >-
+      Mirrors Used.wasExecuted verbatim ("The enclosed entity was used and also
+      executed in the Activity") — a Synapse-specific boolean flag distinguishing
+      code/workflow inputs from data inputs within one qualifiedUsage list, with no
+      exact PROV-O predicate equivalent found; left as a repo-local predicate
+      rather than forced onto e.g. prov:hadRole, same as other slots this repo
+      leaves unmapped when no confident match exists (see README's OLS-verification
+      table).
+    range: boolean
+    required: true
+  entity:
+    slot_uri: prov:entity
+    description: >-
+      The SynapseEntity referenced by this Usage, when Used.concreteType is
+      UsedEntity (Used.reference.targetId). range is uriorcurie, not
+      SynapseEntity — same cross-ABox reasoning as Activity.generated above.
+      Absent when this Usage instead carries url/name (a UsedURL).
+    range: uriorcurie
+  entityVersionNumber:
+    slot_uri: sagegov:entityVersionNumber
+    description: >-
+      Mirrors UsedEntity.reference.targetVersionNumber. No PROV-O equivalent:
+      PROV-O does not version-scope entities the way Synapse does.
+    range: integer
+  url:
+    slot_uri: sagegov:url
+    description: >-
+      The external URL used, when Used.concreteType is UsedURL
+      (UsedURL.url — "The external URL of the file that was used"). Absent when
+      this Usage instead carries entity/entityVersionNumber (a UsedEntity).
+      Usage.name (UsedURL.name — the same field description, verbatim, despite
+      the field being named `name`) reuses the shared display-name slot
+      (mixins.yaml) directly rather than being redefined here.

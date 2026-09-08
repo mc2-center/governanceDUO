@@ -1,0 +1,18 @@
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+governanceduo:activity.1001 a prov:Activity ;
+    prov:generated <syn30000001> ;
+    prov:qualifiedUsage [ a prov:Usage ;
+            prov:entity <syn40000002> ;
+            sagegov:wasExecuted true ],
+        [ a prov:Usage ;
+            prov:entity <syn10081783> ;
+            sagegov:wasExecuted false ] ;
+    sagegov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
+    governanceduo:createdBy 1000001 ;
+    governanceduo:createdOn 1755200000000 ;
+    governanceduo:name "Derive per-sample QC summary" .
+

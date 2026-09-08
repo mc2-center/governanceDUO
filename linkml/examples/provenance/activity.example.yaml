@@ -1,0 +1,20 @@
+# Illustrative: an Activity that derived a per-sample QC summary file
+# (syn30000001, not itself exemplified elsewhere in this repo) from a raw
+# sequencing file this repo already exemplifies (syn10081783 -- see
+# linkml/examples/governance_graph/synapse_entity_file.example.yaml) plus the
+# pipeline script that performed the derivation (syn40000002, executed rather
+# than merely used -- Used.wasExecuted=true). generated/qualifiedUsage[].entity
+# reference SynapseEntity ids by their bare form, not asserted in this file's own
+# ABox -- same convention IRBRequirement.studyId already uses in
+# governance_graph.yaml (see this class's own schema description for why).
+id: activity.1001
+name: Derive per-sample QC summary
+description: Illustrative structural example -- not sourced from a real Synapse Activity record.
+generated: syn30000001
+qualifiedUsage:
+  - entity: syn10081783
+    wasExecuted: false
+  - entity: syn40000002
+    wasExecuted: true
+createdBy: 1000001
+createdOn: 1755200000000
