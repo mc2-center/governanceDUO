@@ -103,7 +103,13 @@ derivation-policy: provenance-example-rdf governance-graph
 derivation-policy-check:
 	python3 scripts/check_derivation_policy.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check
+# Contract check against sagebrain-infra's authorizer: runs its governance query
+# (pinned copy in tests/infra_contract/) against the exported governance graph.
+# Set SAGEBRAIN_INFRA=<infra checkout or authorize.py> to run infra's own code instead.
+infra-contract-check: governance-graph
+	python3 scripts/check_infra_contract.py
+
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances

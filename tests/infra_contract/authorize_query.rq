@@ -1,0 +1,28 @@
+# Verbatim copy of the governance query sagebrain-infra's authorizer runs against
+# Neptune for each resource it checks.
+#
+# Source: Sage-Bionetworks/sagebrain-infra, commit fc6de51f73a948e498f0b5e8da53c565cfc3c0e5
+#   (branch policy-engine), src/lambda_rebac/authorize.py, _governance_query().
+# The f-string's doubled braces are written as single braces here; {resource_iri}
+# is the one placeholder, filled with the resource's absolute IRI by
+# scripts/check_infra_contract.py.
+#
+# To re-sync: copy _governance_query()'s body from the new infra commit, update the
+# hash above, and re-run `make infra-contract-check`. Running the check with
+# SAGEBRAIN_INFRA=<path> uses infra's own authorize.py instead of this copy, which
+# catches drift between the two.
+PREFIX gov: <https://sagebionetworks.org/governance/>
+SELECT ?grant ?grantPrincipal ?permission ?bindingType ?accessRequirement
+WHERE {
+  VALUES ?resource { <{resource_iri}> }
+  OPTIONAL {
+    ?resource gov:hasAccessRequirement ?accessRequirement .
+  }
+  OPTIONAL {
+    ?resource gov:hasACL ?grant .
+    ?grant a gov:AccessGrant ;
+           gov:principal ?grantPrincipal ;
+           gov:permission ?permission ;
+           gov:bindingType ?bindingType .
+  }
+}
