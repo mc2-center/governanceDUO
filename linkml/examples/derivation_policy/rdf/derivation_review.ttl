@@ -1,20 +1,21 @@
-@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-governanceduo:derivation_review.001 a governanceduo:DerivationReview ;
-    governanceduo:activity <activity.1001> ;
-    governanceduo:inputLabels [ a governanceduo:ControlLabel ;
-            governanceduo:computedFrom <activity.1001> ;
-            governanceduo:computedOn 1755300000000 ;
-            governanceduo:dataTier "Controlled" ;
-            governanceduo:sourceAccessRequirements <access_requirement.42> ;
-            governanceduo:subject <syn10081783> ],
-        [ a governanceduo:ControlLabel ;
-            governanceduo:computedFrom <activity.1001> ;
-            governanceduo:computedOn 1755300000000 ;
-            governanceduo:dataTier "Controlled" ;
-            governanceduo:sourceAccessRequirements <access_requirement.99> ;
-            governanceduo:subject <syn40000002> ] ;
-    governanceduo:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (access_requirement.42, access_requirement.99), both Controlled tier. Pending ACT review." ;
-    governanceduo:reviewStatus "Flagged" .
+sagegov:derivation-review-001 a sagegov:DerivationReview ;
+    sagegov:activity sagegov:activity-1001 ;
+    sagegov:inputLabels [ a sagegov:ControlLabel ;
+            sagegov:computedFrom sagegov:activity-1001 ;
+            sagegov:computedOn 1755300000000 ;
+            sagegov:dataTier "Controlled" ;
+            sagegov:sourceAccessRequirements sagegov:AR-99 ;
+            sagegov:subject syn:syn40000002 ],
+        [ a sagegov:ControlLabel ;
+            sagegov:computedFrom sagegov:activity-1001 ;
+            sagegov:computedOn 1755300000000 ;
+            sagegov:dataTier "Controlled" ;
+            sagegov:sourceAccessRequirements sagegov:AR-42 ;
+            sagegov:subject syn:syn10081783 ] ;
+    sagegov:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (AR-42, AR-99), both Controlled tier. Pending ACT review." ;
+    sagegov:reviewStatus "Flagged" .
 

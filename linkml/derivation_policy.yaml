@@ -29,10 +29,22 @@ description: >-
   same cross-ABox reason provenance.yaml's `Activity.generated`/`Usage.entity`
   already do: those individuals live in separate example/ABox pipelines
   (linkml/examples/governance_graph/, linkml/examples/provenance/) and are never
-  asserted in this file's own example-rdf ABox.
+  asserted in this file's own example-rdf ABox. Their values are graph IRIs
+  written as CURIEs: `syn:syn<n>` for Synapse entities, `sagegov:AR-<n>` for the
+  governance graph's AccessRequirement nodes, `sagegov:activity-<n>` for
+  Activities (see scripts/graph_iris.py).
+
+  `ControlLabel`/`DerivationReview` and every slot they carry use gov: (sagegov:)
+  IRIs: they are graph content that downstream consumers (sagebrain-infra's
+  authorizer) read alongside gov:AccessGrant/gov:AccessRequirement, not
+  schema-internal records. `DerivationRule` stays governanceduo: -- it is
+  curator configuration consumed by scripts/build_derivation_policy.py, not
+  graph content. See plans/sagebrain_contract_and_owl_dl_fixes.md decision D6.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
+  sagegov: https://sagebionetworks.org/governance/
+  syn: "https://www.synapse.org/Synapse:"
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -83,7 +95,7 @@ classes:
       - requiresReview
       - rationale
   ControlLabel:
-    class_uri: governanceduo:ControlLabel
+    class_uri: sagegov:ControlLabel
     description: >-
       A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum
       rank across an entity's full derivation ancestry, computed once when the
@@ -105,8 +117,10 @@ classes:
           tier) since a ControlLabel carries exactly one, precomputed rank.
           slot_uri set explicitly here: the base dataTier slot (mixins.yaml)
           declares none of its own, and scripts/build_derivation_policy.py's
-          PREDICATE() reuse (from build_governance_graph.py) requires one.
-        slot_uri: governanceduo:dataTier
+          PREDICATE() reuse (from build_governance_graph.py) requires one. A gov:
+          IRI, like every other ControlLabel slot (see this schema's own
+          description).
+        slot_uri: sagegov:dataTier
         multivalued: false
         required: true
     slots:
@@ -117,7 +131,7 @@ classes:
       - computedOn
   DerivationReview:
     is_a: BaseEntity
-    class_uri: governanceduo:DerivationReview
+    class_uri: sagegov:DerivationReview
     description: >-
       An auditable record minted whenever a derivation Activity's inputs carry
       ControlLabels citing disjoint sourceAccessRequirements sets — the note's own
@@ -168,14 +182,14 @@ slots:
     slot_uri: governanceduo:rationale
     description: Free-text justification for this rule's permitted/resultingDataTier values.
   subject:
-    slot_uri: governanceduo:subject
+    slot_uri: sagegov:subject
     description: >-
       The SynapseEntity this ControlLabel labels. range is uriorcurie, not
       SynapseEntity — see this schema's own description.
     range: uriorcurie
     required: true
   sourceAccessRequirements:
-    slot_uri: governanceduo:sourceAccessRequirements
+    slot_uri: sagegov:sourceAccessRequirements
     description: >-
       Every AccessRequirement contributing to this label's dataTier, across the
       subject's full derivation ancestry — what lets a later composite-risk check
@@ -185,7 +199,7 @@ slots:
     range: uriorcurie
     multivalued: true
   computedFrom:
-    slot_uri: governanceduo:computedFrom
+    slot_uri: sagegov:computedFrom
     description: >-
       The Activity this label was (re)computed from. range is uriorcurie, not
       Activity — see this schema's own description. Also the staleness signal
@@ -194,18 +208,18 @@ slots:
       point is provably stale.
     range: uriorcurie
   computedOn:
-    slot_uri: governanceduo:computedOn
+    slot_uri: sagegov:computedOn
     description: When this ControlLabel was (re)computed (epoch milliseconds).
     range: integer
   activity:
-    slot_uri: governanceduo:activity
+    slot_uri: sagegov:activity
     description: >-
       The derivation Activity being reviewed. range is uriorcurie, not Activity —
       see this schema's own description.
     range: uriorcurie
     required: true
   inputLabels:
-    slot_uri: governanceduo:inputLabels
+    slot_uri: sagegov:inputLabels
     description: >-
       The ControlLabels (one per input entity of the Activity above) whose
       disjoint sourceAccessRequirements triggered this review. Inlined, not
@@ -216,7 +230,7 @@ slots:
     multivalued: true
     required: true
   reviewStatus:
-    slot_uri: governanceduo:reviewStatus
+    slot_uri: sagegov:reviewStatus
     description: >-
       This review's workflow state. Deliberately not named `status`: that slot
       name is already bound to ApprovalStateEnum on AccessApproval in
@@ -224,7 +238,7 @@ slots:
     range: DerivationReviewStatusEnum
     required: true
   reviewedBy:
-    slot_uri: governanceduo:reviewedBy
+    slot_uri: sagegov:reviewedBy
     description: >-
       Synapse numeric user id of who recorded reviewStatus, when it is
       Reviewed/Approved/Denied. range integer, mirroring
@@ -232,9 +246,9 @@ slots:
       Principal reference — see provenance.yaml's own description for why.
     range: integer
   reviewedOn:
-    slot_uri: governanceduo:reviewedOn
+    slot_uri: sagegov:reviewedOn
     description: When reviewStatus was last recorded (epoch milliseconds).
     range: integer
   reviewNotes:
-    slot_uri: governanceduo:reviewNotes
+    slot_uri: sagegov:reviewNotes
     description: Free-text notes from the reviewer.
