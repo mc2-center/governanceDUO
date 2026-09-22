@@ -73,6 +73,7 @@ import argparse
 from linkml.generators.owlgen import OwlSchemaGenerator
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import BNode, Graph, Namespace, Literal, URIRef
+from rdflib.compare import to_canonical_graph
 from rdflib.namespace import OWL, RDF, RDFS, SKOS, XSD
 
 DUO_NS = Namespace("http://purl.obolibrary.org/obo/DUO_")
@@ -189,6 +190,19 @@ def declare_annotation_properties(graph: Graph) -> int:
     return added
 
 
+def stable_graph(graph: Graph) -> Graph:
+    """The same graph with blank nodes relabeled canonically (rdflib's RDFC
+    canonicalization), so the Turtle serializer -- which orders nested blank nodes
+    by label -- writes byte-identical output for identical input and rebuilds stop
+    producing reordering-only diffs. Takes ~10 s on this schema's OWL."""
+    canonical = Graph()
+    for triple in to_canonical_graph(graph):
+        canonical.add(triple)
+    for prefix, namespace in graph.namespace_manager.namespaces():
+        canonical.bind(prefix, namespace, override=True, replace=True)
+    return canonical
+
+
 def build(schema_path: str, version: str) -> Graph:
     sv = schema_without_rules(schema_path)
     gen = OwlSchemaGenerator(
@@ -247,7 +261,7 @@ def main():
     args = parser.parse_args()
 
     graph = build(args.schema, args.version)
-    graph.serialize(destination=args.out, format="turtle")
+    stable_graph(graph).serialize(destination=args.out, format="turtle")
     print(f"Wrote {len(graph)} triples to {args.out}")
 
 
