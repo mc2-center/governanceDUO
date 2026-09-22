@@ -54,11 +54,14 @@ $(ROBOT_JAR):
 # OWL 2 DL profile check: the generated TBox, the hand-written governance graph
 # TBox, and their merge (they share gov: terms, so each passing alone isn't enough).
 # Reports land in build/ (gitignored); the report is printed when a check fails.
+# The merge is written to a file and validated separately: chaining `robot merge
+# ... validate-profile` in one call reports spurious violations.
 owl-profile: owl | $(ROBOT_JAR)
 	mkdir -p build
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_duo.owl.ttl --output build/owl-profile-governance_duo.txt || (cat build/owl-profile-governance_duo.txt; exit 1)
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_graph.owl.ttl --output build/owl-profile-governance_graph.txt || (cat build/owl-profile-governance_graph.txt; exit 1)
-	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl validate-profile --profile DL --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
+	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl --output build/governance_merged.owl.ttl
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_merged.owl.ttl --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
 	@echo "OWL 2 DL profile: governance_duo, governance_graph, and their merge all in profile."
 
 example-rdf:
