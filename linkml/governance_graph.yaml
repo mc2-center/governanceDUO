@@ -871,8 +871,10 @@ slots:
       approval (AccessApproval.submitterId). Reuses DataAccessSubmission's
       sagegov:submittedBy predicate -- same real-world concept (who acted on
       the governance workflow), emitted as an IRI reference to a
-      sagegov:Principal node, not a literal.
-    range: integer
+      sagegov:Principal node, not a literal. range Principal (keyed by its
+      integer principalId), matching submittedBy -- both map to the same
+      predicate, so they must agree on its type.
+    range: Principal
   accessorId:
     slot_uri: sagegov:heldBy
     description: >-
