@@ -230,27 +230,27 @@ triple counts, non-blank-node triples, and blank-node triple shapes.
    and `make validate-all` rebuilds them. Canonicalizing the SHACL the way
    `build_owl.py` does takes about 108 s. The alternatives are a fast
    deterministic relabeling written for these tree-shaped blank nodes (new code),
-   or accepting the churn.
+   or accepting the churn. [DECISION: accept the churn]
 2. **An AR marked "Pending Annotation" mints an invalid IRI** (existing bug). The
    builder names each Condition node `gov:AR-<n>-condition-<code>`, so "Pending
    Annotation" yields a space in the IRI, which breaks serialization and Neptune
    loads. The choice: skip Conditions for "Pending Annotation" (a curation state,
-   not a data-use condition), or encode the name.
+   not a data-use condition), or encode the name. [DECISION: skip Conditions for Pending Annotation]
 3. **Five governance examples fail `linkml-validate`** (existing). These are
    `access_requirement_association`, `data_access_submission`, `access_approval`,
    `research_project` and `data_access_request`. Each fails with
    "'access_requirement.42' is not of type 'object'": references to
    AccessRequirement are expected as inline objects. The failures are identical
-   before and after this work.
+   before and after this work. [DECISION: fix these]
 4. **Filing the linkml owlgen issue** (draft below) needs your go-ahead. Once fixed
-   upstream, `repair_generator_output()` can be deleted.
+   upstream, `repair_generator_output()` can be deleted. [DECISION: do not do]
 5. **The sagebrain-model follow-up plan needs one more item.** The module that adds
    `sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom` must also
    declare `prov:wasDerivedFrom a owl:ObjectProperty`. sagebrain's DL-checked set
    doesn't import `prov.ttl`, so without the declaration OWLAPI reads the axiom as
-   an annotation sub-property and the union check fails.
+   an annotation sub-property and the union check fails. [DECISION: make the update to the plan]
 6. **Minor:** on Activity, `createdOn` serializes as `governanceduo:createdOn` but
-   `modifiedOn` as `sagegov:modifiedOn`. This predates this work and wasn't in scope.
+   `modifiedOn` as `sagegov:modifiedOn`. This predates this work and wasn't in scope. [DECISION: modify to align with sagebrain-model]
 
 ### Draft linkml issue (not filed)
 
