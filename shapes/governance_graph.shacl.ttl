@@ -85,7 +85,8 @@ gov:AccessGrantShape a sh:NodeShape ;
                     gov:READ_PRIVATE_SUBMISSION gov:UPDATE_SUBMISSION
                     gov:DELETE_SUBMISSION gov:TEAM_MEMBERSHIP_UPDATE gov:SEND_MESSAGE
                     gov:CHANGE_SETTINGS gov:MODERATE gov:REVIEW_SUBMISSIONS
-                    gov:EXEMPTION_ELIGIBLE ) ],
+                    gov:EXEMPTION_ELIGIBLE gov:ACCESS ) ;
+            sh:description "Synapse ACCESS_TYPE values, plus gov:ACCESS -- derived from DOWNLOAD by scripts/build_governance_graph.py for sagebrain-infra's authorizer." ],
         [ sh:path gov:source ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ],
         [ sh:path gov:bindingType ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
             sh:in ( gov:Direct gov:Inherited ) ],

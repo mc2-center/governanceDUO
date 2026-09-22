@@ -108,7 +108,11 @@ gov:principal a owl:ObjectProperty ;
 
 gov:permission a owl:ObjectProperty ;
     rdfs:domain gov:AccessGrant ;
-    rdfs:comment "Range: an AccessTypeEnum value minted as its own IRI, e.g. gov:DOWNLOAD -- not a literal, despite governanceduo:permission's range being a plain enum. See shapes/governance_graph.shacl.ttl's sh:in list for the closed vocabulary." .
+    rdfs:comment "Range: an AccessTypeEnum value minted as its own IRI, e.g. gov:DOWNLOAD -- not a literal, despite governanceduo:permission's range being a plain enum -- plus the derived gov:ACCESS below. See shapes/governance_graph.shacl.ttl's sh:in list for the closed vocabulary." .
+
+gov:ACCESS a owl:NamedIndividual ;
+    rdfs:label "ACCESS" ;
+    rdfs:comment "SageBrain authorization action, derived by scripts/build_governance_graph.py on every AccessGrant that carries Synapse DOWNLOAD. Not a Synapse ACCESS_TYPE: it exists so sagebrain-infra's authorizer, which checks grants for the Cedar action ACCESS, can match grants directly. Fails closed -- READ alone does not grant it." .
 
 gov:source a owl:ObjectProperty ;
     rdfs:comment "The system a grant/association was derived from, as an IRI (e.g. gov:Synapse) -- governance_graph.yaml's SourceSystemEnum meaning:." .

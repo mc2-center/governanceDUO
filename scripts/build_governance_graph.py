@@ -127,6 +127,9 @@ def TYPE(class_name: str) -> URIRef:
     return URIRef(_schemaview.namespaces().uri_for(cls.class_uri))
 
 
+ACCESS_GRANTING_PERMISSION = "DOWNLOAD"
+
+
 def enum_iri(enum_name: str, value: str) -> URIRef:
     """The IRI a permissible value is emitted as: its meaning: from
     governance_graph.yaml, so the schema, not this script, decides the IRI."""
@@ -235,6 +238,15 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     g.add((subject, PREDICATE("principal", "AccessGrant"), principal_node))
     for perm in data.get("permission", []):
         g.add((subject, PREDICATE("permission", "AccessGrant"), GOV[perm]))
+    # Derived: SageBrain's authorizer (sagebrain-infra authorize.py) asks whether a
+    # grant permits the abstract Cedar action "ACCESS" by comparing each
+    # gov:permission's local name to it. Synapse has no ACCESS permission, so it
+    # is derived here from DOWNLOAD -- graph answers expose content derived from
+    # files, which Synapse gates at DOWNLOAD, not READ (fail closed). The real
+    # Synapse permissions stay alongside it; AccessTypeEnum remains a pure mirror
+    # of Synapse's ACCESS_TYPE. See plans/sagebrain_contract_and_owl_dl_fixes.md D8.
+    if ACCESS_GRANTING_PERMISSION in data.get("permission", []):
+        g.add((subject, PREDICATE("permission", "AccessGrant"), GOV.ACCESS))
     g.add((subject, PREDICATE("source", "AccessGrant"), enum_iri("SourceSystemEnum", data["source"])))
     g.add((subject, PREDICATE("bindingType", "AccessGrant"), GOV[data["bindingType"]]))
     if data.get("createdOn") is not None:

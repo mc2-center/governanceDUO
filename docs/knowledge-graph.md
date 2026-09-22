@@ -108,6 +108,14 @@ What's still hand-written, because no LinkML slot or generic dumper can express 
 - **`gov:hasApproval`** is emitted only when a cross-object join holds
   (`DataAccessSubmissionStatus.state == APPROVED`) — join logic, not a per-slot
   mapping.
+- **`gov:permission gov:ACCESS`** is derived on every AccessGrant that carries Synapse
+  `DOWNLOAD`. sagebrain-infra's authorizer checks grants for the Cedar action
+  `ACCESS` by comparing each `gov:permission`'s local name to it, and Synapse has no
+  such permission. `DOWNLOAD` is the qualifying permission because graph answers
+  expose content derived from files, which Synapse gates at `DOWNLOAD`, not `READ`
+  (fail closed). The real Synapse permissions are kept alongside it, and
+  `AccessTypeEnum` stays a pure mirror of Synapse's `ACCESS_TYPE` — the derived value
+  is builder-only, like `prov:wasDerivedFrom`.
 - **`gov:hasACL`/`gov:hasAccessRequirement`** are derived convenience triples with no
   corresponding `governance_graph.yaml` slot — pure inverses of already-declared
   slots (`AccessGrant.resource`/`AccessRequirementAssociation.resource`), not
