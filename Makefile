@@ -21,6 +21,13 @@ generate-json:
 
 LINKML_SCHEMA := linkml/governance_duo.linkml.yaml
 
+# ROBOT (https://robot.obolibrary.org) for the OWL 2 DL profile check. Fetched, not
+# committed (78 MB), and pinned so the check is reproducible -- the same version and
+# download rule sagebrain-model uses. Overridable: ROBOT_JAR, ROBOT_VERSION.
+ROBOT_JAR     ?= tools/robot.jar
+ROBOT_VERSION ?= 1.9.8
+ROBOT_URL     ?= https://github.com/ontodev/robot/releases/download/v$(ROBOT_VERSION)/robot.jar
+
 # --ignore-warnings: this schema deliberately keeps the schematic CSV's camelCase
 # attribute names (e.g. dataUseModifiers, StudyKey) instead of linkml-lint's preferred
 # snake_case, since those names are also live Synapse annotation keys.
@@ -32,6 +39,22 @@ owl:
 
 shacl:
 	gen-shacl ${LINKML_SCHEMA} > shapes/governance_duo.shacl.ttl
+
+$(ROBOT_JAR):
+	@echo "Fetching ROBOT $(ROBOT_VERSION) (not committed -- 78 MB)"
+	mkdir -p $(dir $@)
+	curl -L --fail -o $@.tmp "$(ROBOT_URL)"
+	mv $@.tmp $@
+
+# OWL 2 DL profile check: the generated TBox, the hand-written governance graph
+# TBox, and their merge (they share gov: terms, so each passing alone isn't enough).
+# Reports land in build/ (gitignored); the report is printed when a check fails.
+owl-profile: owl | $(ROBOT_JAR)
+	mkdir -p build
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_duo.owl.ttl --output build/owl-profile-governance_duo.txt || (cat build/owl-profile-governance_duo.txt; exit 1)
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_graph.owl.ttl --output build/owl-profile-governance_graph.txt || (cat build/owl-profile-governance_graph.txt; exit 1)
+	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl validate-profile --profile DL --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
+	@echo "OWL 2 DL profile: governance_duo, governance_graph, and their merge all in profile."
 
 example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
@@ -109,7 +132,7 @@ derivation-policy-check:
 infra-contract-check: governance-graph
 	python3 scripts/check_infra_contract.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check owl-profile
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances

@@ -7,3 +7,9 @@ __pycache__/
 
 # `make docs-build`/`docs-serve` output (mkdocs)
 site/
+
+# fetched by `make tools/robot.jar` (see Makefile), not committed
+tools/robot.jar
+
+# `make owl-profile` reports and other scratch build output
+build/

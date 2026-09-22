@@ -1,0 +1,43 @@
+name: Validate
+
+# Runs `make validate-all`: SHACL validation of every example ABox and the built
+# governance graph, the offline sync and derivation-policy regression checks, the
+# sagebrain-infra authorizer contract check, and the OWL 2 DL profile check (ROBOT,
+# which needs Java).
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Cache ROBOT
+        uses: actions/cache@v4
+        with:
+          path: tools/robot.jar
+          key: robot-${{ hashFiles('Makefile') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate
+        run: make validate-all
