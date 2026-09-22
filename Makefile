@@ -76,6 +76,11 @@ provenance-validate: owl shacl provenance-example-rdf
 sync-provenance-graph:
 	python3 scripts/sync_provenance_graph.py $(ENTITY_IDS)
 
+# Offline regression check for sync_provenance_graph.py (fake Synapse client, no
+# network or credentials) -- see scripts/check_sync_provenance.py.
+sync-provenance-check:
+	python3 scripts/check_sync_provenance.py
+
 derivation-policy-example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --examples-dir linkml/examples/derivation_policy --out-dir linkml/examples/derivation_policy/rdf
 
@@ -93,7 +98,7 @@ GOVERNANCE_GRAPH := governance_graph_export/governance_graph.ttl
 derivation-policy: provenance-example-rdf governance-graph
 	python3 scripts/build_derivation_policy.py --provenance-graph $(PROVENANCE_GRAPH) --governance-graph $(GOVERNANCE_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances
