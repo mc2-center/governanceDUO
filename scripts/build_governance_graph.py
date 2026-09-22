@@ -304,11 +304,10 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
             if permissible_value.annotations
             else None
         )
-        # Real DUO codes (meaning: set) use their own duo_shorthand ("GRU",
-        # "DS", ...); the 7 Sage-local DUOPlus1-7 extensions have neither a
-        # meaning: CURIE nor a duo_shorthand, so the bare enum key stands in
-        # for conditionType instead -- see governance-graph-sync.md's own
-        # documented DUOPlus-extension boundary.
+        # Real DUO codes use their own duo_shorthand ("GRU", "DS", ...); the 7
+        # Sage-local DUOPlus1-7 extensions have no duo_shorthand, so the bare
+        # enum key stands in for conditionType instead -- see
+        # governance-graph-sync.md's own documented DUOPlus-extension boundary.
         condition_type = shorthand.value if shorthand is not None else duo_code
         # Node minted from the raw duo_code (not the shorthand label, which
         # isn't guaranteed unique) plus the AR stub's own local name.
@@ -317,8 +316,17 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
         g.add((ar_node, PREDICATE("hasCondition", "AccessRequirementReference"), condition_node))
         g.add((condition_node, RDF.type, TYPE("Condition")))
         g.add((condition_node, PREDICATE("conditionType", "Condition"), Literal(condition_type)))
+        # gov:duoCode is the code's IRI: obo:DUO_<n> for real DUO codes (joins
+        # sagebrain-model's DUO import), sagegov:DUOPlus<n> for the Sage-local
+        # extensions. "Pending Annotation" has no meaning and gets no duoCode.
         if permissible_value.meaning:
-            g.add((condition_node, PREDICATE("duoCode", "Condition"), Literal(permissible_value.meaning)))
+            g.add(
+                (
+                    condition_node,
+                    PREDICATE("duoCode", "Condition"),
+                    URIRef(_schemaview.expand_curie(permissible_value.meaning)),
+                )
+            )
         if permissible_value.description:
             g.add(
                 (

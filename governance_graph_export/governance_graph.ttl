@@ -83,7 +83,7 @@ gov:AR-42-condition-DUO-0000007 a gov:Condition ;
     gov:conditionDetail "MONDO:0004975" ;
     gov:conditionType "DS" ;
     gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
-    gov:duoCode "DUO:0000007" .
+    gov:duoCode <http://purl.obolibrary.org/obo/DUO_0000007> .
 
 gov:research-project-8001 a gov:ResearchProject ;
     gov:accessRequirement gov:AR-42 ;

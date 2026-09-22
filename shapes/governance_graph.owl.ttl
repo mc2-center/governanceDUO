@@ -214,10 +214,40 @@ gov:conditionType a owl:DatatypeProperty ;
     rdfs:range xsd:string ;
     rdfs:comment "The DUO code's own duo_shorthand annotation (e.g. \"GRU\", \"DS\") for the 24 real DUO codes; the bare DataUseModifierEnum key (e.g. \"DUOPlus1\") for the 7 Sage-local extensions, which have no duo_shorthand at all." .
 
-gov:duoCode a owl:DatatypeProperty ;
+gov:duoCode a owl:ObjectProperty ;
     rdfs:domain gov:Condition ;
-    rdfs:range xsd:string ;
-    rdfs:comment "The real DUO CURIE (DataUseModifierEnum's meaning:), when one exists -- absent for the 7 Sage-local DUOPlus1-7 extensions." .
+    rdfs:comment "The IRI of the data-use code (DataUseModifierEnum's meaning:): obo:DUO_<n> for real DUO codes -- the same IRIs sagebrain-model imports -- or gov:DUOPlus<n> for the 7 Sage-local extensions declared below. Absent only for \"Pending Annotation\", which has no meaning." .
+
+# The 7 Sage-local DUOPlus extensions, as individuals so gov:duoCode can point at
+# them the same way it points at real DUO terms. Labels and comments copied from
+# DataUseModifierEnum (linkml/mixins.yaml).
+gov:DUOPlus1 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus1" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus1): Source geography is relevant to governance decisions. If providing this term, please provide the applicable country code(s) in column sourceGeography." .
+
+gov:DUOPlus2 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus2" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus2): Study population is relevant to governance decisions. If providing this term, please provide the applicable population type(s) in column populationType." .
+
+gov:DUOPlus3 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus3" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus3): Data deidentification is relevant to governance decisions. If providing this term, please provide the applicable deidentification type(s) in column deidentificationType." .
+
+gov:DUOPlus4 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus4" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus4): A data permission designation is associated with the Study. If providing this term, please provide the applicable permission type(s) in column dataPermission." .
+
+gov:DUOPlus5 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus5" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus5): A data tier designation is associated with the Study. If providing this term, please provide the applicable data tier designation(s) in column dataTier." .
+
+gov:DUOPlus6 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus6" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus6): A license is associated with the Study. If providing this term, please provide the applicable license in column license." .
+
+gov:DUOPlus7 a owl:NamedIndividual ;
+    rdfs:label "DUOPlus7" ;
+    rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus7): Attribution conditions are associated with this Study. If providing this term, please provide the attribution statement in column attribution." .
 
 gov:description a owl:DatatypeProperty ;
     rdfs:domain gov:Condition ;

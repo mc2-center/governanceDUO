@@ -787,10 +787,11 @@ slots:
   duoCode:
     slot_uri: sagegov:duoCode
     description: >-
-      The real DUO CURIE this condition represents, when one exists.
-      Deliberately not required: the 7 Sage-local DUOPlus1-7 extensions in
-      DataUseModifierEnum have no meaning: CURIE at all -- see conditionType
-      above for how those are represented instead.
+      The IRI of the data-use code this condition represents, from
+      DataUseModifierEnum's meaning: obo:DUO_<n> for real DUO codes (the same IRIs
+      sagebrain-model imports), sagegov:DUOPlus<n> for the Sage-local extensions.
+      Emitted as an IRI, never a string, by scripts/build_governance_graph.py.
+      Not required: "Pending Annotation" has no meaning and gets no duoCode.
     range: DataUseModifierEnum
   description:
     slot_uri: sagegov:description

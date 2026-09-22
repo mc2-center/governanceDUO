@@ -19,6 +19,7 @@ prefixes:
   T4FS: http://purl.obolibrary.org/obo/T4FS_
   ebiswo: http://www.ebi.ac.uk/swo/SWO_
   dcterms: http://purl.org/dc/terms/
+  sagegov: https://sagebionetworks.org/governance/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -475,7 +476,12 @@ enums:
       Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions
       (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing
       at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention
-      sagebrain-model documents for its own external-term reuse).
+      sagebrain-model documents for its own external-term reuse). The Sage-local
+      DUOPlus1-7 extensions carry `meaning:` gov: IRIs (sagegov:DUOPlus<n>),
+      declared as individuals in shapes/governance_graph.owl.ttl, so every
+      data-use code in the graph is an IRI -- joinable against sagebrain-model's
+      DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has
+      no meaning: it is a curation state, not a data-use condition.
     permissible_values:
       DUO:0000042:
         description: >-
@@ -646,6 +652,7 @@ enums:
           Source geography is relevant to governance decisions. If providing this
           term, please provide the applicable country code(s) in column
           sourceGeography.
+        meaning: sagegov:DUOPlus1
         annotations:
           sage_extension: true
       DUOPlus2:
@@ -653,6 +660,7 @@ enums:
           Study population is relevant to governance decisions. If providing this
           term, please provide the applicable population type(s) in column
           populationType.
+        meaning: sagegov:DUOPlus2
         annotations:
           sage_extension: true
       DUOPlus3:
@@ -660,6 +668,7 @@ enums:
           Data deidentification is relevant to governance decisions. If providing
           this term, please provide the applicable deidentification type(s) in
           column deidentificationType.
+        meaning: sagegov:DUOPlus3
         annotations:
           sage_extension: true
       DUOPlus4:
@@ -667,6 +676,7 @@ enums:
           A data permission designation is associated with the Study. If providing
           this term, please provide the applicable permission type(s) in column
           dataPermission.
+        meaning: sagegov:DUOPlus4
         annotations:
           sage_extension: true
       DUOPlus5:
@@ -674,18 +684,21 @@ enums:
           A data tier designation is associated with the Study. If providing this
           term, please provide the applicable data tier designation(s) in column
           dataTier.
+        meaning: sagegov:DUOPlus5
         annotations:
           sage_extension: true
       DUOPlus6:
         description: >-
           A license is associated with the Study. If providing this term, please
           provide the applicable license in column license.
+        meaning: sagegov:DUOPlus6
         annotations:
           sage_extension: true
       DUOPlus7:
         description: >-
           Attribution conditions are associated with this Study. If providing this
           term, please provide the attribution statement in column attribution.
+        meaning: sagegov:DUOPlus7
         annotations:
           sage_extension: true
       Pending Annotation:
