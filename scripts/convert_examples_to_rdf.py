@@ -30,7 +30,10 @@ rewrites the loaded object's `id` to CURIE form — `governanceduo:access_requir
 — only for the RDF-dump call, restoring the bare form afterward. The *stored* id in
 every example YAML file, and every class's `slot_usage.id.pattern`, are completely
 unaffected — this preserves interoperability with SageCommonDataModel's own bare-id
-convention everywhere except this one transient export step.
+convention everywhere except this one transient export step. Which prefix and
+local-name shape that CURIE takes is decided by scripts/graph_iris.py (graph-facing
+classes such as Activity mint gov: instances, e.g. `sagegov:activity-1001`; every
+other record keeps `governanceduo:<id>`).
 
 Usage:
     python scripts/convert_examples_to_rdf.py [--schema linkml/governance_duo.linkml.yaml]
@@ -50,6 +53,8 @@ from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph
 
+from graph_iris import graph_curie
+
 # example filename (without .example.yaml) -> target LinkML class name
 EXAMPLE_CLASSES = {
     "access_requirement": "AccessRequirement",
@@ -61,19 +66,19 @@ EXAMPLE_CLASSES = {
 
 
 def to_curie(bare_id: str, default_prefix: str) -> str:
-    """`access_requirement.42` -> `governanceduo:access_requirement.42`. Raises if
-    already CURIE-shaped (contains a colon) -- this schema's stored ids never do,
-    so that would indicate a caller passed the wrong thing in."""
-    if ":" in bare_id:
-        raise ValueError(f"'{bare_id}' already contains a colon; expected a bare dotted id")
-    return f"{default_prefix}:{bare_id}"
+    """`access_requirement.42` -> `governanceduo:access_requirement.42`, or a gov:
+    instance CURIE for graph-facing classes (`activity.1001` ->
+    `sagegov:activity-1001`). Thin wrapper over graph_iris.graph_curie(), which
+    owns the IRI policy."""
+    return graph_curie(bare_id, default_prefix)
 
 
 def from_curie(curie: str) -> str:
-    """Inverse of to_curie -- `governanceduo:access_requirement.42` ->
-    `access_requirement.42`. Not called by this script's own flow (the bare id is
-    restored from a saved variable, not by re-deriving it), but kept alongside
-    to_curie so the mapping is documented as invertible, not just one-directional."""
+    """Strips a CURIE's prefix -- `governanceduo:access_requirement.42` ->
+    `access_requirement.42`. Only the inverse of to_curie for schema-namespace
+    records: gov: instance CURIEs (`sagegov:activity-1001`) also reshape the local
+    name, so they don't round-trip. Not called by this script's own flow (the bare
+    id is restored from a saved variable, not by re-deriving it)."""
     if ":" not in curie:
         raise ValueError(f"'{curie}' has no colon; expected a CURIE")
     _prefix, local = curie.split(":", 1)
