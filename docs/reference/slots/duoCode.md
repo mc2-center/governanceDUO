@@ -6,7 +6,7 @@ search:
 # Slot: duoCode 
 
 
-_The IRI of the data-use code this condition represents, from DataUseModifierEnum's meaning: obo:DUO_<n> for real DUO codes (the same IRIs sagebrain-model imports), sagegov:DUOPlus<n> for the Sage-local extensions. Emitted as an IRI, never a string, by scripts/build_governance_graph.py. Not required: "Pending Annotation" has no meaning and gets no duoCode._
+_The IRI of the data-use code this condition represents, from DataUseModifierEnum's meaning: obo:DUO_<n> for real DUO codes (the same IRIs sagebrain-model imports), sagegov:DUOPlus<n> for the Sage-local extensions. Emitted as an IRI, never a string, by scripts/build_governance_graph.py. Every Condition has one: a dataUseModifiers value with no meaning ("Pending Annotation", a curation state) mints no Condition at all._
 
 
 
@@ -46,6 +46,7 @@ URI: [sagegov:duoCode](https://sagebionetworks.org/governance/duoCode)
 
 | Property | Value |
 | --- | --- |
+| Required | Yes |
 
 
 
@@ -88,14 +89,16 @@ name: duoCode
 description: 'The IRI of the data-use code this condition represents, from DataUseModifierEnum''s
   meaning: obo:DUO_<n> for real DUO codes (the same IRIs sagebrain-model imports),
   sagegov:DUOPlus<n> for the Sage-local extensions. Emitted as an IRI, never a string,
-  by scripts/build_governance_graph.py. Not required: "Pending Annotation" has no
-  meaning and gets no duoCode.'
+  by scripts/build_governance_graph.py. Every Condition has one: a dataUseModifiers
+  value with no meaning ("Pending Annotation", a curation state) mints no Condition
+  at all.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:duoCode
 domain_of:
 - Condition
 range: DataUseModifierEnum
+required: true
 
 ```
 </details></div>

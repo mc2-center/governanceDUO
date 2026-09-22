@@ -153,6 +153,7 @@ Name: governance_duo
 | [publicationMoratorium](slots/publicationMoratorium.md) | End date of the publication moratorium associated with the access requirement |
 | [qualifiedUsage](slots/qualifiedUsage.md) | The Usage records (mirroring Activity |
 | [rationale](slots/rationale.md) | Free-text justification for this rule's permitted/resultingDataTier values |
+| [referencedRequirementId](slots/referencedRequirementId.md) | The id of the real AccessRequirement record this gov:AR-<n> stub stands in fo... |
 | [referenceValueKey](slots/referenceValueKey.md) | One of the containing binding's referenceValueKeys, e |
 | [referenceValueKeys](slots/referenceValueKeys.md) | The policy_data_schema |
 | [referenceValueSources](slots/referenceValueSources.md) |  |

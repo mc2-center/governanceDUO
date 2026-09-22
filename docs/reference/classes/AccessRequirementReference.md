@@ -6,7 +6,7 @@ search:
 # Class: AccessRequirementReference 
 
 
-_The gov:AR-<n> stub build_governance_graph.py's add_access_requirement_association() mints for every real AccessRequirement it encounters -- a local, gov:-namespace node standing in for the real governanceduo:AccessRequirement (defined in access_requirement.yaml, which this file imports -- not the other way around), bridged to it via this class's own sameAs slot rather than sharing its type. Every slot elsewhere in this schema that actually holds this stub's IRI (AccessRequirementAssociation. accessRequirement, the shared accessRequirementId, AccessApproval.requirementId) ranges over this class, not the real AccessRequirement -- see plans/access_requirement_reference_class.md for why keeping the two types separate, rather than giving the real AccessRequirement this class's class_uri directly, is deliberate. Not `is_a: BaseEntity`: like Condition/ DataAccessSubmissionStatus, it has no independent identifier of its own -- it's a re-serialization of the real AccessRequirement's own id via gov_id(), not a new entity._
+_The gov:AR-<n> stub build_governance_graph.py's add_access_requirement_association() mints for every real AccessRequirement it encounters -- a local, gov:-namespace node standing in for the real governanceduo:AccessRequirement (defined in access_requirement.yaml, which this file imports -- not the other way around), bridged to it via this class's own sameAs slot rather than sharing its type. Every slot elsewhere in this schema that actually holds this stub's IRI (AccessRequirementAssociation. accessRequirement, the shared accessRequirementId, AccessApproval.requirementId) ranges over this class, not the real AccessRequirement -- see plans/access_requirement_reference_class.md for why keeping the two types separate, rather than giving the real AccessRequirement this class's class_uri directly, is deliberate. Not `is_a: BaseEntity`: it has no independent identifier of its own -- it's a re-serialization of the real AccessRequirement's own id via gov_id(), not a new entity. That id is therefore its key (referencedRequirementId), which is what lets records reference the stub by the value they already carry, e.g. `accessRequirement: access_requirement.42`; without an identifier, LinkML only accepts references to a class as inline objects._
 
 
 
@@ -35,6 +35,8 @@ URI: [sagegov:AccessRequirement](https://sagebionetworks.org/governance/AccessRe
     
 
         
+      AccessRequirementReference : referencedRequirementId
+        
       AccessRequirementReference : sameAs
         
       
@@ -56,6 +58,7 @@ URI: [sagegov:AccessRequirement](https://sagebionetworks.org/governance/AccessRe
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
+| [referencedRequirementId](../slots/referencedRequirementId.md) | 1 <br/> [String](../types/String.md) | The id of the real AccessRequirement record this gov:AR-<n> stub stands in fo... | direct |
 | [sameAs](../slots/sameAs.md) | 1 <br/> [Uriorcurie](../types/Uriorcurie.md) | Bridges this AccessRequirementReference stub to the real governanceduo:Access... | direct |
 | [hasCondition](../slots/hasCondition.md) | * <br/> [Condition](../classes/Condition.md) | The DUO-backed Conditions this attaches to -- gov:Condition individuals add_a... | direct |
 
@@ -128,12 +131,15 @@ description: 'The gov:AR-<n> stub build_governance_graph.py''s add_access_requir
   the shared accessRequirementId, AccessApproval.requirementId) ranges over this class,
   not the real AccessRequirement -- see plans/access_requirement_reference_class.md
   for why keeping the two types separate, rather than giving the real AccessRequirement
-  this class''s class_uri directly, is deliberate. Not `is_a: BaseEntity`: like Condition/
-  DataAccessSubmissionStatus, it has no independent identifier of its own -- it''s
-  a re-serialization of the real AccessRequirement''s own id via gov_id(), not a new
-  entity.'
+  this class''s class_uri directly, is deliberate. Not `is_a: BaseEntity`: it has
+  no independent identifier of its own -- it''s a re-serialization of the real AccessRequirement''s
+  own id via gov_id(), not a new entity. That id is therefore its key (referencedRequirementId),
+  which is what lets records reference the stub by the value they already carry, e.g.
+  `accessRequirement: access_requirement.42`; without an identifier, LinkML only accepts
+  references to a class as inline objects.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 slots:
+- referencedRequirementId
 - sameAs
 - hasCondition
 class_uri: sagegov:AccessRequirement
@@ -155,12 +161,31 @@ description: 'The gov:AR-<n> stub build_governance_graph.py''s add_access_requir
   the shared accessRequirementId, AccessApproval.requirementId) ranges over this class,
   not the real AccessRequirement -- see plans/access_requirement_reference_class.md
   for why keeping the two types separate, rather than giving the real AccessRequirement
-  this class''s class_uri directly, is deliberate. Not `is_a: BaseEntity`: like Condition/
-  DataAccessSubmissionStatus, it has no independent identifier of its own -- it''s
-  a re-serialization of the real AccessRequirement''s own id via gov_id(), not a new
-  entity.'
+  this class''s class_uri directly, is deliberate. Not `is_a: BaseEntity`: it has
+  no independent identifier of its own -- it''s a re-serialization of the real AccessRequirement''s
+  own id via gov_id(), not a new entity. That id is therefore its key (referencedRequirementId),
+  which is what lets records reference the stub by the value they already carry, e.g.
+  `accessRequirement: access_requirement.42`; without an identifier, LinkML only accepts
+  references to a class as inline objects.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 attributes:
+  referencedRequirementId:
+    name: referencedRequirementId
+    description: 'The id of the real AccessRequirement record this gov:AR-<n> stub
+      stands in for (e.g. access_requirement.42) -- the stub''s key. As a LinkML identifier
+      it names the node rather than adding a triple: scripts/build_governance_graph.py
+      mints the stub''s IRI from it via gov_id() (access_requirement.42 -> gov:AR-42)
+      and bridges it to the real record with sameAs.'
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    slot_uri: governanceduo:referencedRequirementId
+    identifier: true
+    owner: AccessRequirementReference
+    domain_of:
+    - AccessRequirementReference
+    range: string
+    required: true
+    pattern: ^access_requirement\.\d+$
   sameAs:
     name: sameAs
     description: 'Bridges this AccessRequirementReference stub to the real governanceduo:AccessRequirement
