@@ -110,8 +110,12 @@ gov:permission a owl:ObjectProperty ;
     rdfs:domain gov:AccessGrant ;
     rdfs:comment "Range: an AccessTypeEnum value minted as its own IRI, e.g. gov:DOWNLOAD -- not a literal, despite governanceduo:permission's range being a plain enum. See shapes/governance_graph.shacl.ttl's sh:in list for the closed vocabulary." .
 
-gov:source a rdf:Property ;
-    rdfs:comment "Range: an IRI, e.g. gov:Synapse -- governance_graph.yaml declares this slot's range as a plain string; the ABox mints an IRI per distinct source value instead." .
+gov:source a owl:ObjectProperty ;
+    rdfs:comment "The system a grant/association was derived from, as an IRI (e.g. gov:Synapse) -- governance_graph.yaml's SourceSystemEnum meaning:." .
+
+gov:Synapse a owl:NamedIndividual ;
+    rdfs:label "Synapse" ;
+    rdfs:comment "Source system: Synapse's own ACL or AccessRequirement records (SourceSystemEnum.Synapse)." .
 
 gov:bindingType a owl:ObjectProperty ;
     rdfs:comment "Range: a BindingTypeEnum value minted as its own IRI (gov:Direct or gov:Inherited)." .

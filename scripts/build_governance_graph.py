@@ -127,6 +127,15 @@ def TYPE(class_name: str) -> URIRef:
     return URIRef(_schemaview.namespaces().uri_for(cls.class_uri))
 
 
+def enum_iri(enum_name: str, value: str) -> URIRef:
+    """The IRI a permissible value is emitted as: its meaning: from
+    governance_graph.yaml, so the schema, not this script, decides the IRI."""
+    permissible_value = _schemaview.get_enum(enum_name).permissible_values.get(value)
+    if permissible_value is None or permissible_value.meaning is None:
+        raise ValueError(f"{enum_name} has no meaning: for {value!r}")
+    return URIRef(_schemaview.expand_curie(permissible_value.meaning))
+
+
 def gov_id(value: str):
     """governanceDUO ids are dotted/underscored (e.g. `grant.001`,
     `ar_association.001`); the design doc's own ids are fully hyphenated
@@ -226,7 +235,7 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     g.add((subject, PREDICATE("principal", "AccessGrant"), principal_node))
     for perm in data.get("permission", []):
         g.add((subject, PREDICATE("permission", "AccessGrant"), GOV[perm]))
-    g.add((subject, PREDICATE("source", "AccessGrant"), GOV[data["source"]]))
+    g.add((subject, PREDICATE("source", "AccessGrant"), enum_iri("SourceSystemEnum", data["source"])))
     g.add((subject, PREDICATE("bindingType", "AccessGrant"), GOV[data["bindingType"]]))
     if data.get("createdOn") is not None:
         g.add((subject, PREDICATE("createdOn", "AccessGrant"), Literal(data["createdOn"], datatype=XSD.long)))
@@ -243,7 +252,7 @@ def add_access_requirement_association(g: Graph, data: dict):
     g.add((subject, RDF.type, TYPE("AccessRequirementAssociation")))
     g.add((subject, PREDICATE("resource", "AccessRequirementAssociation"), SYN[data["resource"]]))
     g.add((subject, PREDICATE("accessRequirement", "AccessRequirementAssociation"), ar_node))
-    g.add((subject, PREDICATE("source", "AccessRequirementAssociation"), GOV[data["source"]]))
+    g.add((subject, PREDICATE("source", "AccessRequirementAssociation"), enum_iri("SourceSystemEnum", data["source"])))
     g.add((subject, PREDICATE("bindingType", "AccessRequirementAssociation"), GOV[data["bindingType"]]))
     # Derived convenience triple; no governance_graph.yaml slot backs hasAccessRequirement.
     g.add((SYN[data["resource"]], GOV.hasAccessRequirement, ar_node))

@@ -61,6 +61,18 @@ enums:
       APPROVED: {}
       REJECTED: {}
       CANCELLED: {}
+  SourceSystemEnum:
+    description: >-
+      The system a governance relationship (AccessGrant,
+      AccessRequirementAssociation) was derived from. Each value's meaning: is the
+      gov: IRI scripts/build_governance_graph.py emits for gov:source, so this
+      schema describes the graph as built. Only values the sync and examples
+      actually produce are listed; the design doc's gov:SynapseACL (an ACL-specific
+      source) is not used by this repo's pipeline and isn't declared.
+    permissible_values:
+      Synapse:
+        description: Derived from Synapse's own ACL or AccessRequirement records.
+        meaning: sagegov:Synapse
   BindingTypeEnum:
     description: >-
       Whether a governance relationship (an AccessGrant or
@@ -655,7 +667,11 @@ slots:
     required: true
   source:
     slot_uri: sagegov:source
-    description: The system this grant/association was derived from, e.g. "Synapse".
+    description: >-
+      The system this grant/association was derived from, e.g. "Synapse".
+      Emitted as the value's gov: IRI (SourceSystemEnum meaning:, e.g.
+      gov:Synapse), not a string.
+    range: SourceSystemEnum
     exact_mappings:
       - dcterms:source
   bindingType:
@@ -743,8 +759,10 @@ slots:
       Synapse numeric user id of who submitted this record
       (`Submission.submittedBy` in Synapse's live REST API). Emitted as an IRI
       reference to a sagegov:Principal node (looked up by this numeric id), not
-      a literal -- see scripts/build_governance_graph.py.
-    range: integer
+      a literal -- see scripts/build_governance_graph.py. range Principal (keyed
+      by its integer principalId): records carry the raw id, and the schema
+      describes the Principal reference the graph contains.
+    range: Principal
   submittedOn:
     slot_uri: sagegov:submittedOn
     description: >-
@@ -760,8 +778,10 @@ slots:
       carry this field live; see DataAccessSubmissionStatus's own
       description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
       Emitted as an IRI reference to a sagegov:Principal node, not a literal,
-      mirroring submittedBy above.
-    range: integer
+      mirroring submittedBy above. range Principal (keyed by its integer
+      principalId), same reasoning as submittedBy. Activity.modifiedBy
+      (provenance.yaml) overrides this back to a raw integer via slot_usage.
+    range: Principal
     close_mappings:
       - dcterms:contributor
   modifiedOn:
@@ -859,8 +879,10 @@ slots:
       Synapse numeric id of the Principal approved for access
       (AccessApproval.accessorId). Emitted as an IRI reference to a
       sagegov:Principal node, mapping onto the target ontology's gov:heldBy
-      predicate.
-    range: integer
+      predicate. range Principal (keyed by its integer principalId), so records
+      still carry the raw Synapse id while the schema -- and the OWL generated
+      from it -- describe the Principal reference the graph actually contains.
+    range: Principal
     required: true
   status:
     slot_uri: sagegov:status
