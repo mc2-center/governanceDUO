@@ -6,7 +6,7 @@ search:
 # Slot: submitterId 
 
 
-_Synapse numeric user id of who performed the actions to gain this approval (AccessApproval.submitterId). Reuses DataAccessSubmission's sagegov:submittedBy predicate -- same real-world concept (who acted on the governance workflow), emitted as an IRI reference to a sagegov:Principal node, not a literal._
+_Synapse numeric user id of who performed the actions to gain this approval (AccessApproval.submitterId). Reuses DataAccessSubmission's sagegov:submittedBy predicate -- same real-world concept (who acted on the governance workflow), emitted as an IRI reference to a sagegov:Principal node, not a literal. range Principal (keyed by its integer principalId), matching submittedBy -- both map to the same predicate, so they must agree on its type._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy)
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
+| Range | [Principal](../classes/Principal.md) |
 | Domain Of | [AccessApproval](../classes/AccessApproval.md) |
 | Slot URI | [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy) |
 
@@ -88,13 +88,15 @@ name: submitterId
 description: Synapse numeric user id of who performed the actions to gain this approval
   (AccessApproval.submitterId). Reuses DataAccessSubmission's sagegov:submittedBy
   predicate -- same real-world concept (who acted on the governance workflow), emitted
-  as an IRI reference to a sagegov:Principal node, not a literal.
+  as an IRI reference to a sagegov:Principal node, not a literal. range Principal
+  (keyed by its integer principalId), matching submittedBy -- both map to the same
+  predicate, so they must agree on its type.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:submittedBy
 domain_of:
 - AccessApproval
-range: integer
+range: Principal
 
 ```
 </details></div>

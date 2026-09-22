@@ -48,6 +48,15 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
         
       DataAccessSubmission : modifiedBy
         
+          
+    
+        
+        
+        DataAccessSubmission --> "0..1" Principal : modifiedBy
+        click Principal href "../../classes/Principal/"
+    
+
+        
       DataAccessSubmission : requestId
         
           
@@ -71,6 +80,15 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 
         
       DataAccessSubmission : submittedBy
+        
+          
+    
+        
+        
+        DataAccessSubmission --> "0..1" Principal : submittedBy
+        click Principal href "../../classes/Principal/"
+    
+
         
       DataAccessSubmission : submittedOn
         
@@ -101,9 +119,9 @@ URI: [sagegov:DataAccessSubmission](https://sagebionetworks.org/governance/DataA
 | [accessRequirementVersion](../slots/accessRequirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this submission was made against (DATA_A... | direct |
 | [requestId](../slots/requestId.md) | 0..1 <br/> [DataAccessRequest](../classes/DataAccessRequest.md) | The originating data access request | direct |
 | [researchProjectId](../slots/researchProjectId.md) | 0..1 <br/> [ResearchProject](../classes/ResearchProject.md) | The research project this submission/request is associated with (DATA_ACCESS_... | direct |
-| [submittedBy](../slots/submittedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who submitted this record (`Submission | direct |
+| [submittedBy](../slots/submittedBy.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of who submitted this record (`Submission | direct |
 | [submittedOn](../slots/submittedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was submitted (epoch milliseconds; `Submission | direct |
-| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this record | direct |
+| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of who last modified this record | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique identifier for this submission (schematic-schema-style dotted string... | [BaseEntity](../classes/BaseEntity.md) |
 
@@ -315,16 +333,18 @@ attributes:
     range: ResearchProject
   submittedBy:
     name: submittedBy
-    description: Synapse numeric user id of who submitted this record (`Submission.submittedBy`
-      in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal
+    description: 'Synapse numeric user id of who submitted this record (`Submission.submittedBy`
+      in Synapse''s live REST API). Emitted as an IRI reference to a sagegov:Principal
       node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py.
+      range Principal (keyed by its integer principalId): records carry the raw id,
+      and the schema describes the Principal reference the graph contains.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:submittedBy
     owner: DataAccessSubmission
     domain_of:
     - DataAccessSubmission
-    range: integer
+    range: Principal
   submittedOn:
     name: submittedOn
     description: When this record was submitted (epoch milliseconds; `Submission.submittedOn`
@@ -343,7 +363,9 @@ attributes:
       DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's
       own description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
       Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
-      submittedBy above.
+      submittedBy above. range Principal (keyed by its integer principalId), same
+      reasoning as submittedBy. Activity.modifiedBy (provenance.yaml) overrides this
+      back to a raw integer via slot_usage.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     close_mappings:
     - dcterms:contributor
@@ -354,7 +376,7 @@ attributes:
     - DataAccessSubmission
     - DataAccessRequest
     - Activity
-    range: integer
+    range: Principal
   etag:
     name: etag
     description: Entity tag for optimistic concurrency control (a 36-character UUID).

@@ -6,7 +6,7 @@ search:
 # Slot: source 
 
 
-_The system this grant/association was derived from, e.g. "Synapse"._
+_The system this grant/association was derived from, e.g. "Synapse". Emitted as the value's gov: IRI (SourceSystemEnum meaning:, e.g. gov:Synapse), not a string._
 
 
 
@@ -39,7 +39,7 @@ URI: [sagegov:source](https://sagebionetworks.org/governance/source)
 
 | Property | Value |
 | --- | --- |
-| Range | [String](../types/String.md) |
+| Range | [SourceSystemEnum](../enums/SourceSystemEnum.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md), [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) |
 | Slot URI | [sagegov:source](https://sagebionetworks.org/governance/source) |
 
@@ -87,7 +87,9 @@ URI: [sagegov:source](https://sagebionetworks.org/governance/source)
 <details>
 ```yaml
 name: source
-description: The system this grant/association was derived from, e.g. "Synapse".
+description: 'The system this grant/association was derived from, e.g. "Synapse".
+  Emitted as the value''s gov: IRI (SourceSystemEnum meaning:, e.g. gov:Synapse),
+  not a string.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 exact_mappings:
 - dcterms:source
@@ -96,7 +98,7 @@ slot_uri: sagegov:source
 domain_of:
 - AccessGrant
 - AccessRequirementAssociation
-range: string
+range: SourceSystemEnum
 
 ```
 </details></div>

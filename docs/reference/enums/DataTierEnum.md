@@ -19,6 +19,7 @@ URI: [governanceduo:enum/DataTierEnum](https://w3id.org/sage-bionetworks/governa
 | Open | None | Users must have a Synapse account to download data |
 | Controlled | None | Users must have a Synapse account and satisfy access conditions to download d... |
 | Private | None | Users must be provided access to data in Synapse by a project administrator |
+| Unclassified | None | Tier not yet determined by a curator |
 
 
 
@@ -77,6 +78,12 @@ permissible_values:
   Private:
     text: Private
     description: Users must be provided access to data in Synapse by a project administrator.
+  Unclassified:
+    text: Unclassified
+    description: Tier not yet determined by a curator. Treated as more restrictive
+      than Private until set, so an entity bound to an AccessRequirement with no recorded
+      tier fails closed (scripts/build_derivation_policy.py ranks it highest) rather
+      than reading as unrestricted.
 
 ```
 </details>

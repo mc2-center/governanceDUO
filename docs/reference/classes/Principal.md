@@ -73,6 +73,13 @@ URI: [sagegov:Principal](https://sagebionetworks.org/governance/Principal)
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
 | [AccessGrant](../classes/AccessGrant.md) | [principal](../slots/principal.md) | range | [Principal](../classes/Principal.md) |
+| [DataAccessSubmission](../classes/DataAccessSubmission.md) | [submittedBy](../slots/submittedBy.md) | range | [Principal](../classes/Principal.md) |
+| [DataAccessSubmission](../classes/DataAccessSubmission.md) | [modifiedBy](../slots/modifiedBy.md) | range | [Principal](../classes/Principal.md) |
+| [AccessApproval](../classes/AccessApproval.md) | [submitterId](../slots/submitterId.md) | range | [Principal](../classes/Principal.md) |
+| [AccessApproval](../classes/AccessApproval.md) | [accessorId](../slots/accessorId.md) | range | [Principal](../classes/Principal.md) |
+| [ResearchProject](../classes/ResearchProject.md) | [createdBy](../slots/createdBy.md) | range | [Principal](../classes/Principal.md) |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | [createdBy](../slots/createdBy.md) | range | [Principal](../classes/Principal.md) |
+| [DataAccessRequest](../classes/DataAccessRequest.md) | [modifiedBy](../slots/modifiedBy.md) | range | [Principal](../classes/Principal.md) |
 
 
 

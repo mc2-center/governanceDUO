@@ -28,8 +28,8 @@ URI: [governanceduo:slot/name](https://w3id.org/sage-bionetworks/governance-duo/
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
 | [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
 | [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
-| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  no  |
-| [Usage](../classes/Usage.md) | Flattens Synapse's real Used interface and its two implementations — UsedEnti... |  no  |
+| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  yes  |
+| [Usage](../classes/Usage.md) | Flattens Synapse's real Used interface and its two implementations — UsedEnti... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 

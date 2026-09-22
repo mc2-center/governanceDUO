@@ -14,7 +14,7 @@ _Synapse numeric user id of who recorded reviewStatus, when it is Reviewed/Appro
 
 
 
-URI: [governanceduo:reviewedBy](https://w3id.org/sage-bionetworks/governance-duo/reviewedBy)
+URI: [sagegov:reviewedBy](https://sagebionetworks.org/governance/reviewedBy)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:reviewedBy](https://w3id.org/sage-bionetworks/governance-duo
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:reviewedBy](https://w3id.org/sage-bionetworks/governance-duo/reviewedBy) |
+| Slot URI | [sagegov:reviewedBy](https://sagebionetworks.org/governance/reviewedBy) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +74,7 @@ URI: [governanceduo:reviewedBy](https://w3id.org/sage-bionetworks/governance-duo
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:reviewedBy |
+| self | sagegov:reviewedBy |
 | native | governanceduo:reviewedBy |
 
 
@@ -91,7 +91,7 @@ description: Synapse numeric user id of who recorded reviewStatus, when it is Re
   for why.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:reviewedBy
+slot_uri: sagegov:reviewedBy
 domain_of:
 - DerivationReview
 range: integer

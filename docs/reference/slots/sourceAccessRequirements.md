@@ -14,7 +14,7 @@ _Every AccessRequirement contributing to this label's dataTier, across the subje
 
 
 
-URI: [governanceduo:sourceAccessRequirements](https://w3id.org/sage-bionetworks/governance-duo/sourceAccessRequirements)
+URI: [sagegov:sourceAccessRequirements](https://sagebionetworks.org/governance/sourceAccessRequirements)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:sourceAccessRequirements](https://w3id.org/sage-bionetworks/
 | --- | --- |
 | Range | [Uriorcurie](../types/Uriorcurie.md) |
 | Domain Of | [ControlLabel](../classes/ControlLabel.md) |
-| Slot URI | [governanceduo:sourceAccessRequirements](https://w3id.org/sage-bionetworks/governance-duo/sourceAccessRequirements) |
+| Slot URI | [sagegov:sourceAccessRequirements](https://sagebionetworks.org/governance/sourceAccessRequirements) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +75,7 @@ URI: [governanceduo:sourceAccessRequirements](https://w3id.org/sage-bionetworks/
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:sourceAccessRequirements |
+| self | sagegov:sourceAccessRequirements |
 | native | governanceduo:sourceAccessRequirements |
 
 
@@ -93,7 +93,7 @@ description: Every AccessRequirement contributing to this label's dataTier, acro
   — see this schema's own description.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:sourceAccessRequirements
+slot_uri: sagegov:sourceAccessRequirements
 domain_of:
 - ControlLabel
 range: uriorcurie

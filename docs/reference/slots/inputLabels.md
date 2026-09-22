@@ -14,7 +14,7 @@ _The ControlLabels (one per input entity of the Activity above) whose disjoint s
 
 
 
-URI: [governanceduo:inputLabels](https://w3id.org/sage-bionetworks/governance-duo/inputLabels)
+URI: [sagegov:inputLabels](https://sagebionetworks.org/governance/inputLabels)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:inputLabels](https://w3id.org/sage-bionetworks/governance-du
 | --- | --- |
 | Range | [ControlLabel](../classes/ControlLabel.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:inputLabels](https://w3id.org/sage-bionetworks/governance-duo/inputLabels) |
+| Slot URI | [sagegov:inputLabels](https://sagebionetworks.org/governance/inputLabels) |
 
 ### Cardinality and Requirements
 
@@ -76,7 +76,7 @@ URI: [governanceduo:inputLabels](https://w3id.org/sage-bionetworks/governance-du
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:inputLabels |
+| self | sagegov:inputLabels |
 | native | governanceduo:inputLabels |
 
 
@@ -94,7 +94,7 @@ description: The ControlLabels (one per input entity of the Activity above) whos
   way Activity/SynapseEntity references are.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:inputLabels
+slot_uri: sagegov:inputLabels
 domain_of:
 - DerivationReview
 range: ControlLabel

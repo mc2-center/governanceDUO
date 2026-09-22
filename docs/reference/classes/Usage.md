@@ -54,7 +54,7 @@ URI: [prov:Usage](http://www.w3.org/ns/prov#Usage)
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [wasExecuted](../slots/wasExecuted.md) | 1 <br/> [Boolean](../types/Boolean.md) | Mirrors Used | direct |
-| [entity](../slots/entity.md) | 0..1 <br/> [Uriorcurie](../types/Uriorcurie.md) | The SynapseEntity referenced by this Usage, when Used | direct |
+| [entity](../slots/entity.md) | 0..1 <br/> [Uriorcurie](../types/Uriorcurie.md) | The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used | direct |
 | [entityVersionNumber](../slots/entityVersionNumber.md) | 0..1 <br/> [Integer](../types/Integer.md) | Mirrors UsedEntity | direct |
 | [url](../slots/url.md) | 0..1 <br/> [String](../types/String.md) | The external URL used, when Used | direct |
 | [name](../slots/name.md) | 0..1 <br/> [String](../types/String.md) | A Synapse-native display name | direct |
@@ -133,6 +133,10 @@ slots:
 - entityVersionNumber
 - url
 - name
+slot_usage:
+  name:
+    name: name
+    slot_uri: sagegov:name
 class_uri: prov:Usage
 
 ```
@@ -155,6 +159,10 @@ description: 'Flattens Synapse''s real Used interface and its two implementation
   Entity, plus extra detail" shape (prov:qualifiedUsage / prov:entity), not an invented
   parallel structure.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+slot_usage:
+  name:
+    name: name
+    slot_uri: sagegov:name
 attributes:
   wasExecuted:
     name: wasExecuted
@@ -174,10 +182,10 @@ attributes:
     required: true
   entity:
     name: entity
-    description: The SynapseEntity referenced by this Usage, when Used.concreteType
-      is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity
-      — same cross-ABox reasoning as Activity.generated above. Absent when this Usage
-      instead carries url/name (a UsedURL).
+    description: 'The SynapseEntity referenced by this Usage, as a syn: CURIE, when
+      Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie,
+      not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent
+      when this Usage instead carries url/name (a UsedURL).'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: prov:entity
@@ -202,8 +210,9 @@ attributes:
       — "The external URL of the file that was used"). Absent when this Usage instead
       carries entity/entityVersionNumber (a UsedEntity). Usage.name (UsedURL.name
       — the same field description, verbatim, despite the field being named `name`)
-      reuses the shared display-name slot (mixins.yaml) directly rather than being
-      redefined here.
+      reuses the shared display-name slot (mixins.yaml), mapped to sagegov:name via
+      slot_usage -- the same predicate the governance graph uses for SynapseEntity/Program
+      names.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:url
@@ -221,6 +230,7 @@ attributes:
       already depends on mixins.yaml through access_requirement.yaml).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:name
     owner: Usage
     domain_of:
     - SynapseAccessRequirementMixin

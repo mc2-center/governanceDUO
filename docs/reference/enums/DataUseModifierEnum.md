@@ -9,7 +9,7 @@ search:
 
 
 
-_Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model documents for its own external-term reuse)._
+_Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model documents for its own external-term reuse). The Sage-local DUOPlus1-7 extensions carry `meaning:` gov: IRIs (sagegov:DUOPlus<n>), declared as individuals in shapes/governance_graph.owl.ttl, so every data-use code in the graph is an IRI -- joinable against sagebrain-model's DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has no meaning: it is a curation state, not a data-use condition._
 
 
 
@@ -44,13 +44,13 @@ URI: [governanceduo:enum/DataUseModifierEnum](https://w3id.org/sage-bionetworks/
 | DUO:0000028 | DUO:0000028 | Institution Specific Restriction - This data use modifier indicates that use ... |
 | DUO:0000022 | DUO:0000022 | Geographical Restriction - This data use modifier indicates that use is limit... |
 | DUO:0000007 | DUO:0000007 | Disease Specific Research - This data use permission indicates that use is al... |
-| DUOPlus1 | None | Source geography is relevant to governance decisions |
-| DUOPlus2 | None | Study population is relevant to governance decisions |
-| DUOPlus3 | None | Data deidentification is relevant to governance decisions |
-| DUOPlus4 | None | A data permission designation is associated with the Study |
-| DUOPlus5 | None | A data tier designation is associated with the Study |
-| DUOPlus6 | None | A license is associated with the Study |
-| DUOPlus7 | None | Attribution conditions are associated with this Study |
+| DUOPlus1 | sagegov:DUOPlus1 | Source geography is relevant to governance decisions |
+| DUOPlus2 | sagegov:DUOPlus2 | Study population is relevant to governance decisions |
+| DUOPlus3 | sagegov:DUOPlus3 | Data deidentification is relevant to governance decisions |
+| DUOPlus4 | sagegov:DUOPlus4 | A data permission designation is associated with the Study |
+| DUOPlus5 | sagegov:DUOPlus5 | A data tier designation is associated with the Study |
+| DUOPlus6 | sagegov:DUOPlus6 | A license is associated with the Study |
+| DUOPlus7 | sagegov:DUOPlus7 | Attribution conditions are associated with this Study |
 | Pending Annotation | None | The data use modifier for this record has not yet been annotated |
 
 
@@ -62,7 +62,7 @@ URI: [governanceduo:enum/DataUseModifierEnum](https://w3id.org/sage-bionetworks/
 | ---  | --- |
 | [dataUseModifiers](../slots/dataUseModifiers.md) | A list of data use modifiers that apply to the access requirement |
 | [dataUseModifier](../slots/dataUseModifier.md) | The DUO code (or Sage DUOPlus extension) this binding documents |
-| [duoCode](../slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
+| [duoCode](../slots/duoCode.md) | The IRI of the data-use code this condition represents, from DataUseModifierE... |
 
 
 
@@ -94,10 +94,14 @@ URI: [governanceduo:enum/DataUseModifierEnum](https://w3id.org/sage-bionetworks/
 <details>
 ```yaml
 name: DataUseModifierEnum
-description: Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions
+description: 'Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions
   (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing
   at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model
-  documents for its own external-term reuse).
+  documents for its own external-term reuse). The Sage-local DUOPlus1-7 extensions
+  carry `meaning:` gov: IRIs (sagegov:DUOPlus<n>), declared as individuals in shapes/governance_graph.owl.ttl,
+  so every data-use code in the graph is an IRI -- joinable against sagebrain-model''s
+  DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has no
+  meaning: it is a curation state, not a data-use condition.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
@@ -336,6 +340,7 @@ permissible_values:
     text: DUOPlus1
     description: Source geography is relevant to governance decisions. If providing
       this term, please provide the applicable country code(s) in column sourceGeography.
+    meaning: sagegov:DUOPlus1
     annotations:
       sage_extension:
         tag: sage_extension
@@ -344,6 +349,7 @@ permissible_values:
     text: DUOPlus2
     description: Study population is relevant to governance decisions. If providing
       this term, please provide the applicable population type(s) in column populationType.
+    meaning: sagegov:DUOPlus2
     annotations:
       sage_extension:
         tag: sage_extension
@@ -353,6 +359,7 @@ permissible_values:
     description: Data deidentification is relevant to governance decisions. If providing
       this term, please provide the applicable deidentification type(s) in column
       deidentificationType.
+    meaning: sagegov:DUOPlus3
     annotations:
       sage_extension:
         tag: sage_extension
@@ -361,6 +368,7 @@ permissible_values:
     text: DUOPlus4
     description: A data permission designation is associated with the Study. If providing
       this term, please provide the applicable permission type(s) in column dataPermission.
+    meaning: sagegov:DUOPlus4
     annotations:
       sage_extension:
         tag: sage_extension
@@ -370,6 +378,7 @@ permissible_values:
     description: A data tier designation is associated with the Study. If providing
       this term, please provide the applicable data tier designation(s) in column
       dataTier.
+    meaning: sagegov:DUOPlus5
     annotations:
       sage_extension:
         tag: sage_extension
@@ -378,6 +387,7 @@ permissible_values:
     text: DUOPlus6
     description: A license is associated with the Study. If providing this term, please
       provide the applicable license in column license.
+    meaning: sagegov:DUOPlus6
     annotations:
       sage_extension:
         tag: sage_extension
@@ -386,6 +396,7 @@ permissible_values:
     text: DUOPlus7
     description: Attribution conditions are associated with this Study. If providing
       this term, please provide the attribution statement in column attribution.
+    meaning: sagegov:DUOPlus7
     annotations:
       sage_extension:
         tag: sage_extension

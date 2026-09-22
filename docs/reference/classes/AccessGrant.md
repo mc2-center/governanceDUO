@@ -77,6 +77,15 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
         
       AccessGrant : source
         
+          
+    
+        
+        
+        AccessGrant --> "0..1" SourceSystemEnum : source
+        click SourceSystemEnum href "../../enums/SourceSystemEnum/"
+    
+
+        
       
 ```
 
@@ -103,7 +112,7 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
 | [resource](../slots/resource.md) | 1 <br/> [SynapseEntity](../classes/SynapseEntity.md) | The SynapseEntity this grant/association applies to | direct |
 | [principal](../slots/principal.md) | 1 <br/> [Principal](../classes/Principal.md) | The user or team this grant applies to | direct |
 | [permission](../slots/permission.md) | 1..* <br/> [AccessTypeEnum](../enums/AccessTypeEnum.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE | direct |
-| [source](../slots/source.md) | 0..1 <br/> [String](../types/String.md) | The system this grant/association was derived from, e | direct |
+| [source](../slots/source.md) | 0..1 <br/> [SourceSystemEnum](../enums/SourceSystemEnum.md) | The system this grant/association was derived from, e | direct |
 | [bindingType](../slots/bindingType.md) | 1 <br/> [BindingTypeEnum](../enums/BindingTypeEnum.md) |  | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this grant record (Synapse's ACL/ ACL_RESOURCE_ACC... | [BaseEntity](../classes/BaseEntity.md) |
@@ -288,7 +297,9 @@ attributes:
     multivalued: true
   source:
     name: source
-    description: The system this grant/association was derived from, e.g. "Synapse".
+    description: 'The system this grant/association was derived from, e.g. "Synapse".
+      Emitted as the value''s gov: IRI (SourceSystemEnum meaning:, e.g. gov:Synapse),
+      not a string.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:source
@@ -298,7 +309,7 @@ attributes:
     domain_of:
     - AccessGrant
     - AccessRequirementAssociation
-    range: string
+    range: SourceSystemEnum
   bindingType:
     name: bindingType
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo

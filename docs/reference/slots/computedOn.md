@@ -14,7 +14,7 @@ _When this ControlLabel was (re)computed (epoch milliseconds)._
 
 
 
-URI: [governanceduo:computedOn](https://w3id.org/sage-bionetworks/governance-duo/computedOn)
+URI: [sagegov:computedOn](https://sagebionetworks.org/governance/computedOn)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:computedOn](https://w3id.org/sage-bionetworks/governance-duo
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [ControlLabel](../classes/ControlLabel.md) |
-| Slot URI | [governanceduo:computedOn](https://w3id.org/sage-bionetworks/governance-duo/computedOn) |
+| Slot URI | [sagegov:computedOn](https://sagebionetworks.org/governance/computedOn) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +74,7 @@ URI: [governanceduo:computedOn](https://w3id.org/sage-bionetworks/governance-duo
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:computedOn |
+| self | sagegov:computedOn |
 | native | governanceduo:computedOn |
 
 
@@ -88,7 +88,7 @@ name: computedOn
 description: When this ControlLabel was (re)computed (epoch milliseconds).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:computedOn
+slot_uri: sagegov:computedOn
 domain_of:
 - ControlLabel
 range: integer

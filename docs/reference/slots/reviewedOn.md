@@ -14,7 +14,7 @@ _When reviewStatus was last recorded (epoch milliseconds)._
 
 
 
-URI: [governanceduo:reviewedOn](https://w3id.org/sage-bionetworks/governance-duo/reviewedOn)
+URI: [sagegov:reviewedOn](https://sagebionetworks.org/governance/reviewedOn)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:reviewedOn](https://w3id.org/sage-bionetworks/governance-duo
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:reviewedOn](https://w3id.org/sage-bionetworks/governance-duo/reviewedOn) |
+| Slot URI | [sagegov:reviewedOn](https://sagebionetworks.org/governance/reviewedOn) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +74,7 @@ URI: [governanceduo:reviewedOn](https://w3id.org/sage-bionetworks/governance-duo
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:reviewedOn |
+| self | sagegov:reviewedOn |
 | native | governanceduo:reviewedOn |
 
 
@@ -88,7 +88,7 @@ name: reviewedOn
 description: When reviewStatus was last recorded (epoch milliseconds).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:reviewedOn
+slot_uri: sagegov:reviewedOn
 domain_of:
 - DerivationReview
 range: integer

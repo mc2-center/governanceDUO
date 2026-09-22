@@ -14,7 +14,7 @@ _The derivation Activity being reviewed. range is uriorcurie, not Activity — s
 
 
 
-URI: [governanceduo:activity](https://w3id.org/sage-bionetworks/governance-duo/activity)
+URI: [sagegov:activity](https://sagebionetworks.org/governance/activity)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:activity](https://w3id.org/sage-bionetworks/governance-duo/a
 | --- | --- |
 | Range | [Uriorcurie](../types/Uriorcurie.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:activity](https://w3id.org/sage-bionetworks/governance-duo/activity) |
+| Slot URI | [sagegov:activity](https://sagebionetworks.org/governance/activity) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +75,7 @@ URI: [governanceduo:activity](https://w3id.org/sage-bionetworks/governance-duo/a
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:activity |
+| self | sagegov:activity |
 | native | governanceduo:activity |
 
 
@@ -90,7 +90,7 @@ description: The derivation Activity being reviewed. range is uriorcurie, not Ac
   — see this schema's own description.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:activity
+slot_uri: sagegov:activity
 domain_of:
 - DerivationReview
 range: uriorcurie

@@ -31,6 +31,15 @@ URI: [sagegov:AccessApproval](https://sagebionetworks.org/governance/AccessAppro
       
       AccessApproval : accessorId
         
+          
+    
+        
+        
+        AccessApproval --> "1" Principal : accessorId
+        click Principal href "../../classes/Principal/"
+    
+
+        
       AccessApproval : createdOn
         
       AccessApproval : etag
@@ -67,6 +76,15 @@ URI: [sagegov:AccessApproval](https://sagebionetworks.org/governance/AccessAppro
         
       AccessApproval : submitterId
         
+          
+    
+        
+        
+        AccessApproval --> "0..1" Principal : submitterId
+        click Principal href "../../classes/Principal/"
+    
+
+        
       
 ```
 
@@ -92,8 +110,8 @@ URI: [sagegov:AccessApproval](https://sagebionetworks.org/governance/AccessAppro
 | ---  | --- | --- | --- |
 | [requirementId](../slots/requirementId.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this approval satisfies (AccessApproval | direct |
 | [requirementVersion](../slots/requirementVersion.md) | 0..1 <br/> [Integer](../types/Integer.md) | The version of the AccessRequirement this approval satisfies (AccessApproval | direct |
-| [submitterId](../slots/submitterId.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who performed the actions to gain this approval (A... | direct |
-| [accessorId](../slots/accessorId.md) | 1 <br/> [Integer](../types/Integer.md) | Synapse numeric id of the Principal approved for access (AccessApproval | direct |
+| [submitterId](../slots/submitterId.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of who performed the actions to gain this approval (A... | direct |
+| [accessorId](../slots/accessorId.md) | 1 <br/> [Principal](../classes/Principal.md) | Synapse numeric id of the Principal approved for access (AccessApproval | direct |
 | [status](../slots/status.md) | 1 <br/> [ApprovalStateEnum](../enums/ApprovalStateEnum.md) | The state of this approval (AccessApproval | direct |
 | [expiredOn](../slots/expiredOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this approval will expire (epoch milliseconds; AccessApproval | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
@@ -268,26 +286,30 @@ attributes:
     description: Synapse numeric user id of who performed the actions to gain this
       approval (AccessApproval.submitterId). Reuses DataAccessSubmission's sagegov:submittedBy
       predicate -- same real-world concept (who acted on the governance workflow),
-      emitted as an IRI reference to a sagegov:Principal node, not a literal.
+      emitted as an IRI reference to a sagegov:Principal node, not a literal. range
+      Principal (keyed by its integer principalId), matching submittedBy -- both map
+      to the same predicate, so they must agree on its type.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:submittedBy
     owner: AccessApproval
     domain_of:
     - AccessApproval
-    range: integer
+    range: Principal
   accessorId:
     name: accessorId
     description: Synapse numeric id of the Principal approved for access (AccessApproval.accessorId).
       Emitted as an IRI reference to a sagegov:Principal node, mapping onto the target
-      ontology's gov:heldBy predicate.
+      ontology's gov:heldBy predicate. range Principal (keyed by its integer principalId),
+      so records still carry the raw Synapse id while the schema -- and the OWL generated
+      from it -- describe the Principal reference the graph actually contains.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:heldBy
     owner: AccessApproval
     domain_of:
     - AccessApproval
-    range: integer
+    range: Principal
     required: true
   status:
     name: status

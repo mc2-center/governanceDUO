@@ -6,7 +6,7 @@ search:
 # Slot: submittedBy 
 
 
-_Synapse numeric user id of who submitted this record (`Submission.submittedBy` in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py._
+_Synapse numeric user id of who submitted this record (`Submission.submittedBy` in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py. range Principal (keyed by its integer principalId): records carry the raw id, and the schema describes the Principal reference the graph contains._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy)
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
+| Range | [Principal](../classes/Principal.md) |
 | Domain Of | [DataAccessSubmission](../classes/DataAccessSubmission.md) |
 | Slot URI | [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy) |
 
@@ -85,15 +85,17 @@ URI: [sagegov:submittedBy](https://sagebionetworks.org/governance/submittedBy)
 <details>
 ```yaml
 name: submittedBy
-description: Synapse numeric user id of who submitted this record (`Submission.submittedBy`
-  in Synapse's live REST API). Emitted as an IRI reference to a sagegov:Principal
+description: 'Synapse numeric user id of who submitted this record (`Submission.submittedBy`
+  in Synapse''s live REST API). Emitted as an IRI reference to a sagegov:Principal
   node (looked up by this numeric id), not a literal -- see scripts/build_governance_graph.py.
+  range Principal (keyed by its integer principalId): records carry the raw id, and
+  the schema describes the Principal reference the graph contains.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:submittedBy
 domain_of:
 - DataAccessSubmission
-range: integer
+range: Principal
 
 ```
 </details></div>

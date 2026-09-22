@@ -14,7 +14,7 @@ _The SynapseEntity this ControlLabel labels. range is uriorcurie, not SynapseEnt
 
 
 
-URI: [governanceduo:subject](https://w3id.org/sage-bionetworks/governance-duo/subject)
+URI: [sagegov:subject](https://sagebionetworks.org/governance/subject)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:subject](https://w3id.org/sage-bionetworks/governance-duo/su
 | --- | --- |
 | Range | [Uriorcurie](../types/Uriorcurie.md) |
 | Domain Of | [ControlLabel](../classes/ControlLabel.md) |
-| Slot URI | [governanceduo:subject](https://w3id.org/sage-bionetworks/governance-duo/subject) |
+| Slot URI | [sagegov:subject](https://sagebionetworks.org/governance/subject) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +75,7 @@ URI: [governanceduo:subject](https://w3id.org/sage-bionetworks/governance-duo/su
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:subject |
+| self | sagegov:subject |
 | native | governanceduo:subject |
 
 
@@ -90,7 +90,7 @@ description: The SynapseEntity this ControlLabel labels. range is uriorcurie, no
   SynapseEntity — see this schema's own description.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:subject
+slot_uri: sagegov:subject
 domain_of:
 - ControlLabel
 range: uriorcurie

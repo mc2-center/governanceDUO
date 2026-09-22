@@ -1,5 +1,6 @@
 @prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 governanceduo:access_requirement.42 a governanceduo:AccessRequirement ;
@@ -11,7 +12,7 @@ governanceduo:access_requirement.42 a governanceduo:AccessRequirement ;
     governanceduo:entityIdList "syn12345678" .
 
 governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
-    governanceduo:dataUseModifiers "DUOPlus1" ;
+    governanceduo:dataUseModifiers sagegov:DUOPlus1 ;
     governanceduo:grantNumber "U54AG079754" ;
     governanceduo:sourceGeography "US" ;
     governanceduo:studyDbgapAccessionId "phs000123" ;

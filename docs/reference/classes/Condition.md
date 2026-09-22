@@ -61,7 +61,7 @@ URI: [sagegov:Condition](https://sagebionetworks.org/governance/Condition)
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [conditionType](../slots/conditionType.md) | 0..1 <br/> [String](../types/String.md) | A short label for this condition | direct |
-| [duoCode](../slots/duoCode.md) | 0..1 <br/> [DataUseModifierEnum](../enums/DataUseModifierEnum.md) | The real DUO CURIE this condition represents, when one exists | direct |
+| [duoCode](../slots/duoCode.md) | 0..1 <br/> [DataUseModifierEnum](../enums/DataUseModifierEnum.md) | The IRI of the data-use code this condition represents, from DataUseModifierE... | direct |
 | [description](../slots/description.md) | 0..1 <br/> [String](../types/String.md) | Human-readable description of this condition, taken directly from DataUseModi... | direct |
 | [conditionDetail](../slots/conditionDetail.md) | * <br/> [String](../types/String.md) | Zero or more companion-slot values from the source AccessRequirement, one per... | direct |
 
@@ -179,10 +179,11 @@ attributes:
     range: string
   duoCode:
     name: duoCode
-    description: 'The real DUO CURIE this condition represents, when one exists. Deliberately
-      not required: the 7 Sage-local DUOPlus1-7 extensions in DataUseModifierEnum
-      have no meaning: CURIE at all -- see conditionType above for how those are represented
-      instead.'
+    description: 'The IRI of the data-use code this condition represents, from DataUseModifierEnum''s
+      meaning: obo:DUO_<n> for real DUO codes (the same IRIs sagebrain-model imports),
+      sagegov:DUOPlus<n> for the Sage-local extensions. Emitted as an IRI, never a
+      string, by scripts/build_governance_graph.py. Not required: "Pending Annotation"
+      has no meaning and gets no duoCode.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:duoCode

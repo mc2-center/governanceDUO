@@ -14,7 +14,7 @@ _The Activity this label was (re)computed from. range is uriorcurie, not Activit
 
 
 
-URI: [governanceduo:computedFrom](https://w3id.org/sage-bionetworks/governance-duo/computedFrom)
+URI: [sagegov:computedFrom](https://sagebionetworks.org/governance/computedFrom)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:computedFrom](https://w3id.org/sage-bionetworks/governance-d
 | --- | --- |
 | Range | [Uriorcurie](../types/Uriorcurie.md) |
 | Domain Of | [ControlLabel](../classes/ControlLabel.md) |
-| Slot URI | [governanceduo:computedFrom](https://w3id.org/sage-bionetworks/governance-duo/computedFrom) |
+| Slot URI | [sagegov:computedFrom](https://sagebionetworks.org/governance/computedFrom) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +74,7 @@ URI: [governanceduo:computedFrom](https://w3id.org/sage-bionetworks/governance-d
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:computedFrom |
+| self | sagegov:computedFrom |
 | native | governanceduo:computedFrom |
 
 
@@ -91,7 +91,7 @@ description: 'The Activity this label was (re)computed from. range is uriorcurie
   is later revoked, any label computed before that point is provably stale.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:computedFrom
+slot_uri: sagegov:computedFrom
 domain_of:
 - ControlLabel
 range: uriorcurie

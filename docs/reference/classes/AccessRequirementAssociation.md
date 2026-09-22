@@ -64,6 +64,15 @@ URI: [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governan
         
       AccessRequirementAssociation : source
         
+          
+    
+        
+        
+        AccessRequirementAssociation --> "0..1" SourceSystemEnum : source
+        click SourceSystemEnum href "../../enums/SourceSystemEnum/"
+    
+
+        
       
 ```
 
@@ -89,7 +98,7 @@ URI: [sagegov:AccessRequirementAssociation](https://sagebionetworks.org/governan
 | ---  | --- | --- | --- |
 | [resource](../slots/resource.md) | 1 <br/> [SynapseEntity](../classes/SynapseEntity.md) | The SynapseEntity this grant/association applies to | direct |
 | [accessRequirement](../slots/accessRequirement.md) | 1 <br/> [AccessRequirementReference](../classes/AccessRequirementReference.md) | The AccessRequirement this association binds to the resource | direct |
-| [source](../slots/source.md) | 0..1 <br/> [String](../types/String.md) | The system this grant/association was derived from, e | direct |
+| [source](../slots/source.md) | 0..1 <br/> [SourceSystemEnum](../enums/SourceSystemEnum.md) | The system this grant/association was derived from, e | direct |
 | [bindingType](../slots/bindingType.md) | 1 <br/> [BindingTypeEnum](../enums/BindingTypeEnum.md) |  | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this association record | [BaseEntity](../classes/BaseEntity.md) |
 
@@ -233,7 +242,9 @@ attributes:
     required: true
   source:
     name: source
-    description: The system this grant/association was derived from, e.g. "Synapse".
+    description: 'The system this grant/association was derived from, e.g. "Synapse".
+      Emitted as the value''s gov: IRI (SourceSystemEnum meaning:, e.g. gov:Synapse),
+      not a string.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     exact_mappings:
     - dcterms:source
@@ -243,7 +254,7 @@ attributes:
     domain_of:
     - AccessGrant
     - AccessRequirementAssociation
-    range: string
+    range: SourceSystemEnum
   bindingType:
     name: bindingType
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo

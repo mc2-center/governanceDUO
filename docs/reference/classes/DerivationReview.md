@@ -14,7 +14,7 @@ _An auditable record minted whenever a derivation Activity's inputs carry Contro
 
 
 
-URI: [governanceduo:DerivationReview](https://w3id.org/sage-bionetworks/governance-duo/DerivationReview)
+URI: [sagegov:DerivationReview](https://sagebionetworks.org/governance/DerivationReview)
 
 
 
@@ -75,7 +75,7 @@ URI: [governanceduo:DerivationReview](https://w3id.org/sage-bionetworks/governan
 
 | Property | Value |
 | --- | --- |
-| Class URI | [governanceduo:DerivationReview](https://w3id.org/sage-bionetworks/governance-duo/DerivationReview) |
+| Class URI | [sagegov:DerivationReview](https://sagebionetworks.org/governance/DerivationReview) |
 
 
 ## Slots
@@ -122,7 +122,7 @@ URI: [governanceduo:DerivationReview](https://w3id.org/sage-bionetworks/governan
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:DerivationReview |
+| self | sagegov:DerivationReview |
 | native | governanceduo:DerivationReview |
 
 
@@ -161,7 +161,7 @@ slot_usage:
     examples:
     - value: derivation_review.001
     pattern: ^derivation_review\.[A-Za-z0-9_-]+$
-class_uri: governanceduo:DerivationReview
+class_uri: sagegov:DerivationReview
 
 ```
 </details>
@@ -193,7 +193,7 @@ attributes:
       Activity — see this schema's own description.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:activity
+    slot_uri: sagegov:activity
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -208,7 +208,7 @@ attributes:
       the way Activity/SynapseEntity references are.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:inputLabels
+    slot_uri: sagegov:inputLabels
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -222,7 +222,7 @@ attributes:
       — a distinct, unrelated enum; do not conflate.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:reviewStatus
+    slot_uri: sagegov:reviewStatus
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -236,7 +236,7 @@ attributes:
       own description for why.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:reviewedBy
+    slot_uri: sagegov:reviewedBy
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -246,7 +246,7 @@ attributes:
     description: When reviewStatus was last recorded (epoch milliseconds).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:reviewedOn
+    slot_uri: sagegov:reviewedOn
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -256,7 +256,7 @@ attributes:
     description: Free-text notes from the reviewer.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:reviewNotes
+    slot_uri: sagegov:reviewNotes
     owner: DerivationReview
     domain_of:
     - DerivationReview
@@ -276,7 +276,7 @@ attributes:
     range: string
     required: true
     pattern: ^derivation_review\.[A-Za-z0-9_-]+$
-class_uri: governanceduo:DerivationReview
+class_uri: sagegov:DerivationReview
 
 ```
 </details></div>

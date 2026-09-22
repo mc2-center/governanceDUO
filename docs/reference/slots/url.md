@@ -6,7 +6,7 @@ search:
 # Slot: url 
 
 
-_The external URL used, when Used.concreteType is UsedURL (UsedURL.url — "The external URL of the file that was used"). Absent when this Usage instead carries entity/entityVersionNumber (a UsedEntity). Usage.name (UsedURL.name — the same field description, verbatim, despite the field being named `name`) reuses the shared display-name slot (mixins.yaml) directly rather than being redefined here._
+_The external URL used, when Used.concreteType is UsedURL (UsedURL.url — "The external URL of the file that was used"). Absent when this Usage instead carries entity/entityVersionNumber (a UsedEntity). Usage.name (UsedURL.name — the same field description, verbatim, despite the field being named `name`) reuses the shared display-name slot (mixins.yaml), mapped to sagegov:name via slot_usage -- the same predicate the governance graph uses for SynapseEntity/Program names._
 
 
 
@@ -89,7 +89,8 @@ description: The external URL used, when Used.concreteType is UsedURL (UsedURL.u
   — "The external URL of the file that was used"). Absent when this Usage instead
   carries entity/entityVersionNumber (a UsedEntity). Usage.name (UsedURL.name — the
   same field description, verbatim, despite the field being named `name`) reuses the
-  shared display-name slot (mixins.yaml) directly rather than being redefined here.
+  shared display-name slot (mixins.yaml), mapped to sagegov:name via slot_usage --
+  the same predicate the governance graph uses for SynapseEntity/Program names.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:url

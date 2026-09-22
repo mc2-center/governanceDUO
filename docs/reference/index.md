@@ -102,14 +102,14 @@ Name: governance_duo
 | [domain](slots/domain.md) | Free-text research domain this template applies to, e |
 | [drsId](slots/drsId.md) | The DRS DrsObject |
 | [drsSelfUri](slots/drsSelfUri.md) | The DRS DrsObject |
-| [duoCode](slots/duoCode.md) | The real DUO CURIE this condition represents, when one exists |
-| [entity](slots/entity.md) | The SynapseEntity referenced by this Usage, when Used |
+| [duoCode](slots/duoCode.md) | The IRI of the data-use code this condition represents, from DataUseModifierE... |
+| [entity](slots/entity.md) | The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used |
 | [entityIdList](slots/entityIdList.md) | Synapse ID(s) for Synapse container(s) (e |
 | [entityVersionNumber](slots/entityVersionNumber.md) | Mirrors UsedEntity |
 | [etag](slots/etag.md) | Entity tag for optimistic concurrency control (a 36-character UUID) |
 | [expiredOn](slots/expiredOn.md) | When this approval will expire (epoch milliseconds; AccessApproval |
 | [extendsTemplate](slots/extendsTemplate.md) | The AccessRequirementTemplate this IRBRequirement extends |
-| [generated](slots/generated.md) | The SynapseEntity this Activity produced |
+| [generated](slots/generated.md) | The SynapseEntities this Activity produced, as syn: CURIEs |
 | [geographicalRestriction](slots/geographicalRestriction.md) | The specific geographic region(s) to which use is limited by the access requi... |
 | [grantAnnotationKey](slots/grantAnnotationKey.md) | The annotation key applied to a Synapse entity that contains a grant identifi... |
 | [grantAnnotationValue](slots/grantAnnotationValue.md) | The value that will be assigned to the key provided under grantAnnotationKey |
@@ -243,6 +243,7 @@ Name: governance_duo
 | [GeographicalRegionEnum](enums/GeographicalRegionEnum.md) | ISO 3166-1 alpha-2 country codes |
 | [LicenseEnum](enums/LicenseEnum.md) | model/shared |
 | [PrincipalTypeEnum](enums/PrincipalTypeEnum.md) | Whether a Principal is an individual user or a team — from the design doc: "P... |
+| [SourceSystemEnum](enums/SourceSystemEnum.md) | The system a governance relationship (AccessGrant, AccessRequirementAssociati... |
 | [StudyIndexDateEnum](enums/StudyIndexDateEnum.md) |  |
 | [SubmissionStateEnum](enums/SubmissionStateEnum.md) | Synapse's real DataAccessSubmissionState values, verified via Sage-Bionetwork... |
 

@@ -6,7 +6,7 @@ search:
 # Slot: entity 
 
 
-_The SynapseEntity referenced by this Usage, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL)._
+_The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL)._
 
 
 
@@ -85,10 +85,10 @@ URI: [prov:entity](http://www.w3.org/ns/prov#entity)
 <details>
 ```yaml
 name: entity
-description: The SynapseEntity referenced by this Usage, when Used.concreteType is
-  UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same
-  cross-ABox reasoning as Activity.generated above. Absent when this Usage instead
-  carries url/name (a UsedURL).
+description: 'The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType
+  is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity
+  — same cross-ABox reasoning as Activity.generated above. Absent when this Usage
+  instead carries url/name (a UsedURL).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: prov:entity

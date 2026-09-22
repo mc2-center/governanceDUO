@@ -6,7 +6,7 @@ search:
 # Slot: generated 
 
 
-_The SynapseEntity this Activity produced. range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox)._
+_The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued: Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId> attaches an existing Activity to another entity -- both confirmed against Synapse's OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox)._
 
 
 
@@ -46,6 +46,7 @@ URI: [prov:generated](http://www.w3.org/ns/prov#generated)
 
 | Property | Value |
 | --- | --- |
+| Multivalued | Yes |
 
 
 
@@ -85,15 +86,20 @@ URI: [prov:generated](http://www.w3.org/ns/prov#generated)
 <details>
 ```yaml
 name: generated
-description: The SynapseEntity this Activity produced. range is the untyped uriorcurie,
-  not SynapseEntity itself — see this schema's own description for why (the referenced
-  individual is never asserted in this schema's own example-rdf ABox).
+description: 'The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued:
+  Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated
+  returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId>
+  attaches an existing Activity to another entity -- both confirmed against Synapse''s
+  OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this
+  schema''s own description for why (the referenced individual is never asserted in
+  this schema''s own example-rdf ABox).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: prov:generated
 domain_of:
 - Activity
 range: uriorcurie
+multivalued: true
 
 ```
 </details></div>

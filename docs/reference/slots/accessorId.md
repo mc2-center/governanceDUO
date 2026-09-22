@@ -6,7 +6,7 @@ search:
 # Slot: accessorId 
 
 
-_Synapse numeric id of the Principal approved for access (AccessApproval.accessorId). Emitted as an IRI reference to a sagegov:Principal node, mapping onto the target ontology's gov:heldBy predicate._
+_Synapse numeric id of the Principal approved for access (AccessApproval.accessorId). Emitted as an IRI reference to a sagegov:Principal node, mapping onto the target ontology's gov:heldBy predicate. range Principal (keyed by its integer principalId), so records still carry the raw Synapse id while the schema -- and the OWL generated from it -- describe the Principal reference the graph actually contains._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:heldBy](https://sagebionetworks.org/governance/heldBy)
 
 | Property | Value |
 | --- | --- |
-| Range | [Integer](../types/Integer.md) |
+| Range | [Principal](../classes/Principal.md) |
 | Domain Of | [AccessApproval](../classes/AccessApproval.md) |
 | Slot URI | [sagegov:heldBy](https://sagebionetworks.org/governance/heldBy) |
 
@@ -88,13 +88,15 @@ URI: [sagegov:heldBy](https://sagebionetworks.org/governance/heldBy)
 name: accessorId
 description: Synapse numeric id of the Principal approved for access (AccessApproval.accessorId).
   Emitted as an IRI reference to a sagegov:Principal node, mapping onto the target
-  ontology's gov:heldBy predicate.
+  ontology's gov:heldBy predicate. range Principal (keyed by its integer principalId),
+  so records still carry the raw Synapse id while the schema -- and the OWL generated
+  from it -- describe the Principal reference the graph actually contains.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:heldBy
 domain_of:
 - AccessApproval
-range: integer
+range: Principal
 required: true
 
 ```

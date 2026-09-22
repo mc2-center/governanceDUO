@@ -14,7 +14,7 @@ _A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum ran
 
 
 
-URI: [governanceduo:ControlLabel](https://w3id.org/sage-bionetworks/governance-duo/ControlLabel)
+URI: [sagegov:ControlLabel](https://sagebionetworks.org/governance/ControlLabel)
 
 
 
@@ -55,7 +55,7 @@ URI: [governanceduo:ControlLabel](https://w3id.org/sage-bionetworks/governance-d
 
 | Property | Value |
 | --- | --- |
-| Class URI | [governanceduo:ControlLabel](https://w3id.org/sage-bionetworks/governance-duo/ControlLabel) |
+| Class URI | [sagegov:ControlLabel](https://sagebionetworks.org/governance/ControlLabel) |
 
 
 ## Slots
@@ -107,7 +107,7 @@ URI: [governanceduo:ControlLabel](https://w3id.org/sage-bionetworks/governance-d
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:ControlLabel |
+| self | sagegov:ControlLabel |
 | native | governanceduo:ControlLabel |
 
 
@@ -148,11 +148,12 @@ slot_usage:
       since a single AccessRequirement can name more than one tier) since a ControlLabel
       carries exactly one, precomputed rank. slot_uri set explicitly here: the base
       dataTier slot (mixins.yaml) declares none of its own, and scripts/build_derivation_policy.py''s
-      PREDICATE() reuse (from build_governance_graph.py) requires one.'
-    slot_uri: governanceduo:dataTier
+      PREDICATE() reuse (from build_governance_graph.py) requires one. A gov: IRI,
+      like every other ControlLabel slot (see this schema''s own description).'
+    slot_uri: sagegov:dataTier
     required: true
     multivalued: false
-class_uri: governanceduo:ControlLabel
+class_uri: sagegov:ControlLabel
 
 ```
 </details>
@@ -180,8 +181,9 @@ slot_usage:
       since a single AccessRequirement can name more than one tier) since a ControlLabel
       carries exactly one, precomputed rank. slot_uri set explicitly here: the base
       dataTier slot (mixins.yaml) declares none of its own, and scripts/build_derivation_policy.py''s
-      PREDICATE() reuse (from build_governance_graph.py) requires one.'
-    slot_uri: governanceduo:dataTier
+      PREDICATE() reuse (from build_governance_graph.py) requires one. A gov: IRI,
+      like every other ControlLabel slot (see this schema''s own description).'
+    slot_uri: sagegov:dataTier
     required: true
     multivalued: false
 attributes:
@@ -191,7 +193,7 @@ attributes:
       not SynapseEntity — see this schema's own description.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:subject
+    slot_uri: sagegov:subject
     owner: ControlLabel
     domain_of:
     - ControlLabel
@@ -205,7 +207,8 @@ attributes:
       since a single AccessRequirement can name more than one tier) since a ControlLabel
       carries exactly one, precomputed rank. slot_uri set explicitly here: the base
       dataTier slot (mixins.yaml) declares none of its own, and scripts/build_derivation_policy.py''s
-      PREDICATE() reuse (from build_governance_graph.py) requires one.'
+      PREDICATE() reuse (from build_governance_graph.py) requires one. A gov: IRI,
+      like every other ControlLabel slot (see this schema''s own description).'
     comments:
     - Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules.
     - 'NCIT:C175887 "Open or Controlled Data Access Indicator" (synonym: "Data Access
@@ -216,7 +219,7 @@ attributes:
     exact_mappings:
     - NCIT:C175887
     rank: 1000
-    slot_uri: governanceduo:dataTier
+    slot_uri: sagegov:dataTier
     owner: ControlLabel
     domain_of:
     - GovernanceMixin
@@ -233,7 +236,7 @@ attributes:
       — see this schema's own description.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:sourceAccessRequirements
+    slot_uri: sagegov:sourceAccessRequirements
     owner: ControlLabel
     domain_of:
     - ControlLabel
@@ -247,7 +250,7 @@ attributes:
       is later revoked, any label computed before that point is provably stale.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:computedFrom
+    slot_uri: sagegov:computedFrom
     owner: ControlLabel
     domain_of:
     - ControlLabel
@@ -257,12 +260,12 @@ attributes:
     description: When this ControlLabel was (re)computed (epoch milliseconds).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
-    slot_uri: governanceduo:computedOn
+    slot_uri: sagegov:computedOn
     owner: ControlLabel
     domain_of:
     - ControlLabel
     range: integer
-class_uri: governanceduo:ControlLabel
+class_uri: sagegov:ControlLabel
 
 ```
 </details></div>

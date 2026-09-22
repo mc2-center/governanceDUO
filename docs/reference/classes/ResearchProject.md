@@ -40,6 +40,15 @@ URI: [sagegov:ResearchProject](https://sagebionetworks.org/governance/ResearchPr
         
       ResearchProject : createdBy
         
+          
+    
+        
+        
+        ResearchProject --> "0..1" Principal : createdBy
+        click Principal href "../../classes/Principal/"
+    
+
+        
       ResearchProject : createdOn
         
       ResearchProject : etag
@@ -79,7 +88,7 @@ URI: [sagegov:ResearchProject](https://sagebionetworks.org/governance/ResearchPr
 | [institution](../slots/institution.md) | 0..1 <br/> [String](../types/String.md) | Institution/company name, verbatim from Synapse (ResearchProject | direct |
 | [projectLead](../slots/projectLead.md) | 0..1 <br/> [String](../types/String.md) | The person leading this research project (ResearchProject | direct |
 | [intendedDataUseStatement](../slots/intendedDataUseStatement.md) | 0..1 <br/> [String](../types/String.md) | A few short paragraphs explaining how the controlled data will be used (Resea... | direct |
-| [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | direct |
+| [createdBy](../slots/createdBy.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of the record's creator | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique identifier for this research project (schematic-schema-style dotted ... | [BaseEntity](../classes/BaseEntity.md) |
@@ -174,6 +183,7 @@ slot_usage:
       sagegov:submittedBy (the workflow-submission-action concept) and SynapseEntity's
       sagegov:createdByUserId (a raw literal).
     slot_uri: sagegov:createdBy
+    range: Principal
   createdOn:
     name: createdOn
     slot_uri: sagegov:createdOn
@@ -215,6 +225,7 @@ slot_usage:
       sagegov:submittedBy (the workflow-submission-action concept) and SynapseEntity's
       sagegov:createdByUserId (a raw literal).
     slot_uri: sagegov:createdBy
+    range: Principal
   createdOn:
     name: createdOn
     slot_uri: sagegov:createdOn
@@ -305,7 +316,7 @@ attributes:
     - ResearchProject
     - DataAccessRequest
     - Activity
-    range: integer
+    range: Principal
   createdOn:
     name: createdOn
     description: When the record was created (epoch milliseconds in the source Synapse

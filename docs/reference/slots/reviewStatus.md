@@ -14,7 +14,7 @@ _This review's workflow state. Deliberately not named `status`: that slot name i
 
 
 
-URI: [governanceduo:reviewStatus](https://w3id.org/sage-bionetworks/governance-duo/reviewStatus)
+URI: [sagegov:reviewStatus](https://sagebionetworks.org/governance/reviewStatus)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:reviewStatus](https://w3id.org/sage-bionetworks/governance-d
 | --- | --- |
 | Range | [DerivationReviewStatusEnum](../enums/DerivationReviewStatusEnum.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:reviewStatus](https://w3id.org/sage-bionetworks/governance-duo/reviewStatus) |
+| Slot URI | [sagegov:reviewStatus](https://sagebionetworks.org/governance/reviewStatus) |
 
 ### Cardinality and Requirements
 
@@ -75,7 +75,7 @@ URI: [governanceduo:reviewStatus](https://w3id.org/sage-bionetworks/governance-d
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:reviewStatus |
+| self | sagegov:reviewStatus |
 | native | governanceduo:reviewStatus |
 
 
@@ -91,7 +91,7 @@ description: 'This review''s workflow state. Deliberately not named `status`: th
   — a distinct, unrelated enum; do not conflate.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:reviewStatus
+slot_uri: sagegov:reviewStatus
 domain_of:
 - DerivationReview
 range: DerivationReviewStatusEnum

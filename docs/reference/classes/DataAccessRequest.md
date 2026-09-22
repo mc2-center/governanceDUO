@@ -42,6 +42,15 @@ URI: [sagegov:DataAccessRequest](https://sagebionetworks.org/governance/DataAcce
         
       DataAccessRequest : createdBy
         
+          
+    
+        
+        
+        DataAccessRequest --> "0..1" Principal : createdBy
+        click Principal href "../../classes/Principal/"
+    
+
+        
       DataAccessRequest : createdOn
         
       DataAccessRequest : etag
@@ -51,6 +60,15 @@ URI: [sagegov:DataAccessRequest](https://sagebionetworks.org/governance/DataAcce
       DataAccessRequest : institution
         
       DataAccessRequest : modifiedBy
+        
+          
+    
+        
+        
+        DataAccessRequest --> "0..1" Principal : modifiedBy
+        click Principal href "../../classes/Principal/"
+    
+
         
       DataAccessRequest : modifiedOn
         
@@ -109,9 +127,9 @@ URI: [sagegov:DataAccessRequest](https://sagebionetworks.org/governance/DataAcce
 | [requestPrincipalInvestigatorEmail](../slots/requestPrincipalInvestigatorEmail.md) | 0..1 <br/> [String](../types/String.md) | Flattened from the live API's nested principalInvestigator | direct |
 | [requestSigningOfficialName](../slots/requestSigningOfficialName.md) | 0..1 <br/> [String](../types/String.md) | Flattened from the live API's nested signingOfficial | direct |
 | [requestSigningOfficialEmail](../slots/requestSigningOfficialEmail.md) | 0..1 <br/> [String](../types/String.md) | Flattened from the live API's nested signingOfficial | direct |
-| [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | direct |
+| [createdBy](../slots/createdBy.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of the record's creator | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
-| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this record | direct |
+| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Principal](../classes/Principal.md) | Synapse numeric user id of who last modified this record | direct |
 | [modifiedOn](../slots/modifiedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was last modified (epoch milliseconds) | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [requestConcreteType](../slots/requestConcreteType.md) | 0..1 <br/> [String](../types/String.md) | Which kind of request this is -- literally "Request" or "Renewal" (RequestInt... | direct |
@@ -226,6 +244,7 @@ slot_usage:
     - Reuses ResearchProject's sagegov:createdBy predicate -- both are the "who authored
       this record" concept, emitted as an IRI reference to a sagegov:Principal node.
     slot_uri: sagegov:createdBy
+    range: Principal
   createdOn:
     name: createdOn
     slot_uri: sagegov:createdOn
@@ -277,6 +296,7 @@ slot_usage:
     - Reuses ResearchProject's sagegov:createdBy predicate -- both are the "who authored
       this record" concept, emitted as an IRI reference to a sagegov:Principal node.
     slot_uri: sagegov:createdBy
+    range: Principal
   createdOn:
     name: createdOn
     slot_uri: sagegov:createdOn
@@ -405,7 +425,7 @@ attributes:
     - ResearchProject
     - DataAccessRequest
     - Activity
-    range: integer
+    range: Principal
   createdOn:
     name: createdOn
     description: When the record was created (epoch milliseconds in the source Synapse
@@ -433,7 +453,9 @@ attributes:
       DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's
       own description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
       Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
-      submittedBy above.
+      submittedBy above. range Principal (keyed by its integer principalId), same
+      reasoning as submittedBy. Activity.modifiedBy (provenance.yaml) overrides this
+      back to a raw integer via slot_usage.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     close_mappings:
     - dcterms:contributor
@@ -444,7 +466,7 @@ attributes:
     - DataAccessSubmission
     - DataAccessRequest
     - Activity
-    range: integer
+    range: Principal
   modifiedOn:
     name: modifiedOn
     description: When this record was last modified (epoch milliseconds). On DataAccessSubmissionStatus

@@ -85,8 +85,8 @@ URI: [prov:Activity](http://www.w3.org/ns/prov#Activity)
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
 | [modifiedOn](../slots/modifiedOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When this record was last modified (epoch milliseconds) | direct |
 | [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | direct |
-| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this record | direct |
-| [generated](../slots/generated.md) | 0..1 <br/> [Uriorcurie](../types/Uriorcurie.md) | The SynapseEntity this Activity produced | direct |
+| [modifiedBy](../slots/modifiedBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of who last modified this Activity (Activity | direct |
+| [generated](../slots/generated.md) | * <br/> [Uriorcurie](../types/Uriorcurie.md) | The SynapseEntities this Activity produced, as syn: CURIEs | direct |
 | [qualifiedUsage](../slots/qualifiedUsage.md) | * <br/> [Usage](../classes/Usage.md) | The Usage records (mirroring Activity | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique identifier for this activity (schematic-schema-style dotted string w... | [BaseEntity](../classes/BaseEntity.md) |
 
@@ -167,6 +167,17 @@ slot_usage:
     examples:
     - value: activity.1001
     pattern: ^activity\.[A-Za-z0-9_-]+$
+  name:
+    name: name
+    slot_uri: sagegov:name
+  modifiedBy:
+    name: modifiedBy
+    description: Synapse numeric user id of who last modified this Activity (Activity.modifiedBy).
+      A raw id under a repo-local predicate, mirroring createdBy -- see this schema's
+      own description for why it isn't governance_graph.yaml's Principal-referencing
+      modifiedBy.
+    slot_uri: governanceduo:modifiedBy
+    range: integer
 class_uri: prov:Activity
 
 ```
@@ -195,6 +206,17 @@ slot_usage:
     examples:
     - value: activity.1001
     pattern: ^activity\.[A-Za-z0-9_-]+$
+  name:
+    name: name
+    slot_uri: sagegov:name
+  modifiedBy:
+    name: modifiedBy
+    description: Synapse numeric user id of who last modified this Activity (Activity.modifiedBy).
+      A raw id under a repo-local predicate, mirroring createdBy -- see this schema's
+      own description for why it isn't governance_graph.yaml's Principal-referencing
+      modifiedBy.
+    slot_uri: governanceduo:modifiedBy
+    range: integer
 attributes:
   name:
     name: name
@@ -206,6 +228,7 @@ attributes:
       already depends on mixins.yaml through access_requirement.yaml).
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
+    slot_uri: sagegov:name
     owner: Activity
     domain_of:
     - SynapseAccessRequirementMixin
@@ -312,17 +335,15 @@ attributes:
     range: integer
   modifiedBy:
     name: modifiedBy
-    description: Synapse numeric user id of who last modified this record. On DataAccessSubmission,
-      this is `Submission.modifiedBy` in Synapse's live REST API (moved here from
-      DataAccessSubmissionStatus, which does not carry this field live; see DataAccessSubmissionStatus's
-      own description); on DataAccessRequest, it's `RequestInterface.modifiedBy`.
-      Emitted as an IRI reference to a sagegov:Principal node, not a literal, mirroring
-      submittedBy above.
+    description: Synapse numeric user id of who last modified this Activity (Activity.modifiedBy).
+      A raw id under a repo-local predicate, mirroring createdBy -- see this schema's
+      own description for why it isn't governance_graph.yaml's Principal-referencing
+      modifiedBy.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     close_mappings:
     - dcterms:contributor
     rank: 1000
-    slot_uri: sagegov:modifiedBy
+    slot_uri: governanceduo:modifiedBy
     owner: Activity
     domain_of:
     - DataAccessSubmission
@@ -331,9 +352,13 @@ attributes:
     range: integer
   generated:
     name: generated
-    description: The SynapseEntity this Activity produced. range is the untyped uriorcurie,
-      not SynapseEntity itself — see this schema's own description for why (the referenced
-      individual is never asserted in this schema's own example-rdf ABox).
+    description: 'The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued:
+      Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated
+      returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId>
+      attaches an existing Activity to another entity -- both confirmed against Synapse''s
+      OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see
+      this schema''s own description for why (the referenced individual is never asserted
+      in this schema''s own example-rdf ABox).'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: prov:generated
@@ -341,6 +366,7 @@ attributes:
     domain_of:
     - Activity
     range: uriorcurie
+    multivalued: true
   qualifiedUsage:
     name: qualifiedUsage
     description: The Usage records (mirroring Activity.used) describing what this

@@ -14,7 +14,7 @@ _Free-text notes from the reviewer._
 
 
 
-URI: [governanceduo:reviewNotes](https://w3id.org/sage-bionetworks/governance-duo/reviewNotes)
+URI: [sagegov:reviewNotes](https://sagebionetworks.org/governance/reviewNotes)
 <!-- no inheritance hierarchy -->
 
 
@@ -40,7 +40,7 @@ URI: [governanceduo:reviewNotes](https://w3id.org/sage-bionetworks/governance-du
 | --- | --- |
 | Range | [String](../types/String.md) |
 | Domain Of | [DerivationReview](../classes/DerivationReview.md) |
-| Slot URI | [governanceduo:reviewNotes](https://w3id.org/sage-bionetworks/governance-duo/reviewNotes) |
+| Slot URI | [sagegov:reviewNotes](https://sagebionetworks.org/governance/reviewNotes) |
 
 ### Cardinality and Requirements
 
@@ -74,7 +74,7 @@ URI: [governanceduo:reviewNotes](https://w3id.org/sage-bionetworks/governance-du
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:reviewNotes |
+| self | sagegov:reviewNotes |
 | native | governanceduo:reviewNotes |
 
 
@@ -88,7 +88,7 @@ name: reviewNotes
 description: Free-text notes from the reviewer.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
-slot_uri: governanceduo:reviewNotes
+slot_uri: sagegov:reviewNotes
 domain_of:
 - DerivationReview
 range: string
