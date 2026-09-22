@@ -8,12 +8,25 @@ supplied entity ids -- Phase 2 of plans/prov_o_integration.md.
 Unlike sync_governance_graph.py, this needs no bespoke PREDICATE()/TYPE()
 reserialization: linkml/provenance.yaml's Activity/Usage classes already carry real
 prov: IRIs as class_uri/slot_uri annotations (Activity -> prov:Activity, Usage ->
-prov:Usage, etc.), and RDFLibDumper resolves those directly -- confirmed empirically
-this session (`governanceduo:activity.<n> a prov:Activity` came out of a plain
-RDFLibDumper call with no extra code). So this script just builds one
-linkml_runtime Activity/Usage object per entity from the real REST response and
-dumps it -- no manual triple construction the way build_governance_graph.py needs
-for its gov:/syn: reserialization.
+prov:Usage, etc.), and RDFLibDumper resolves those directly. Two things the dumper
+can't do on its own are handled here: the Activity's subject IRI (a bare
+`activity.<n>` id makes RDFLibDumper fail with "Unknown CURIE prefix: @base", so
+the id is mapped to its gov: instance CURIE, `sagegov:activity-<n>`, via
+scripts/graph_iris.py at dump time -- the same policy convert_examples_to_rdf.py
+uses), and entity references, which are passed as `syn:` CURIEs so they
+serialize as the absolute IRIs the governance graph uses.
+
+One Activity can be the generatedBy of several entities (confirmed in Synapse's
+OpenAPI spec: GET /activity/{id}/generated returns a list). Activities are
+therefore collected by id across all requested entities and each is built and
+dumped once, with every requested entity it generated -- never once per entity,
+which would duplicate its Usage nodes. Outputs the caller didn't request are not
+fetched (no GET /activity/{id}/generated call); pass them explicitly to include
+them.
+
+Verified offline (fake REST payloads for an Activity with two outputs, a UsedURL
+and a UsedEntity -- see plans/sagebrain_contract_and_owl_dl_fixes_report.md); not
+yet run against live Synapse.
 
 Endpoint: GET /entity/{id}/generatedBy -- confirmed to exist against
 rest-docs.synapse.org this session (OAuth `view` scope, the same auth tier
@@ -44,6 +57,8 @@ from rdflib import Graph, Namespace
 from synapseclient import Synapse
 from synapseclient.core.exceptions import SynapseHTTPError
 
+from graph_iris import graph_curie
+
 PROV = Namespace("http://www.w3.org/ns/prov#")
 SAGEGOV = Namespace("https://sagebionetworks.org/governance/")
 
@@ -64,13 +79,20 @@ def fetch_generated_by(syn: Synapse, entity_id: str) -> dict | None:
         return None
 
 
-def build_activity(module, entity_id: str, activity: dict):
+def syn_curie(entity_id: str) -> str:
+    """`syn10081783` -> `syn:syn10081783`, the CURIE provenance.yaml's uriorcurie
+    slots expect (resolves to https://www.synapse.org/Synapse:syn10081783)."""
+    return f"syn:{entity_id}"
+
+
+def build_activity(module, generated_ids: list[str], activity: dict):
     """Constructs one linkml_runtime Activity instance from a real Activity REST
     object -- id/name/description/etag/createdOn/modifiedOn/createdBy/modifiedBy/used,
-    verified against org.sagebionetworks.repo.model.provenance.Activity. `generated`
-    is the entity_id this Activity was fetched for; `entity`/`generated` stay bare
-    Synapse ids (uriorcurie, unprefixed) -- see provenance.yaml's own description for
-    why a typed SynapseEntity range isn't used here."""
+    verified against org.sagebionetworks.repo.model.provenance.Activity.
+    `generated_ids` are the requested entity ids this Activity was fetched for (one
+    Activity can generate several). Entity references are syn: CURIEs -- see
+    provenance.yaml's own description for why a typed SynapseEntity range isn't
+    used here."""
     used_entries = []
     for used in activity.get("used", []) or []:
         concrete_type = used.get("concreteType", "")
@@ -80,7 +102,7 @@ def build_activity(module, entity_id: str, activity: dict):
             used_entries.append(
                 module.Usage(
                     wasExecuted=was_executed,
-                    entity=reference.get("targetId"),
+                    entity=syn_curie(reference["targetId"]) if reference.get("targetId") else None,
                     entityVersionNumber=reference.get("targetVersionNumber"),
                 )
             )
@@ -104,9 +126,17 @@ def build_activity(module, entity_id: str, activity: dict):
         modifiedOn=activity.get("modifiedOn"),
         createdBy=int(activity["createdBy"]) if activity.get("createdBy") is not None else None,
         modifiedBy=int(activity["modifiedBy"]) if activity.get("modifiedBy") is not None else None,
-        generated=entity_id,
+        generated=[syn_curie(e) for e in generated_ids],
         qualifiedUsage=used_entries,
     )
+
+
+def dump_activity(module, sv: SchemaView, generated_ids: list[str], activity: dict) -> Graph:
+    """Builds and dumps one Activity. The stored id stays the bare `activity.<n>`
+    (matching provenance.yaml's id pattern); only the dump uses its gov: CURIE."""
+    obj = build_activity(module, generated_ids, activity)
+    obj.id = graph_curie(obj.id, sv.schema.default_prefix)
+    return RDFLibDumper().as_rdf_graph(obj, sv)
 
 
 def add_was_derived_from(g: Graph) -> int:
@@ -117,8 +147,9 @@ def add_was_derived_from(g: Graph) -> int:
     and every Usage in A's prov:qualifiedUsage with prov:entity ?in and
     sagegov:wasExecuted false (i.e. genuinely a data input, not the
     executed code/workflow), asserts `?out prov:wasDerivedFrom ?in`. Returns the
-    number of triples added. Reused by build_derivation_policy.py against the
-    merged provenance_graph_export/*.ttl, not just here."""
+    number of triples actually added (edges already present aren't counted).
+    Reused by build_derivation_policy.py against the merged
+    provenance_graph_export/*.ttl, not just here."""
     query = """
     PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX sagegov: <https://sagebionetworks.org/governance/>
@@ -131,7 +162,10 @@ def add_was_derived_from(g: Graph) -> int:
     """
     added = 0
     for row in list(g.query(query)):
-        g.add((row.out, PROV.wasDerivedFrom, row["in"]))
+        triple = (row.out, PROV.wasDerivedFrom, row["in"])
+        if triple in g:
+            continue
+        g.add(triple)
         added += 1
     return added
 
@@ -155,13 +189,20 @@ def main():
     syn = Synapse()
     syn.login()  # default credential resolution -- see module docstring's Auth note
 
-    merged = Graph()
+    activities: dict[str, dict] = {}
+    generated_by: dict[str, list[str]] = {}
     for entity_id in args.entity_ids:
         activity = fetch_generated_by(syn, entity_id)
         if activity is None:
             continue
-        obj = build_activity(module, entity_id, activity)
-        graph = RDFLibDumper().as_rdf_graph(obj, sv)
+        activities.setdefault(activity["id"], activity)
+        outputs = generated_by.setdefault(activity["id"], [])
+        if entity_id not in outputs:
+            outputs.append(entity_id)
+
+    merged = Graph()
+    for activity_id, activity in activities.items():
+        graph = dump_activity(module, sv, generated_by[activity_id], activity)
         for triple in graph:
             merged.add(triple)
         for prefix, namespace in graph.namespace_manager.namespaces():
