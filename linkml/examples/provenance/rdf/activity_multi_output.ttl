@@ -4,19 +4,6 @@
 @prefix syn: <https://www.synapse.org/Synapse:> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-sagegov:activity-1001 a prov:Activity ;
-    prov:generated syn:syn30000001 ;
-    prov:qualifiedUsage [ a prov:Usage ;
-            prov:entity syn:syn40000002 ;
-            sagegov:wasExecuted true ],
-        [ a prov:Usage ;
-            prov:entity syn:syn10081783 ;
-            sagegov:wasExecuted false ] ;
-    sagegov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
-    sagegov:name "Derive per-sample QC summary" ;
-    governanceduo:createdBy 1000001 ;
-    governanceduo:createdOn 1755200000000 .
-
 sagegov:activity-1002 a prov:Activity ;
     prov:generated syn:syn30000002,
         syn:syn30000003 ;

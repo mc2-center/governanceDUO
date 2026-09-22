@@ -60,6 +60,7 @@ EXAMPLE_CLASSES = {
     "access_requirement": "AccessRequirement",
     "study": "Study",
     "activity": "Activity",
+    "activity_multi_output": "Activity",
     "derivation_rule": "DerivationRule",
     "derivation_review": "DerivationReview",
 }

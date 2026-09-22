@@ -4,17 +4,18 @@
 # linkml/examples/governance_graph/synapse_entity_file.example.yaml) plus the
 # pipeline script that performed the derivation (syn40000002, executed rather
 # than merely used -- Used.wasExecuted=true). generated/qualifiedUsage[].entity
-# reference SynapseEntity ids by their bare form, not asserted in this file's own
-# ABox -- same convention IRBRequirement.studyId already uses in
-# governance_graph.yaml (see this class's own schema description for why).
+# reference SynapseEntity ids as syn: CURIEs, which resolve to the same IRIs the
+# governance graph mints for those entities; the entities themselves are not
+# asserted in this file's own ABox (see provenance.yaml's own description).
 id: activity.1001
 name: Derive per-sample QC summary
 description: Illustrative structural example -- not sourced from a real Synapse Activity record.
-generated: syn30000001
+generated:
+  - syn:syn30000001
 qualifiedUsage:
-  - entity: syn10081783
+  - entity: syn:syn10081783
     wasExecuted: false
-  - entity: syn40000002
+  - entity: syn:syn40000002
     wasExecuted: true
 createdBy: 1000001
 createdOn: 1755200000000
