@@ -263,6 +263,7 @@ Anonymous,Data can be viewed and downloaded anonymously by anyone on the interne
 Open,Users must have a Synapse account to download data.,,,,,,,,,,,,
 Controlled,Users must have a Synapse account and satisfy access conditions to download data.,,,,,,,,,,,,
 Private,Users must be provided access to data in Synapse by a project administrator.,,,,,,,,,,,,
+Unclassified,"Tier not yet determined by a curator. Treated as more restrictive than Private until set.",,,,,,,,,,,,
 CC0,"Creative Commons Zero license, allowing for the free use of the data.",,,,,,,,,,,,
 CC_BY,"Creative Commons Attribution license, requiring attribution to the original source.",,,,,,,,,,,,
 CC_BY_NC,"Creative Commons Attribution-NonCommercial license, allowing for non-commercial use with attribution.",,,,,,,,,,,,

@@ -47,7 +47,7 @@ without hard-failing on unknown ones). Per slot, `gen-shacl` compiles:
 
 - **cardinality** — `sh:minCount`/`sh:maxCount` from `required`/`multivalued`
 - **datatype** — `sh:datatype xsd:string`/`xsd:integer`/etc., or `sh:nodeKind sh:Literal`
-- **enum membership** — `sh:in (...)`, e.g. `dataTier`'s `sh:in ("Anonymous" "Open" "Controlled" "Private")`
+- **enum membership** — `sh:in (...)`, e.g. `dataTier`'s `sh:in ("Anonymous" "Open" "Controlled" "Private" "Unclassified")`
 - **regex patterns** — `sh:pattern`, e.g. `diseaseSpecificResearch`'s `sh:pattern "MONDO:\\d{7}"`
 
 It does **not** compile `GovernanceMixin`'s conditional `rules:` (the DUO-code-triggers-
