@@ -1,0 +1,67 @@
+## provenance_layer.shacl.ttl
+##
+## Hand-authored SHACL shapes for the Provenance Graph (linkml/provenance.yaml):
+## the prov:Activity / prov:Usage layer produced by scripts/sync_provenance_graph.py
+## and the linkml/examples/provenance/ ABox. This repo owns these shapes for every
+## consumer of the governance layer: sagebrain-model imports this file rather than
+## keeping its own copies (plans/sagebrain_contract_and_owl_dl_fixes.md, decision D9).
+## The shapes started as sagebrain-model's shape:UsageShape / shape:ActivityShape
+## (ontology/shacl/governance-shapes.ttl at its provenance-features branch) and were
+## moved here with these changes:
+##   - a URL Usage is named with gov:name, the governance graph's name predicate,
+##     not rdfs:label;
+##   - an Activity may generate several entities (Synapse allows it:
+##     GET /activity/{id}/generated returns a list), so prov:generated has no
+##     maximum;
+##   - entity references are checked as absolute Synapse IRIs
+##     (https://www.synapse.org/Synapse:syn<n>) rather than with
+##     sh:class gov:SynapseEntity. That typing lives in the governance graph, so a
+##     class check only works once both graphs are merged; the IRI check works on
+##     the provenance ABox alone and catches references that don't join the
+##     governance graph (e.g. relative IRIs).
+##
+## gen-shacl can't express these: exactly one of two property sets (sh:xone) has no
+## LinkML equivalent it translates. shapes/governance_duo.shacl.ttl still carries
+## the generated per-slot shapes; `make provenance-validate` checks both.
+
+@prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gov:UsageShape a sh:NodeShape ;
+    sh:targetClass prov:Usage ;
+    sh:description "A Usage is either a Synapse entity reference (prov:entity) or an external tool/resource reference (gov:url + gov:name), never both and never neither. gov:wasExecuted is required on either branch: it distinguishes the tool that ran from the data it consumed." ;
+    sh:xone (
+        [
+            sh:property
+                [ sh:path prov:entity ; sh:nodeKind sh:IRI ;
+                    sh:pattern "^https://www\\.synapse\\.org/Synapse:syn[0-9]+$" ;
+                    sh:minCount 1 ; sh:maxCount 1 ],
+                [ sh:path gov:url ; sh:maxCount 0 ],
+                [ sh:path gov:name ; sh:maxCount 0 ]
+        ]
+        [
+            sh:property
+                [ sh:path gov:url ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ],
+                [ sh:path gov:name ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ],
+                [ sh:path prov:entity ; sh:maxCount 0 ]
+        ]
+    ) ;
+    sh:message "A Usage must be either a Synapse entity reference (prov:entity, an absolute Synapse IRI) or an external tool reference (gov:url + gov:name), not both and not neither." ;
+    sh:property
+        [ sh:path gov:wasExecuted ; sh:datatype xsd:boolean ; sh:minCount 1 ; sh:maxCount 1 ;
+            sh:message "A Usage needs exactly one xsd:boolean gov:wasExecuted, whichever branch it's on." ],
+        [ sh:path gov:entityVersionNumber ; sh:datatype xsd:integer ; sh:maxCount 1 ;
+            sh:message "A Usage's entityVersionNumber, when present, must be a single xsd:integer." ] .
+
+gov:ActivityShape a sh:NodeShape ;
+    sh:targetClass prov:Activity ;
+    sh:description "One provenance Activity: one or more outputs (prov:generated, absolute Synapse IRIs) and one or more inputs (prov:qualifiedUsage), each conforming to gov:UsageShape." ;
+    sh:property
+        [ sh:path prov:generated ; sh:nodeKind sh:IRI ;
+            sh:pattern "^https://www\\.synapse\\.org/Synapse:syn[0-9]+$" ;
+            sh:minCount 1 ;
+            sh:message "An Activity needs at least one prov:generated output, an absolute Synapse IRI." ],
+        [ sh:path prov:qualifiedUsage ; sh:node gov:UsageShape ; sh:minCount 1 ;
+            sh:message "An Activity needs at least one prov:qualifiedUsage input, each conforming to gov:UsageShape." ] .

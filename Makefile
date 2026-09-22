@@ -92,6 +92,7 @@ provenance-example-rdf:
 
 provenance-validate: owl shacl provenance-example-rdf
 	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/provenance/rdf/all_examples.ttl
+	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/provenance_layer.shacl.ttl --instances linkml/examples/provenance/rdf/all_examples.ttl
 
 # Real Synapse provenance data (Activity/used/generatedBy), not the hand-authored
 # examples above -- requires the same synapseclient login as sync-governance-graph.
