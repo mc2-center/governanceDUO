@@ -184,8 +184,8 @@ gov:ConditionShape a sh:NodeShape ;
     sh:property
         [ sh:path gov:conditionType ; sh:datatype xsd:string ; sh:minCount 1 ;
             sh:maxCount 1 ],
-        [ sh:path gov:duoCode ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
-            sh:description "The data-use code's IRI (obo:DUO_<n> or gov:DUOPlus<n>); absent only for \"Pending Annotation\" -- see governance_graph.yaml." ],
+        [ sh:path gov:duoCode ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ;
+            sh:description "The data-use code's IRI (obo:DUO_<n> or gov:DUOPlus<n>). \"Pending Annotation\" mints no Condition -- see governance_graph.yaml." ],
         [ sh:path gov:description ; sh:datatype xsd:string ; sh:maxCount 1 ],
         [ sh:path gov:conditionDetail ; sh:datatype xsd:string ;
             sh:description "Zero or more companion-slot values -- GovernanceMixin.rules is many-to-many, so cardinality is deliberately unconstrained. See governance_graph.yaml." ] .

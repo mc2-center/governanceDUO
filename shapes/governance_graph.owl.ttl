@@ -226,7 +226,7 @@ gov:conditionType a owl:DatatypeProperty ;
 
 gov:duoCode a owl:ObjectProperty ;
     rdfs:domain gov:Condition ;
-    rdfs:comment "The IRI of the data-use code (DataUseModifierEnum's meaning:): obo:DUO_<n> for real DUO codes -- the same IRIs sagebrain-model imports -- or gov:DUOPlus<n> for the 7 Sage-local extensions declared below. Absent only for \"Pending Annotation\", which has no meaning." .
+    rdfs:comment "The IRI of the data-use code (DataUseModifierEnum's meaning:): obo:DUO_<n> for real DUO codes -- the same IRIs sagebrain-model imports -- or gov:DUOPlus<n> for the 7 Sage-local extensions declared below. \"Pending Annotation\" (no meaning, a curation state) mints no Condition." .
 
 # The 7 Sage-local DUOPlus extensions, as individuals so gov:duoCode can point at
 # them the same way it points at real DUO terms. Labels and comments copied from

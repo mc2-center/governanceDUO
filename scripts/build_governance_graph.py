@@ -320,6 +320,12 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
         permissible_value = enum.permissible_values.get(duo_code)
         if permissible_value is None:
             continue
+        # A Condition is a data-use condition, identified by the code's IRI
+        # (meaning:). A value with no meaning -- "Pending Annotation", a curation
+        # state -- is not one, so it mints no Condition (its name would also not
+        # make a valid IRI).
+        if not permissible_value.meaning:
+            continue
         shorthand = (
             permissible_value.annotations.get("duo_shorthand")
             if permissible_value.annotations
@@ -339,15 +345,14 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
         g.add((condition_node, PREDICATE("conditionType", "Condition"), Literal(condition_type)))
         # gov:duoCode is the code's IRI: obo:DUO_<n> for real DUO codes (joins
         # sagebrain-model's DUO import), sagegov:DUOPlus<n> for the Sage-local
-        # extensions. "Pending Annotation" has no meaning and gets no duoCode.
-        if permissible_value.meaning:
-            g.add(
-                (
-                    condition_node,
-                    PREDICATE("duoCode", "Condition"),
-                    URIRef(_schemaview.expand_curie(permissible_value.meaning)),
-                )
+        # extensions.
+        g.add(
+            (
+                condition_node,
+                PREDICATE("duoCode", "Condition"),
+                URIRef(_schemaview.expand_curie(permissible_value.meaning)),
             )
+        )
         if permissible_value.description:
             g.add(
                 (

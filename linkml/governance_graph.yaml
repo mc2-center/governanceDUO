@@ -813,8 +813,10 @@ slots:
       DataUseModifierEnum's meaning: obo:DUO_<n> for real DUO codes (the same IRIs
       sagebrain-model imports), sagegov:DUOPlus<n> for the Sage-local extensions.
       Emitted as an IRI, never a string, by scripts/build_governance_graph.py.
-      Not required: "Pending Annotation" has no meaning and gets no duoCode.
+      Every Condition has one: a dataUseModifiers value with no meaning ("Pending
+      Annotation", a curation state) mints no Condition at all.
     range: DataUseModifierEnum
+    required: true
   description:
     slot_uri: sagegov:description
     description: >-
