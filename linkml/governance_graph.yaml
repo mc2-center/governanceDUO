@@ -422,6 +422,7 @@ classes:
           - value: research_project.8001
       createdBy:
         slot_uri: sagegov:createdBy
+        range: Principal
         comments:
           - 'ResearchProject.createdBy is the "who authored this record"
             concept, emitted as an IRI reference to a sagegov:Principal node
@@ -497,6 +498,7 @@ classes:
           - value: data_access_request.7001
       createdBy:
         slot_uri: sagegov:createdBy
+        range: Principal
         comments:
           - 'Reuses ResearchProject''s sagegov:createdBy predicate -- both are
             the "who authored this record" concept, emitted as an IRI
