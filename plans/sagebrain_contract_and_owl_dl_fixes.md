@@ -416,6 +416,11 @@ after Phases A–E are committed here, so the pin moves once.
   `sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom` in
   `ontology/governance/`, not `ontology/main/`. The default build doesn't import
   PROV, so putting it in main would add an undeclared property to its DL check.
+  The same module must also declare `prov:wasDerivedFrom a owl:ObjectProperty`
+  (only the term used, as sagebrain already does for `gov:SynapseEntity`).
+  sagebrain's DL-checked set doesn't import `prov.ttl`, so without the declaration
+  OWLAPI reads the axiom as an annotation sub-property and the combined DL check
+  fails (found during implementation; see the report's open item 5).
   Add a shape or test confirming derived Associations resolve to
   `gov:SynapseEntity` ancestors.
 - **Fixtures and examples:**
