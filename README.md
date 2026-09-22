@@ -87,10 +87,11 @@ its own ontology. `linkml/governance_duo.linkml.yaml` also declares `sagebrain:`
 output's namespaces already line up with sagebrain-model's, and
 `scripts/build_owl.py` stamps the same `skos:scopeNote`/`owl:versionInfo` annotations
 on reused external terms that sagebrain-model's own convention uses for classes it
-doesn't mint itself. **No changes have been made to the sagebrain-model or
-SageCommonDataModel repositories in this pass** — these artifacts are shaped to slot
-into sagebrain-model's (currently empty) `ontology/governance/` folder and to
-interoperate with SageCommonDataModel, but that integration is not yet wired up.
+doesn't mint itself. The governance graph is a layer of sagebrain-model's graph:
+this repository owns the governance-layer terms and shapes and publishes them for
+sagebrain-model to import (see "Release artifacts and IRI policy" below);
+`make sagebrain-contract-check` verifies the two work together. Interoperation with
+SageCommonDataModel is not yet wired up.
 
 Beyond DUO, several slots carry `exact_mappings`/`close_mappings` to other terms
 found and verified live via the EBI OLS4 API (see the `ols-term-annotator` skill and
@@ -128,6 +129,10 @@ make owl              # generate shapes/governance_duo.owl.ttl (scripts/build_ow
 make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
 make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
+make validate-all     # every SHACL validation below plus the regression/contract
+                       # checks and the OWL 2 DL profile check (what CI runs)
+make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar)
+make release-check    # validate-all + every published artifact carries VERSION
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # individuals against the SHACL shapes, via pyshacl with
                        # inference disabled and the ontology passed as ont_graph —
@@ -139,7 +144,8 @@ make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
 Example instances validating the DUO conditional-requirement rules live under
 `linkml/examples/` (e.g. `linkml-validate -s linkml/governance_duo.linkml.yaml -C
 AccessRequirement linkml/examples/access_requirement.example.yaml`). Note that
-`gen-shacl` does not compile those `rules:` conditionals into SHACL — only
+`gen-shacl` does not compile those `rules:` conditionals into SHACL, and
+`scripts/build_owl.py` deliberately leaves them out of the OWL — only
 `linkml-validate`'s JSON Schema path enforces them; `make shacl-validate` covers
 everything else (required fields, enum membership, regex patterns, datatypes,
 cardinality) against real instance data, converted via
@@ -154,7 +160,8 @@ Rather than route around this with a made-up `@base` IRI (which also needs a
 second workaround, since the dumper then binds the literal string `"@base"` itself
 as an invalid Turtle prefix), `scripts/convert_examples_to_rdf.py` instead
 temporarily rewrites each loaded instance's id to a real CURIE
-(`governanceduo:access_requirement.42`) only for the dump call — which
+(`governanceduo:access_requirement.42`; graph-facing classes such as Activity get
+a `gov:` instance IRI instead, per `scripts/graph_iris.py`) only for the dump call — which
 `Namespaces.uri_for()` resolves directly via the schema's own already-declared
 `governanceduo:` prefix, no `@base` involved — then restores the bare id
 afterward. The *stored* id in every example YAML file and every class's

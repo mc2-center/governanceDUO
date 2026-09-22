@@ -156,3 +156,35 @@ Not modified: `shapes/governance_graph.owl.ttl`/`.shacl.ttl` (hand-authored,
 out of scope — neither layer touches the `gov:`/`syn:` namespace),
 `scripts/build_governance_graph.py`/`scripts/sync_governance_graph.py` (reused via
 import, unchanged).
+
+## Corrections (2026-09-22)
+
+A later review against sagebrain-model found statements in this report that did not
+hold. They are corrected here rather than edited above, so the original record stays
+readable; the fixes are in `plans/sagebrain_contract_and_owl_dl_fixes.md` and its
+report.
+
+- **`scripts/sync_provenance_graph.py` could not produce output at all.** The
+  statement that a plain `RDFLibDumper` call emitted `governanceduo:activity.<n> a
+  prov:Activity` "with no extra code" was not true of the script: its bare
+  `activity.<n>` id makes the dumper fail with `Unknown CURIE prefix: @base` before
+  any Synapse data matters. "Untested against live Synapse" understated this; the
+  offline path failed too. It also duplicated Usage nodes when one Activity generated
+  several requested entities. Fixed, with an offline regression check
+  (`make sync-provenance-check`).
+- **`local_id()` was a workaround, not a fix.** Comparing trailing names hid the real
+  defect: `Activity.generated`/`Usage.entity`/`ControlLabel` references were written
+  as relative IRIs that never matched the governance graph's `syn:` IRIs and could
+  not be loaded into a triple store. References are now absolute `syn:`/`gov:` IRIs
+  and `local_id()` is gone.
+- **The empty `make derivation-policy` result was a fail-open bug, not an honest
+  empty result.** An entity bound to an AccessRequirement with no curated `dataTier`
+  got no label at all, so it read as unrestricted downstream and its AR bindings
+  were dropped. Such ARs now contribute the `Unclassified` tier (ranked above
+  `Private`), and labels always keep their `sourceAccessRequirements`.
+- **The synthetic check behind "the algorithm was verified independently" was never
+  committed.** It is now a committed fixture (`make derivation-policy-check`),
+  confirmed to fail when the ranking or ancestry traversal is broken.
+- **The PROV-O wiring added 6 OWL 2 DL punning violations** to
+  `shapes/governance_duo.owl.ttl` (103 in total on the branch at the time). Nothing
+  checked the DL profile then; `make owl-profile` now does, in CI.

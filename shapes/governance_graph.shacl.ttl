@@ -18,7 +18,8 @@
 ## generic LinkML dump assumes: enum values are minted as their own IRI individuals
 ## (sagegov:Synapse, sagegov:DOWNLOAD, ...) where gen-shacl expects sh:in string
 ## literals; createdBy/modifiedBy/submittedBy/heldBy are emitted as sagegov:Principal
-## IRI references where the schema's slot range is a bare integer;
+## IRI references (the schema now declares those slots range Principal, but a
+## generic dump still can't mint gov:principal-<n> from the integer key);
 ## DataAccessSubmission and DataAccessSubmissionStatus are merged onto one RDF subject
 ## by the script but stay two separate classes (and closed shapes) in the schema;
 ## Team/User are asserted via rdf:type rather than a principalType slot value. None of

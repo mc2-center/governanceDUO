@@ -135,7 +135,8 @@ rules:
 reads as: if `dataUseModifiers` contains `DUO:0000022` ("Geographical Restriction"),
 `geographicalRestriction` becomes required. These rules are LinkML conditional
 requirements, checked by `linkml-validate`/generated JSON Schema `if/then` — SHACL
-validation (`make shacl-validate`) does not cover them.
+validation (`make shacl-validate`) does not cover them, and they are deliberately left
+out of the generated OWL (see `scripts/build_owl.py`).
 
 ## A concrete instance
 

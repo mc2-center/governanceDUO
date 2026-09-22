@@ -35,9 +35,15 @@ flowchart TD
 `make shacl` (LinkML's stock `gen-shacl`) both generate directly from the schema
 itself — no instance data. `shapes/governance_duo.owl.ttl` carries classes and properties;
 `shapes/governance_duo.shacl.ttl` carries the cardinality/datatype/pattern constraints
-those classes and slots imply. `build_owl.py` additionally stamps the 8 real DUO terms
+those classes and slots imply. `build_owl.py` additionally stamps the 24 real DUO terms
 this schema reuses by IRI with `skos:scopeNote`/`owl:versionInfo`, mirroring
-sagebrain-model's convention for external terms it doesn't mint itself.
+sagebrain-model's convention for external terms it doesn't mint itself. The OWL uses
+each class's and slot's own `class_uri`/`slot_uri` (`prov:Activity`,
+`sagegov:wasExecuted`, ...), so it describes the IRIs the data actually uses, and it
+passes the OWL 2 DL profile on its own and merged with
+`shapes/governance_graph.owl.ttl` (`make owl-profile`, run in CI). The generator
+settings and the small schema-derived repair pass this needs are documented in
+`scripts/build_owl.py`.
 
 **What's actually in `shapes/governance_duo.shacl.ttl`.** One `sh:NodeShape` per
 LinkML class (and mixin), each `sh:targetClass`-scoped to that class's `governanceduo:`
@@ -54,23 +60,29 @@ It does **not** compile `GovernanceMixin`'s conditional `rules:` (the DUO-code-t
 required-slot logic from [The LinkML model](linkml-model.md)) — confirmed by inspecting
 the file, which has no `sh:xone`/`sh:not` construct tied to `dataUseModifiers`. That
 logic is covered separately by `linkml-validate` (compiled into JSON Schema
-`allOf`/`if`/`then`). `make shacl-validate`'s SHACL pass covers everything else:
+`allOf`/`if`/`then`). The rules are also left out of the generated OWL:
+`scripts/build_owl.py` removes them before generation, because LinkML's OWL
+generator drops each rule's `equals_string` precondition and would emit wrong
+"any modifier implies X" axioms. `make shacl-validate`'s SHACL pass covers everything else:
 required fields, enum membership, regex patterns, and datatypes.
 
 ## 2. `example-rdf` — a generic instance ABox
 
 `make example-rdf` (`scripts/convert_examples_to_rdf.py`) is a faithful, generic
 LinkML-instance-to-RDF dump of `linkml/examples/*.example.yaml`, using
-`RDFLibDumper`/`SchemaView` and the schema's own `governanceduo:` namespace. Every
-slot value becomes a literal property on an individual typed with the matching class.
+`RDFLibDumper`/`SchemaView` and the schema's own `governanceduo:` namespace. Slot
+values become properties on an individual typed with the matching class — literals,
+except enum values whose permissible value has a `meaning:`, which become that IRI
+(real DUO codes as `obo:DUO_<n>`, the Sage-local extensions as `gov:DUOPlus<n>`).
 Taking the `Study` example from [The LinkML model](linkml-model.md):
 
 ```turtle
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
-    governanceduo:dataUseModifiers "DUOPlus1" ;
+    governanceduo:dataUseModifiers sagegov:DUOPlus1 ;
     governanceduo:grantNumber "U54AG079754" ;
     governanceduo:sourceGeography "US" ;
     governanceduo:studyDbgapAccessionId "phs000123" ;
@@ -293,11 +305,15 @@ structure, and a **Derivation Policy Graph** (`linkml/derivation_policy.yaml`)
 consuming that lineage to compute per-entity sensitivity labels and flag
 composite-access-risk derivations. Both are imported into
 `governance_duo.linkml.yaml` (like `governance_graph.yaml` already is), so `make
-owl`/`make shacl` already regenerate their shapes as part of
-`shapes/governance_duo.owl.ttl`/`.shacl.ttl` — unlike `governance_graph.yaml`,
-neither needs its own hand-authored shapes file: their classes stay in the
-`governanceduo:` namespace (no `gov:`/`syn:`-style reserialization), so a plain
-`gen-owl`/`gen-shacl` pass over the whole schema already covers them correctly.
+owl`/`make shacl` regenerate their per-slot shapes as part of
+`shapes/governance_duo.owl.ttl`/`.shacl.ttl`. Their instances are graph content, so
+they use graph IRIs (see the README's "Release artifacts and IRI policy" and
+`scripts/graph_iris.py`): Activities are `gov:activity-<n>`, entity references are
+`syn:` IRIs, and `ControlLabel`/`DerivationReview` are `gov:` classes read by
+sagebrain-infra's authorizer alongside `gov:AccessGrant`. The provenance layer also
+has one hand-authored shapes file, `shapes/provenance_layer.shacl.ttl`, for the
+constraint gen-shacl can't express (a Usage is exactly one of an entity reference or
+a URL + `gov:name`); this repo owns it for every consumer, including sagebrain-model.
 
 **Provenance Graph.** `Activity`/`Usage` mirror Synapse's real native provenance
 feature (`org.sagebionetworks.repo.model.provenance.Activity`/`Used`/`UsedEntity`/
@@ -305,17 +321,23 @@ feature (`org.sagebionetworks.repo.model.provenance.Activity`/`Used`/`UsedEntity
 rest-docs.synapse.org, not guessed — and reuse real `prov:Activity`/`prov:Usage`/
 `prov:used`/`prov:qualifiedUsage`/`prov:entity`/`prov:generated` IRIs directly as
 `class_uri`/`slot_uri`, the same "reuse external terms by IRI, never re-mint"
-convention this repo's README already documents for DUO terms — confirmed
-empirically: a plain `RDFLibDumper` call on an `Activity` instance emits `a
-prov:Activity`/`a prov:Usage` with no extra code. `prov:wasDerivedFrom` is a derived
+convention this repo's README already documents for DUO terms. Entity references
+are written as `syn:` CURIEs, so they serialize as the same absolute IRIs the
+governance graph mints (bare ids would become relative IRIs that don't join across
+files), and Activity ids are mapped to `gov:activity-<n>` at dump time. One Activity
+can generate several entities — Synapse allows it (`GET /activity/{id}/generated`
+returns a list) — so `generated` is multivalued, and
+`scripts/sync_provenance_graph.py` builds each Activity once with every requested
+output. `prov:wasDerivedFrom` is a derived
 convenience edge with no LinkML slot behind it (same treatment as `gov:hasACL`
 above) — computed by `scripts/sync_provenance_graph.add_was_derived_from()` from
 `Activity.generated` + non-executed `Usage.entity` pairs.
 
 ```sh
 make provenance-example-rdf   # linkml/examples/provenance/*.example.yaml -> linkml/examples/provenance/rdf/
-make provenance-validate      # + SHACL validation against shapes/governance_duo.{owl,shacl}.ttl
+make provenance-validate      # + SHACL validation against shapes/governance_duo.{owl,shacl}.ttl and shapes/provenance_layer.shacl.ttl
 make sync-provenance-graph ENTITY_IDS="syn10081783"   # real Synapse data (requires synapseclient login)
+make sync-provenance-check    # offline regression check of the sync script (fake Synapse client)
 ```
 
 **Derivation Policy Graph.** Explicitly *not* a PROV-O extension: `DerivationRule`,
@@ -326,7 +348,13 @@ separate passes — computing `ControlLabel` (a precomputed, per-entity max-sens
 tier across its full `wasDerivedFrom` ancestry, walking `DerivationRule` overrides at
 each join point) and then `DerivationReview` (flagging any multi-input `Activity`
 whose inputs' `ControlLabel`s cite disjoint `AccessRequirement`s — the "composite
-risk from independent grants" case) — never one blurred computation. `DerivationRule`
+risk from independent grants" case) — never one blurred computation. Labels fail
+closed: an AccessRequirement with no curated `dataTier` contributes the
+`Unclassified` tier, ranked above `Private`, so an entity bound to it is labeled
+rather than reading as unrestricted. Ancestry follows `prov:wasDerivedFrom` and every
+property declared a sub-property of it; sagebrain-model declares
+`sagebrain:derived_from` as one, so passing its graphs with `--extra-graph` lets labels
+reach its Associations and Samples, not just Synapse files. `DerivationRule`
 is honestly ungrounded today: no real Synapse/repo data source enumerates
 datatype-combination policy, so it ships as structural capability with illustrative
 examples only, the same treatment `AccessRequirementTemplate`/`Program`/`Site`
@@ -336,6 +364,9 @@ already got above for the identical reason.
 make derivation-policy-example-rdf   # linkml/examples/derivation_policy/*.example.yaml -> .../rdf/
 make derivation-policy-validate      # + SHACL validation
 make derivation-policy               # computes ControlLabel/DerivationReview into derivation_policy_export/
+make derivation-policy-check         # regression fixture (linkml/examples/derivation_policy/fixture/)
+make infra-contract-check            # sagebrain-infra authorizer's query against the exported graph
+make sagebrain-contract-check SAGEBRAIN_MODEL=<path>   # opt-in: this layer inside sagebrain-model's graph
 ```
 
 Neither layer builds a query-time enforcement/filtering system, and neither resolves
