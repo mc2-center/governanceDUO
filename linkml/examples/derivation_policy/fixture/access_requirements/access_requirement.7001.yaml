@@ -1,0 +1,4 @@
+# Fixture only: a curated AccessRequirement with a recorded tier.
+id: access_requirement.7001
+dataTier:
+  - Controlled

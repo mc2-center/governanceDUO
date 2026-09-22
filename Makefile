@@ -98,7 +98,12 @@ GOVERNANCE_GRAPH := governance_graph_export/governance_graph.ttl
 derivation-policy: provenance-example-rdf governance-graph
 	python3 scripts/build_derivation_policy.py --provenance-graph $(PROVENANCE_GRAPH) --governance-graph $(GOVERNANCE_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check
+# Regression check: runs build_derivation_policy.py on the committed fixture in
+# linkml/examples/derivation_policy/fixture/ and asserts its labels/reviews.
+derivation-policy-check:
+	python3 scripts/check_derivation_policy.py
+
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances

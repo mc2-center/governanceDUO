@@ -1,0 +1,16 @@
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+# Shaped like governance_graph_export/governance_graph.ttl: entity ->
+# gov:hasAccessRequirement -> gov:AR-<n> stub -> owl:sameAs -> curated record.
+syn:syn70000001 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7001 .
+syn:syn70000002 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7002 .
+
+sagegov:AR-7001 a sagegov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.7001 .
+sagegov:AR-7002 a sagegov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.7002 .

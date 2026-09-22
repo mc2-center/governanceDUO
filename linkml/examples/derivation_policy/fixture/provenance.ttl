@@ -1,0 +1,11 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+# Two disjoint-AR data inputs plus an executed script; one output.
+sagegov:activity-7001 a prov:Activity ;
+    prov:generated syn:syn70000003 ;
+    prov:qualifiedUsage
+        [ a prov:Usage ; prov:entity syn:syn70000001 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000002 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000009 ; sagegov:wasExecuted true ] .

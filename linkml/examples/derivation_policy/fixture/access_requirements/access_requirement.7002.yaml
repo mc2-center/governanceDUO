@@ -1,0 +1,3 @@
+# Fixture only: a curated AccessRequirement with no recorded tier -- must fail
+# closed to Unclassified.
+id: access_requirement.7002
