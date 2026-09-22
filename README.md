@@ -323,6 +323,46 @@ architecture, including the `owl:sameAs` bridge the script now asserts between e
 the [Governance consolidation plan](plans/governance_consolidation_and_drs_interop.md)
 for why.
 
+## Release artifacts and IRI policy
+
+The governance graph is a layer of the graph defined in
+[sagebrain-model](https://github.com/Sage-Bionetworks/sagebrain-model): it is loaded
+into the same store, joined on the same IRIs, and read by sagebrain-infra's
+authorizer. This repository owns every governance-layer term and shape, and
+publishes them for other repositories to import rather than copy:
+
+| Artifact | What it is |
+|---|---|
+| `shapes/governance_duo.owl.ttl` | OWL generated from the LinkML schema (`make owl`) |
+| `shapes/governance_graph.owl.ttl` | Hand-written TBox for the `gov:` governance graph |
+| `shapes/governance_graph.shacl.ttl` | Shapes for the exported governance graph |
+| `shapes/provenance_layer.shacl.ttl` | Shapes for the Activity/Usage provenance layer |
+
+Each carries an `owl:Ontology` header with `owl:versionIRI` and `owl:versionInfo`.
+The version lives in one place, `VERSION` in the `Makefile`; `make release-check`
+runs `make validate-all` and verifies every artifact carries that version (and, with
+`TAG=v<version>`, that the tag agrees). Until a release is tagged on `main`,
+consumers pin a commit hash in the raw GitHub URL; afterwards, a tag.
+
+IRIs follow one policy, implemented in `scripts/graph_iris.py` for records written
+into the graph:
+
+- **`gov:`** (`https://sagebionetworks.org/governance/`, registered as `sagegov:` in
+  the LinkML schema) for graph terms and graph instances. Instances are shaped
+  `<kind>-<id>`: `gov:AR-42`, `gov:principal-2000001`, `gov:grant-001`,
+  `gov:activity-1001`, `gov:control-label-syn10081783`, `gov:derivation-review-001`.
+- **`governanceduo:`** for schema terms and LinkML record ids
+  (`governanceduo:access_requirement.42`).
+- **`syn:`** (`https://www.synapse.org/Synapse:`) for Synapse entities.
+- **External terms by their own IRIs**: `prov:` for provenance structure, `obo:DUO_`
+  for real DUO codes (`gov:DUOPlus1`–`7` for the Sage-local extensions).
+
+`make owl-profile` checks the OWL artifacts against the OWL 2 DL profile, alone and
+merged, and runs in CI (`.github/workflows/validate.yml`). Two deliberate gaps between
+the LinkML schema and the generated OWL are documented in `scripts/build_owl.py`: the
+`rules:` conditionals are enforced by `linkml-validate`, not expressed in the OWL, and
+a small schema-derived repair pass fills gaps in LinkML's OWL generator.
+
 # Materials available in this repository
 
 The content below predates this repository's current `linkml/`-based model (see

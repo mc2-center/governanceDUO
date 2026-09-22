@@ -21,6 +21,11 @@ generate-json:
 
 LINKML_SCHEMA := linkml/governance_duo.linkml.yaml
 
+# Version of the published artifacts (see README "Release artifacts and IRI policy").
+# Stamped into shapes/governance_duo.owl.ttl by `make owl`; the hand-written artifacts
+# carry it in their owl:Ontology headers, and `make release-check` verifies they agree.
+VERSION ?= 0.1.0
+
 # ROBOT (https://robot.obolibrary.org) for the OWL 2 DL profile check. Fetched, not
 # committed (78 MB), and pinned so the check is reproducible -- the same version and
 # download rule sagebrain-model uses. Overridable: ROBOT_JAR, ROBOT_VERSION.
@@ -35,7 +40,7 @@ linkml-lint:
 	linkml-lint --ignore-warnings ${LINKML_SCHEMA}
 
 owl:
-	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out shapes/governance_duo.owl.ttl
+	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out shapes/governance_duo.owl.ttl --version $(VERSION)
 
 shacl:
 	gen-shacl ${LINKML_SCHEMA} > shapes/governance_duo.shacl.ttl
@@ -134,6 +139,11 @@ infra-contract-check: governance-graph
 	python3 scripts/check_infra_contract.py
 
 validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check owl-profile
+
+# Pre-release gate: everything validate-all checks, plus every published artifact
+# carrying VERSION (and, with TAG=v<version>, the tag agreeing with it).
+release-check: validate-all
+	python3 scripts/check_release.py --version $(VERSION) $(if $(TAG),--tag $(TAG))
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances

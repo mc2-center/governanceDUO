@@ -40,6 +40,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://sagebionetworks.org/governance/> a owl:Ontology ;
+    owl:versionIRI <https://sagebionetworks.org/governance/version/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
     rdfs:comment "TBox for governance_graph_export/governance_graph.ttl's gov:/syn: ABox convention. gov:AccessRequirement individuals (e.g. gov:AR-42) are stub reference nodes denoting the same real-world Access Requirement as a governanceduo:access_requirement.<n> individual in the governanceduo: namespace -- scripts/build_governance_graph.py asserts owl:sameAs between the two wherever an AccessRequirement stub node is minted (see add_access_requirement_association), so this cross-namespace identity is explicit in the exported ABox, not merely implied by naming convention." .
 
 #################################################################

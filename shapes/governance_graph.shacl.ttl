@@ -49,6 +49,10 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<https://w3id.org/sage-bionetworks/governance-duo/shapes/governance_graph> a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/sage-bionetworks/governance-duo/shapes/governance_graph/0.1.0> ;
+    owl:versionInfo "0.1.0" .
+
 #################################################################
 # SynapseEntity
 #################################################################
