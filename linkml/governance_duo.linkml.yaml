@@ -36,6 +36,7 @@ prefixes:
   EVORAO: https://w3id.org/evorao/
   dpv: https://w3id.org/dpv#
   sagegov: https://sagebionetworks.org/governance/
+  syn: "https://www.synapse.org/Synapse:"
 default_prefix: governanceduo
 default_range: string
 imports:
