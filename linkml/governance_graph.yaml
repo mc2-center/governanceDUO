@@ -263,11 +263,15 @@ classes:
       ranges over this class, not the real AccessRequirement -- see
       plans/access_requirement_reference_class.md for why keeping the two types
       separate, rather than giving the real AccessRequirement this class's class_uri
-      directly, is deliberate. Not `is_a: BaseEntity`: like Condition/
-      DataAccessSubmissionStatus, it has no independent identifier of its own -- it's
-      a re-serialization of the real AccessRequirement's own id via gov_id(), not a
-      new entity.
+      directly, is deliberate. Not `is_a: BaseEntity`: it has no independent
+      identifier of its own -- it's a re-serialization of the real
+      AccessRequirement's own id via gov_id(), not a new entity. That id is
+      therefore its key (referencedRequirementId), which is what lets records
+      reference the stub by the value they already carry, e.g.
+      `accessRequirement: access_requirement.42`; without an identifier, LinkML
+      only accepts references to a class as inline objects.
     slots:
+      - referencedRequirementId
       - sameAs
       - hasCondition
   DataAccessSubmission:
@@ -972,6 +976,17 @@ slots:
   domain:
     slot_uri: sagegov:domain
     description: Free-text research domain this template applies to, e.g. "genomics".
+  referencedRequirementId:
+    slot_uri: governanceduo:referencedRequirementId
+    identifier: true
+    description: >-
+      The id of the real AccessRequirement record this gov:AR-<n> stub stands in
+      for (e.g. access_requirement.42) -- the stub's key. As a LinkML identifier it
+      names the node rather than adding a triple: scripts/build_governance_graph.py
+      mints the stub's IRI from it via gov_id() (access_requirement.42 ->
+      gov:AR-42) and bridges it to the real record with sameAs.
+    range: string
+    pattern: '^access_requirement\.\d+$'
   hasCondition:
     slot_uri: sagegov:hasCondition
     description: >-
