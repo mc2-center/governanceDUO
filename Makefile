@@ -143,6 +143,14 @@ infra-contract-check: governance-graph
 
 validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check owl-profile
 
+# Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
+# graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching
+# sagebrain nodes). Needs a sagebrain-model checkout, so it isn't in validate-all.
+# Usage: make sagebrain-contract-check SAGEBRAIN_MODEL=../sagebrain-model
+sagebrain-contract-check: | $(ROBOT_JAR)
+	$(if $(SAGEBRAIN_MODEL),,$(error set SAGEBRAIN_MODEL=<path to a sagebrain-model checkout>))
+	python3 scripts/check_sagebrain_contract.py --sagebrain-model $(SAGEBRAIN_MODEL) --robot-jar $(ROBOT_JAR)
+
 # Pre-release gate: everything validate-all checks, plus every published artifact
 # carrying VERSION (and, with TAG=v<version>, the tag agreeing with it).
 release-check: validate-all

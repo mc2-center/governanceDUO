@@ -1,0 +1,13 @@
+# Contract fixture for scripts/check_sagebrain_contract.py (make
+# sagebrain-contract-check): binds the raw input file of sagebrain-model's worked
+# pipeline example (examples/pipeline_provenance.ttl: syn27000001 -> nf-core ->
+# syn27000002 -> DESeq2 -> syn26999999, which association:apoe-expr-samp01 in
+# examples/AD-cohort.ttl is sagebrain:derived_from) to this repo's example
+# AccessRequirement stub gov:AR-42, so the joined worked example has a governed
+# source whose ControlLabel must reach the Association. Illustrative, not real
+# Synapse data.
+@prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+syn:syn27000001 a gov:SynapseEntity ;
+    gov:hasAccessRequirement gov:AR-42 .
