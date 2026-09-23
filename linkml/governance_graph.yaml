@@ -109,6 +109,78 @@ enums:
         meaning: sagegov:User
       Team:
         meaning: sagegov:Team
+  GrantPermissionEnum:
+    description: >-
+      The permissions an AccessGrant's gov:permission can carry: every
+      AccessTypeEnum value (Synapse's ACCESS_TYPE, same meaning: IRIs), plus
+      ACCESS, which scripts/build_governance_graph.py derives on every grant
+      carrying DOWNLOAD for sagebrain-infra's authorizer. AccessTypeEnum stays a
+      pure mirror of Synapse (plans/sagebrain_contract_and_owl_dl_fixes.md D8),
+      so AccessRequirement.accessType can't take ACCESS. The Synapse values are
+      listed again rather than via `inherits:`, which linkml-validate, gen-owl and
+      gen-shacl don't expand; scripts/check_enum_sync.py keeps the two lists
+      identical (plans/enum_values_match_owl.md).
+    permissible_values:
+      CREATE:
+        description: Permission to create a new entity or resource.
+        meaning: sagegov:CREATE
+      READ:
+        description: Permission to read or view the entity or resource.
+        meaning: sagegov:READ
+      UPDATE:
+        description: Permission to modify or update the entity or resource.
+        meaning: sagegov:UPDATE
+      DELETE:
+        description: Permission to delete the entity or resource.
+        meaning: sagegov:DELETE
+      CHANGE_PERMISSIONS:
+        description: Permission to change access permissions for the entity or resource.
+        meaning: sagegov:CHANGE_PERMISSIONS
+      DOWNLOAD:
+        description: Permission to download files or data from the entity or resource.
+        meaning: sagegov:DOWNLOAD
+      UPLOAD:
+        description: Deprecated; adding this to an ACL has no effect.
+        meaning: sagegov:UPLOAD
+      PARTICIPATE:
+        description: Permission to participate in activities related to the entity, such as discussions or challenges.
+        meaning: sagegov:PARTICIPATE
+      SUBMIT:
+        description: Permission to submit content or data to the entity or resource.
+        meaning: sagegov:SUBMIT
+      READ_PRIVATE_SUBMISSION:
+        description: Permission to read private submissions associated with the entity.
+        meaning: sagegov:READ_PRIVATE_SUBMISSION
+      UPDATE_SUBMISSION:
+        description: Permission to update or modify a submission.
+        meaning: sagegov:UPDATE_SUBMISSION
+      DELETE_SUBMISSION:
+        description: Permission to delete a submission.
+        meaning: sagegov:DELETE_SUBMISSION
+      TEAM_MEMBERSHIP_UPDATE:
+        description: Permission to update team membership, such as adding or removing members.
+        meaning: sagegov:TEAM_MEMBERSHIP_UPDATE
+      SEND_MESSAGE:
+        description: Permission to send messages related to the entity or resource.
+        meaning: sagegov:SEND_MESSAGE
+      CHANGE_SETTINGS:
+        description: Permission to change settings or configuration for the entity or resource.
+        meaning: sagegov:CHANGE_SETTINGS
+      MODERATE:
+        description: Permission to moderate content or activity related to the entity or resource.
+        meaning: sagegov:MODERATE
+      REVIEW_SUBMISSIONS:
+        description: Enables reviewing submission groups (e.g., on Access Requirements) for specified objects.
+        meaning: sagegov:REVIEW_SUBMISSIONS
+      EXEMPTION_ELIGIBLE:
+        description: Qualifies for exemption when granted on Access Requirement ACLs.
+        meaning: sagegov:EXEMPTION_ELIGIBLE
+      ACCESS:
+        description: >-
+          Derived, not a Synapse ACCESS_TYPE: the abstract Cedar action
+          sagebrain-infra's authorizer checks, granted wherever Synapse grants
+          DOWNLOAD (fail closed).
+        meaning: sagegov:ACCESS
   ApprovalStateEnum:
     description: >-
       Synapse's real AccessApproval state values
@@ -686,8 +758,8 @@ slots:
     description: >-
       The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE).
       Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one
-      permission type.
-    range: AccessTypeEnum
+      permission type. Also carries the derived ACCESS (see GrantPermissionEnum).
+    range: GrantPermissionEnum
     multivalued: true
     required: true
   source:

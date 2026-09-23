@@ -158,12 +158,25 @@ linkml-validate-examples:
 artifact-drift-check:
 	python3 scripts/check_artifact_drift.py
 
+# OWL 2 DL on both TBoxes merged with the exported and example graphs: a value
+# the TBox types differently from the data (a literal on an object property, an
+# IRI on a data property) is a pun here, though each TBox alone is in profile.
+owl-profile-abox: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf | $(ROBOT_JAR)
+	mkdir -p build
+	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl --input governance_graph_export/governance_graph.ttl --input linkml/examples/rdf/all_examples.ttl --input linkml/examples/provenance/rdf/all_examples.ttl --input linkml/examples/derivation_policy/rdf/all_examples.ttl --output build/governance_with_abox.owl.ttl
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_with_abox.owl.ttl --output build/owl-profile-abox.txt || (cat build/owl-profile-abox.txt; exit 1)
+	@echo "OWL 2 DL profile: both TBoxes with the exported and example graphs in profile."
+
+# GrantPermissionEnum must mirror AccessTypeEnum exactly, plus the derived ACCESS.
+enum-sync-check:
+	python3 scripts/check_enum_sync.py
+
 # Every rdfs:domain/class rdfs:range in both TBoxes must already hold on the
 # exported and example graphs; a reasoner would otherwise re-type nodes with them.
 domain-range-check: governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples owl-profile
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching

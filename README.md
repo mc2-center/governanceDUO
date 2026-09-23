@@ -133,6 +133,8 @@ make validate-all     # every SHACL validation below plus the regression/contrac
                        # checks and the OWL 2 DL profile check (what CI runs)
 make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar),
                        # plus prov: types vs W3C PROV-O (fetched to build/)
+make owl-profile-abox # OWL 2 DL on both TBoxes merged with the exported and example
+                       # graphs (catches values typed differently from the TBox)
 make release-check    # validate-all + every published artifact carries VERSION
 make linkml-validate-examples  # linkml-validate every example (the only DUO-rules check)
 make artifact-drift-check      # committed generated artifacts match a fresh rebuild

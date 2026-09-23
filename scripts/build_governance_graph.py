@@ -59,8 +59,9 @@ Permissible-value-typed slots (`permission`, `source`, `bindingType`, `state`,
 `status`, `principalType`) are written as the IRI each value's `meaning:` declares
 (`gov:DOWNLOAD`, `gov:Direct`, `gov:APPROVED`, the class `gov:User`, ...), resolved
 by enum_iri() -- so the schema, the generated OWL and this output agree on every
-value's IRI (plans/enum_values_match_owl.md). The one exception is the derived
-`gov:ACCESS` permission below, which isn't a Synapse ACCESS_TYPE value.
+value's IRI (plans/enum_values_match_owl.md). That includes the derived
+`gov:ACCESS` permission below: not a Synapse ACCESS_TYPE value, so it lives in
+GrantPermissionEnum, the permission slot's range, not in AccessTypeEnum.
 
 Usage:
     python scripts/build_governance_graph.py [--examples-dir linkml/examples/governance_graph]
@@ -238,16 +239,17 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     g.add((subject, PREDICATE("resource", "AccessGrant"), SYN[data["resource"]]))
     g.add((subject, PREDICATE("principal", "AccessGrant"), principal_node))
     for perm in data.get("permission", []):
-        g.add((subject, PREDICATE("permission", "AccessGrant"), enum_iri("AccessTypeEnum", perm)))
+        g.add((subject, PREDICATE("permission", "AccessGrant"), enum_iri("GrantPermissionEnum", perm)))
     # Derived: SageBrain's authorizer (sagebrain-infra authorize.py) asks whether a
     # grant permits the abstract Cedar action "ACCESS" by comparing each
     # gov:permission's local name to it. Synapse has no ACCESS permission, so it
     # is derived here from DOWNLOAD -- graph answers expose content derived from
     # files, which Synapse gates at DOWNLOAD, not READ (fail closed). The real
     # Synapse permissions stay alongside it; AccessTypeEnum remains a pure mirror
-    # of Synapse's ACCESS_TYPE. See plans/sagebrain_contract_and_owl_dl_fixes.md D8.
+    # of Synapse's ACCESS_TYPE, and GrantPermissionEnum (the permission slot's
+    # range) adds ACCESS. See plans/sagebrain_contract_and_owl_dl_fixes.md D8.
     if ACCESS_GRANTING_PERMISSION in data.get("permission", []):
-        g.add((subject, PREDICATE("permission", "AccessGrant"), GOV.ACCESS))
+        g.add((subject, PREDICATE("permission", "AccessGrant"), enum_iri("GrantPermissionEnum", "ACCESS")))
     g.add((subject, PREDICATE("source", "AccessGrant"), enum_iri("SourceSystemEnum", data["source"])))
     g.add((subject, PREDICATE("bindingType", "AccessGrant"), enum_iri("BindingTypeEnum", data["bindingType"])))
     if data.get("createdOn") is not None:
