@@ -107,11 +107,15 @@ policy-fabric:
 # passes the approval's expiredOn. A live sync judges expiry as of the sync.
 GOVERNANCE_GRAPH_AS_OF ?= 1767225600000
 
-governance-graph:
-	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl --as-of $(GOVERNANCE_GRAPH_AS_OF)
+# The canonical example is the governance export (plans/model_refactor.md): built
+# from linkml/examples/graph/*.example.yaml, the same source graph-example-rdf
+# reads, via graph_rdf.py -- the one path from graph-layer data to Turtle.
+governance-graph: graph-tbox
+	mkdir -p governance_graph_export
+	python3 scripts/graph_rdf.py linkml/examples/graph/*.example.yaml --out governance_graph_export/governance_graph.ttl
 
 governance-graph-validate: governance-graph
-	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
+	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes $(GRAPH_SHAPES) --ont $(GRAPH_TBOX)
 
 # Real Synapse data, not the hand-authored examples above -- requires an ACT
 # (or validated-reviewer) synapseclient login. See
@@ -120,8 +124,8 @@ governance-graph-validate: governance-graph
 sync-governance-graph:
 	python3 scripts/sync_governance_graph.py $(ENTITY_IDS)
 
-sync-governance-graph-validate:
-	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph_synced.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
+sync-governance-graph-validate: graph-tbox
+	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph_synced.ttl --shapes $(GRAPH_SHAPES) --ont $(GRAPH_TBOX)
 
 # Provenance Graph (linkml/provenance.yaml) and Derivation Policy Graph
 # (linkml/derivation_policy.yaml) -- see plans/prov_o_integration.md. Both are

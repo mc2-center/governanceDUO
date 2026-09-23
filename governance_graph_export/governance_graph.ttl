@@ -1,120 +1,192 @@
-@prefix gov: <https://sagebionetworks.org/governance/> .
-@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
+@prefix MONDO: <http://purl.obolibrary.org/obo/MONDO_> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix gov: <https://w3id.org/synapse/governance#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix syn: <https://www.synapse.org/Synapse:> .
+@prefix synteam: <https://www.synapse.org/Team:> .
+@prefix synuser: <https://www.synapse.org/Profile:> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-gov:access-approval-9001 a gov:AccessApproval ;
-    gov:createdOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+<https://w3id.org/synapse/governance/activity/1002> a prov:Activity ;
+    prov:generated syn:syn30000002,
+        syn:syn30000003 ;
+    prov:qualifiedUsage <https://w3id.org/synapse/governance/activity/1002/usage/1>,
+        <https://w3id.org/synapse/governance/activity/1002/usage/2> ;
+    gov:createdBy synuser:1000001 ;
+    gov:createdOn "2025-08-14T19:33:20+00:00"^^xsd:dateTime ;
+    gov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
+    gov:modifiedBy synuser:1000001 ;
+    gov:modifiedOn "2025-08-14T19:41:40+00:00"^^xsd:dateTime ;
+    gov:name "nf-core/rnaseq reprocessing run" .
+
+<https://w3id.org/synapse/governance/approval/55001> a gov:Approval ;
+    gov:createdOn "2025-08-14T19:33:20+00:00"^^xsd:dateTime ;
     gov:etag "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a" ;
-    gov:expiresAt "1786736000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:heldBy gov:principal-2000001 ;
+    gov:expiresAt "2026-08-14T19:33:20+00:00"^^xsd:dateTime ;
+    gov:heldBy synuser:2000001 ;
     gov:requirementVersion 1 ;
-    gov:satisfies gov:AR-42 ;
+    gov:satisfies <https://w3id.org/synapse/governance/ar/42> ;
     gov:sourceApprovalId 55001 ;
-    gov:status gov:APPROVED ;
-    gov:submittedBy gov:principal-2000001 .
+    gov:status gov:Approved ;
+    gov:submittedBy synuser:2000001 .
 
-gov:ar-association-001 a gov:AccessRequirementAssociation ;
-    gov:accessRequirement gov:AR-42 ;
-    gov:bindingType gov:Inherited ;
-    gov:resource syn:syn10081783 ;
-    gov:source gov:Synapse .
+<https://w3id.org/synapse/governance/authorization/syn10081783-9000001> a acl:Authorization ;
+    acl:accessTo syn:syn10081783 ;
+    acl:agentGroup synteam:9000001 ;
+    acl:default syn:syn10081783 ;
+    acl:mode gov:Download .
 
-gov:data-access-submission-555 a gov:DataAccessSubmission ;
-    gov:accessRequirement gov:AR-42 ;
-    gov:modifiedBy gov:principal-2000001 ;
-    gov:requestId gov:data-access-request-7001 ;
-    gov:researchProject gov:research-project-8001 ;
-    gov:state gov:SUBMITTED ;
-    gov:statusModifiedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:submittedBy gov:principal-2000001 ;
-    gov:submittedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
+<https://w3id.org/synapse/governance/derivation-review/1001> a gov:DerivationReview ;
+    gov:activity <https://w3id.org/synapse/governance/activity/1001> ;
+    gov:inputLabels <https://w3id.org/synapse/governance/control-label/syn10081783>,
+        <https://w3id.org/synapse/governance/control-label/syn40000002> ;
+    gov:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (AR-42, AR-99), both Controlled tier. Pending ACT review." ;
+    gov:reviewStatus gov:DerivationFlagged .
 
-gov:irb-requirement-irb-genomics-adkp a gov:IRBRequirement ;
+<https://w3id.org/synapse/governance/irb-requirement/irb-genomics-adkp> a gov:IRBRequirement ;
     gov:arType "IRB" ;
-    gov:extendsTemplate gov:access-requirement-template-ar-genomics ;
-    gov:forStudy governanceduo:study.mc2-jax-5xfad ;
+    gov:extendsTemplate <https://w3id.org/synapse/governance/ar-template/genomics> ;
+    gov:forStudy <https://w3id.org/sage-bionetworks/governance-duo/study.mc2-jax-5xfad> ;
     gov:language "Illustrative ADKP-specific consent language -- not sourced from a real IRB document." ;
-    gov:scopedToProgram gov:program-adkp ;
-    gov:scopedToSite gov:site-mount-sinai .
+    gov:scopedToProgram <https://w3id.org/synapse/governance/program/adkp> ;
+    gov:scopedToSite <https://w3id.org/synapse/governance/site/mount-sinai> .
 
-gov:access-requirement-template-ar-genomics a gov:AccessRequirementTemplate ;
+<https://w3id.org/synapse/governance/submission/555> a gov:DataAccessSubmission ;
+    gov:accessRequirement <https://w3id.org/synapse/governance/ar/42> ;
+    gov:etag "1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f" ;
+    gov:modifiedBy synuser:2000001 ;
+    gov:modifiedOn "2025-08-14T19:33:20+00:00"^^xsd:dateTime ;
+    gov:request <https://w3id.org/synapse/governance/request/7001> ;
+    gov:requirementVersion 1 ;
+    gov:researchProject <https://w3id.org/synapse/governance/research-project/8001> ;
+    gov:state gov:Submitted ;
+    gov:submittedBy synuser:2000001 ;
+    gov:submittedOn "2025-08-14T19:33:20+00:00"^^xsd:dateTime .
+
+<https://w3id.org/synapse/governance/activity/1001/usage/1> a prov:Usage ;
+    prov:entity syn:syn10081783 ;
+    gov:wasExecuted false .
+
+<https://w3id.org/synapse/governance/activity/1001/usage/2> a prov:Usage ;
+    prov:entity syn:syn40000002 ;
+    gov:wasExecuted true .
+
+<https://w3id.org/synapse/governance/activity/1002/usage/1> a prov:Usage ;
+    gov:name "nf-core/rnaseq v3.11.1" ;
+    gov:url <https://nf-co.re/rnaseq/3.11.1> ;
+    gov:wasExecuted true .
+
+<https://w3id.org/synapse/governance/activity/1002/usage/2> a prov:Usage ;
+    prov:entity syn:syn10081783 ;
+    gov:entityVersionNumber 2 ;
+    gov:wasExecuted false .
+
+<https://w3id.org/synapse/governance/ar-template/genomics> a gov:AccessRequirementTemplate ;
     gov:domain "genomics" ;
-    gov:hasCondition gov:AR-42-condition-DUO-0000007 .
+    gov:hasCondition <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007> .
 
-gov:data-access-request-7001 a gov:DataAccessRequest ;
-    gov:accessRequirement gov:AR-42 ;
-    gov:affiliatedWith gov:site-mount-sinai ;
-    gov:createdBy gov:principal-2000001 ;
-    gov:createdOn "1755140000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+<https://w3id.org/synapse/governance/ar/99> a gov:AccessRequirement ;
+    gov:accessType gov:Download ;
+    gov:name "Illustrative second managed access requirement" ;
+    gov:requirementType gov:ManagedACTRequirement ;
+    gov:versionNumber 1 .
+
+<https://w3id.org/synapse/governance/control-label/syn10081783> a gov:ControlLabel ;
+    gov:computedFrom <https://w3id.org/synapse/governance/activity/1001> ;
+    gov:computedOn "2025-08-15T23:20:00+00:00"^^xsd:dateTime ;
+    gov:dataTier gov:ControlledTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn10081783 .
+
+<https://w3id.org/synapse/governance/control-label/syn40000002> a gov:ControlLabel ;
+    gov:computedFrom <https://w3id.org/synapse/governance/activity/1001> ;
+    gov:computedOn "2025-08-15T23:20:00+00:00"^^xsd:dateTime ;
+    gov:dataTier gov:ControlledTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/99> ;
+    gov:subject syn:syn40000002 .
+
+<https://w3id.org/synapse/governance/program/adkp> a gov:Program ;
+    gov:name "AD Knowledge Portal" .
+
+<https://w3id.org/synapse/governance/request/7001> a gov:DataAccessRequest ;
+    gov:accessRequirement <https://w3id.org/synapse/governance/ar/42> ;
+    gov:affiliatedWith <https://w3id.org/synapse/governance/site/mount-sinai> ;
+    gov:createdBy synuser:2000001 ;
+    gov:createdOn "2025-08-14T02:53:20+00:00"^^xsd:dateTime ;
     gov:etag "5d6e7f8a-9b0c-4d2e-9f3a-4b5c6d7e8f9a" ;
-    gov:modifiedBy gov:principal-2000001 ;
-    gov:modifiedOn "1755150000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:institution "Mount Sinai" ;
+    gov:modifiedBy synuser:2000001 ;
+    gov:modifiedOn "2025-08-14T05:40:00+00:00"^^xsd:dateTime ;
     gov:requestConcreteType "Request" ;
     gov:requestPrincipalInvestigatorEmail "jane.doe@mountsinai.org" ;
     gov:requestPrincipalInvestigatorName "Jane Doe" ;
     gov:requestSigningOfficialEmail "john.smith@mountsinai.org" ;
     gov:requestSigningOfficialName "John Smith" ;
-    gov:researchProject gov:research-project-8001 .
+    gov:researchProject <https://w3id.org/synapse/governance/research-project/8001> .
 
-gov:grant-001 a gov:AccessGrant ;
-    gov:bindingType gov:Direct ;
-    gov:createdOn "1755100000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:permission gov:ACCESS,
-        gov:DOWNLOAD ;
-    gov:principal gov:principal-9000001 ;
-    gov:resource syn:syn10081783 ;
-    gov:source gov:Synapse .
+synuser:1000002 a gov:User .
 
-gov:principal-9000001 a gov:Principal,
-        gov:Team ;
-    gov:principalId 9000001 .
+synteam:9000001 a vcard:Group ;
+    vcard:hasMember synuser:2000001 .
 
-gov:program-adkp a gov:Program ;
-    gov:name "AD Knowledge Portal" .
+<https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007> a gov:Condition ;
+    gov:dataUseTerm DUO:0000007 ;
+    gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease." ;
+    gov:diseaseContext MONDO:0004975 .
 
-syn:syn2343195 a gov:SynapseEntity ;
-    gov:createdByUserId 1000002 ;
-    gov:createdOn "1700000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:etag "8b7c6d5e-4f3a-4b2c-8d1e-0f9a8b7c6d5e" ;
-    gov:name "NF2-related schwannomatosis RNA-seq study" ;
-    gov:nodeType "project" .
-
-gov:AR-42-condition-DUO-0000007 a gov:Condition ;
-    gov:conditionDetail "MONDO:0004975" ;
-    gov:conditionType "DS" ;
-    gov:description "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." ;
-    gov:duoCode <http://purl.obolibrary.org/obo/DUO_0000007> .
-
-gov:research-project-8001 a gov:ResearchProject ;
-    gov:accessRequirement gov:AR-42 ;
-    gov:affiliatedWith gov:site-mount-sinai ;
-    gov:createdBy gov:principal-2000001 ;
-    gov:createdOn "1755150000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+<https://w3id.org/synapse/governance/research-project/8001> a gov:ResearchProject ;
+    gov:accessRequirement <https://w3id.org/synapse/governance/ar/42> ;
+    gov:affiliatedWith <https://w3id.org/synapse/governance/site/mount-sinai> ;
+    gov:createdBy synuser:2000001 ;
+    gov:createdOn "2025-08-14T05:40:00+00:00"^^xsd:dateTime ;
     gov:etag "4c5d6e7f-8a9b-4c1d-9e2f-3a4b5c6d7e8f" ;
+    gov:institution "Mount Sinai" ;
     gov:intendedDataUseStatement "Investigating tumor microenvironment signaling in a genetically engineered mouse model cohort, for the purposes described in the associated Access Requirement." ;
     gov:projectLead "Jane Doe" .
 
-syn:syn10081783 a gov:SynapseEntity ;
-    gov:createdByUserId 1000001 ;
-    gov:createdOn "1755000000000"^^<http://www.w3.org/2001/XMLSchema#long> ;
-    gov:etag "3f9c9b8a-1a2b-4c3d-9e5f-6a7b8c9d0e1f" ;
-    gov:hasACL gov:grant-001 ;
-    gov:hasAccessRequirement gov:AR-42 ;
-    gov:name "HS01_CUDC907_Run1_S2_R1_001.fastq" ;
-    gov:nodeType "file" ;
-    gov:parentId syn:syn2343195 .
+syn:syn2343195 a gov:SynapseEntity ;
+    gov:benefactor syn:syn2343195 ;
+    gov:createdBy synuser:1000002 ;
+    gov:createdOn "2023-11-14T22:13:20+00:00"^^xsd:dateTime ;
+    gov:entityType "org.sagebionetworks.repo.model.Project" ;
+    gov:etag "8b7c6d5e-4f3a-4b2c-8d1e-0f9a8b7c6d5e" ;
+    gov:name "NF2-related schwannomatosis RNA-seq study" ;
+    gov:requiresAR <https://w3id.org/synapse/governance/ar/42> .
 
-gov:site-mount-sinai a gov:Site ;
+<https://w3id.org/synapse/governance/activity/1001> a prov:Activity ;
+    prov:generated syn:syn30000001 ;
+    prov:qualifiedUsage <https://w3id.org/synapse/governance/activity/1001/usage/1>,
+        <https://w3id.org/synapse/governance/activity/1001/usage/2> ;
+    gov:createdBy synuser:1000001 ;
+    gov:createdOn "2025-08-14T19:33:20+00:00"^^xsd:dateTime ;
+    gov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
+    gov:name "Derive per-sample QC summary" .
+
+<https://w3id.org/synapse/governance/site/mount-sinai> a gov:Site ;
     gov:institution "Mount Sinai" .
 
-gov:AR-42 a gov:AccessRequirement ;
-    owl:sameAs governanceduo:access_requirement.42 ;
-    gov:hasCondition gov:AR-42-condition-DUO-0000007 .
+synuser:1000001 a gov:User .
 
-gov:principal-2000001 a gov:Principal,
-        gov:User ;
-    gov:affiliatedWith gov:site-mount-sinai ;
-    gov:hasApproval gov:AR-42 ;
-    gov:principalId 2000001 .
+<https://w3id.org/synapse/governance/ar/42> a gov:AccessRequirement ;
+    gov:accessType gov:Download ;
+    gov:hasCondition <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007> ;
+    gov:name "Illustrative disease-specific managed access requirement" ;
+    gov:requirementType gov:ManagedACTRequirement ;
+    gov:versionNumber 1 .
+
+syn:syn10081783 a gov:SynapseEntity ;
+    gov:benefactor syn:syn10081783 ;
+    gov:createdBy synuser:1000001 ;
+    gov:createdOn "2025-08-12T12:00:00+00:00"^^xsd:dateTime ;
+    gov:entityType "org.sagebionetworks.repo.model.FileEntity" ;
+    gov:etag "3f9c9b8a-1a2b-4c3d-9e5f-6a7b8c9d0e1f" ;
+    gov:name "HS01_CUDC907_Run1_S2_R1_001.fastq" ;
+    gov:parent syn:syn2343195 ;
+    gov:versionNumber 2 .
+
+synuser:2000001 a gov:User ;
+    gov:affiliatedWith <https://w3id.org/synapse/governance/site/mount-sinai> ;
+    gov:company "Mount Sinai" .
 
