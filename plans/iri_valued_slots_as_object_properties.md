@@ -58,25 +58,35 @@ Tested on scratch builds of `build_owl.py`, with no repo changes:
    type only. It keeps `rdfs:range xsd:anyURI`, which is a datatype range on an
    object property and still not DL.
 
-Before choosing a workaround, check whether a LinkML release after 1.11.1
-fixes (1). `pip index versions linkml` returned nothing from this machine, so
-this hasn't been checked. `requirements.txt` pins only `linkml>=1.8`.
+Checked 2026-09-23: 1.11.1 is the newest release on PyPI, and linkml `main`
+still has the bug, so no upgrade fixes (1).
 
-## Decisions (open, need approval)
+The cause is narrower than "the class-restriction path". `add_class()` asks
+`slot_node_owltypes()` whether a slot's range is an individual (`owl:Thing`)
+or a literal. That method doesn't consult `xsd_anyuri_as_iri`, so for a
+promoted slot it reports neither. `transform_class_slot_expression()` then
+returns no filler (correctly: there is no class to restrict to), and
+`add_class()` falls back to the schema's `default_range: string` because
+`owl:Thing` isn't among the slot's types. Every module of this schema sets
+`default_range: string`.
 
-- **D1, route.** Recommended: turn on `xsd_anyuri_as_iri=True` in `build()`.
-  - If a newer LinkML release fixes the spurious `allValuesFrom xsd:string`
-    restrictions, raise the `requirements.txt` floor to it. No workaround.
-  - Otherwise add a fourth repair to `repair_generator_output()`: remove class
-    restrictions whose `owl:onProperty` is an `xsd_anyuri_as_iri`-promoted
-    slot and whose filler is an XSD datatype. It's the same kind of fix as the
-    existing three, uses only the schema, and is marked "remove once fixed
-    upstream". File a LinkML issue with a minimal schema and link it from the
-    docstring. **This is a workaround and needs approval before it ships.**
+## Decisions (approved 2026-09-23)
+
+- **D1, route.** Turn on `xsd_anyuri_as_iri=True` in `build()`, and correct
+  the generator's type test at its source: a small `OwlSchemaGenerator`
+  subclass whose `slot_node_owltypes()` reports `owl:Thing` (not
+  `rdfs:Datatype`) for an `xsd:anyURI` range when the flag is on. The
+  fallback then fills in `owl:Thing`, which `skip_vacuous_local_range_axioms`
+  already drops, so the bad restrictions are never generated. This is a
+  workaround, approved, marked "remove once fixed upstream".
+  - Rejected: a fourth `repair_generator_output()` repair that deletes the
+    restrictions after generation. It treats the symptom, not the cause.
   - Rejected: `range: SynapseEntity` (or `Activity`/
     `AccessRequirementReference`). That would bring back the `sh:class` failure
     `provenance.yaml`'s description gives as the reason for `uriorcurie`: the
     referenced individual isn't in this schema's example ABox.
+  - No LinkML issue is filed (as with the earlier owlgen issue). The report
+    keeps a draft for reference.
 - **D2, scope.** All six slots, not just the two `prov:` ones. The four
   `sagegov:` slots carry IRIs too (`build_derivation_policy.py` emits
   `URIRef`s since `sagebrain_contract_and_owl_dl_fixes` step 7), so leaving
@@ -91,16 +101,14 @@ this hasn't been checked. `requirements.txt` pins only `linkml>=1.8`.
 Each numbered step is one commit. The plan itself is committed first on its
 own.
 
-1. **Upstream check.** Try the newest LinkML release on a scratch build. If it
-   emits no `allValuesFrom <xsd:*>` on the promoted slots, record the version
-   for step 2. If not, file the LinkML issue (minimal schema: one class, one
-   `range: uriorcurie` slot, `xsd_anyuri_as_iri=True`) and bring the D1
-   workaround back for approval before step 2.
+1. **Upstream check.** Done during review (see above): no release fixes it.
+   No commit.
 2. **`scripts/build_owl.py`.**
    - Pass `xsd_anyuri_as_iri=True`.
-   - Either raise `requirements.txt`'s LinkML floor, or add the approved
-     repair to `repair_generator_output()` with its count in the `Repairs:`
-     log line.
+   - Build with the D1 subclass instead of `OwlSchemaGenerator`.
+   - The `Repairs:` log's `reserved_removed` count drops from 5 to 3: owlgen
+     no longer writes `allValuesFrom xsd:anyURI` restrictions on the two
+     `owl:sameAs` slots, so there are fewer to remove.
    - Module docstring: add a bullet for the flag and why (OWL agreeing with
      the ABox, gen-shacl and W3C PROV-O).
 3. **Slot descriptions.** In `linkml/provenance.yaml` and
