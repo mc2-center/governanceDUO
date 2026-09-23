@@ -62,6 +62,8 @@ URI: [governanceduo:enum/BindingTypeEnum](https://w3id.org/sage-bionetworks/gove
 <details>
 ```yaml
 name: BindingTypeEnum
+implements:
+- owl:NamedIndividual
 description: 'Whether a governance relationship (an AccessGrant or AccessRequirementAssociation)
   applies directly to a resource or is inherited from a parent (e.g. a file inheriting
   its parent study''s Access Requirement) — from the design doc''s own `gov:bindingType

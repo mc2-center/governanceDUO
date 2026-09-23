@@ -79,6 +79,8 @@ URI: [governanceduo:enum/GrantPermissionEnum](https://w3id.org/sage-bionetworks/
 <details>
 ```yaml
 name: GrantPermissionEnum
+implements:
+- owl:NamedIndividual
 description: 'The permissions an AccessGrant''s gov:permission can carry: every AccessTypeEnum
   value (Synapse''s ACCESS_TYPE, same meaning: IRIs), plus ACCESS, which scripts/build_governance_graph.py
   derives on every grant carrying DOWNLOAD for sagebrain-infra''s authorizer. AccessTypeEnum

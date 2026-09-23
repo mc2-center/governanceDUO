@@ -64,6 +64,8 @@ URI: [governanceduo:enum/SubmissionStateEnum](https://w3id.org/sage-bionetworks/
 <details>
 ```yaml
 name: SubmissionStateEnum
+implements:
+- owl:NamedIndividual
 description: 'Synapse''s real DataAccessSubmissionState values, verified via Sage-Bionetworks/SynapseWebClient
   source (ACTDataAccessSubmissionWidget.java''s exhaustive state switch) — the "sagebrain
   governance graph ACL_AR data - AR table schemas.csv" only says DATA_ACCESS_SUBMISSION_STATUS.STATE

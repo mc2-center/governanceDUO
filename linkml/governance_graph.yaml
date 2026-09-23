@@ -50,6 +50,8 @@ imports:
   - access_requirement
 enums:
   SubmissionStateEnum:
+    implements:
+      - owl:NamedIndividual
     description: >-
       Synapse's real DataAccessSubmissionState values, verified via
       Sage-Bionetworks/SynapseWebClient source
@@ -80,6 +82,8 @@ enums:
         description: Derived from Synapse's own ACL or AccessRequirement records.
         meaning: sagegov:Synapse
   BindingTypeEnum:
+    implements:
+      - owl:NamedIndividual
     description: >-
       Whether a governance relationship (an AccessGrant or
       AccessRequirementAssociation) applies directly to a resource or is
@@ -110,6 +114,8 @@ enums:
       Team:
         meaning: sagegov:Team
   GrantPermissionEnum:
+    implements:
+      - owl:NamedIndividual
     description: >-
       The permissions an AccessGrant's gov:permission can carry: every
       AccessTypeEnum value (Synapse's ACCESS_TYPE, same meaning: IRIs), plus
@@ -182,6 +188,8 @@ enums:
           DOWNLOAD (fail closed).
         meaning: sagegov:ACCESS
   ApprovalStateEnum:
+    implements:
+      - owl:NamedIndividual
     description: >-
       Synapse's real AccessApproval state values
       (org.sagebionetworks.repo.model.ApprovalState), verified directly

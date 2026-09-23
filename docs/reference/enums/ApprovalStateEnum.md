@@ -62,6 +62,8 @@ URI: [governanceduo:enum/ApprovalStateEnum](https://w3id.org/sage-bionetworks/go
 <details>
 ```yaml
 name: ApprovalStateEnum
+implements:
+- owl:NamedIndividual
 description: 'Synapse''s real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState),
   verified directly against the OpenAPI spec -- APPROVED/REVOKED only. A distinct,
   smaller enum from SubmissionStateEnum above. Each value''s meaning: is the gov:
