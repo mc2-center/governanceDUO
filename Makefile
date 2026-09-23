@@ -159,8 +159,12 @@ linkml-validate-examples:
 	python3 scripts/validate_examples.py
 
 # Committed generated artifacts must match what the schema and scripts produce.
-# Run after validate-all (which regenerates them); CI does.
+# Regenerates everything itself; CI runs it after validate-all.
+# Clears the generated directories first, so a committed file no generator
+# produces any more shows up as missing.
 artifact-drift-check:
+	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/provenance/rdf linkml/examples/derivation_policy/rdf
+	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric
 	python3 scripts/check_artifact_drift.py
 
 # OWL 2 DL on both TBoxes merged with the exported and example graphs: a value

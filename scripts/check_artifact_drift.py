@@ -2,11 +2,15 @@
 check_artifact_drift.py
 
 Checks that the committed generated artifacts match what the current schema and
-scripts produce (plans/pre_pr_review_fixes.md, finding 8). Run it after
-`make validate-all`, which regenerates them: each regenerated file in the working
-tree is compared with its committed version at HEAD. CI runs it after
-validate-all, so a schema change committed without re-running `make owl shacl`
-(etc.) fails instead of passing on freshly regenerated copies.
+scripts produce (plans/pre_pr_review_fixes.md, finding 8;
+plans/second_review_fixes.md, finding 5). Run it via `make artifact-drift-check`,
+which clears the generated directories, regenerates every artifact (OWL, SHACL,
+example RDF, the governance-graph export, docs/reference, the Policy Fabric
+export), then runs this: each regenerated file is compared with its committed
+version at HEAD, and in each generated directory a committed file that is no
+longer produced, or a produced file that isn't committed, fails too. CI runs it
+after validate-all, so a schema change committed without regenerating fails
+instead of passing on fresh copies.
 
 - shapes/governance_duo.owl.ttl is compared byte for byte: build_owl.py
   canonicalizes it, so rebuilds are byte-identical.
@@ -37,13 +41,26 @@ from rdflib import BNode, Graph
 from rdflib.collection import Collection
 from rdflib.namespace import SH
 
-BYTE_EXACT = ["shapes/governance_duo.owl.ttl"]
+BYTE_EXACT = [
+    "shapes/governance_duo.owl.ttl",
+    "docs/reference/**/*.md",
+    "policy_fabric_export/*.json",
+]
 GRAPH_EQUAL = [
     "shapes/governance_duo.shacl.ttl",
     "governance_graph_export/governance_graph.ttl",
     "linkml/examples/rdf/*.ttl",
     "linkml/examples/provenance/rdf/*.ttl",
     "linkml/examples/derivation_policy/rdf/*.ttl",
+]
+# Directories whose whole contents are generated (the make target clears them
+# first), so their file lists must match HEAD too.
+GENERATED_DIRS = [
+    "docs/reference",
+    "policy_fabric_export",
+    "linkml/examples/rdf",
+    "linkml/examples/provenance/rdf",
+    "linkml/examples/derivation_policy/rdf",
 ]
 REFINEMENT_ROUNDS = 4
 # SHACL list-valued parameters whose member order carries no meaning.
@@ -90,12 +107,29 @@ def signature(graph: Graph) -> Counter:
     return Counter((label(s), p.n3(), label(o)) for s, p, o in graph)
 
 
-def drifted(path: str) -> str | None:
+def expand(patterns: list[str]) -> list[str]:
+    paths = []
+    for pattern in patterns:
+        paths += sorted(str(p) for p in Path().glob(pattern)) if "*" in pattern else [pattern]
+    return paths
+
+
+def file_list_drift(directory: str) -> list[str]:
+    tracked = set(subprocess.run(
+        ["git", "ls-tree", "-r", "--name-only", "HEAD", directory], capture_output=True, text=True,
+    ).stdout.split())
+    present = {str(p) for p in Path(directory).rglob("*") if p.is_file()}
+    return [f"{p}: committed but no longer generated" for p in sorted(tracked - present)] + [
+        f"{p}: generated but not committed" for p in sorted(present - tracked)
+    ]
+
+
+def drifted(path: str, byte_exact: set) -> str | None:
     old = committed(path)
     if old is None:
         return "not committed"
     new = Path(path).read_bytes()
-    if path in BYTE_EXACT:
+    if path in byte_exact:
         return None if new == old else "differs from HEAD"
     old_sig = signature(Graph().parse(data=old.decode(), format="turtle"))
     new_sig = signature(Graph().parse(data=new.decode(), format="turtle"))
@@ -106,11 +140,12 @@ def drifted(path: str) -> str | None:
 
 
 def main():
-    paths = list(BYTE_EXACT)
-    for pattern in GRAPH_EQUAL:
-        paths += sorted(str(p) for p in Path().glob(pattern)) if "*" in pattern else [pattern]
+    byte_exact = set(expand(BYTE_EXACT))
+    paths = sorted(byte_exact) + expand(GRAPH_EQUAL)
 
-    failures = [f"{path}: {reason}" for path in paths if (reason := drifted(path))]
+    failures = [f"{path}: {reason}" for path in paths if (reason := drifted(path, byte_exact))]
+    for directory in GENERATED_DIRS:
+        failures += [f for f in file_list_drift(directory) if not any(f.startswith(p + ":") for p in paths)]
     if failures:
         print(f"FAIL  {len(failures)} generated artifact(s) don't match the committed version:")
         for failure in failures:
