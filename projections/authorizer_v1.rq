@@ -1,0 +1,83 @@
+# Projection: canonical WAC graph -> sagebrain-infra fc6de51 authorizer contract
+# (tests/infra_contract/authorize_query.rq), in the OLD namespace
+# https://sagebionetworks.org/governance/ (plans/model_refactor.md, decision 1:
+# still emitted until infra moves). Run with scripts/project.py, which merges in
+# shapes/governance.owl.ttl (the modes' skos:notation lives there) and binds
+# ?asOf through initBindings -- never string-spliced into this file.
+#
+# Builds:
+#   - one gov:AccessGrant per (entity, direct principal), for every entity with a
+#     gov:benefactor: the benefactor's own acl:Authorization, so a descendant
+#     with no ACL of its own still gets a materialized grant (WAC's acl:default);
+#   - gov:permission is the mode's skos:notation as an old-namespace IRI (e.g.
+#     gov:DOWNLOAD), plus gov:ACCESS wherever DOWNLOAD is granted -- the
+#     authorizer's own derived action (tests/infra_contract/authorize_query.rq);
+#   - gov:bindingType gov:Direct when the entity is its own benefactor, else
+#     gov:Inferred (decision 2: pre-refactor "Inherited" renamed);
+#   - gov:principal gov:principal-<id> and gov:source gov:Synapse;
+#   - gov:hasAccessRequirement from each entity to every AccessRequirement on it
+#     or an ancestor (gov:parent*), as gov:AR-<n> -- includes the entity that
+#     carries the requiresAR edge directly, not only its descendants;
+#   - gov:hasApproval from the holder to the AccessRequirement, for each
+#     gov:Approval with status gov:Approved whose gov:expiresAt is absent or
+#     later than ?asOf.
+#
+# Team (acl:agentGroup) grants: this file keeps emitting one gov:AccessGrant per
+# TEAM, gov:principal gov:principal-<teamId> -- the existing infra contract (it
+# authorizes no individual member; sagebrain-infra does no team expansion, see
+# plans/model_refactor.md's "fidelity gaps"). Flattening a team grant to its
+# members is projections/authorizer_v1_teams.rq's job only, run separately
+# (make projections TEAMS=1); this file does not expand acl:agentGroup at all.
+#
+# acl:agentClass grants (PUBLIC, AUTHENTICATED_USERS) authorize no individual
+# principal either, in either projection: this file emits nothing for them.
+# scripts/project.py prints how many such authorizations exist, so the gap is
+# visible rather than silent.
+PREFIX acl:  <http://www.w3.org/ns/auth/acl#>
+PREFIX gov:  <https://w3id.org/synapse/governance#>
+PREFIX old:  <https://sagebionetworks.org/governance/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+CONSTRUCT {
+  ?e old:hasACL ?grant .
+  ?grant a old:AccessGrant ;
+         old:principal ?principal ;
+         old:permission ?perm ;
+         old:bindingType ?binding ;
+         old:source old:Synapse .
+  ?e old:hasAccessRequirement ?oldAR .
+  ?principal2 old:hasApproval ?oldAR2 .
+}
+WHERE {
+  {
+    ?e gov:benefactor ?b .
+    ?auth a acl:Authorization ; acl:default ?b ; acl:mode ?mode .
+    { ?auth acl:agent ?agentIri } UNION { ?auth acl:agentGroup ?agentIri }
+    ?mode skos:notation ?notation .
+    BIND(REPLACE(STR(?agentIri), "^.*[:/]", "") AS ?pid)
+    BIND(IRI(CONCAT(STR(old:), "principal-", ?pid)) AS ?principal)
+    BIND(IRI(CONCAT(STR(old:), "grant-", STRAFTER(STR(?e), "Synapse:"), "-", ?pid)) AS ?grant)
+    BIND(IF(?e = ?b, old:Direct, old:Inferred) AS ?binding)
+    VALUES ?derived { false true }
+    FILTER(!?derived || ?notation = "DOWNLOAD")
+    BIND(IRI(CONCAT(STR(old:), IF(?derived, "ACCESS", ?notation))) AS ?perm)
+  }
+  UNION
+  {
+    ?e gov:parent* ?anc .
+    ?anc gov:requiresAR ?ar .
+    BIND(REPLACE(STR(?ar), "^.*/ar/", "") AS ?n)
+    BIND(IRI(CONCAT(STR(old:), "AR-", ?n)) AS ?oldAR)
+  }
+  UNION
+  {
+    ?approval gov:status gov:Approved ;
+              gov:heldBy ?holder ;
+              gov:satisfies ?ar2 .
+    OPTIONAL { ?approval gov:expiresAt ?expiresAt }
+    FILTER(!BOUND(?expiresAt) || ?expiresAt > ?asOf)
+    BIND(REPLACE(STR(?ar2), "^.*/ar/", "") AS ?n2)
+    BIND(IRI(CONCAT(STR(old:), "AR-", ?n2)) AS ?oldAR2)
+    BIND(REPLACE(STR(?holder), "^.*[:/]", "") AS ?pid2)
+    BIND(IRI(CONCAT(STR(old:), "principal-", ?pid2)) AS ?principal2)
+  }
+}

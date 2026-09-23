@@ -7,10 +7,12 @@ graph in Neptune to decide whether a principal may take the Cedar action ACCESS
 on a Synapse resource. sagebrain-infra's query worker (src/lambda/query.py)
 always asks for action "ACCESS" with the requesting user's numeric Synapse id.
 
-Runs against governance_graph_export/governance_graph.ttl plus two in-memory
-test grants on syn10081783, and asserts:
-  - principal 9000001 (the example grant: DOWNLOAD, so also the derived ACCESS)
-    is allowed, and gov:AR-42 comes back as the resource's AccessRequirement;
+Runs against governance_graph_export/authorizer_v1.ttl (projections/authorizer_v1.rq
+over the canonical example, plans/model_refactor.md) plus one in-memory test
+grant on syn10081783, and asserts:
+  - principal 9000001 (the canonical example's team grant: DOWNLOAD, so also the
+    derived ACCESS) is allowed, and gov:AR-42 comes back as the resource's
+    AccessRequirement;
   - principal 8000001, holding only a READ grant, is denied;
   - principal 7777777, with no grant, is denied.
 
@@ -28,7 +30,7 @@ Two modes:
     the policy-engine branch) or the authorize.py file itself.
 
 Usage:
-    python scripts/check_infra_contract.py [--graph governance_graph_export/governance_graph.ttl]
+    python scripts/check_infra_contract.py [--graph governance_graph_export/authorizer_v1.ttl]
                                            [--infra PATH]
 
 author: orion.banks
@@ -163,7 +165,7 @@ def decide_with_infra(authorize, g: Graph, principal_id: str) -> tuple[str, list
 
 def main():
     parser = argparse.ArgumentParser(description="Governance graph <-> sagebrain-infra authorizer contract check.")
-    parser.add_argument("--graph", default="governance_graph_export/governance_graph.ttl")
+    parser.add_argument("--graph", default="governance_graph_export/authorizer_v1.ttl")
     parser.add_argument("--infra", default=os.environ.get("SAGEBRAIN_INFRA") or None)
     args = parser.parse_args()
 

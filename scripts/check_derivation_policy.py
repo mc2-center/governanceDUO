@@ -19,6 +19,11 @@ README.md) and asserts the output with SPARQL ASK queries:
     forbids it ahead of the Controlled+Controlled review rule -- exactly four;
   - the Controlled+Private rule lowers unbound syn70000016 (from a Controlled
     and a Private input) to Controlled, and flags nothing;
+  - syn70000019, whose only Access Requirement binding is its parent's
+    (gov:parent syn70000011, bound to ar/7003), gets ar/7003's Controlled tier
+    on its own ControlLabel -- the gov:parent ancestor walk
+    (entity_access_requirements()) reaching a child through no binding of its
+    own, not just a derivation (prov) ancestor;
   - the sagebrain-shaped Association inherits the output's label through
     sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom);
   - the output, merged with its three input graphs, conforms to
@@ -108,6 +113,12 @@ ASSERTIONS = {
             ?review gov:activity <https://w3id.org/synapse/governance/activity/7005> ; gov:reviewNotes ?notes .
             FILTER(STRSTARTS(?notes, "DerivationRule derivation_rule.fixture-private-pair forbids"))
             FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
+        }""",
+    "syn70000019 has no requiresAR of its own but inherits ar/7003's Controlled tier through gov:parent syn70000011": """
+        ASK {
+            ?label gov:subject syn:syn70000019 ;
+                   gov:dataTier gov:ControlledTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7003> .
         }""",
     "the Association inherits syn70000003's label through sagebrain:derived_from": """
         ASK {

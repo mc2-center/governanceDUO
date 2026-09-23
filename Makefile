@@ -110,11 +110,6 @@ GOVERNANCE_GRAPH_AS_OF ?= 1767225600000
 governance-graph:
 	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl --as-of $(GOVERNANCE_GRAPH_AS_OF)
 
-# gov:hasApproval comes only from an unexpired AccessApproval: built before the
-# example approval's expiredOn it's present, after it's absent.
-approval-expiry-check:
-	python3 scripts/check_approval_expiry.py
-
 governance-graph-validate: governance-graph
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
 
@@ -181,10 +176,29 @@ derivation-policy: graph-example-rdf
 derivation-policy-check: graph-tbox
 	python3 scripts/check_derivation_policy.py
 
+# ISO-8601 form of GOVERNANCE_GRAPH_AS_OF (2026-01-01T00:00:00Z): projections
+# (plans/model_refactor.md) bind their --as-of through SPARQL initBindings, which
+# needs an xsd:dateTime, not the old builder's epoch-millisecond long.
+GOVERNANCE_GRAPH_AS_OF_ISO ?= 2026-01-01T00:00:00Z
+
+# Runs the canonical example graph through projections/authorizer_v1.rq (and,
+# with TEAMS=1, authorizer_v1_teams.rq too) -> governance_graph_export/. This is
+# what sagebrain-infra's authorizer actually reads (plans/model_refactor.md);
+# governance-graph is the canonical export, not this projection.
+projections: graph-example-rdf
+	python3 scripts/project.py --graph $(GRAPH_EXAMPLE_RDF) --query projections/authorizer_v1.rq --as-of $(GOVERNANCE_GRAPH_AS_OF_ISO) --out governance_graph_export/authorizer_v1.ttl
+	$(if $(TEAMS),python3 scripts/project.py --graph $(GRAPH_EXAMPLE_RDF) --query projections/authorizer_v1_teams.rq --as-of $(GOVERNANCE_GRAPH_AS_OF_ISO) --out governance_graph_export/authorizer_v1_teams.ttl,)
+
+# Regression check for projections/authorizer_v1(_teams).rq and scripts/project.py:
+# golden diff against tests/golden/governance_graph.ttl, approval expiry (replaces
+# check_approval_expiry.py), team-member and descendant-grant behavior.
+projections-check: graph-tbox graph-example-rdf
+	python3 scripts/check_projections.py
+
 # Contract check against sagebrain-infra's authorizer: runs its governance query
-# (pinned copy in tests/infra_contract/) against the exported governance graph.
+# (pinned copy in tests/infra_contract/) against the authorizer_v1 projection.
 # Set SAGEBRAIN_INFRA=<infra checkout or authorize.py> to run infra's own code instead.
-infra-contract-check: governance-graph
+infra-contract-check: projections
 	python3 scripts/check_infra_contract.py
 
 # linkml-validate every example: the only enforcer of the DUO `rules:`, which
@@ -198,7 +212,7 @@ linkml-validate-examples:
 # produces any more shows up as missing.
 artifact-drift-check:
 	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/provenance/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf
-	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf
+	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf projections
 	python3 scripts/check_artifact_drift.py
 
 # OWL 2 DL on both TBoxes merged with the exported and example graphs: a value
@@ -219,7 +233,7 @@ enum-sync-check:
 domain-range-check: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox graph-validate graph-owl-profile
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check projections-check domain-range-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox graph-validate graph-owl-profile
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching

@@ -5,8 +5,9 @@ Checks that the committed generated artifacts match what the current schema and
 scripts produce (plans/pre_pr_review_fixes.md, finding 8;
 plans/second_review_fixes.md, finding 5). Run it via `make artifact-drift-check`,
 which clears the generated directories, regenerates every artifact (OWL, SHACL,
-example RDF, the governance-graph export, docs/reference, the Policy Fabric
-export), then runs this: each regenerated file is compared with its committed
+example RDF, the governance-graph export, the authorizer_v1 projection,
+docs/reference, the Policy Fabric export), then runs this: each regenerated
+file is compared with its committed
 version at HEAD, and in each generated directory a committed file that is no
 longer produced, or a produced file that isn't committed, fails too. CI runs it
 after validate-all, so a schema change committed without regenerating fails
@@ -52,6 +53,7 @@ GRAPH_EQUAL = [
     "shapes/governance.shacl.ttl",
     "linkml/examples/graph/rdf/*.ttl",
     "governance_graph_export/governance_graph.ttl",
+    "governance_graph_export/authorizer_v1.ttl",
     "linkml/examples/rdf/*.ttl",
     "linkml/examples/provenance/rdf/*.ttl",
     "linkml/examples/derivation_policy/rdf/*.ttl",

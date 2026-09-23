@@ -64,3 +64,11 @@
 <https://w3id.org/synapse/governance/activity/7005/usage/2> a prov:Usage ; prov:entity syn:syn70000012 ; gov:wasExecuted false .
 <https://w3id.org/synapse/governance/activity/7005/usage/3> a prov:Usage ; prov:entity syn:syn70000013 ; gov:wasExecuted false .
 <https://w3id.org/synapse/governance/activity/7005/usage/4> a prov:Usage ; prov:entity syn:syn70000017 ; gov:wasExecuted false .
+
+# Single-input activity (no review: len(inputs) < 2) -- just to bring
+# syn70000019 into the entity set so its ControlLabel gets computed (see
+# governance.ttl's comment on syn70000019).
+<https://w3id.org/synapse/governance/activity/7006> a prov:Activity ;
+    prov:generated syn:syn70000021 ;
+    prov:qualifiedUsage <https://w3id.org/synapse/governance/activity/7006/usage/1> .
+<https://w3id.org/synapse/governance/activity/7006/usage/1> a prov:Usage ; prov:entity syn:syn70000019 ; gov:wasExecuted false .

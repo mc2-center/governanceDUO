@@ -1,0 +1,17 @@
+@prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+gov:principal-2000001 gov:hasApproval gov:AR-42 .
+
+syn:syn10081783 gov:hasACL gov:grant-syn10081783-9000001 ;
+    gov:hasAccessRequirement gov:AR-42 .
+
+syn:syn2343195 gov:hasAccessRequirement gov:AR-42 .
+
+gov:grant-syn10081783-9000001 a gov:AccessGrant ;
+    gov:bindingType gov:Direct ;
+    gov:permission gov:ACCESS,
+        gov:DOWNLOAD ;
+    gov:principal gov:principal-9000001 ;
+    gov:source gov:Synapse .
+

@@ -46,3 +46,11 @@ syn:syn70000013 a gov:SynapseEntity ;
 syn:syn70000017 a gov:SynapseEntity ;
     gov:benefactor syn:syn70000017 ;
     gov:requiresAR <https://w3id.org/synapse/governance/ar/7004> .
+
+# A child entity with no requiresAR of its own: its only Access Requirement
+# comes from its parent (syn70000011, bound to ar/7003) over gov:parent, the
+# ancestor walk Step 1 (entity_access_requirements()) added and nothing
+# exercised until now.
+syn:syn70000019 a gov:SynapseEntity ;
+    gov:benefactor syn:syn70000019 ;
+    gov:parent syn:syn70000011 .

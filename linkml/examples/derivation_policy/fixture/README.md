@@ -24,7 +24,11 @@ of `scripts/build_derivation_policy.py`, in the canonical graph layer's model
   `gov:dataTier gov:PrivateTier`; `govid:ar/7002` carries no `gov:dataTier` (fails
   closed to Unclassified). The AR's tier is a property of its own graph node now
   (R5), not a curated record bridged by `owl:sameAs` -- there is no
-  `access_requirements/` directory any more.
+  `access_requirements/` directory any more. `syn70000019` has no `requiresAR`
+  of its own, only `gov:parent syn70000011` (bound to `ar/7003`); `govid:activity/7006`
+  (one input, `syn70000019`, so no review) exists only to bring it into the
+  entity set, exercising the `gov:parent` ancestor walk
+  (`entity_access_requirements()`) on its own, not through derivation ancestry.
 - `derivation_rule.controlled-pair.yaml`: Controlled + Controlled stays
   Controlled and requires review.
 - `derivation_rule.controlled-private.yaml`: Controlled + Private yields
@@ -50,6 +54,8 @@ Expected results (asserted by the check):
   a pair of its three inputs), both with notes naming the rule and not
   disjointness; and `govid:activity/7005`, whose notes lead with the forbidding
   Private + Private rule, ahead of the Controlled + Controlled one;
+- `syn70000019` is labeled `Controlled`, citing `govid:ar/7003`, inherited purely
+  through `gov:parent syn70000011` (no `requiresAR` of its own);
 - the Association inherits `syn70000003`'s label through `sagebrain:derived_from`.
 
 The output is checked two ways: SPARQL ASK assertions on the specific labels and
