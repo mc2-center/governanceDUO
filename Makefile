@@ -33,6 +33,11 @@ ROBOT_JAR     ?= tools/robot.jar
 ROBOT_VERSION ?= 1.9.8
 ROBOT_URL     ?= https://github.com/ontodev/robot/releases/download/v$(ROBOT_VERSION)/robot.jar
 
+# W3C PROV-O (the 2013-04-30 Recommendation), fetched once into build/ for the
+# prov: type-agreement check in owl-profile. Overridable: PROV_O, PROV_O_URL.
+PROV_O        ?= build/prov-o-20130430.ttl
+PROV_O_URL    ?= https://www.w3.org/ns/prov-o-20130430
+
 # --ignore-warnings: this schema deliberately keeps the schematic CSV's camelCase
 # attribute names (e.g. dataUseModifiers, StudyKey) instead of linkml-lint's preferred
 # snake_case, since those names are also live Synapse annotation keys.
@@ -51,18 +56,27 @@ $(ROBOT_JAR):
 	curl -L --fail -o $@.tmp "$(ROBOT_URL)"
 	mv $@.tmp $@
 
+$(PROV_O):
+	@echo "Fetching W3C PROV-O (not committed)"
+	mkdir -p $(dir $@)
+	curl -L --fail -H "Accept: text/turtle" -o $@.tmp "$(PROV_O_URL)"
+	mv $@.tmp $@
+
 # OWL 2 DL profile check: the generated TBox, the hand-written governance graph
 # TBox, and their merge (they share gov: terms, so each passing alone isn't enough).
 # Reports land in build/ (gitignored); the report is printed when a check fails.
 # The merge is written to a file and validated separately: chaining `robot merge
-# ... validate-profile` in one call reports spurious violations.
-owl-profile: owl | $(ROBOT_JAR)
+# ... validate-profile` in one call reports spurious violations. Last, every prov:
+# term both TBoxes declare must have the type W3C PROV-O gives it (a mismatch is a
+# pun wherever PROV-O is loaded alongside; see scripts/check_prov_alignment.py).
+owl-profile: owl | $(ROBOT_JAR) $(PROV_O)
 	mkdir -p build
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_duo.owl.ttl --output build/owl-profile-governance_duo.txt || (cat build/owl-profile-governance_duo.txt; exit 1)
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_graph.owl.ttl --output build/owl-profile-governance_graph.txt || (cat build/owl-profile-governance_graph.txt; exit 1)
 	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl --output build/governance_merged.owl.ttl
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_merged.owl.ttl --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
 	@echo "OWL 2 DL profile: governance_duo, governance_graph, and their merge all in profile."
+	python3 scripts/check_prov_alignment.py --prov-o $(PROV_O)
 
 example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
