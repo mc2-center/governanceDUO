@@ -9,7 +9,7 @@ search:
 
 
 
-_Whether a governance relationship (an AccessGrant or AccessRequirementAssociation) applies directly to a resource or is inherited from a parent (e.g. a file inheriting its parent study's Access Requirement) — from the design doc's own `gov:bindingType gov:Inherited` example. Not a Synapse database column; ACCESS_REQUIREMENT_PROJECT and the ACL tables record only the direct binding, so inheritance has to be resolved (via SynapseEntity.parentId) and recorded explicitly, per the design doc's "Direct and Inherited Governance" section._
+_Whether a governance relationship (an AccessGrant or AccessRequirementAssociation) applies directly to a resource or is inherited from a parent (e.g. a file inheriting its parent study's Access Requirement) — from the design doc's own `gov:bindingType gov:Inherited` example. Not a Synapse database column; ACCESS_REQUIREMENT_PROJECT and the ACL tables record only the direct binding, so inheritance has to be resolved (via SynapseEntity.parentId) and recorded explicitly, per the design doc's "Direct and Inherited Governance" section. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:bindingType._
 
 
 
@@ -20,8 +20,8 @@ URI: [governanceduo:enum/BindingTypeEnum](https://w3id.org/sage-bionetworks/gove
 ## Permissible Values
 | Value | Meaning | Description |
 | --- | --- | --- |
-| Direct | None |  |
-| Inherited | None |  |
+| Direct | sagegov:Direct |  |
+| Inherited | sagegov:Inherited |  |
 
 
 
@@ -62,20 +62,23 @@ URI: [governanceduo:enum/BindingTypeEnum](https://w3id.org/sage-bionetworks/gove
 <details>
 ```yaml
 name: BindingTypeEnum
-description: Whether a governance relationship (an AccessGrant or AccessRequirementAssociation)
+description: 'Whether a governance relationship (an AccessGrant or AccessRequirementAssociation)
   applies directly to a resource or is inherited from a parent (e.g. a file inheriting
-  its parent study's Access Requirement) — from the design doc's own `gov:bindingType
+  its parent study''s Access Requirement) — from the design doc''s own `gov:bindingType
   gov:Inherited` example. Not a Synapse database column; ACCESS_REQUIREMENT_PROJECT
   and the ACL tables record only the direct binding, so inheritance has to be resolved
-  (via SynapseEntity.parentId) and recorded explicitly, per the design doc's "Direct
-  and Inherited Governance" section.
+  (via SynapseEntity.parentId) and recorded explicitly, per the design doc''s "Direct
+  and Inherited Governance" section. Each value''s meaning: is the gov: IRI scripts/build_governance_graph.py
+  emits for gov:bindingType.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
   Direct:
     text: Direct
+    meaning: sagegov:Direct
   Inherited:
     text: Inherited
+    meaning: sagegov:Inherited
 
 ```
 </details>

@@ -75,6 +75,8 @@ URI: [governanceduo:enum/CredentialTypeEnum](https://w3id.org/sage-bionetworks/g
 <details>
 ```yaml
 name: CredentialTypeEnum
+implements:
+- rdfs:Literal
 description: The 15 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000

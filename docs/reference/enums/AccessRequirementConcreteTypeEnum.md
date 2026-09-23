@@ -65,6 +65,8 @@ URI: [governanceduo:enum/AccessRequirementConcreteTypeEnum](https://w3id.org/sag
 <details>
 ```yaml
 name: AccessRequirementConcreteTypeEnum
+implements:
+- rdfs:Literal
 description: Synapse's real AccessRequirement subclasses, verified via Sage-Bionetworks/Synapse-Repository-Services's
   AccessRequirementType.java (lib/jdomodels/.../org/sagebionetworks/repo/model/ar/AccessRequirementType.java).
   Permissible values use the short Java class name; the actual ACCESS_REQUIREMENT.CONCRETE_TYPE

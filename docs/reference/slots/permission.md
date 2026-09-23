@@ -6,7 +6,7 @@ search:
 # Slot: permission 
 
 
-_The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one permission type._
+_The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one permission type. Also carries the derived ACCESS (see GrantPermissionEnum)._
 
 
 
@@ -38,7 +38,7 @@ URI: [sagegov:permission](https://sagebionetworks.org/governance/permission)
 
 | Property | Value |
 | --- | --- |
-| Range | [AccessTypeEnum](../enums/AccessTypeEnum.md) |
+| Range | [GrantPermissionEnum](../enums/GrantPermissionEnum.md) |
 | Domain Of | [AccessGrant](../classes/AccessGrant.md) |
 | Slot URI | [sagegov:permission](https://sagebionetworks.org/governance/permission) |
 
@@ -88,13 +88,14 @@ URI: [sagegov:permission](https://sagebionetworks.org/governance/permission)
 ```yaml
 name: permission
 description: 'The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE). Multivalued:
-  a single ACL_RESOURCE_ACCESS row can carry more than one permission type.'
+  a single ACL_RESOURCE_ACCESS row can carry more than one permission type. Also carries
+  the derived ACCESS (see GrantPermissionEnum).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:permission
 domain_of:
 - AccessGrant
-range: AccessTypeEnum
+range: GrantPermissionEnum
 required: true
 multivalued: true
 

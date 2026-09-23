@@ -64,6 +64,8 @@ URI: [governanceduo:enum/DrsAuthTypeEnum](https://w3id.org/sage-bionetworks/gove
 <details>
 ```yaml
 name: DrsAuthTypeEnum
+implements:
+- rdfs:Literal
 description: Mirrors DRS's Authorizations.supported_types enum (https://ga4gh.github.io/data-repository-service-schemas/docs/).
   More than one can be supported and tried in sequence, per the DRS spec.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo

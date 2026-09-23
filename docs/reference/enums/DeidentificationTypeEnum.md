@@ -67,6 +67,8 @@ URI: [governanceduo:enum/DeidentificationTypeEnum](https://w3id.org/sage-bionetw
 <details>
 ```yaml
 name: DeidentificationTypeEnum
+implements:
+- rdfs:Literal
 description: De-identification method categories. Shared by Study.studyDeidentificationType
   and the shared/GovernanceMixin deidentificationType slot (DUOPlus3) — the source
   CSV duplicated this same value list under both attributes; this schema keeps one

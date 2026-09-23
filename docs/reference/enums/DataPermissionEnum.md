@@ -59,6 +59,8 @@ URI: [governanceduo:enum/DataPermissionEnum](https://w3id.org/sage-bionetworks/g
 <details>
 ```yaml
 name: DataPermissionEnum
+implements:
+- rdfs:Literal
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:

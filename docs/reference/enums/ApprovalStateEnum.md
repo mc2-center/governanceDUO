@@ -9,7 +9,7 @@ search:
 
 
 
-_Synapse's real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState), verified directly against the OpenAPI spec -- APPROVED/REVOKED only. A distinct, smaller enum from SubmissionStateEnum above; do not conflate the two even though both happen to include "APPROVED"._
+_Synapse's real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState), verified directly against the OpenAPI spec -- APPROVED/REVOKED only. A distinct, smaller enum from SubmissionStateEnum above. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:status. The two enums' APPROVED share one IRI, gov:APPROVED, as the graph has always written it; the predicate (gov:status on an AccessApproval, gov:state on a DataAccessSubmission) tells them apart. Should they ever need different definitions, or the enums be declared disjoint, APPROVED needs a distinct IRI per enum (plans/enum_values_match_owl.md)._
 
 
 
@@ -20,8 +20,8 @@ URI: [governanceduo:enum/ApprovalStateEnum](https://w3id.org/sage-bionetworks/go
 ## Permissible Values
 | Value | Meaning | Description |
 | --- | --- | --- |
-| APPROVED | None |  |
-| REVOKED | None |  |
+| APPROVED | sagegov:APPROVED |  |
+| REVOKED | sagegov:REVOKED |  |
 
 
 
@@ -62,17 +62,23 @@ URI: [governanceduo:enum/ApprovalStateEnum](https://w3id.org/sage-bionetworks/go
 <details>
 ```yaml
 name: ApprovalStateEnum
-description: Synapse's real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState),
+description: 'Synapse''s real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState),
   verified directly against the OpenAPI spec -- APPROVED/REVOKED only. A distinct,
-  smaller enum from SubmissionStateEnum above; do not conflate the two even though
-  both happen to include "APPROVED".
+  smaller enum from SubmissionStateEnum above. Each value''s meaning: is the gov:
+  IRI scripts/build_governance_graph.py emits for gov:status. The two enums'' APPROVED
+  share one IRI, gov:APPROVED, as the graph has always written it; the predicate (gov:status
+  on an AccessApproval, gov:state on a DataAccessSubmission) tells them apart. Should
+  they ever need different definitions, or the enums be declared disjoint, APPROVED
+  needs a distinct IRI per enum (plans/enum_values_match_owl.md).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
   APPROVED:
     text: APPROVED
+    meaning: sagegov:APPROVED
   REVOKED:
     text: REVOKED
+    meaning: sagegov:REVOKED
 
 ```
 </details>

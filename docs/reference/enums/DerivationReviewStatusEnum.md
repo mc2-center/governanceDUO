@@ -64,6 +64,8 @@ URI: [governanceduo:enum/DerivationReviewStatusEnum](https://w3id.org/sage-bione
 <details>
 ```yaml
 name: DerivationReviewStatusEnum
+implements:
+- rdfs:Literal
 description: Workflow state of a DerivationReview — the same enum-per-workflow-state
   convention ApprovalStateEnum/SubmissionStateEnum already use in governance_graph.yaml,
   deliberately a distinct enum from both (do not conflate).

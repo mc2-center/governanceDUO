@@ -310,6 +310,8 @@ URI: [governanceduo:enum/GeographicalRegionEnum](https://w3id.org/sage-bionetwor
 <details>
 ```yaml
 name: GeographicalRegionEnum
+implements:
+- rdfs:Literal
 description: ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin
   slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the
   source CSV (model/shared.model.csv) duplicated this same value list under both attributes;

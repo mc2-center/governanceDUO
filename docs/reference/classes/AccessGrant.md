@@ -48,8 +48,8 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
     
         
         
-        AccessGrant --> "1..*" AccessTypeEnum : permission
-        click AccessTypeEnum href "../../enums/AccessTypeEnum/"
+        AccessGrant --> "1..*" GrantPermissionEnum : permission
+        click GrantPermissionEnum href "../../enums/GrantPermissionEnum/"
     
 
         
@@ -111,7 +111,7 @@ URI: [sagegov:AccessGrant](https://sagebionetworks.org/governance/AccessGrant)
 | ---  | --- | --- | --- |
 | [resource](../slots/resource.md) | 1 <br/> [SynapseEntity](../classes/SynapseEntity.md) | The SynapseEntity this grant/association applies to | direct |
 | [principal](../slots/principal.md) | 1 <br/> [Principal](../classes/Principal.md) | The user or team this grant applies to | direct |
-| [permission](../slots/permission.md) | 1..* <br/> [AccessTypeEnum](../enums/AccessTypeEnum.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE | direct |
+| [permission](../slots/permission.md) | 1..* <br/> [GrantPermissionEnum](../enums/GrantPermissionEnum.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE | direct |
 | [source](../slots/source.md) | 0..1 <br/> [SourceSystemEnum](../enums/SourceSystemEnum.md) | The system this grant/association was derived from, e | direct |
 | [bindingType](../slots/bindingType.md) | 1 <br/> [BindingTypeEnum](../enums/BindingTypeEnum.md) |  | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
@@ -285,14 +285,14 @@ attributes:
     name: permission
     description: 'The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE.STRING_ELE).
       Multivalued: a single ACL_RESOURCE_ACCESS row can carry more than one permission
-      type.'
+      type. Also carries the derived ACCESS (see GrantPermissionEnum).'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:permission
     owner: AccessGrant
     domain_of:
     - AccessGrant
-    range: AccessTypeEnum
+    range: GrantPermissionEnum
     required: true
     multivalued: true
   source:

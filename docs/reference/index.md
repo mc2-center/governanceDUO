@@ -242,6 +242,7 @@ Name: governance_duo
 | [DerivationReviewStatusEnum](enums/DerivationReviewStatusEnum.md) | Workflow state of a DerivationReview — the same enum-per-workflow-state conve... |
 | [DrsAuthTypeEnum](enums/DrsAuthTypeEnum.md) | Mirrors DRS's Authorizations |
 | [GeographicalRegionEnum](enums/GeographicalRegionEnum.md) | ISO 3166-1 alpha-2 country codes |
+| [GrantPermissionEnum](enums/GrantPermissionEnum.md) | The permissions an AccessGrant's gov:permission can carry: every AccessTypeEn... |
 | [LicenseEnum](enums/LicenseEnum.md) | model/shared |
 | [PrincipalTypeEnum](enums/PrincipalTypeEnum.md) | Whether a Principal is an individual user or a team — from the design doc: "P... |
 | [SourceSystemEnum](enums/SourceSystemEnum.md) | The system a governance relationship (AccessGrant, AccessRequirementAssociati... |

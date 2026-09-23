@@ -4,18 +4,18 @@ search:
 ---
 
 
-# Enum: AccessTypeEnum 
+# Enum: GrantPermissionEnum 
 
 
 
 
-_Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone, which only name a handful of these as examples in a free-text NOTES column). Shared by AccessGrant.permission (an ACL grant's permission — ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying Synapse type in both places. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:permission._
+_The permissions an AccessGrant's gov:permission can carry: every AccessTypeEnum value (Synapse's ACCESS_TYPE, same meaning: IRIs), plus ACCESS, which scripts/build_governance_graph.py derives on every grant carrying DOWNLOAD for sagebrain-infra's authorizer. AccessTypeEnum stays a pure mirror of Synapse (plans/sagebrain_contract_and_owl_dl_fixes.md D8), so AccessRequirement.accessType can't take ACCESS. The Synapse values are listed again rather than via `inherits:`, which linkml-validate, gen-owl and gen-shacl don't expand; scripts/check_enum_sync.py keeps the two lists identical (plans/enum_values_match_owl.md)._
 
 
 
 <div data-search-exclude markdown="1">
 
-URI: [governanceduo:enum/AccessTypeEnum](https://w3id.org/sage-bionetworks/governance-duo/enum/AccessTypeEnum)
+URI: [governanceduo:enum/GrantPermissionEnum](https://w3id.org/sage-bionetworks/governance-duo/enum/GrantPermissionEnum)
 
 ## Permissible Values
 | Value | Meaning | Description |
@@ -38,6 +38,7 @@ URI: [governanceduo:enum/AccessTypeEnum](https://w3id.org/sage-bionetworks/gover
 | MODERATE | sagegov:MODERATE | Permission to moderate content or activity related to the entity or resource |
 | REVIEW_SUBMISSIONS | sagegov:REVIEW_SUBMISSIONS | Enables reviewing submission groups (e |
 | EXEMPTION_ELIGIBLE | sagegov:EXEMPTION_ELIGIBLE | Qualifies for exemption when granted on Access Requirement ACLs |
+| ACCESS | sagegov:ACCESS | Derived, not a Synapse ACCESS_TYPE: the abstract Cedar action sagebrain-infra... |
 
 
 
@@ -46,7 +47,7 @@ URI: [governanceduo:enum/AccessTypeEnum](https://w3id.org/sage-bionetworks/gover
 
 | Name | Description |
 | ---  | --- |
-| [accessType](../slots/accessType.md) | The kind of access this Access Requirement governs (ACCESS_REQUIREMENT |
+| [permission](../slots/permission.md) | The permission(s) granted (ACL_RESOURCE_ACCESS_TYPE |
 
 
 
@@ -77,14 +78,14 @@ URI: [governanceduo:enum/AccessTypeEnum](https://w3id.org/sage-bionetworks/gover
 
 <details>
 ```yaml
-name: AccessTypeEnum
-description: 'Synapse''s real ACCESS_TYPE values, verified live via rest-docs.synapse.org
-  (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone, which
-  only name a handful of these as examples in a free-text NOTES column). Shared by
-  AccessGrant.permission (an ACL grant''s permission — ACL_RESOURCE_ACCESS_TYPE.STRING_ELE)
-  in governance_graph.yaml and this file''s own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE)
-  — the same underlying Synapse type in both places. Each value''s meaning: is the
-  gov: IRI scripts/build_governance_graph.py emits for gov:permission.'
+name: GrantPermissionEnum
+description: 'The permissions an AccessGrant''s gov:permission can carry: every AccessTypeEnum
+  value (Synapse''s ACCESS_TYPE, same meaning: IRIs), plus ACCESS, which scripts/build_governance_graph.py
+  derives on every grant carrying DOWNLOAD for sagebrain-infra''s authorizer. AccessTypeEnum
+  stays a pure mirror of Synapse (plans/sagebrain_contract_and_owl_dl_fixes.md D8),
+  so AccessRequirement.accessType can''t take ACCESS. The Synapse values are listed
+  again rather than via `inherits:`, which linkml-validate, gen-owl and gen-shacl
+  don''t expand; scripts/check_enum_sync.py keeps the two lists identical (plans/enum_values_match_owl.md).'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
@@ -116,10 +117,6 @@ permissible_values:
     text: UPLOAD
     description: Deprecated; adding this to an ACL has no effect.
     meaning: sagegov:UPLOAD
-    annotations:
-      deprecated:
-        tag: deprecated
-        value: true
   PARTICIPATE:
     text: PARTICIPATE
     description: Permission to participate in activities related to the entity, such
@@ -169,6 +166,11 @@ permissible_values:
     text: EXEMPTION_ELIGIBLE
     description: Qualifies for exemption when granted on Access Requirement ACLs.
     meaning: sagegov:EXEMPTION_ELIGIBLE
+  ACCESS:
+    text: ACCESS
+    description: 'Derived, not a Synapse ACCESS_TYPE: the abstract Cedar action sagebrain-infra''s
+      authorizer checks, granted wherever Synapse grants DOWNLOAD (fail closed).'
+    meaning: sagegov:ACCESS
 
 ```
 </details>

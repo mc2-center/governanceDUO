@@ -62,6 +62,8 @@ URI: [governanceduo:enum/DataTierEnum](https://w3id.org/sage-bionetworks/governa
 <details>
 ```yaml
 name: DataTierEnum
+implements:
+- rdfs:Literal
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
