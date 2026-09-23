@@ -252,6 +252,33 @@ triple counts, non-blank-node triples, and blank-node triple shapes.
 6. **Minor:** on Activity, `createdOn` serializes as `governanceduo:createdOn` but
    `modifiedOn` as `sagegov:modifiedOn`. This predates this work and wasn't in scope. [DECISION: modify to align with sagebrain-model]
 
+### Decisions applied (2026-09-22)
+
+1. **Accept the churn:** no change. `make validate-all` rebuilds of the SHACL and
+   example RDF still produce reordering-only diffs; discard them before committing.
+2. **Skip Conditions for "Pending Annotation":** `31da171`. The builder mints no
+   Condition for a data-use value without a `meaning:`. Every Condition now has
+   a `gov:duoCode` (required in the schema, `minCount 1` in the hand shapes). The
+   exported graph is unchanged.
+3. **Fix the five failing examples:** `56b7bb5` (schema) and `456a148`
+   (regeneration). `AccessRequirementReference` gets an identifier,
+   `referencedRequirementId`: the real AR's id, which the stub already
+   re-serializes (`access_requirement.42` → `gov:AR-42`). References by that value
+   are now valid. All 14 governance examples pass `linkml-validate` (was 9/14);
+   the exported graph is unchanged; the OWL stays in the DL profile. `linkml-lint`
+   gains one camelCase naming warning, consistent with this repo's intentional
+   camelCase convention.
+4. **Don't file the linkml issue:** not filed. The draft below is kept for
+   reference only.
+5. **Update the plan:** `e7a92f9` adds the `prov:wasDerivedFrom` declaration to
+   the sagebrain follow-up. That follow-up is now written as
+   `plans/governance_layer_import.md` in sagebrain-model (not yet committed there).
+6. **Align timestamps with sagebrain-model:** sagebrain-model has no
+   instance-level timestamp predicate, so this was confirmed as aligning with the
+   `gov:` layer it imports. `53328d9` maps `Activity.createdOn` to
+   `sagegov:createdOn`, matching `Activity.modifiedOn` and the other
+   governance-graph classes.
+
 ### Draft linkml issue (not filed)
 
 > **owlgen: slot_usage overrides produce undeclared or misdirected properties with
