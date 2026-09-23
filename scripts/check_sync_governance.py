@@ -8,7 +8,8 @@ the output graph's shape. Same approach as check_sync_provenance.py.
 The fake client serves one file, syn50000001, whose ACL and AccessRequirement are
 inherited from its parent syn50000000 (not requested, so it gets a typed stub):
   - the parent's ACL: user 3000001 with READ, DOWNLOAD and an unrecognized
-    FUTURE_PERM; team 3000002 with READ;
+    FUTURE_PERM; team 3000002 with READ; user 3000006 with only an unrecognized
+    NEW_PERM_ONLY;
   - AR 9001 on the parent (curated record in tests/sync_governance/), with two
     Submissions -- 7001 APPROVED by user 3000005, 7002 in an unrecognized state --
     and three AccessApprovals: 8001 APPROVED and unexpired (accessor 3000003),
@@ -17,6 +18,7 @@ Asserts:
   - the file and its parent stub are SynapseEntities; the grants are Inherited;
     3000001's grant carries gov:READ, gov:DOWNLOAD and the derived gov:ACCESS,
     and FUTURE_PERM is warned and skipped (no gov:FUTURE_PERM anywhere);
+    3000006 gets no grant at all (it would have no gov:permission);
   - principal types are the classes gov:User / gov:Team;
   - the AR association is Inherited and gov:AR-9001 has its DUO Condition;
   - Submission 7001's state is gov:APPROVED; 7002 (unrecognized state) is
@@ -66,6 +68,7 @@ GETS = {
     "/entity/syn50000000/acl": {"resourceAccess": [
         {"principalId": 3000001, "accessType": ["READ", "DOWNLOAD", "FUTURE_PERM"]},
         {"principalId": 3000002, "accessType": ["READ"]},
+        {"principalId": 3000006, "accessType": ["NEW_PERM_ONLY"]},
     ]},
     "/entity/syn50000001/accessRequirement?limit=50&offset=0": {"results": [
         {"id": 9001, "subjectIds": [{"id": "syn50000000", "type": "ENTITY"}]},
@@ -167,6 +170,10 @@ def main():
         f"3000001's grant permissions: {sorted(g.objects(user_grant, GOV.permission))}",
     )
     expect(not any(GOV.FUTURE_PERM in t for t in g), "gov:FUTURE_PERM was minted")
+    expect(
+        not any(True for _ in g.subjects(GOV.principal, principal(3000006))),
+        "3000006 (only unrecognized permissions) got an AccessGrant",
+    )
     expect("'FUTURE_PERM' is not a AccessTypeEnum value" in warnings, "no warning for FUTURE_PERM")
     expect(
         {o for s in (grants[3000001] | grants[3000002]) for o in g.objects(s, GOV.bindingType)} == {GOV.Inherited},

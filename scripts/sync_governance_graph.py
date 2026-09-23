@@ -367,13 +367,18 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
         if principal_id not in state["principal_nodes"]:
             warn(f"Skipping AccessGrant for unresolved principal {principal_id} on {entity_id}.")
             continue
+        permissions = [
+            p for p in entry.get("accessType", [])
+            if known_value("AccessTypeEnum", p, f"{entity_id} ACL entry for {principal_id}")
+        ]
+        if not permissions:
+            # AccessGrantShape requires at least one gov:permission.
+            warn(f"Skipping AccessGrant for principal {principal_id} on {entity_id}: no recognized permission.")
+            continue
         grant_data = {
             "id": f"grant.{entity_id}-{index}",
             "resource": entity_id,
-            "permission": [
-                p for p in entry.get("accessType", [])
-                if known_value("AccessTypeEnum", p, f"{entity_id} ACL entry for {principal_id}")
-            ],
+            "permission": permissions,
             "source": "Synapse",
             "bindingType": "Direct" if is_direct_acl else "Inherited",
         }
