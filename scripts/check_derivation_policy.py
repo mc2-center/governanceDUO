@@ -9,7 +9,12 @@ README.md) and asserts the output with SPARQL ASK queries:
     Activity;
   - the tierless input keeps an Unclassified label with its
     sourceAccessRequirements (fail closed, not dropped);
-  - exactly one Flagged DerivationReview, for the Activity;
+  - syn70000013, bound directly to a Private AR and derived from two Controlled
+    inputs a Controlled rule covers, stays Private (a rule never lowers an
+    entity's own binding);
+  - Flagged DerivationReviews for gov:activity-7001 (disjoint ARs),
+    gov:activity-7002 (the rule) and gov:activity-7003 (three inputs sharing one
+    AR, flagged because the rule covers each pair) -- exactly three;
   - the sagebrain-shaped Association inherits the output's label through
     sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom).
 
@@ -62,6 +67,16 @@ ASSERTIONS = {
                     sagegov:reviewStatus "Flagged" ;
                     sagegov:inputLabels sagegov:control-label-syn70000001, sagegov:control-label-syn70000002 .
         }""",
+    "syn70000013 keeps its own Private tier despite the Controlled+Controlled rule": """
+        ASK {
+            ?label sagegov:subject syn:syn70000013 ;
+                   sagegov:dataTier "Private" ;
+                   sagegov:sourceAccessRequirements sagegov:AR-7003, sagegov:AR-7004 .
+        }""",
+    "a Flagged DerivationReview exists for gov:activity-7002 (the rule, not disjointness)": """
+        ASK { ?review sagegov:activity sagegov:activity-7002 ; sagegov:reviewStatus "Flagged" . }""",
+    "a Flagged DerivationReview exists for three-input gov:activity-7003 (the rule, pairwise)": """
+        ASK { ?review sagegov:activity sagegov:activity-7003 ; sagegov:reviewStatus "Flagged" . }""",
     "the Association inherits syn70000003's label through sagebrain:derived_from": """
         ASK {
             ?label sagegov:subject association:fixture-assoc-01 ;
@@ -98,8 +113,8 @@ def main():
 
     failures = [name for name, query in ASSERTIONS.items() if not g.query(PREFIXES + query).askAnswer]
     reviews = int(next(iter(g.query(REVIEW_COUNT)))[0])
-    if reviews != 1:
-        failures.append(f"expected exactly 1 DerivationReview, got {reviews}")
+    if reviews != 3:
+        failures.append(f"expected exactly 3 DerivationReviews, got {reviews}")
 
     if failures:
         print("build_derivation_policy.py fixture check FAILED:")

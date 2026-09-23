@@ -14,3 +14,19 @@ sagegov:AR-7001 a sagegov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.7001 .
 sagegov:AR-7002 a sagegov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.7002 .
+
+# Three Controlled inputs sharing one AR, and an output bound directly to a
+# Private AR.
+syn:syn70000011 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7003 .
+syn:syn70000012 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7003 .
+syn:syn70000014 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7003 .
+syn:syn70000013 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7004 .
+
+sagegov:AR-7003 a sagegov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.7003 .
+sagegov:AR-7004 a sagegov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.7004 .

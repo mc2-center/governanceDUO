@@ -1,0 +1,4 @@
+# Fixture only: a Private AccessRequirement bound directly to a derived output.
+id: access_requirement.7004
+dataTier:
+  - Private

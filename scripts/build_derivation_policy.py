@@ -11,13 +11,16 @@ graph after the fact"):
 1. compute_control_labels() -- a precomputed, per-entity ControlLabel: the max
    DataTierEnum rank across an entity's own direct AccessRequirement bindings
    (Governance Graph) and its full derivation ancestry, consulting DerivationRule
-   for an explicit resultingDataTier override at each join point. Mirrors the
+   for an explicit resultingDataTier override at each join point (matched on
+   the exact combination of parent tiers). An override can lower what is
+   inherited, never below the entity's own direct bindings. Mirrors the
    note's own paragraph-18 design: computed once, not re-walked live on every
    query.
 2. compute_derivation_reviews() -- mints a Flagged DerivationReview for every
    multi-input Activity whose inputs' ControlLabels cite disjoint
-   sourceAccessRequirements sets, and/or whose input-tier combination a
-   DerivationRule marks requiresReview/not-permitted -- the note's own
+   sourceAccessRequirements sets, and/or where a DerivationRule marks
+   requiresReview/not-permitted for the inputs' tiers -- all of them, or any two
+   (an Activity with three inputs carries the risk of each pair) -- the note's own
    paragraph-12 "composite risk from independent grants" case.
 
 Fail closed: an AccessRequirement with no curated dataTier contributes the
@@ -235,7 +238,10 @@ def compute_control_labels(
                 rule = derivation_rules.get(combo)
 
         if rule and rule.get("resultingDataTier"):
-            final_tier = rule["resultingDataTier"]
+            # A rule may lower what the entity inherits, never its own direct
+            # binding: an entity bound to a Private AR stays at least Private.
+            rule_rank = DATA_TIER_RANK[rule["resultingDataTier"]]
+            final_tier = RANK_TO_TIER[max(rule_rank, own_rank if own_rank is not None else rule_rank)]
         else:
             final_tier = RANK_TO_TIER.get(default_rank)
 
@@ -275,9 +281,21 @@ def compute_derivation_reviews(
                 disjoint = True
                 break
 
-        combo = tuple(sorted(il["dataTier"] for il in input_labels if il["dataTier"]))
-        rule = derivation_rules.get(combo) if combo else None
-        rule_flags_review = bool(rule and (rule.get("requiresReview") or rule.get("permitted") is False))
+        # Rules are authored per combination of tiers, so evaluate every pair of
+        # labeled inputs as well as the whole set: an Activity with three inputs
+        # still carries the risk of any two of them.
+        tiers = [il["dataTier"] for il in input_labels if il["dataTier"]]
+        combos = {tuple(sorted(pair)) for pair in combinations(tiers, 2)} | {tuple(sorted(tiers))}
+        rule = next(
+            (
+                derivation_rules[combo]
+                for combo in sorted(combos)
+                if combo in derivation_rules
+                and (derivation_rules[combo].get("requiresReview") or derivation_rules[combo].get("permitted") is False)
+            ),
+            None,
+        )
+        rule_flags_review = rule is not None
 
         if not (disjoint or rule_flags_review):
             continue

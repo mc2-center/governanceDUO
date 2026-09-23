@@ -205,10 +205,12 @@ attributes:
     required: true
   resultingDataTier:
     name: resultingDataTier
-    description: The DataTierEnum the derived output carries when permitted. Defaults
-      to max(inputDataTiers) per the note's own recommendation, but a rule may explicitly
+    description: 'The DataTierEnum the derived output carries when permitted. Defaults
+      to max(inputDataTiers) per the note''s own recommendation, but a rule may explicitly
       override it for a specific combination (e.g. an aggregation that demonstrably
-      reduces sensitivity below its inputs' max).
+      reduces sensitivity below its inputs'' max). The override applies to what the
+      output inherits: it never lowers the output below its own direct AccessRequirement
+      bindings.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: governanceduo:resultingDataTier

@@ -9,3 +9,19 @@ sagegov:activity-7001 a prov:Activity ;
         [ a prov:Usage ; prov:entity syn:syn70000001 ; sagegov:wasExecuted false ] ,
         [ a prov:Usage ; prov:entity syn:syn70000002 ; sagegov:wasExecuted false ] ,
         [ a prov:Usage ; prov:entity syn:syn70000009 ; sagegov:wasExecuted true ] .
+
+# Two Controlled inputs -> an output bound directly to a Private AR.
+sagegov:activity-7002 a prov:Activity ;
+    prov:generated syn:syn70000013 ;
+    prov:qualifiedUsage
+        [ a prov:Usage ; prov:entity syn:syn70000011 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000012 ; sagegov:wasExecuted false ] .
+
+# Three Controlled inputs sharing one AR: no pair is disjoint, and no rule
+# covers all three, but the Controlled+Controlled rule covers each pair.
+sagegov:activity-7003 a prov:Activity ;
+    prov:generated syn:syn70000015 ;
+    prov:qualifiedUsage
+        [ a prov:Usage ; prov:entity syn:syn70000011 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000012 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000014 ; sagegov:wasExecuted false ] .

@@ -172,7 +172,9 @@ slots:
       The DataTierEnum the derived output carries when permitted. Defaults to
       max(inputDataTiers) per the note's own recommendation, but a rule may
       explicitly override it for a specific combination (e.g. an aggregation that
-      demonstrably reduces sensitivity below its inputs' max).
+      demonstrably reduces sensitivity below its inputs' max). The override
+      applies to what the output inherits: it never lowers the output below its
+      own direct AccessRequirement bindings.
     range: DataTierEnum
   requiresReview:
     slot_uri: governanceduo:requiresReview

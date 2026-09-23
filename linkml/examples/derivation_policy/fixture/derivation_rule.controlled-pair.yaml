@@ -1,0 +1,9 @@
+# Fixture only: joining two Controlled inputs stays Controlled but needs review.
+id: derivation_rule.fixture-controlled-pair
+inputDataTiers:
+  - Controlled
+  - Controlled
+permitted: true
+resultingDataTier: Controlled
+requiresReview: true
+rationale: Fixture rule for the own-binding floor and pairwise review cases.
