@@ -1,0 +1,5 @@
+# Fixture only (scripts/check_sync_governance.py): the curated record behind
+# gov:AR-9001, so the sync mints its Condition.
+id: access_requirement.9001
+dataUseModifiers:
+  - DUO:0000042

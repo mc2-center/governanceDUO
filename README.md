@@ -137,6 +137,7 @@ make owl-profile-abox # OWL 2 DL on both TBoxes merged with the exported and exa
                        # graphs (catches values typed differently from the TBox)
 make release-check    # validate-all + every published artifact carries VERSION
 make linkml-validate-examples  # linkml-validate every example (the only DUO-rules check)
+make sync-governance-check     # sync_governance_graph.py offline, against a fake Synapse
 make artifact-drift-check      # committed generated artifacts match a fresh rebuild
                                # (run after validate-all; CI does)
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF

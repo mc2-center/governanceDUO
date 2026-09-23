@@ -421,6 +421,11 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
             submissions = []
 
         for submission in submissions:
+            # A Submission's state is required (DataAccessSubmissionShape), so one
+            # in a state outside SubmissionStateEnum is skipped whole, not written
+            # without it.
+            if not known_value("SubmissionStateEnum", submission.get("state"), f"submission {submission['id']}"):
+                continue
             snapshot = submission.get("researchProjectSnapshot")
 
             # Every principal this submission (and its embedded ResearchProject
@@ -474,8 +479,7 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "rejectedReason": submission.get("rejectedReason"),
                 "modifiedOn": to_millis(submission.get("modifiedOn")),
             }
-            if known_value("SubmissionStateEnum", status_data["state"], f"submission {submission['id']}"):
-                bgg.add_data_access_submission_status(g, status_data, submission_node)
+            bgg.add_data_access_submission_status(g, status_data, submission_node)
 
             # DataAccessRequest itself: no REST path exists for anyone else's
             # request (confirmed -- Submission carries only a bare requestId, no
@@ -522,7 +526,7 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "status": approval.get("state"),
                 "expiredOn": to_millis(approval.get("expiredOn")),
                 "createdOn": to_millis(approval.get("createdOn")),
-                "sourceApprovalId": approval.get("id"),
+                "sourceApprovalId": int(approval["id"]),
                 "etag": approval.get("etag"),
             }
             if known_value("ApprovalStateEnum", approval_data["status"], f"access approval {approval['id']}"):

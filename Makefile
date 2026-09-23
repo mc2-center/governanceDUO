@@ -117,6 +117,11 @@ sync-provenance-graph:
 
 # Offline regression check for sync_provenance_graph.py (fake Synapse client, no
 # network or credentials) -- see scripts/check_sync_provenance.py.
+# Offline check of sync_governance_graph.py against a fake Synapse client (no
+# network/credentials): grants, ARs, submissions, approvals, and unknown values.
+sync-governance-check:
+	python3 scripts/check_sync_governance.py
+
 sync-provenance-check:
 	python3 scripts/check_sync_provenance.py
 
@@ -176,7 +181,7 @@ enum-sync-check:
 domain-range-check: governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching
