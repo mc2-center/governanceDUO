@@ -132,7 +132,8 @@ Effective access needs both halves: a matching grant **and** every governing AR
 satisfied. AR satisfaction is recorded as an **`AccessApproval`** (`gov:heldBy` the
 principal, `gov:satisfies` the AR, with `gov:status` and `gov:expiresAt`), plus a
 convenience edge `gov:hasApproval` from the principal to the AR while the approval
-is `APPROVED`. The workflow behind an approval is recorded too:
+holds: `APPROVED` and not past `expiresAt` (judged as of the sync; the worked
+example is built as of a fixed date). A Submission never produces the edge. The workflow behind an approval is recorded too:
 **`DataAccessRequest`** → **`DataAccessSubmission`** (with its `state`), linked to
 the **`ResearchProject`** it serves and the requester's **`Site`**.
 

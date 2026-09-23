@@ -117,9 +117,10 @@ What's still hand-written, because no LinkML slot or generic dumper can express 
 - **`Principal`** individuals have no `BaseEntity` id at all (just a bare integer
   `principalId`), so their subject URIs (`gov:principal-<n>`) are minted directly in
   Python, not via any schema-declared id pattern.
-- **`gov:hasApproval`** is emitted only when a cross-object join holds
-  (`DataAccessSubmissionStatus.state == APPROVED`) — join logic, not a per-slot
-  mapping.
+- **`gov:hasApproval`** is emitted only from an AccessApproval that still holds
+  (status `APPROVED`, `expiredOn` not yet passed as of the build) — join logic, not
+  a per-slot mapping. A once-APPROVED Submission says nothing about whether access
+  still holds, so it never produces the edge (`make approval-expiry-check`).
 - **`gov:permission gov:ACCESS`** is derived on every AccessGrant that carries Synapse
   `DOWNLOAD`. sagebrain-infra's authorizer checks grants for the Cedar action
   `ACCESS` by comparing each `gov:permission`'s local name to it, and Synapse has no

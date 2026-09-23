@@ -72,6 +72,7 @@ import argparse
 import json
 import re
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -453,8 +454,7 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "submittedOn": to_millis(submission.get("submittedOn")),
                 "modifiedBy": int(modified_by) if modified_by else None,
             }
-            approved = submission.get("state") == "APPROVED"
-            bgg.add_data_access_submission(g, submission_data, ar_node, approved)
+            bgg.add_data_access_submission(g, submission_data, ar_node)
             submission_node = bgg.gov_id(submission_data["id"])
             status_data = {
                 "state": submission.get("state"),
@@ -511,7 +511,7 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "sourceApprovalId": approval.get("id"),
                 "etag": approval.get("etag"),
             }
-            bgg.add_access_approval(g, approval_data, state["principal_nodes"])
+            bgg.add_access_approval(g, approval_data, state["principal_nodes"], state["as_of_ms"])
 
 
 def main():
@@ -556,6 +556,8 @@ def main():
         "curated_ars": load_curated_access_requirements(Path(args.access_requirement_dir)),
         "access_requirement_dir": args.access_requirement_dir,
         "requested_entity_ids": set(args.entity_ids),
+        # AccessApproval expiry is judged as of this sync.
+        "as_of_ms": int(time.time() * 1000),
     }
 
     for entity_id in args.entity_ids:

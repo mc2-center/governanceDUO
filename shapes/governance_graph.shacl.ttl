@@ -193,9 +193,8 @@ gov:ConditionShape a sh:NodeShape ;
 #################################################################
 # AccessApproval -- a real, separate Synapse object from
 # DataAccessSubmission/DataAccessSubmissionStatus (see governance_graph.yaml's
-# own class description). gov:hasApproval, re-derived from this class, is
-# validated on PrincipalShape below, same treatment as the existing
-# DataAccessSubmissionStatus-derived edge.
+# own class description). gov:hasApproval, derived only from this class (an
+# APPROVED, unexpired approval), is validated on PrincipalShape below.
 #################################################################
 
 gov:AccessApprovalShape a sh:NodeShape ;

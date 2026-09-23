@@ -210,7 +210,7 @@ gov:hasAccessRequirement a owl:ObjectProperty ;
 gov:hasApproval a owl:ObjectProperty ;
     rdfs:domain gov:Principal ;
     rdfs:range gov:AccessRequirement ;
-    rdfs:comment "Emitted only when the paired DataAccessSubmissionStatus.state is APPROVED -- mirrors the design doc's simplified gov:hasApproval predicate." .
+    rdfs:comment "Emitted only from an AccessApproval that still holds (status APPROVED, expiredOn not yet passed as of the build) -- mirrors the design doc's simplified gov:hasApproval predicate. A Submission never produces it." .
 
 gov:hasCondition a owl:ObjectProperty ;
     rdfs:range gov:Condition ;

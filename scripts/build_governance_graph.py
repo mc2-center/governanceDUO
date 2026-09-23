@@ -19,9 +19,9 @@ dump cannot reproduce it:
   - Principal individuals are identified by a bare integer (principalId) with no
     BaseEntity `id` slot at all, so their subject URIs (`gov:principal-<n>`) are
     minted directly from that integer, not via any CURIE-from-a-dotted-id mechanism.
-  - `gov:hasApproval` is emitted only when a cross-object join holds
-    (DataAccessSubmissionStatus.state == APPROVED) — this is join logic, not a
-    per-slot mapping.
+  - `gov:hasApproval` is emitted only from an AccessApproval whose status is
+    APPROVED and whose expiredOn hasn't passed as of the build (--as-of) — this
+    is join logic, not a per-slot mapping.
   - `gov:hasACL`/`gov:hasAccessRequirement` are derived convenience triples with no
     corresponding governance_graph.yaml slot at all.
   - The `.`/`_` → `-` id-hyphenation display convention (`grant.001` → `gov:grant-001`,
@@ -67,11 +67,13 @@ Usage:
     python scripts/build_governance_graph.py [--examples-dir linkml/examples/governance_graph]
                                               [--out governance_graph_export/governance_graph.ttl]
                                               [--schema linkml/governance_graph.yaml]
+                                              [--as-of EPOCH_MS]
 
 author: orion.banks
 """
 
 import argparse
+import time
 from functools import lru_cache
 from pathlib import Path
 
@@ -378,15 +380,16 @@ def add_access_requirement(g: Graph, data: dict, ar_node):
     return condition_nodes
 
 
-def add_access_approval(g: Graph, data: dict, principal_nodes: dict) -> bool:
+def add_access_approval(g: Graph, data: dict, principal_nodes: dict, as_of_ms: int) -> bool:
     """Mints a gov:AccessApproval node -- see governance_graph.yaml's own
     class description for why this is a *separate* real Synapse object from
     DataAccessSubmission/Status, not a rename or duplicate of it.
 
-    Returns whether status == APPROVED, so the caller can emit gov:hasApproval
-    from this node (the primary, authoritative source going forward -- see
-    plans/governance_graph_open_questions.md Section B) alongside the
-    existing DataAccessSubmissionStatus-derived edge, which is left as-is.
+    Emits gov:hasApproval (accessor -> AR) only while the approval holds:
+    status APPROVED and expiredOn absent or later than as_of_ms (epoch ms).
+    This is the only source of gov:hasApproval -- a Submission that was once
+    APPROVED says nothing about whether access still holds
+    (plans/pre_pr_review_fixes.md, finding 9). Returns whether it was emitted.
     """
     subject = gov_id(data["id"])
     ar_node = GOV[data["requirementId"].replace("access_requirement.", "AR-")]
@@ -406,9 +409,10 @@ def add_access_approval(g: Graph, data: dict, principal_nodes: dict) -> bool:
         g.add((subject, PREDICATE("sourceApprovalId", "AccessApproval"), Literal(data["sourceApprovalId"])))
     if data.get("etag") is not None:
         g.add((subject, PREDICATE("etag", "AccessApproval"), Literal(data["etag"])))
-    if data["status"] == "APPROVED":
+    holds = data["status"] == "APPROVED" and (data.get("expiredOn") is None or data["expiredOn"] > as_of_ms)
+    if holds:
         g.add((accessor_node, GOV.hasApproval, ar_node))
-    return data["status"] == "APPROVED"
+    return holds
 
 
 def add_research_project(g: Graph, data: dict, principal_nodes: dict):
@@ -520,7 +524,7 @@ def add_irb_requirement(g: Graph, data: dict, template_node, program_nodes: dict
     return subject
 
 
-def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
+def add_data_access_submission(g: Graph, data: dict, ar_node):
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("DataAccessSubmission")))
     # accessRequirementId's slot_uri intentionally resolves to the same predicate
@@ -544,14 +548,9 @@ def add_data_access_submission(g: Graph, data: dict, ar_node, approved: bool):
         # add_data_access_submission_status below and governance_graph.yaml's
         # corrected description on both classes.
         g.add((subject, PREDICATE("modifiedBy", "DataAccessSubmission"), GOV[f"principal-{data['modifiedBy']}"]))
-    if approved:
-        # Mirrors the design doc's simplified gov:hasApproval predicate -- only
-        # emitted once the real, richer submission-status workflow (below) says
-        # APPROVED, not merely SUBMITTED. Cross-object join logic, not schema-declarable.
-        g.add((GOV[f"principal-{data['submittedBy']}"], GOV.hasApproval, ar_node))
 
 
-def add_data_access_submission_status(g: Graph, data: dict, submission_node) -> bool:
+def add_data_access_submission_status(g: Graph, data: dict, submission_node):
     # DataAccessSubmissionStatus has no independent node of its own (see
     # governance_graph.yaml) -- its state/rejectedReason/modifiedOn fields are
     # merged onto the DataAccessSubmission subject. Synapse's live
@@ -569,7 +568,6 @@ def add_data_access_submission_status(g: Graph, data: dict, submission_node) -> 
         g.add(
             (submission_node, GOV.statusModifiedOn, Literal(data["modifiedOn"], datatype=XSD.long))
         )
-    return data["state"] == "APPROVED"
 
 
 def main():
@@ -591,7 +589,14 @@ def main():
     )
     parser.add_argument("--out", default="governance_graph_export/governance_graph.ttl")
     parser.add_argument("--schema", default="linkml/governance_graph.yaml")
+    parser.add_argument(
+        "--as-of",
+        type=int,
+        default=None,
+        help="Epoch ms at which AccessApproval expiry is judged (default: now).",
+    )
     args = parser.parse_args()
+    as_of_ms = args.as_of if args.as_of is not None else int(time.time() * 1000)
 
     _schemaview = SchemaView(args.schema)
 
@@ -641,7 +646,7 @@ def main():
 
     for stem, (class_name, data) in instances.items():
         if class_name == "AccessApproval":
-            add_access_approval(g, data, principal_nodes)
+            add_access_approval(g, data, principal_nodes, as_of_ms)
 
     program_nodes = {}
     for stem, (class_name, data) in instances.items():
@@ -662,14 +667,13 @@ def main():
         if class_name == "DataAccessSubmission":
             submission_node = gov_id(data["id"])
 
-    approved = False
     for stem, (class_name, data) in instances.items():
         if class_name == "DataAccessSubmissionStatus" and submission_node is not None:
-            approved = add_data_access_submission_status(g, data, submission_node)
+            add_data_access_submission_status(g, data, submission_node)
 
     for stem, (class_name, data) in instances.items():
         if class_name == "DataAccessSubmission" and ar_node is not None:
-            add_data_access_submission(g, data, ar_node, approved)
+            add_data_access_submission(g, data, ar_node)
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)

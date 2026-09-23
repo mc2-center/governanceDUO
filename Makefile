@@ -87,8 +87,18 @@ shacl-validate: owl shacl example-rdf
 policy-fabric:
 	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
 
+# The worked example is built as of a fixed time (2026-01-01), inside its
+# AccessApproval's validity window, so the export doesn't change as the calendar
+# passes the approval's expiredOn. A live sync judges expiry as of the sync.
+GOVERNANCE_GRAPH_AS_OF ?= 1767225600000
+
 governance-graph:
-	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl
+	python3 scripts/build_governance_graph.py --examples-dir linkml/examples/governance_graph --out governance_graph_export/governance_graph.ttl --as-of $(GOVERNANCE_GRAPH_AS_OF)
+
+# gov:hasApproval comes only from an unexpired AccessApproval: built before the
+# example approval's expiredOn it's present, after it's absent.
+approval-expiry-check:
+	python3 scripts/check_approval_expiry.py
 
 governance-graph-validate: governance-graph
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph.ttl --shapes shapes/governance_graph.shacl.ttl --ont shapes/governance_graph.owl.ttl
@@ -160,7 +170,7 @@ infra-contract-check: governance-graph
 domain-range-check: governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check owl-profile
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check owl-profile
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching

@@ -8,7 +8,7 @@ search:
 
 _Records that a Principal has been approved for access under an AccessRequirement. Mirrors Synapse's real AccessApproval REST object (org.sagebionetworks.repo.model.AccessApproval) -- a *separate* object from DataAccessSubmission/DataAccessSubmissionStatus (the workflow/audit trail that produces one), verified directly against rest-docs.synapse.org and the OpenAPI spec. Maps onto the target ontology (proposed in review on sagebrain-infra PR #54) as gov:Approval: gov:satisfies (requirementId), gov:heldBy (accessorId), gov:status (this class's own status slot -- range ApprovalStateEnum, deliberately not the shared "state" slot, which ranges over the unrelated SubmissionStateEnum), gov:expiresAt (expiredOn)._
 
-_gov:hasApproval (Principal -> AccessRequirement) is re-derived from this class (status == APPROVED) as the primary source going forward -- see add_access_approval() in build_governance_graph.py. The existing DataAccessSubmissionStatus-sourced gov:hasApproval edge is left as-is, not replaced (authorize.py's SPARQL contract touches neither). See plans/governance_graph_open_questions.md Section B._
+_gov:hasApproval (Principal -> AccessRequirement) is derived only from this class, while the approval holds: status == APPROVED and expiredOn absent or later than the build's as-of time -- see add_access_approval() in build_governance_graph.py. It is no longer derived from DataAccessSubmissionStatus: a once-APPROVED Submission says nothing about whether access still holds (plans/pre_pr_review_fixes.md, finding 9; authorize.py's SPARQL contract touches neither). See plans/governance_graph_open_questions.md Section B._
 
 
 
@@ -178,11 +178,13 @@ description: 'Records that a Principal has been approved for access under an Acc
   not the shared "state" slot, which ranges over the unrelated SubmissionStateEnum),
   gov:expiresAt (expiredOn).
 
-  gov:hasApproval (Principal -> AccessRequirement) is re-derived from this class (status
-  == APPROVED) as the primary source going forward -- see add_access_approval() in
-  build_governance_graph.py. The existing DataAccessSubmissionStatus-sourced gov:hasApproval
-  edge is left as-is, not replaced (authorize.py''s SPARQL contract touches neither).
-  See plans/governance_graph_open_questions.md Section B.'
+  gov:hasApproval (Principal -> AccessRequirement) is derived only from this class,
+  while the approval holds: status == APPROVED and expiredOn absent or later than
+  the build''s as-of time -- see add_access_approval() in build_governance_graph.py.
+  It is no longer derived from DataAccessSubmissionStatus: a once-APPROVED Submission
+  says nothing about whether access still holds (plans/pre_pr_review_fixes.md, finding
+  9; authorize.py''s SPARQL contract touches neither). See plans/governance_graph_open_questions.md
+  Section B.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 is_a: BaseEntity
 slots:
@@ -230,11 +232,13 @@ description: 'Records that a Principal has been approved for access under an Acc
   not the shared "state" slot, which ranges over the unrelated SubmissionStateEnum),
   gov:expiresAt (expiredOn).
 
-  gov:hasApproval (Principal -> AccessRequirement) is re-derived from this class (status
-  == APPROVED) as the primary source going forward -- see add_access_approval() in
-  build_governance_graph.py. The existing DataAccessSubmissionStatus-sourced gov:hasApproval
-  edge is left as-is, not replaced (authorize.py''s SPARQL contract touches neither).
-  See plans/governance_graph_open_questions.md Section B.'
+  gov:hasApproval (Principal -> AccessRequirement) is derived only from this class,
+  while the approval holds: status == APPROVED and expiredOn absent or later than
+  the build''s as-of time -- see add_access_approval() in build_governance_graph.py.
+  It is no longer derived from DataAccessSubmissionStatus: a once-APPROVED Submission
+  says nothing about whether access still holds (plans/pre_pr_review_fixes.md, finding
+  9; authorize.py''s SPARQL contract touches neither). See plans/governance_graph_open_questions.md
+  Section B.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 is_a: BaseEntity
 slot_usage:

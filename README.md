@@ -315,8 +315,8 @@ gov:AccessRequirementAssociation ; gov:resource syn:syn10081783 ; gov:accessRequ
 gov:AR-42 ; gov:source gov:Synapse ; gov:bindingType gov:Inherited .` — `AR-42`, not the
 doc's own `AR-123`, since this repo's example instances reuse `access_requirement.42`,
 the AccessRequirement id already defined elsewhere in `linkml/examples/`), including
-correctly *not* emitting a `gov:hasApproval` triple while Alice's submission is only
-`SUBMITTED`, not yet `APPROVED`. The LinkML schema itself registers this same
+emitting `gov:hasApproval` only from Alice's AccessApproval while it holds (APPROVED
+and unexpired as of the build), never from her Submission. The LinkML schema itself registers this same
 namespace under `sagegov:`, not `gov:` — `gov:` collides with a different,
 canonical prefix (`http://gov.genealogy.net/ontology.owl#`) `linkml-lint` flagged,
 same as `ebiswo:` vs. OBO Foundry `SWO:` earlier; the export script uses the shorter
