@@ -43,6 +43,7 @@ flowchart LR
         acl["ACLs, Access Requirements,<br/>submissions, approvals"]
         prov["Provenance records<br/>(Activity / used / generatedBy)"]
     end
+
     curators["Curator-authored AR records<br/>(DUO conditions, data tier)"]
 
     subgraph gduo["governanceDUO (this repo)"]
@@ -56,7 +57,7 @@ flowchart LR
     end
 
     subgraph neptune["Neptune (sagebrain-infra)"]
-        graph[("Governance graph<br/>+ domain graph<br/>joined on syn: IRIs")]
+        graphStore[("Governance graph<br/>+ domain graph<br/>joined on syn: IRIs")]
     end
 
     subgraph infra["sagebrain-infra"]
@@ -68,13 +69,13 @@ flowchart LR
     prov --> sync
     curators --> sync
     sync --> derive
-    sync --> graph
-    derive --> graph
+    sync --> graphStore
+    derive --> graphStore
     artifacts -. imported by .-> domain
-    domain --> graph
-    query --> graph
+    domain --> graphStore
+    query --> graphStore
     query --> authz
-    authz --> graph
+    authz --> graphStore
 ```
 
 - **Synapse** is the source of truth for ACLs, ARs, submissions, approvals and
