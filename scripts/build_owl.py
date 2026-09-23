@@ -46,6 +46,19 @@ with shapes/governance_graph.owl.ttl and imported by sagebrain-model:
   implies <postcondition>" -- wrong entailments, and the source of the remaining
   puns. The rules stay enforced by linkml-validate; they are simply not in the
   OWL (approved decision D2).
+- xsd_anyuri_as_iri=True (plans/iri_valued_slots_as_object_properties.md): the
+  `range: uriorcurie` slots (prov:generated, prov:entity, sagegov:subject,
+  sagegov:sourceAccessRequirements, sagegov:computedFrom, sagegov:activity) are
+  owl:ObjectProperty, not owl:DatatypeProperty with rdfs:range xsd:anyURI. The data
+  writes IRI nodes for them, gen-shacl already constrains them to sh:nodeKind
+  sh:IRI, and W3C PROV-O declares prov:generated/prov:entity as object properties;
+  typing them as datatype properties puns them against PROV-O wherever both load.
+  IriRangeOwlGenerator corrects one owlgen gap the flag leaves (approved as a
+  workaround; remove once fixed upstream): slot_node_owltypes() ignores the flag,
+  so add_class() fills these slots' allValuesFrom with the schema's default_range
+  (xsd:string) -- a datatype restriction on an object property, which OWLAPI can't
+  parse. Reporting owl:Thing instead makes that filler owl:Thing, which
+  skip_vacuous_local_range_axioms then drops.
 - repair_generator_output() fills three owlgen gaps under use_native_uris=False,
   using only the schema (approved as a workaround; remove once fixed upstream):
     1. a slot_usage that gives a slot its own slot_uri (e.g. SynapseEntity.name ->
@@ -70,7 +83,9 @@ author: orion.banks
 
 import argparse
 
+from linkml.generators.common.subproperty import is_xsd_anyuri_range
 from linkml.generators.owlgen import OwlSchemaGenerator
+from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import BNode, Graph, Namespace, Literal, URIRef
 from rdflib.compare import to_canonical_graph
@@ -114,6 +129,23 @@ def schema_without_rules(schema_path: str) -> SchemaView:
         cls.rules = []
     sv.set_modified()
     return sv
+
+
+class IriRangeOwlGenerator(OwlSchemaGenerator):
+    """OwlSchemaGenerator whose slot_node_owltypes() honors xsd_anyuri_as_iri --
+    see module docstring. Remove once fixed upstream."""
+
+    def slot_node_owltypes(self, slot, owning_class=None):
+        node_types = super().slot_node_owltypes(slot, owning_class)
+        if not (self.xsd_anyuri_as_iri and isinstance(slot, SlotDefinition)):
+            return node_types
+        slot_range = slot.range
+        if isinstance(owning_class, ClassDefinition):
+            slot_range = self.schemaview.induced_slot(slot.name, owning_class.name).range
+        if is_xsd_anyuri_range(self.schemaview, slot_range):
+            node_types.discard(RDFS.Datatype)
+            node_types.add(OWL.Thing)
+        return node_types
 
 
 def remove_node(graph: Graph, node):
@@ -205,7 +237,7 @@ def stable_graph(graph: Graph) -> Graph:
 
 def build(schema_path: str, version: str) -> Graph:
     sv = schema_without_rules(schema_path)
-    gen = OwlSchemaGenerator(
+    gen = IriRangeOwlGenerator(
         sv.schema,
         skip_vacuous_min_zero_cardinality_axioms=True,
         skip_vacuous_local_range_axioms=True,
@@ -213,6 +245,7 @@ def build(schema_path: str, version: str) -> Graph:
         use_native_uris=False,
         metaclasses=False,
         type_objects=False,
+        xsd_anyuri_as_iri=True,
     )
     ttl = gen.serialize(format="turtle")
 
