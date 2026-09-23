@@ -1,5 +1,11 @@
-linkml>=1.8
-pyshacl>=0.30
+# Pinned exactly: scripts/build_owl.py's GovernanceOwlGenerator overrides owlgen
+# internals, and CI's artifact-drift-check compares generated OWL/SHACL with the
+# committed copies, so a generator upgrade must be a deliberate change (bump,
+# `make validate-all`, commit the regenerated artifacts).
+linkml==1.11.1
+linkml-runtime==1.11.1
+rdflib==7.6.0
+pyshacl==0.40.1
 mkdocs>=1.6
 mkdocs-material>=9.5
 mkdocs-awesome-pages-plugin>=2.9
