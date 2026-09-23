@@ -277,7 +277,7 @@ GPL_3.0,"GNU General Public License v3.0, a copyleft license requiring derivativ
 BSD_3_Clause,"BSD 3-Clause License, a permissive license allowing for use, modification, and distribution with attribution.",,,,,,,,,,,,
 DUO:0000042,General Research Use - This data use permission indicates that use is allowed for general research use for any research purpose.,,,,,GRU,,,,,,,
 DUO:0000027,Project Specific Restriction - This data use modifier indicates that use is limited to use within an approved project.,,,,,PS,,,,,,,
-DUO:0000016,"Geographical Restriction - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)",,,,,GSO,,,,,,,
+DUO:0000016,"Genetic Studies Only - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)",,,,,GSO,,,,,,,
 DUO:0000029,Return to Database or Resource - This data use modifier indicates that the requestor must return derived/enriched data to the database/resource.,,,,,RTN,,,,,,,
 DUO:0000043,Clinical Care Use - This data use modifier indicates that use is allowed for clinical use and care.,,,,,CC,,,,,,,
 DUO:0000015,"No General Methods Research - This data use modifier indicates that use does not allow methods development research (e.g., development of software or algorithms).",,,,,NMDS,,,,,,,

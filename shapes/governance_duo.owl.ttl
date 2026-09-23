@@ -1613,8 +1613,8 @@ DUO:0000016 a owl:Class ;
     rdfs:label "DUO:0000016" ;
     rdfs:subClassOf governanceduo:DataUseModifierEnum ;
     owl:versionInfo "0.1.0" ;
-    skos:definition "Geographical Restriction - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" ;
-    skos:scopeNote "Geographical Restriction - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" ;
+    skos:definition "Genetic Studies Only - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" ;
+    skos:scopeNote "Genetic Studies Only - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" ;
     governanceduo:duo_shorthand "GSO" .
 
 DUO:0000017 a owl:Class ;

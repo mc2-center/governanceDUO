@@ -22,7 +22,7 @@ URI: [governanceduo:enum/DataUseModifierEnum](https://w3id.org/sage-bionetworks/
 | --- | --- | --- |
 | DUO:0000042 | DUO:0000042 | General Research Use - This data use permission indicates that use is allowed... |
 | DUO:0000027 | DUO:0000027 | Project Specific Restriction - This data use modifier indicates that use is l... |
-| DUO:0000016 | DUO:0000016 | Geographical Restriction - This data use modifier indicates that use is limit... |
+| DUO:0000016 | DUO:0000016 | Genetic Studies Only - This data use modifier indicates that use is limited t... |
 | DUO:0000029 | DUO:0000029 | Return to Database or Resource - This data use modifier indicates that the re... |
 | DUO:0000043 | DUO:0000043 | Clinical Care Use - This data use modifier indicates that use is allowed for ... |
 | DUO:0000015 | DUO:0000015 | No General Methods Research - This data use modifier indicates that use does ... |
@@ -125,10 +125,9 @@ permissible_values:
         value: PS
   DUO:0000016:
     text: DUO:0000016
-    description: Geographical Restriction - This data use modifier indicates that
-      use is limited to genetic studies only (i.e., studies that include genotype
-      research alone or both genotype and phenotype research, but not phenotype research
-      exclusively)
+    description: Genetic Studies Only - This data use modifier indicates that use
+      is limited to genetic studies only (i.e., studies that include genotype research
+      alone or both genotype and phenotype research, but not phenotype research exclusively)
     meaning: DUO:0000016
     annotations:
       duo_shorthand:

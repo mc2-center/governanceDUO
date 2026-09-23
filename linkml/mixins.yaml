@@ -497,7 +497,7 @@ enums:
           duo_shorthand: "PS"
       DUO:0000016:
         description: >-
-          Geographical Restriction - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)
+          Genetic Studies Only - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)
         meaning: DUO:0000016
         annotations:
           duo_shorthand: "GSO"
