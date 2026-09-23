@@ -1,5 +1,6 @@
 nav:
   - index.md
+  - graph-design.md
   - use-cases.md
   - linkml-model.md
   - knowledge-graph.md

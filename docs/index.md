@@ -11,6 +11,7 @@ schema reference and worked examples drawn from the real files in this repo.
 
 | Page | Covers |
 | --- | --- |
+| [Governance graph design](graph-design.md) | Start here: the graph as a whole — its layers, model, identifiers, how it's built and validated, how Sage Brain and sagebrain-infra's ReBAC authorizer use it, and its relationship to sagebrain-model |
 | [Use cases, data sources, and the submission pipeline](use-cases.md) | What each part of this model is for, where its data is meant to come from, and what's actually operational vs. design-only today |
 | [The LinkML model](linkml-model.md) | Module layout, import graph, DUO term reuse, id→URI minting, `GovernanceMixin`'s conditional rules |
 | [Knowledge graph representation](knowledge-graph.md) | The three distinct RDF artifacts this repo produces, why they differ, and how they're validated |
