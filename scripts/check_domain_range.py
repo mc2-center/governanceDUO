@@ -11,11 +11,9 @@ SynapseEntity made every AccessApproval carrying an etag a SynapseEntity.
 For each axiom `p rdfs:domain C` (or `p rdfs:range C`, C a class), every subject
 (object) of p in the graphs must be asserted a C, or a subclass of C per the
 TBoxes' rdfs:subClassOf. No other entailment is applied. A range over a LinkML
-enum is checked by membership instead (plans/enum_values_match_owl.md), read from
-what the OWL entails: an enum of individuals (owl:oneOf, e.g. GrantPermissionEnum)
-must be given one of them, and a literal enum (a datatype defined by owl:oneOf) one
-of its strings. An enum of classes (DUO codes, PrincipalTypeEnum), which enumerates
-nothing in OWL, is checked against its linkml:permissible_values.
+enum is checked by membership instead (plans/enum_values_match_owl.md): an enum
+modeled as a class (its values carry meaning: IRIs) must be given one of those
+IRIs, and a literal enum (a datatype defined by owl:oneOf) one of its strings.
 Other datatype ranges are not checked here; SHACL covers literal datatypes.
 
 Usage:
@@ -87,9 +85,6 @@ def violations(tbox: Graph, data: Graph) -> list[str]:
         if definition is not None and tbox.value(definition, OWL.oneOf) is not None:
             allowed = {str(v) for v in Collection(tbox, tbox.value(definition, OWL.oneOf))}
             member = lambda v: isinstance(v, Literal) and str(v) in allowed  # noqa: E731
-        elif tbox.value(enum, OWL.oneOf) is not None:
-            allowed = set(Collection(tbox, tbox.value(enum, OWL.oneOf)))
-            member = lambda v: v in allowed  # noqa: E731
         else:
             allowed = set(tbox.objects(enum, LINKML.permissible_values))
             member = lambda v: v in allowed  # noqa: E731

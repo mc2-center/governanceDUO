@@ -68,11 +68,8 @@ with shapes/governance_graph.owl.ttl and imported by sagebrain-model:
   declares the enum owl:Class (an illegal class/datatype pun) and attaches
   owl:oneOf to the named datatype directly rather than through an
   owl:equivalentClass definition; slot_owl_type() and slot_node_owltypes() treat
-  every enum range as an object range. The gov: graph enums (GrantPermission,
-  AccessType, ApprovalState, BindingType, SubmissionState) are marked
-  `implements: [owl:NamedIndividual]`, which owlgen handles as-is: each value is
-  an owl:NamedIndividual and the enum owl:oneOf them, as the data uses them. The
-  DUO codes and PrincipalTypeEnum (gov:User/gov:Team) stay classes.
+  every enum range as an object range. Enums whose values carry meaning: IRIs
+  (DUO codes, the gov: graph enums) stay classes, with those IRIs as members.
 - repair_generator_output() fills three owlgen gaps under use_native_uris=False,
   using only the schema (approved as a workaround; remove once fixed upstream):
     1. a slot_usage that gives a slot its own slot_uri (e.g. SynapseEntity.name ->

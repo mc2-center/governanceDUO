@@ -401,8 +401,6 @@ slots:
     range: boolean
 enums:
   AccessTypeEnum:
-    implements:
-      - owl:NamedIndividual
     description: >-
       Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org
       (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone,

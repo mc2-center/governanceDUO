@@ -1856,9 +1856,9 @@ DUO:0000046 a owl:Class ;
     skos:scopeNote "Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit use." ;
     governanceduo:duo_shorthand "NCU" .
 
-sagegov:ACCESS a owl:NamedIndividual,
-        governanceduo:GrantPermissionEnum ;
+sagegov:ACCESS a owl:Class ;
     rdfs:label "ACCESS" ;
+    rdfs:subClassOf governanceduo:GrantPermissionEnum ;
     skos:definition "Derived, not a Synapse ACCESS_TYPE: the abstract Cedar action sagebrain-infra's authorizer checks, granted wherever Synapse grants DOWNLOAD (fail closed)." .
 
 sagegov:AccessRequirement a owl:Class ;
@@ -1894,9 +1894,9 @@ sagegov:AccessRequirementTemplate a owl:Class ;
     skos:exactMatch governanceduo:AccessRequirementTemplate ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:CANCELLED a owl:NamedIndividual,
-        governanceduo:SubmissionStateEnum ;
-    rdfs:label "CANCELLED" .
+sagegov:CANCELLED a owl:Class ;
+    rdfs:label "CANCELLED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
 
 sagegov:DUOPlus1 a owl:Class ;
     rdfs:label "DUOPlus1" ;
@@ -2044,21 +2044,21 @@ Field names below were corrected to match Synapse's live REST API object (`org.s
     skos:exactMatch governanceduo:DataAccessSubmission ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:Direct a owl:NamedIndividual,
-        governanceduo:BindingTypeEnum ;
-    rdfs:label "Direct" .
+sagegov:Direct a owl:Class ;
+    rdfs:label "Direct" ;
+    rdfs:subClassOf governanceduo:BindingTypeEnum .
 
-sagegov:Inherited a owl:NamedIndividual,
-        governanceduo:BindingTypeEnum ;
-    rdfs:label "Inherited" .
+sagegov:Inherited a owl:Class ;
+    rdfs:label "Inherited" ;
+    rdfs:subClassOf governanceduo:BindingTypeEnum .
 
-sagegov:REJECTED a owl:NamedIndividual,
-        governanceduo:SubmissionStateEnum ;
-    rdfs:label "REJECTED" .
+sagegov:REJECTED a owl:Class ;
+    rdfs:label "REJECTED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
 
-sagegov:REVOKED a owl:NamedIndividual,
-        governanceduo:ApprovalStateEnum ;
-    rdfs:label "REVOKED" .
+sagegov:REVOKED a owl:Class ;
+    rdfs:label "REVOKED" ;
+    rdfs:subClassOf governanceduo:ApprovalStateEnum .
 
 sagegov:ResearchProject a owl:Class ;
     rdfs:label "ResearchProject" ;
@@ -2099,9 +2099,9 @@ sagegov:ResearchProject a owl:Class ;
     skos:exactMatch governanceduo:ResearchProject ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:SUBMITTED a owl:NamedIndividual,
-        governanceduo:SubmissionStateEnum ;
-    rdfs:label "SUBMITTED" .
+sagegov:SUBMITTED a owl:Class ;
+    rdfs:label "SUBMITTED" ;
+    rdfs:subClassOf governanceduo:SubmissionStateEnum .
 
 sagegov:Team a owl:Class ;
     rdfs:label "Team" ;
@@ -2623,7 +2623,7 @@ governanceduo:AccessRequirementKey a owl:DatatypeProperty ;
 
 governanceduo:ApprovalStateEnum a owl:Class ;
     rdfs:label "ApprovalStateEnum" ;
-    owl:oneOf ( sagegov:APPROVED sagegov:REVOKED ) ;
+    owl:unionOf ( sagegov:APPROVED sagegov:REVOKED ) ;
     skos:definition "Synapse's real AccessApproval state values (org.sagebionetworks.repo.model.ApprovalState), verified directly against the OpenAPI spec -- APPROVED/REVOKED only. A distinct, smaller enum from SubmissionStateEnum above. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:status. The two enums' APPROVED share one IRI, gov:APPROVED, as the graph has always written it; the predicate (gov:status on an AccessApproval, gov:state on a DataAccessSubmission) tells them apart. Should they ever need different definitions, or the enums be declared disjoint, APPROVED needs a distinct IRI per enum (plans/enum_values_match_owl.md)." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values sagegov:APPROVED,
@@ -2631,7 +2631,7 @@ governanceduo:ApprovalStateEnum a owl:Class ;
 
 governanceduo:BindingTypeEnum a owl:Class ;
     rdfs:label "BindingTypeEnum" ;
-    owl:oneOf ( sagegov:Direct sagegov:Inherited ) ;
+    owl:unionOf ( sagegov:Direct sagegov:Inherited ) ;
     skos:definition "Whether a governance relationship (an AccessGrant or AccessRequirementAssociation) applies directly to a resource or is inherited from a parent (e.g. a file inheriting its parent study's Access Requirement) — from the design doc's own `gov:bindingType gov:Inherited` example. Not a Synapse database column; ACCESS_REQUIREMENT_PROJECT and the ACL tables record only the direct binding, so inheritance has to be resolved (via SynapseEntity.parentId) and recorded explicitly, per the design doc's \"Direct and Inherited Governance\" section. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:bindingType." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values sagegov:Direct,
@@ -2711,117 +2711,117 @@ governanceduo:StudyKey a owl:DatatypeProperty ;
     skos:inScheme governanceduo:governance_duo ;
     governanceduo:foreign_key true .
 
-sagegov:APPROVED a owl:NamedIndividual,
-        governanceduo:ApprovalStateEnum,
-        governanceduo:SubmissionStateEnum ;
-    rdfs:label "APPROVED" .
+sagegov:APPROVED a owl:Class ;
+    rdfs:label "APPROVED" ;
+    rdfs:subClassOf governanceduo:ApprovalStateEnum,
+        governanceduo:SubmissionStateEnum .
 
-sagegov:CHANGE_PERMISSIONS a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:CHANGE_PERMISSIONS a owl:Class ;
     rdfs:label "CHANGE_PERMISSIONS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to change access permissions for the entity or resource." .
 
-sagegov:CHANGE_SETTINGS a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:CHANGE_SETTINGS a owl:Class ;
     rdfs:label "CHANGE_SETTINGS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to change settings or configuration for the entity or resource." .
 
-sagegov:CREATE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:CREATE a owl:Class ;
     rdfs:label "CREATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to create a new entity or resource." .
 
-sagegov:DELETE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:DELETE a owl:Class ;
     rdfs:label "DELETE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to delete the entity or resource." .
 
-sagegov:DELETE_SUBMISSION a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:DELETE_SUBMISSION a owl:Class ;
     rdfs:label "DELETE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to delete a submission." .
 
-sagegov:DOWNLOAD a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:DOWNLOAD a owl:Class ;
     rdfs:label "DOWNLOAD" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to download files or data from the entity or resource." .
 
-sagegov:EXEMPTION_ELIGIBLE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:EXEMPTION_ELIGIBLE a owl:Class ;
     rdfs:label "EXEMPTION_ELIGIBLE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Qualifies for exemption when granted on Access Requirement ACLs." .
 
-sagegov:MODERATE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:MODERATE a owl:Class ;
     rdfs:label "MODERATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to moderate content or activity related to the entity or resource." .
 
-sagegov:PARTICIPATE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:PARTICIPATE a owl:Class ;
     rdfs:label "PARTICIPATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to participate in activities related to the entity, such as discussions or challenges." .
 
-sagegov:READ a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:READ a owl:Class ;
     rdfs:label "READ" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to read or view the entity or resource." .
 
-sagegov:READ_PRIVATE_SUBMISSION a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:READ_PRIVATE_SUBMISSION a owl:Class ;
     rdfs:label "READ_PRIVATE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to read private submissions associated with the entity." .
 
-sagegov:REVIEW_SUBMISSIONS a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:REVIEW_SUBMISSIONS a owl:Class ;
     rdfs:label "REVIEW_SUBMISSIONS" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Enables reviewing submission groups (e.g., on Access Requirements) for specified objects." .
 
-sagegov:SEND_MESSAGE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:SEND_MESSAGE a owl:Class ;
     rdfs:label "SEND_MESSAGE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to send messages related to the entity or resource." .
 
-sagegov:SUBMIT a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:SUBMIT a owl:Class ;
     rdfs:label "SUBMIT" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to submit content or data to the entity or resource." .
 
-sagegov:TEAM_MEMBERSHIP_UPDATE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:TEAM_MEMBERSHIP_UPDATE a owl:Class ;
     rdfs:label "TEAM_MEMBERSHIP_UPDATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to update team membership, such as adding or removing members." .
 
-sagegov:UPDATE a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:UPDATE a owl:Class ;
     rdfs:label "UPDATE" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to modify or update the entity or resource." .
 
-sagegov:UPDATE_SUBMISSION a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:UPDATE_SUBMISSION a owl:Class ;
     rdfs:label "UPDATE_SUBMISSION" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Permission to update or modify a submission." .
 
-sagegov:UPLOAD a owl:NamedIndividual,
-        governanceduo:AccessTypeEnum,
-        governanceduo:GrantPermissionEnum ;
+sagegov:UPLOAD a owl:Class ;
     rdfs:label "UPLOAD" ;
+    rdfs:subClassOf governanceduo:AccessTypeEnum,
+        governanceduo:GrantPermissionEnum ;
     skos:definition "Deprecated; adding this to an ACL has no effect." ;
     governanceduo:deprecated true .
 
@@ -2873,7 +2873,7 @@ sagegov:etag a owl:DatatypeProperty ;
 
 governanceduo:SubmissionStateEnum a owl:Class ;
     rdfs:label "SubmissionStateEnum" ;
-    owl:oneOf ( sagegov:SUBMITTED sagegov:APPROVED sagegov:REJECTED sagegov:CANCELLED ) ;
+    owl:unionOf ( sagegov:SUBMITTED sagegov:APPROVED sagegov:REJECTED sagegov:CANCELLED ) ;
     skos:definition "Synapse's real DataAccessSubmissionState values, verified via Sage-Bionetworks/SynapseWebClient source (ACTDataAccessSubmissionWidget.java's exhaustive state switch) — the \"sagebrain governance graph ACL_AR data - AR table schemas.csv\" only says DATA_ACCESS_SUBMISSION_STATUS.STATE is TEXT, with no NOTES-column value list. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:state (APPROVED is shared with ApprovalStateEnum -- see that enum)." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values sagegov:APPROVED,
@@ -2914,7 +2914,7 @@ governanceduo:BaseEntity a owl:Class ;
 
 governanceduo:AccessTypeEnum a owl:Class ;
     rdfs:label "AccessTypeEnum" ;
-    owl:oneOf ( sagegov:CREATE sagegov:READ sagegov:UPDATE sagegov:DELETE sagegov:CHANGE_PERMISSIONS sagegov:DOWNLOAD sagegov:UPLOAD sagegov:PARTICIPATE sagegov:SUBMIT sagegov:READ_PRIVATE_SUBMISSION sagegov:UPDATE_SUBMISSION sagegov:DELETE_SUBMISSION sagegov:TEAM_MEMBERSHIP_UPDATE sagegov:SEND_MESSAGE sagegov:CHANGE_SETTINGS sagegov:MODERATE sagegov:REVIEW_SUBMISSIONS sagegov:EXEMPTION_ELIGIBLE ) ;
+    owl:unionOf ( sagegov:CREATE sagegov:READ sagegov:UPDATE sagegov:DELETE sagegov:CHANGE_PERMISSIONS sagegov:DOWNLOAD sagegov:UPLOAD sagegov:PARTICIPATE sagegov:SUBMIT sagegov:READ_PRIVATE_SUBMISSION sagegov:UPDATE_SUBMISSION sagegov:DELETE_SUBMISSION sagegov:TEAM_MEMBERSHIP_UPDATE sagegov:SEND_MESSAGE sagegov:CHANGE_SETTINGS sagegov:MODERATE sagegov:REVIEW_SUBMISSIONS sagegov:EXEMPTION_ELIGIBLE ) ;
     skos:definition "Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org (not inferred from the \"sagebrain governance graph ACL_AR data\" CSVs alone, which only name a handful of these as examples in a free-text NOTES column). Shared by AccessGrant.permission (an ACL grant's permission — ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying Synapse type in both places. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:permission." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values sagegov:CHANGE_PERMISSIONS,
@@ -2938,7 +2938,7 @@ governanceduo:AccessTypeEnum a owl:Class ;
 
 governanceduo:GrantPermissionEnum a owl:Class ;
     rdfs:label "GrantPermissionEnum" ;
-    owl:oneOf ( sagegov:CREATE sagegov:READ sagegov:UPDATE sagegov:DELETE sagegov:CHANGE_PERMISSIONS sagegov:DOWNLOAD sagegov:UPLOAD sagegov:PARTICIPATE sagegov:SUBMIT sagegov:READ_PRIVATE_SUBMISSION sagegov:UPDATE_SUBMISSION sagegov:DELETE_SUBMISSION sagegov:TEAM_MEMBERSHIP_UPDATE sagegov:SEND_MESSAGE sagegov:CHANGE_SETTINGS sagegov:MODERATE sagegov:REVIEW_SUBMISSIONS sagegov:EXEMPTION_ELIGIBLE sagegov:ACCESS ) ;
+    owl:unionOf ( sagegov:CREATE sagegov:READ sagegov:UPDATE sagegov:DELETE sagegov:CHANGE_PERMISSIONS sagegov:DOWNLOAD sagegov:UPLOAD sagegov:PARTICIPATE sagegov:SUBMIT sagegov:READ_PRIVATE_SUBMISSION sagegov:UPDATE_SUBMISSION sagegov:DELETE_SUBMISSION sagegov:TEAM_MEMBERSHIP_UPDATE sagegov:SEND_MESSAGE sagegov:CHANGE_SETTINGS sagegov:MODERATE sagegov:REVIEW_SUBMISSIONS sagegov:EXEMPTION_ELIGIBLE sagegov:ACCESS ) ;
     skos:definition "The permissions an AccessGrant's gov:permission can carry: every AccessTypeEnum value (Synapse's ACCESS_TYPE, same meaning: IRIs), plus ACCESS, which scripts/build_governance_graph.py derives on every grant carrying DOWNLOAD for sagebrain-infra's authorizer. AccessTypeEnum stays a pure mirror of Synapse (plans/sagebrain_contract_and_owl_dl_fixes.md D8), so AccessRequirement.accessType can't take ACCESS. The Synapse values are listed again rather than via `inherits:`, which linkml-validate, gen-owl and gen-shacl don't expand; scripts/check_enum_sync.py keeps the two lists identical (plans/enum_values_match_owl.md)." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values sagegov:ACCESS,

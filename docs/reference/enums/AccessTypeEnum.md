@@ -78,8 +78,6 @@ URI: [governanceduo:enum/AccessTypeEnum](https://w3id.org/sage-bionetworks/gover
 <details>
 ```yaml
 name: AccessTypeEnum
-implements:
-- owl:NamedIndividual
 description: 'Synapse''s real ACCESS_TYPE values, verified live via rest-docs.synapse.org
   (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone, which
   only name a handful of these as examples in a free-text NOTES column). Shared by
