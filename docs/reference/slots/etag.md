@@ -26,12 +26,6 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
-| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
-| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
-| [AccessApproval](../classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |  yes  |
-| [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  yes  |
-| [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  yes  |
-| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  no  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -46,7 +40,7 @@ URI: [governanceduo:slot/etag](https://w3id.org/sage-bionetworks/governance-duo/
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [DataAccessSubmission](../classes/DataAccessSubmission.md), [AccessApproval](../classes/AccessApproval.md), [ResearchProject](../classes/ResearchProject.md), [DataAccessRequest](../classes/DataAccessRequest.md), [Activity](../classes/Activity.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 
 ### Cardinality and Requirements
 
@@ -99,12 +93,6 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - SynapseAccessRequirementMixin
-- SynapseEntity
-- DataAccessSubmission
-- AccessApproval
-- ResearchProject
-- DataAccessRequest
-- Activity
 range: string
 
 ```

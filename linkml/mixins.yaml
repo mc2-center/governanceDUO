@@ -20,11 +20,15 @@ prefixes:
   ebiswo: http://www.ebi.ac.uk/swo/SWO_
   dcterms: http://purl.org/dc/terms/
   sagegov: https://sagebionetworks.org/governance/
+  gov: https://w3id.org/synapse/governance#
+  acl: http://www.w3.org/ns/auth/acl#
+  foaf: http://xmlns.com/foaf/0.1/
 default_prefix: governanceduo
 default_range: string
 imports:
   - linkml:types
   - props
+  - graph/vocabularies
 slots:
   dataUseModifiers:
     description: >-
@@ -139,9 +143,12 @@ slots:
   dataTier:
     description: >-
       The tier of data access associated with the access requirement. Equivalent to
-      DUOPlus5.
+      DUOPlus5. Range is the graph layer's own DataTier vocabulary
+      (linkml/graph/vocabularies.yaml), the same one gov:AccessRequirement.dataTier
+      uses -- one tier vocabulary, curated here and read by the graph builder
+      (scripts/build_graph.py).
     multivalued: true
-    range: DataTierEnum
+    range: DataTier
     exact_mappings:
       - NCIT:C175887
     comments:
@@ -385,113 +392,23 @@ slots:
   accessType:
     description: >-
       The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE).
-      Range is the same AccessTypeEnum used by AccessGrant.permission in
-      governance_graph.yaml — one real Synapse ACCESS_TYPE type backs both an
-      ACL grant's permission and an Access Requirement's own governed access kind.
-    range: AccessTypeEnum
+      Range is the graph layer's own Permission vocabulary
+      (linkml/graph/vocabularies.yaml) — one real Synapse ACCESS_TYPE type backs
+      both gov:AccessRequirement.accessType and an ACL Authorization's own mode.
+    range: Permission
   concreteType:
     description: >-
       Which kind of Access Requirement this is (ACCESS_REQUIREMENT.CONCRETE_TYPE).
       The real Synapse column stores the full Java class name (e.g.
-      "org.sagebionetworks.repo.model.ManagedACTAccessRequirement"); this enum
-      uses the short class name for readability.
-    range: AccessRequirementConcreteTypeEnum
+      "org.sagebionetworks.repo.model.ManagedACTAccessRequirement"); this
+      vocabulary uses the short class name for readability. Range is the graph
+      layer's own AccessRequirementType vocabulary (linkml/graph/vocabularies.yaml),
+      the same one gov:AccessRequirement.requirementType uses.
+    range: AccessRequirementType
   isTwoFaRequired:
     description: Whether two-factor authentication is required (ACCESS_REQUIREMENT.IS_TWO_FA_REQUIRED).
     range: boolean
 enums:
-  AccessTypeEnum:
-    description: >-
-      Synapse's real ACCESS_TYPE values, verified live via rest-docs.synapse.org
-      (not inferred from the "sagebrain governance graph ACL_AR data" CSVs alone,
-      which only name a handful of these as examples in a free-text NOTES column).
-      Shared by AccessGrant.permission (an ACL grant's permission —
-      ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's
-      own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying
-      Synapse type in both places. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for
-      gov:permission.
-    permissible_values:
-      CREATE:
-        meaning: sagegov:CREATE
-        description: Permission to create a new entity or resource.
-      READ:
-        meaning: sagegov:READ
-        description: Permission to read or view the entity or resource.
-      UPDATE:
-        meaning: sagegov:UPDATE
-        description: Permission to modify or update the entity or resource.
-      DELETE:
-        meaning: sagegov:DELETE
-        description: Permission to delete the entity or resource.
-      CHANGE_PERMISSIONS:
-        meaning: sagegov:CHANGE_PERMISSIONS
-        description: Permission to change access permissions for the entity or resource.
-      DOWNLOAD:
-        meaning: sagegov:DOWNLOAD
-        description: Permission to download files or data from the entity or resource.
-      UPLOAD:
-        meaning: sagegov:UPLOAD
-        description: Deprecated; adding this to an ACL has no effect.
-        annotations:
-          deprecated: true
-      PARTICIPATE:
-        meaning: sagegov:PARTICIPATE
-        description: Permission to participate in activities related to the entity, such as discussions or challenges.
-      SUBMIT:
-        meaning: sagegov:SUBMIT
-        description: Permission to submit content or data to the entity or resource.
-      READ_PRIVATE_SUBMISSION:
-        meaning: sagegov:READ_PRIVATE_SUBMISSION
-        description: Permission to read private submissions associated with the entity.
-      UPDATE_SUBMISSION:
-        meaning: sagegov:UPDATE_SUBMISSION
-        description: Permission to update or modify a submission.
-      DELETE_SUBMISSION:
-        meaning: sagegov:DELETE_SUBMISSION
-        description: Permission to delete a submission.
-      TEAM_MEMBERSHIP_UPDATE:
-        meaning: sagegov:TEAM_MEMBERSHIP_UPDATE
-        description: Permission to update team membership, such as adding or removing members.
-      SEND_MESSAGE:
-        meaning: sagegov:SEND_MESSAGE
-        description: Permission to send messages related to the entity or resource.
-      CHANGE_SETTINGS:
-        meaning: sagegov:CHANGE_SETTINGS
-        description: Permission to change settings or configuration for the entity or resource.
-      MODERATE:
-        meaning: sagegov:MODERATE
-        description: Permission to moderate content or activity related to the entity or resource.
-      REVIEW_SUBMISSIONS:
-        meaning: sagegov:REVIEW_SUBMISSIONS
-        description: Enables reviewing submission groups (e.g., on Access Requirements) for specified objects.
-      EXEMPTION_ELIGIBLE:
-        meaning: sagegov:EXEMPTION_ELIGIBLE
-        description: Qualifies for exemption when granted on Access Requirement ACLs.
-  AccessRequirementConcreteTypeEnum:
-    implements:
-      - rdfs:Literal
-    description: >-
-      Synapse's real AccessRequirement subclasses, verified via
-      Sage-Bionetworks/Synapse-Repository-Services's AccessRequirementType.java
-      (lib/jdomodels/.../org/sagebionetworks/repo/model/ar/AccessRequirementType.java).
-      Permissible values use the short Java class name; the actual
-      ACCESS_REQUIREMENT.CONCRETE_TYPE column stores the fully-qualified name
-      (e.g. "org.sagebionetworks.repo.model.ManagedACTAccessRequirement").
-    permissible_values:
-      TermsOfUseAccessRequirement:
-        description: Restricted by terms of use (AccessRequirementType.TOU).
-      SelfSignAccessRequirement:
-        description: Restricted by terms of use, self-signed (AccessRequirementType.SELF_SIGNED).
-      ACTAccessRequirement:
-        description: Controlled by the Access and Compliance Team (AccessRequirementType.ATC).
-      ManagedACTAccessRequirement:
-        description: >-
-          Controlled by the Access and Compliance Team, with a managed data
-          access submission workflow (AccessRequirementType.MANAGED_ATC) — the
-          type backing DataAccessSubmission/DataAccessSubmissionStatus in
-          governance_graph.yaml.
-      LockAccessRequirement:
-        description: Controlled by the Access and Compliance Team; locks an entity (AccessRequirementType.LOCK).
   DataUseModifierEnum:
     description: >-
       Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions
@@ -736,24 +653,6 @@ enums:
         description: "Data use conditions are derived from an Award."
       Other:
         description: "Other permissions may apply to the data access."
-  DataTierEnum:
-    implements:
-      - rdfs:Literal
-    permissible_values:
-      Anonymous:
-        description: "Data can be viewed and downloaded anonymously by anyone on the internet."
-      Open:
-        description: "Users must have a Synapse account to download data."
-      Controlled:
-        description: "Users must have a Synapse account and satisfy access conditions to download data."
-      Private:
-        description: "Users must be provided access to data in Synapse by a project administrator."
-      Unclassified:
-        description: >-
-          Tier not yet determined by a curator. Treated as more restrictive than
-          Private until set, so an entity bound to an AccessRequirement with no
-          recorded tier fails closed (scripts/build_derivation_policy.py ranks it
-          highest) rather than reading as unrestricted.
   LicenseEnum:
     implements:
       - rdfs:Literal

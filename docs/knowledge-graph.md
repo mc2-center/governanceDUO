@@ -377,7 +377,8 @@ later revoked — both are explicit open questions, not solved here; see
 
 For the full class/slot/enum reference of `governance_graph.yaml` (the LinkML schema,
 under `governanceduo:` IRIs), see the [schema reference](reference/index.md) — e.g.
-[`AccessGrant`](reference/classes/AccessGrant.md), [`SynapseEntity`](reference/classes/SynapseEntity.md),
-[`DataAccessSubmission`](reference/classes/DataAccessSubmission.md). For the `gov:`/`syn:`
+`AccessGrant`, `SynapseEntity`, `DataAccessSubmission` (moved to the graph layer,
+`linkml/graph/governance.yaml`, plans/model_refactor.md; no longer rendered here).
+For the `gov:`/`syn:`
 namespace's own TBox, read [`shapes/governance_graph.owl.ttl`](https://github.com/mc2-center/governanceDUO/blob/main/shapes/governance_graph.owl.ttl)
 directly — it's short.

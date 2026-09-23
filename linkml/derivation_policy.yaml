@@ -18,64 +18,25 @@ description: >-
 
   `DerivationRule` is honestly ungrounded: no real Synapse or repo data source
   enumerates datatype/tier combination rules today — it ships as structural
-  capability with illustrative examples only, the same treatment
-  governance_graph.yaml's own AccessRequirementTemplate/Program/Site/IRBRequirement
-  already got for the identical reason (see that file's "Honest grounding note").
-  Populated by governance/DCC policy owners as an explicit editorial act, never
-  inferred.
+  capability with illustrative examples only. Populated by governance/DCC policy
+  owners as an explicit editorial act, never inferred.
 
-  `ControlLabel`/`DerivationReview` reference `SynapseEntity`/`AccessRequirementReference`/
-  `Activity` individuals via untyped `uriorcurie`, not typed class ranges, for the
-  same cross-ABox reason provenance.yaml's `Activity.generated`/`Usage.entity`
-  already do: those individuals live in separate example/ABox pipelines
-  (linkml/examples/governance_graph/, linkml/examples/provenance/) and are never
-  asserted in this file's own example-rdf ABox. Their values are graph IRIs
-  written as CURIEs: `syn:syn<n>` for Synapse entities, `sagegov:AR-<n>` for the
-  governance graph's AccessRequirement nodes, `sagegov:activity-<n>` for
-  Activities (see scripts/graph_iris.py). The RDF carries them as IRI nodes, so
-  shapes/governance_duo.owl.ttl types these slots owl:ObjectProperty and the SHACL
-  constrains them to sh:nodeKind sh:IRI.
-
-  `ControlLabel`/`DerivationReview` and every slot they carry use gov: (sagegov:)
-  IRIs: they are graph content that downstream consumers (sagebrain-infra's
-  authorizer) read alongside gov:AccessGrant/gov:AccessRequirement, not
-  schema-internal records. `DerivationRule` stays governanceduo: -- it is
+  `ControlLabel`/`DerivationReview` moved to the graph layer
+  (linkml/graph/governance.yaml, plans/model_refactor.md): they are graph
+  content computed by scripts/build_derivation_policy.py from the canonical
+  governance/provenance graph, not curated records, so this file no longer
+  declares them. `DerivationRule` stays here, in the record layer -- it is
   curator configuration consumed by scripts/build_derivation_policy.py, not
   graph content. See plans/sagebrain_contract_and_owl_dl_fixes.md decision D6.
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
-  sagegov: https://sagebionetworks.org/governance/
-  syn: "https://www.synapse.org/Synapse:"
 default_prefix: governanceduo
 default_range: string
 imports:
   - linkml:types
   - base_entity
-  - provenance
-  - governance_graph
   - mixins
-enums:
-  DerivationReviewStatusEnum:
-    implements:
-      - rdfs:Literal
-    description: >-
-      Workflow state of a DerivationReview — the same enum-per-workflow-state
-      convention ApprovalStateEnum/SubmissionStateEnum already use in
-      governance_graph.yaml, deliberately a distinct enum from both (do not
-      conflate).
-    permissible_values:
-      Flagged:
-        description: >-
-          Minted automatically (scripts/build_derivation_policy.py) because the
-          source Activity's inputs carry disjoint sourceAccessRequirements sets —
-          not yet looked at by a person.
-      Reviewed:
-        description: A person has looked at this combination but not yet recorded a decision.
-      Approved:
-        description: The combination was reviewed and judged safe to permit.
-      Denied:
-        description: The combination was reviewed and judged unsafe; access to the derived output should be blocked.
 classes:
   DerivationRule:
     is_a: BaseEntity
@@ -98,69 +59,11 @@ classes:
       - resultingDataTier
       - requiresReview
       - rationale
-  ControlLabel:
-    class_uri: sagegov:ControlLabel
-    description: >-
-      A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum
-      rank across an entity's full derivation ancestry, computed once when the
-      entity is created/derived rather than re-walked live on every query (the
-      note's own paragraph-18 design: "a control label computed once... stored as
-      an attribute on the node, not recomputed live on every query"). Not `is_a:
-      BaseEntity`: has no independent Synapse-sourced identifier of its own, same
-      reasoning as Condition — like Condition,
-      scripts/build_derivation_policy.py mints a real, stable per-subject IRI node
-      for it at the script level even though the LinkML schema itself has no `id`
-      slot to hang one off of.
-    slot_usage:
-      dataTier:
-        description: >-
-          Reuses GovernanceMixin's shared dataTier slot (mixins.yaml) — the same
-          "tier of data access associated with" concept, computed here rather than
-          declared. Narrowed to single-valued (GovernanceMixin's own dataTier is
-          multivalued, since a single AccessRequirement can name more than one
-          tier) since a ControlLabel carries exactly one, precomputed rank.
-          slot_uri set explicitly here: the base dataTier slot (mixins.yaml)
-          declares none of its own, and scripts/build_derivation_policy.py's
-          PREDICATE() reuse (from build_governance_graph.py) requires one. A gov:
-          IRI, like every other ControlLabel slot (see this schema's own
-          description).
-        slot_uri: sagegov:dataTier
-        multivalued: false
-        required: true
-    slots:
-      - subject
-      - dataTier
-      - sourceAccessRequirements
-      - computedFrom
-      - computedOn
-  DerivationReview:
-    is_a: BaseEntity
-    class_uri: sagegov:DerivationReview
-    description: >-
-      An auditable record minted whenever a derivation Activity's inputs carry
-      ControlLabels citing disjoint sourceAccessRequirements sets — the note's own
-      paragraph-12 "composite risk from independent grants" case, flagged by
-      pattern (scripts/build_derivation_policy.py) rather than inferred, and its
-      own proposed storage mechanism (paragraph 21): "the access rule could then be
-      stored as a node in the graph for later review/retrieval."
-    slot_usage:
-      id:
-        description: A synthetic identifier for this review record.
-        pattern: '^derivation_review\.[A-Za-z0-9_-]+$'
-        examples:
-          - value: derivation_review.001
-    slots:
-      - activity
-      - inputLabels
-      - reviewStatus
-      - reviewedBy
-      - reviewedOn
-      - reviewNotes
 slots:
   inputDataTiers:
     slot_uri: governanceduo:inputDataTiers
-    description: The combination of input DataTierEnum values this rule governs.
-    range: DataTierEnum
+    description: The combination of input DataTier values this rule governs.
+    range: DataTier
     multivalued: true
     required: true
   permitted:
@@ -171,94 +74,20 @@ slots:
   resultingDataTier:
     slot_uri: governanceduo:resultingDataTier
     description: >-
-      The DataTierEnum the derived output carries when permitted. Defaults to
+      The DataTier the derived output carries when permitted. Defaults to
       max(inputDataTiers) per the note's own recommendation, but a rule may
       explicitly override it for a specific combination (e.g. an aggregation that
       demonstrably reduces sensitivity below its inputs' max). The override
       applies to what the output inherits: it never lowers the output below its
       own direct AccessRequirement bindings.
-    range: DataTierEnum
+    range: DataTier
   requiresReview:
     slot_uri: governanceduo:requiresReview
     description: >-
       Whether this combination is only conditionally permitted, pending a human
-      DerivationReview, rather than flatly permitted/denied.
+      DerivationReview (a graph-layer record, linkml/graph/governance.yaml),
+      rather than flatly permitted/denied.
     range: boolean
   rationale:
     slot_uri: governanceduo:rationale
     description: Free-text justification for this rule's permitted/resultingDataTier values.
-  subject:
-    slot_uri: sagegov:subject
-    description: >-
-      The SynapseEntity this ControlLabel labels. range is uriorcurie, not
-      SynapseEntity — see this schema's own description. The value is an IRI
-      node, typed owl:ObjectProperty in the OWL.
-    range: uriorcurie
-    required: true
-  sourceAccessRequirements:
-    slot_uri: sagegov:sourceAccessRequirements
-    description: >-
-      Every AccessRequirement contributing to this label's dataTier, across the
-      subject's full derivation ancestry — what lets a later composite-risk check
-      tell whether two ControlLabels trace back to the same AR or to genuinely
-      different ones (the note's paragraph-12 case). range is uriorcurie, not
-      AccessRequirementReference — see this schema's own description. The value
-      is an IRI node, typed owl:ObjectProperty in the OWL.
-    range: uriorcurie
-    multivalued: true
-  computedFrom:
-    slot_uri: sagegov:computedFrom
-    description: >-
-      The Activity this label was (re)computed from. range is uriorcurie, not
-      Activity — see this schema's own description. Also the staleness signal
-      Section 7 of plans/prov_o_integration.md relies on: if an AR named in
-      sourceAccessRequirements is later revoked, any label computed before that
-      point is provably stale. The value is an IRI node, typed owl:ObjectProperty
-      in the OWL.
-    range: uriorcurie
-  computedOn:
-    slot_uri: sagegov:computedOn
-    description: When this ControlLabel was (re)computed (epoch milliseconds).
-    range: integer
-  activity:
-    slot_uri: sagegov:activity
-    description: >-
-      The derivation Activity being reviewed. range is uriorcurie, not Activity —
-      see this schema's own description. The value is an IRI node, typed
-      owl:ObjectProperty in the OWL.
-    range: uriorcurie
-    required: true
-  inputLabels:
-    slot_uri: sagegov:inputLabels
-    description: >-
-      The ControlLabels (one per input entity of the Activity above) whose
-      disjoint sourceAccessRequirements triggered this review. Inlined, not
-      referenced by id — ControlLabel has no independent identifier of its own
-      (see that class's own description), so embedding is the only option, not a
-      cross-ABox concern the way Activity/SynapseEntity references are.
-    range: ControlLabel
-    multivalued: true
-    required: true
-  reviewStatus:
-    slot_uri: sagegov:reviewStatus
-    description: >-
-      This review's workflow state. Deliberately not named `status`: that slot
-      name is already bound to ApprovalStateEnum on AccessApproval in
-      governance_graph.yaml — a distinct, unrelated enum; do not conflate.
-    range: DerivationReviewStatusEnum
-    required: true
-  reviewedBy:
-    slot_uri: sagegov:reviewedBy
-    description: >-
-      Synapse numeric user id of who recorded reviewStatus, when it is
-      Reviewed/Approved/Denied. range integer, mirroring
-      createdBy/modifiedBy/submittedBy's own raw-id convention rather than a typed
-      Principal reference — see provenance.yaml's own description for why.
-    range: integer
-  reviewedOn:
-    slot_uri: sagegov:reviewedOn
-    description: When reviewStatus was last recorded (epoch milliseconds).
-    range: integer
-  reviewNotes:
-    slot_uri: sagegov:reviewNotes
-    description: Free-text notes from the reviewer.

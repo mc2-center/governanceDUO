@@ -55,8 +55,8 @@ GRAPH_EQUAL = [
     "governance_graph_export/governance_graph.ttl",
     "governance_graph_export/authorizer_v1.ttl",
     "linkml/examples/rdf/*.ttl",
-    "linkml/examples/provenance/rdf/*.ttl",
     "linkml/examples/derivation_policy/rdf/*.ttl",
+    "derivation_policy_export/derivation_policy.ttl",
 ]
 # Directories whose whole contents are generated (the make target clears them
 # first), so their file lists must match HEAD too.
@@ -64,9 +64,9 @@ GENERATED_DIRS = [
     "docs/reference",
     "policy_fabric_export",
     "linkml/examples/rdf",
-    "linkml/examples/provenance/rdf",
     "linkml/examples/derivation_policy/rdf",
     "linkml/examples/graph/rdf",
+    "derivation_policy_export",
 ]
 REFINEMENT_ROUNDS = 4
 # SHACL list-valued parameters whose member order carries no meaning.

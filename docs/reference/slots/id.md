@@ -30,19 +30,7 @@ URI: [dcterms:identifier](http://purl.org/dc/terms/identifier)
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  yes  |
 | [Schema](../classes/Schema.md) | Information that is relevant to resource access conditions |  yes  |
 | [Study](../classes/Study.md) | Studies associated with a grant |  yes  |
-| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
-| [AccessGrant](../classes/AccessGrant.md) | A first-class ACL grant: resource, principal, permission(s), source, and whet... |  yes  |
-| [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md) | Binds an AccessRequirement to a resource, recording whether the binding is di... |  yes  |
-| [DataAccessSubmission](../classes/DataAccessSubmission.md) | A user's application against an AccessRequirement |  yes  |
-| [AccessApproval](../classes/AccessApproval.md) | Records that a Principal has been approved for access under an AccessRequirem... |  yes  |
-| [ResearchProject](../classes/ResearchProject.md) | Documents the research context/justification behind a DataAccessRequest (and,... |  yes  |
-| [DataAccessRequest](../classes/DataAccessRequest.md) | A user's draft/submitted request against an AccessRequirement, behind a DataA... |  yes  |
-| [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md) | A reusable set of DUO-backed Conditions an IRBRequirement can extend |  yes  |
-| [IRBRequirement](../classes/IRBRequirement.md) | A site/program-specific instantiation of an AccessRequirementTemplate, per th... |  yes  |
-| [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
-| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  yes  |
 | [DerivationRule](../classes/DerivationRule.md) | A policy row keyed by a combination of DataTierEnum values, answering "may th... |  yes  |
-| [DerivationReview](../classes/DerivationReview.md) | An auditable record minted whenever a derivation Activity's inputs carry Cont... |  yes  |
 
 
 

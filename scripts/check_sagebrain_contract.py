@@ -4,31 +4,39 @@ check_sagebrain_contract.py
 Opt-in check that this repo's governance layer works as a layer of sagebrain-model's
 graph (make sagebrain-contract-check SAGEBRAIN_MODEL=<path>). Needs a sagebrain-model
 checkout, so it isn't part of validate-all; sagebrain-model runs the equivalent check
-from its side. Four parts, each reported separately:
+from its side. Rewritten against the single graph TBox and shape set
+(shapes/governance.owl.ttl, shapes/governance.shacl.ttl), replacing the pre-refactor
+pair (shapes/governance_duo.owl.ttl + shapes/governance_graph.owl.ttl,
+shapes/governance_graph.shacl.ttl + shapes/provenance_layer.shacl.ttl) -- see
+plans/model_refactor.md. Four parts, each reported separately:
 
 1. OWL 2 DL on the union of sagebrain-model's ontology (ontology/main, its
    ontology/imports except the vendored external vocabularies prov.ttl/duo.ttl --
    the same set its own tests/validate.py DL check merges -- plus its
-   ontology/governance modules) and this repo's shapes/governance_duo.owl.ttl +
-   shapes/governance_graph.owl.ttl. Merged to a file, then validated: chaining
-   `robot merge ... validate-profile` in one call reports spurious violations.
-2. Every prov: term this repo's two TBoxes declare has the type sagebrain-model's
+   ontology/governance modules) and this repo's one graph TBox. Merged to a file,
+   then validated: chaining `robot merge ... validate-profile` in one call reports
+   spurious violations.
+2. Every prov: term the graph TBox declares has the type sagebrain-model's
    vendored ontology/imports/prov.ttl gives it (check_prov_alignment.py) -- the
    one conflict with prov.ttl that leaving it out of (1)'s union would hide.
 3. SHACL on one joined worked example -- sagebrain-model's examples/AD-cohort.ttl and
-   examples/pipeline_provenance.ttl, this repo's exported governance graph and
-   provenance examples, and tests/sagebrain_contract/governance_binding.ttl --
-   against both repos' shapes (sagebrain-model's ontology/shacl/*.ttl, this repo's
-   shapes/governance_graph.shacl.ttl and shapes/provenance_layer.shacl.ttl), with
-   inference off. The ont_graph is sagebrain-model's ontology plus
-   shapes/governance_graph.owl.ttl -- the TBox describing the graph ABox, the same
-   one make governance-graph-validate uses. shapes/governance_duo.owl.ttl
-   describes LinkML records, not this graph, and mixing its ~5,000 triples into
-   the data graph makes pyshacl take tens of minutes.
-4. scripts/build_derivation_policy.py over that joined example, asserting
-   association:apoe-expr-samp01 (sagebrain:derived_from the pipeline's output)
-   receives a ControlLabel citing gov:AR-42 -- which requires sagebrain-model to
-   declare sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom.
+   examples/pipeline_provenance.ttl, this repo's exported governance graph (the
+   canonical example, which now carries its own provenance content -- Activity/Usage
+   moved into the graph layer, plans/model_refactor.md), and
+   tests/sagebrain_contract/governance_binding.ttl -- against both repos' shapes
+   (sagebrain-model's ontology/shacl/*.ttl and this repo's shapes/governance.shacl.ttl),
+   with inference off. The ont_graph is sagebrain-model's ontology plus
+   shapes/governance.owl.ttl -- the one TBox describing the graph ABox, the same
+   one make governance-graph-validate uses.
+4. scripts/build_derivation_policy.py over the canonical export plus
+   tests/sagebrain_contract/governance_binding.ttl (which binds
+   govid:ar/42 to syn:syn27000001, the raw input of sagebrain-model's worked
+   pipeline example), and sagebrain-model's own examples/ontology/governance as
+   --extra-graph, asserting association:apoe-expr-samp01 (sagebrain:derived_from
+   the pipeline's output, syn:syn26999999) receives a ControlLabel citing
+   govid:ar/42 -- which requires sagebrain-model to declare
+   sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom
+   (ontology/governance/provenance_bridge.ttl, WITH_GOVERNANCE=1).
 
 Usage:
     python scripts/check_sagebrain_contract.py --sagebrain-model PATH [--robot-jar PATH]
@@ -48,22 +56,22 @@ from rdflib.namespace import SH
 
 from check_prov_alignment import type_mismatches
 
-GOVERNANCE_TBOXES = ["shapes/governance_duo.owl.ttl", "shapes/governance_graph.owl.ttl"]
-GOVERNANCE_SHAPES = ["shapes/governance_graph.shacl.ttl", "shapes/provenance_layer.shacl.ttl"]
+GOVERNANCE_TBOXES = ["shapes/governance.owl.ttl"]
+GOVERNANCE_SHAPES = ["shapes/governance.shacl.ttl"]
 GOVERNANCE_DATA = [
     "governance_graph_export/governance_graph.ttl",
-    "linkml/examples/provenance/rdf/all_examples.ttl",
     "tests/sagebrain_contract/governance_binding.ttl",
 ]
 SAGEBRAIN_EXAMPLES = ["examples/AD-cohort.ttl", "examples/pipeline_provenance.ttl"]
 
 LABEL_QUERY = """
-PREFIX sagegov: <https://sagebionetworks.org/governance/>
+PREFIX gov: <https://w3id.org/synapse/governance#>
+PREFIX govid: <https://w3id.org/synapse/governance/>
 PREFIX association: <https://w3id.org/synapse/ad/association/>
 ASK {
-    ?label a sagegov:ControlLabel ;
-           sagegov:subject association:apoe-expr-samp01 ;
-           sagegov:sourceAccessRequirements sagegov:AR-42 .
+    ?label a gov:ControlLabel ;
+           gov:subject association:apoe-expr-samp01 ;
+           gov:sourceAccessRequirements govid:ar/42 .
 }
 """
 
@@ -123,16 +131,12 @@ def check_shacl(root: Path, ontology: Graph) -> list[str]:
 
 
 def check_derivation(root: Path, tmp: Path) -> list[str]:
-    governance = Graph()
-    for path in ["governance_graph_export/governance_graph.ttl", "tests/sagebrain_contract/governance_binding.ttl"]:
-        governance.parse(path)
-    governance_path = tmp / "governance.ttl"
-    governance.serialize(governance_path, format="turtle")
     out = tmp / "derivation_policy.ttl"
     command = [
         sys.executable, "scripts/build_derivation_policy.py",
-        "--provenance-graph", "linkml/examples/provenance/rdf/all_examples.ttl",
-        "--governance-graph", str(governance_path),
+        "--graph", "governance_graph_export/governance_graph.ttl",
+        "--graph", "tests/sagebrain_contract/governance_binding.ttl",
+        "--derivation-rules", "linkml/examples/derivation_policy",
         "--out", str(out),
     ]
     for path in [*(root / p for p in SAGEBRAIN_EXAMPLES), *sorted((root / "ontology/governance").glob("*.ttl"))]:
@@ -142,7 +146,7 @@ def check_derivation(root: Path, tmp: Path) -> list[str]:
         return [f"build_derivation_policy.py failed: {result.stderr.strip()[-400:]}"]
     if not Graph().parse(out).query(LABEL_QUERY).askAnswer:
         return [
-            "association:apoe-expr-samp01 received no ControlLabel citing gov:AR-42 "
+            "association:apoe-expr-samp01 received no ControlLabel citing govid:ar/42 "
             "(is sagebrain:derived_from declared rdfs:subPropertyOf prov:wasDerivedFrom?)"
         ]
     return []
@@ -159,7 +163,7 @@ def main():
         sys.exit(f"{root} does not look like a sagebrain-model checkout (no ontology/ folder).")
     sources = sagebrain_ontology_sources(root)
     ontology = Graph()
-    for path in [*sources, Path("shapes/governance_graph.owl.ttl")]:
+    for path in [*sources, Path("shapes/governance.owl.ttl")]:
         ontology.parse(path)
 
     results = {}

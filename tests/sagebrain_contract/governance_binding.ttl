@@ -2,12 +2,26 @@
 # sagebrain-contract-check): binds the raw input file of sagebrain-model's worked
 # pipeline example (examples/pipeline_provenance.ttl: syn27000001 -> nf-core ->
 # syn27000002 -> DESeq2 -> syn26999999, which association:apoe-expr-samp01 in
-# examples/AD-cohort.ttl is sagebrain:derived_from) to this repo's example
-# AccessRequirement stub gov:AR-42, so the joined worked example has a governed
-# source whose ControlLabel must reach the Association. Illustrative, not real
-# Synapse data.
-@prefix gov: <https://sagebionetworks.org/governance/> .
+# examples/AD-cohort.ttl is sagebrain:derived_from) to this repo's example Access
+# Requirement (govid:ar/42, plans/model_refactor.md's new-namespace IRI -- the
+# curated record and the graph node share it, R5), so the joined worked example
+# has a governed source whose ControlLabel must reach the Association.
+# Illustrative, not real Synapse data.
+#
+# syn:syn27000001 is typed and given a benefactor here, conforming to
+# shape:SynapseEntityShape's closed shape (shapes/governance.shacl.ttl) --
+# sagebrain-model's own examples/pipeline_provenance.ttl types it only under the
+# old gov: namespace (https://sagebionetworks.org/governance/, its own pinned
+# import), a different IRI from this repo's current gov:SynapseEntity
+# (https://w3id.org/synapse/governance#SynapseEntity) that carries no SHACL
+# obligations of its own here.
+@prefix gov: <https://w3id.org/synapse/governance#> .
+@prefix govid: <https://w3id.org/synapse/governance/> .
 @prefix syn: <https://www.synapse.org/Synapse:> .
 
 syn:syn27000001 a gov:SynapseEntity ;
-    gov:hasAccessRequirement gov:AR-42 .
+    gov:benefactor syn:syn27000001 ;
+    gov:requiresAR govid:ar/42 .
+
+govid:ar/42 a gov:AccessRequirement ;
+    gov:dataTier gov:ControlledTier .

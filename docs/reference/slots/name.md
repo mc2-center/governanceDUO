@@ -26,10 +26,6 @@ URI: [governanceduo:slot/name](https://w3id.org/sage-bionetworks/governance-duo/
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
-| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
-| [Program](../classes/Program.md) | A multi-site research consortium (e |  yes  |
-| [Activity](../classes/Activity.md) | Mirrors Synapse's real Activity object (org |  yes  |
-| [Usage](../classes/Usage.md) | Flattens Synapse's real Used interface and its two implementations — UsedEnti... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -44,7 +40,7 @@ URI: [governanceduo:slot/name](https://w3id.org/sage-bionetworks/governance-duo/
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md), [Program](../classes/Program.md), [Activity](../classes/Activity.md), [Usage](../classes/Usage.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 
 ### Cardinality and Requirements
 
@@ -99,10 +95,6 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - SynapseAccessRequirementMixin
-- SynapseEntity
-- Program
-- Activity
-- Usage
 range: string
 
 ```

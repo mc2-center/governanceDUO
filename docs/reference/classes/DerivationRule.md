@@ -35,8 +35,8 @@ URI: [governanceduo:DerivationRule](https://w3id.org/sage-bionetworks/governance
     
         
         
-        DerivationRule --> "1..*" DataTierEnum : inputDataTiers
-        click DataTierEnum href "../../enums/DataTierEnum/"
+        DerivationRule --> "1..*" DataTier : inputDataTiers
+        click DataTier href "../../enums/DataTier/"
     
 
         
@@ -52,8 +52,8 @@ URI: [governanceduo:DerivationRule](https://w3id.org/sage-bionetworks/governance
     
         
         
-        DerivationRule --> "0..1" DataTierEnum : resultingDataTier
-        click DataTierEnum href "../../enums/DataTierEnum/"
+        DerivationRule --> "0..1" DataTier : resultingDataTier
+        click DataTier href "../../enums/DataTier/"
     
 
         
@@ -80,9 +80,9 @@ URI: [governanceduo:DerivationRule](https://w3id.org/sage-bionetworks/governance
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [inputDataTiers](../slots/inputDataTiers.md) | 1..* <br/> [DataTierEnum](../enums/DataTierEnum.md) | The combination of input DataTierEnum values this rule governs | direct |
+| [inputDataTiers](../slots/inputDataTiers.md) | 1..* <br/> [DataTier](../enums/DataTier.md) | The combination of input DataTier values this rule governs | direct |
 | [permitted](../slots/permitted.md) | 1 <br/> [Boolean](../types/Boolean.md) | Whether this combination of inputDataTiers may be joined/derived from togethe... | direct |
-| [resultingDataTier](../slots/resultingDataTier.md) | 0..1 <br/> [DataTierEnum](../enums/DataTierEnum.md) | The DataTierEnum the derived output carries when permitted | direct |
+| [resultingDataTier](../slots/resultingDataTier.md) | 0..1 <br/> [DataTier](../enums/DataTier.md) | The DataTier the derived output carries when permitted | direct |
 | [requiresReview](../slots/requiresReview.md) | 0..1 <br/> [Boolean](../types/Boolean.md) | Whether this combination is only conditionally permitted, pending a human Der... | direct |
 | [rationale](../slots/rationale.md) | 0..1 <br/> [String](../types/String.md) | Free-text justification for this rule's permitted/resultingDataTier values | direct |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A synthetic identifier for this rule | [BaseEntity](../classes/BaseEntity.md) |
@@ -124,6 +124,29 @@ URI: [governanceduo:DerivationRule](https://w3id.org/sage-bionetworks/governance
 
 
 
+
+## Examples
+### Example: DerivationRule-001
+
+```yaml
+# Illustrative -- no real Synapse/repo data source enumerates datatype/tier
+# combination rules today; see derivation_policy.yaml's own "Honest grounding
+# note". Populated as a policy-owner editorial decision, not inferred.
+id: derivation_rule.controlled-plus-controlled
+inputDataTiers:
+  - Controlled
+  - Controlled
+permitted: true
+resultingDataTier: Controlled
+requiresReview: true
+rationale: >-
+  Joining two Controlled-tier inputs is not flatly denied, but routes to human
+  ACT review (DerivationReview) rather than auto-approval, since two
+  independently-approved Controlled datasets combined can expose a
+  re-identification risk neither grant alone authorized -- the composite-risk
+  case plans/prov_o_integration.md Section 4 describes.
+
+```
 
 
 
@@ -181,14 +204,14 @@ slot_usage:
 attributes:
   inputDataTiers:
     name: inputDataTiers
-    description: The combination of input DataTierEnum values this rule governs.
+    description: The combination of input DataTier values this rule governs.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: governanceduo:inputDataTiers
     owner: DerivationRule
     domain_of:
     - DerivationRule
-    range: DataTierEnum
+    range: DataTier
     required: true
     multivalued: true
   permitted:
@@ -205,7 +228,7 @@ attributes:
     required: true
   resultingDataTier:
     name: resultingDataTier
-    description: 'The DataTierEnum the derived output carries when permitted. Defaults
+    description: 'The DataTier the derived output carries when permitted. Defaults
       to max(inputDataTiers) per the note''s own recommendation, but a rule may explicitly
       override it for a specific combination (e.g. an aggregation that demonstrably
       reduces sensitivity below its inputs'' max). The override applies to what the
@@ -217,11 +240,12 @@ attributes:
     owner: DerivationRule
     domain_of:
     - DerivationRule
-    range: DataTierEnum
+    range: DataTier
   requiresReview:
     name: requiresReview
     description: Whether this combination is only conditionally permitted, pending
-      a human DerivationReview, rather than flatly permitted/denied.
+      a human DerivationReview (a graph-layer record, linkml/graph/governance.yaml),
+      rather than flatly permitted/denied.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: governanceduo:requiresReview

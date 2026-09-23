@@ -16,6 +16,10 @@ matter what this repo declares. `make owl-profile` runs it against the PROV-O
 2013-04-30 Recommendation, fetched into build/; scripts/check_sagebrain_contract.py
 reuses type_mismatches() against sagebrain-model's vendored prov.ttl.
 
+The record OWL (shapes/governance_duo.owl.ttl) no longer asserts on prov: --
+Activity/Usage moved to the graph layer (plans/model_refactor.md) -- so the one
+TBox that declares prov: terms is the graph TBox, shapes/governance.owl.ttl.
+
 Usage:
     python scripts/check_prov_alignment.py --prov-o PATH [--tbox PATH ...]
 
@@ -31,7 +35,7 @@ from rdflib.namespace import OWL, RDF
 
 PROV = Namespace("http://www.w3.org/ns/prov#")
 DECLARATION_TYPES = (OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty, OWL.AnnotationProperty)
-TBOXES = ["shapes/governance_duo.owl.ttl", "shapes/governance_graph.owl.ttl"]
+TBOXES = ["shapes/governance.owl.ttl"]
 
 
 def declarations(graph: Graph) -> dict:

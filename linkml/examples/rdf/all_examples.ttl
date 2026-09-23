@@ -3,14 +3,6 @@
 @prefix sagegov: <https://sagebionetworks.org/governance/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-governanceduo:access_requirement.42 a governanceduo:AccessRequirement ;
-    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
-    governanceduo:contributionDate "2026-01-15" ;
-    governanceduo:contributorName "Jane Doe" ;
-    governanceduo:dataUseModifiers DUO:0000007 ;
-    governanceduo:diseaseSpecificResearch "MONDO:0004975" ;
-    governanceduo:entityIdList "syn12345678" .
-
 governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
     governanceduo:dataUseModifiers sagegov:DUOPlus1 ;
     governanceduo:grantNumber "U54AG079754" ;
@@ -22,4 +14,12 @@ governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
     governanceduo:studyName "MC2 Center Pilot Study" ;
     governanceduo:studyParticipantNumber "25.0"^^xsd:float ;
     governanceduo:studySampleNumber "40.0"^^xsd:float .
+
+<https://w3id.org/synapse/governance/ar/42> a governanceduo:AccessRequirement ;
+    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
+    governanceduo:contributionDate "2026-01-15" ;
+    governanceduo:contributorName "Jane Doe" ;
+    governanceduo:dataUseModifiers DUO:0000007 ;
+    governanceduo:diseaseSpecificResearch "MONDO:0004975" ;
+    governanceduo:entityIdList "syn12345678" .
 

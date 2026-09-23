@@ -1,29 +1,11 @@
+@prefix gov: <https://w3id.org/synapse/governance#> .
 @prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
-@prefix sagegov: <https://sagebionetworks.org/governance/> .
-@prefix syn: <https://www.synapse.org/Synapse:> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-sagegov:derivation-review-001 a sagegov:DerivationReview ;
-    sagegov:activity sagegov:activity-1001 ;
-    sagegov:inputLabels [ a sagegov:ControlLabel ;
-            sagegov:computedFrom sagegov:activity-1001 ;
-            sagegov:computedOn 1755300000000 ;
-            sagegov:dataTier "Controlled" ;
-            sagegov:sourceAccessRequirements sagegov:AR-42 ;
-            sagegov:subject syn:syn10081783 ],
-        [ a sagegov:ControlLabel ;
-            sagegov:computedFrom sagegov:activity-1001 ;
-            sagegov:computedOn 1755300000000 ;
-            sagegov:dataTier "Controlled" ;
-            sagegov:sourceAccessRequirements sagegov:AR-99 ;
-            sagegov:subject syn:syn40000002 ] ;
-    sagegov:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (AR-42, AR-99), both Controlled tier. Pending ACT review." ;
-    sagegov:reviewStatus "Flagged" .
-
 governanceduo:derivation_rule.controlled-plus-controlled a governanceduo:DerivationRule ;
-    governanceduo:inputDataTiers "Controlled" ;
+    governanceduo:inputDataTiers gov:ControlledTier ;
     governanceduo:permitted true ;
     governanceduo:rationale "Joining two Controlled-tier inputs is not flatly denied, but routes to human ACT review (DerivationReview) rather than auto-approval, since two independently-approved Controlled datasets combined can expose a re-identification risk neither grant alone authorized -- the composite-risk case plans/prov_o_integration.md Section 4 describes." ;
     governanceduo:requiresReview true ;
-    governanceduo:resultingDataTier "Controlled" .
+    governanceduo:resultingDataTier gov:ControlledTier .
 

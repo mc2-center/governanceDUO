@@ -55,20 +55,19 @@ $(PROV_O):
 	curl -L --fail -H "Accept: text/turtle" -o $@.tmp "$(PROV_O_URL)"
 	mv $@.tmp $@
 
-# OWL 2 DL profile check: the generated TBox, the hand-written governance graph
-# TBox, and their merge (they share gov: terms, so each passing alone isn't enough).
+# OWL 2 DL profile check on the record-layer TBox alone. The record OWL no
+# longer shares any gov: terms with the graph TBox (linkml/graph/vocabularies.yaml's
+# SKOS vocabularies are declared once, by graph-tbox, and only referenced here --
+# scripts/build_owl.py's "not ours to give" rule), so there's no merged-TBox
+# profile check left to run; graph-owl-profile below covers the graph TBox.
 # Reports land in build/ (gitignored); the report is printed when a check fails.
-# The merge is written to a file and validated separately: chaining `robot merge
-# ... validate-profile` in one call reports spurious violations. Last, every prov:
-# term both TBoxes declare must have the type W3C PROV-O gives it (a mismatch is a
-# pun wherever PROV-O is loaded alongside; see scripts/check_prov_alignment.py).
-owl-profile: owl | $(ROBOT_JAR) $(PROV_O)
+# Last, every prov: term the record OWL declares (none, since Activity/Usage moved
+# to the graph layer) must have the type W3C PROV-O gives it -- a mismatch is a
+# pun wherever PROV-O is loaded alongside; see scripts/check_prov_alignment.py.
+owl-profile: owl graph-tbox | $(ROBOT_JAR) $(PROV_O)
 	mkdir -p build
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_duo.owl.ttl --output build/owl-profile-governance_duo.txt || (cat build/owl-profile-governance_duo.txt; exit 1)
-	java -jar $(ROBOT_JAR) validate-profile --profile DL --input shapes/governance_graph.owl.ttl --output build/owl-profile-governance_graph.txt || (cat build/owl-profile-governance_graph.txt; exit 1)
-	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl --output build/governance_merged.owl.ttl
-	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_merged.owl.ttl --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
-	@echo "OWL 2 DL profile: governance_duo, governance_graph, and their merge all in profile."
+	@echo "OWL 2 DL profile: governance_duo in profile."
 	python3 scripts/check_prov_alignment.py --prov-o $(PROV_O)
 
 graph-tbox:
@@ -85,13 +84,26 @@ graph-validate: graph-tbox graph-example-rdf
 	python3 scripts/validate_graph.py --data $(GRAPH_EXAMPLE_RDF) --shapes $(GRAPH_SHAPES) --ont $(GRAPH_TBOX)
 	python3 scripts/check_graph.py
 
-# OWL 2 DL on the graph TBox alone and merged with the example graph.
-graph-owl-profile: graph-tbox graph-example-rdf | $(ROBOT_JAR)
+# OWL 2 DL on the graph TBox alone and merged with every canonical ABox this
+# repo produces in the graph namespace: the example graph, the derivation
+# output, the projections' inputs (the same example graph, plus its
+# authorizer_v1 projection), and the sync outputs when a live sync has been run
+# and persisted them (governance_graph_export/*_synced.ttl) -- optional, since
+# CI never runs a live sync. Replaces the old, separate owl-profile-abox
+# (plans/model_refactor.md): the graph TBox no longer shares terms with the
+# record layer, so there's nothing left to gain from merging the two TBoxes'
+# ABoxes together.
+graph-owl-profile: graph-tbox graph-example-rdf derivation-policy projections | $(ROBOT_JAR)
 	mkdir -p build
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input $(GRAPH_TBOX) --output build/owl-profile-governance.txt || (cat build/owl-profile-governance.txt; exit 1)
-	java -jar $(ROBOT_JAR) merge --input $(GRAPH_TBOX) --input $(GRAPH_EXAMPLE_RDF) --output build/governance_with_example.owl.ttl
+	java -jar $(ROBOT_JAR) merge --input $(GRAPH_TBOX) --input $(GRAPH_EXAMPLE_RDF) \
+		--input derivation_policy_export/derivation_policy.ttl \
+		--input governance_graph_export/authorizer_v1.ttl \
+		$(if $(wildcard governance_graph_export/governance_graph_synced.ttl),--input governance_graph_export/governance_graph_synced.ttl,) \
+		$(if $(wildcard provenance_graph_export/provenance_graph_synced.ttl),--input provenance_graph_export/provenance_graph_synced.ttl,) \
+		--output build/governance_with_example.owl.ttl
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_with_example.owl.ttl --output build/owl-profile-governance-abox.txt || (cat build/owl-profile-governance-abox.txt; exit 1)
-	@echo "OWL 2 DL profile: the graph TBox, alone and with the example graph, in profile."
+	@echo "OWL 2 DL profile: the graph TBox, alone and with every canonical ABox, in profile."
 
 example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
@@ -127,18 +139,13 @@ sync-governance-graph:
 sync-governance-graph-validate: graph-tbox
 	python3 scripts/validate_graph.py --data governance_graph_export/governance_graph_synced.ttl --shapes $(GRAPH_SHAPES) --ont $(GRAPH_TBOX)
 
-# Provenance Graph (linkml/provenance.yaml) and Derivation Policy Graph
-# (linkml/derivation_policy.yaml) -- see plans/prov_o_integration.md. Both are
-# imported into governance_duo.linkml.yaml (like governance_graph.yaml already is),
-# so `make owl`/`make shacl` already regenerate their shapes as part of
-# shapes/governance_duo.owl.ttl/.shacl.ttl -- no separate shapes files needed, only
-# separate example-instance/RDF/validation passes, one per layer.
-provenance-example-rdf:
-	python3 scripts/convert_examples_to_rdf.py --examples-dir linkml/examples/provenance --out-dir linkml/examples/provenance/rdf
-
-provenance-validate: owl shacl provenance-example-rdf
-	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/provenance/rdf/all_examples.ttl
-	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/provenance_layer.shacl.ttl --instances linkml/examples/provenance/rdf/all_examples.ttl
+# Derivation Policy Graph (linkml/derivation_policy.yaml) -- see
+# plans/prov_o_integration.md. DerivationRule (the record-layer part that
+# remains here; ControlLabel/DerivationReview moved to the graph layer,
+# plans/model_refactor.md) is imported into governance_duo.linkml.yaml, so
+# `make owl`/`make shacl` already regenerate its shapes as part of
+# shapes/governance_duo.owl.ttl/.shacl.ttl -- no separate shapes file needed,
+# only a separate example-instance/RDF/validation pass.
 
 # Real Synapse provenance data (Activity/used/generatedBy), not the hand-authored
 # examples above -- requires the same synapseclient login as sync-governance-graph.
@@ -148,13 +155,14 @@ sync-provenance-graph:
 
 # Offline check of sync_governance_graph.py against a fake Synapse client (no
 # network/credentials): grants, ARs, submissions, approvals, and unknown values.
-# Reads both TBoxes for its domain/range assertions, hence `owl`.
-sync-governance-check: owl
+# Validates its output against the one graph TBox and shape set, hence `graph-tbox`.
+sync-governance-check: graph-tbox
 	python3 scripts/check_sync_governance.py
 
 # Offline regression check for sync_provenance_graph.py (fake Synapse client, no
-# network or credentials) -- see scripts/check_sync_provenance.py.
-sync-provenance-check:
+# network or credentials) -- see scripts/check_sync_provenance.py. Validates its
+# output against the one graph TBox and shape set, hence `graph-tbox`.
+sync-provenance-check: graph-tbox
 	python3 scripts/check_sync_provenance.py
 
 derivation-policy-example-rdf:
@@ -215,42 +223,26 @@ linkml-validate-examples:
 # Clears the generated directories first, so a committed file no generator
 # produces any more shows up as missing.
 artifact-drift-check:
-	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/provenance/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf
-	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf projections
+	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf derivation_policy_export
+	$(MAKE) owl shacl example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf projections derivation-policy
 	python3 scripts/check_artifact_drift.py
 
-# OWL 2 DL on both TBoxes merged with the exported and example graphs: a value
-# the TBox types differently from the data (a literal on an object property, an
-# IRI on a data property) is a pun here, though each TBox alone is in profile.
-owl-profile-abox: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf | $(ROBOT_JAR)
-	mkdir -p build
-	java -jar $(ROBOT_JAR) merge --input shapes/governance_duo.owl.ttl --input shapes/governance_graph.owl.ttl --input governance_graph_export/governance_graph.ttl --input linkml/examples/rdf/all_examples.ttl --input linkml/examples/provenance/rdf/all_examples.ttl --input linkml/examples/derivation_policy/rdf/all_examples.ttl --output build/governance_with_abox.owl.ttl
-	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_with_abox.owl.ttl --output build/owl-profile-abox.txt || (cat build/owl-profile-abox.txt; exit 1)
-	@echo "OWL 2 DL profile: both TBoxes with the exported and example graphs in profile."
-
-# GrantPermissionEnum must mirror AccessTypeEnum exactly, plus the derived ACCESS.
-enum-sync-check:
-	python3 scripts/check_enum_sync.py
-
-# Every rdfs:domain/class rdfs:range in both TBoxes must already hold on the
-# exported and example graphs; a reasoner would otherwise re-type nodes with them.
-domain-range-check: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
-	python3 scripts/check_domain_range.py
-
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check projections-check domain-range-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox graph-validate graph-owl-profile
+validate-all: shacl-validate governance-graph-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check projections-check linkml-validate-examples owl-profile graph-validate graph-owl-profile
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching
 # sagebrain nodes). Needs a sagebrain-model checkout, so it isn't in validate-all.
 # Usage: make sagebrain-contract-check SAGEBRAIN_MODEL=../sagebrain-model
-sagebrain-contract-check: | $(ROBOT_JAR)
+sagebrain-contract-check: graph-tbox governance-graph | $(ROBOT_JAR)
 	$(if $(SAGEBRAIN_MODEL),,$(error set SAGEBRAIN_MODEL=<path to a sagebrain-model checkout>))
 	python3 scripts/check_sagebrain_contract.py --sagebrain-model $(SAGEBRAIN_MODEL) --robot-jar $(ROBOT_JAR)
 
 # Pre-release gate: everything validate-all checks, plus every published artifact
-# carrying VERSION (and, with TAG=v<version>, the tag agreeing with it).
+# carrying its own version (VERSION for the record layer, GRAPH_VERSION for the
+# graph layer -- they release independently, plans/model_refactor.md), and, with
+# TAG=v<version>, the tag agreeing with VERSION.
 release-check: validate-all
-	python3 scripts/check_release.py --version $(VERSION) $(if $(TAG),--tag $(TAG))
+	python3 scripts/check_release.py --version $(VERSION) --graph-version $(GRAPH_VERSION) $(if $(TAG),--tag $(TAG))
 
 docs-examples:
 	python3 scripts/prepare_doc_examples.py --examples-dir linkml/examples --out-dir docs/example_instances

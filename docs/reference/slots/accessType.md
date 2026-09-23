@@ -6,7 +6,7 @@ search:
 # Slot: accessType 
 
 
-_The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE). Range is the same AccessTypeEnum used by AccessGrant.permission in governance_graph.yaml — one real Synapse ACCESS_TYPE type backs both an ACL grant's permission and an Access Requirement's own governed access kind._
+_The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE). Range is the graph layer's own Permission vocabulary (linkml/graph/vocabularies.yaml) — one real Synapse ACCESS_TYPE type backs both gov:AccessRequirement.accessType and an ACL Authorization's own mode._
 
 
 
@@ -39,7 +39,7 @@ URI: [governanceduo:slot/accessType](https://w3id.org/sage-bionetworks/governanc
 
 | Property | Value |
 | --- | --- |
-| Range | [AccessTypeEnum](../enums/AccessTypeEnum.md) |
+| Range | [Permission](../enums/Permission.md) |
 | Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 
 ### Cardinality and Requirements
@@ -86,14 +86,14 @@ URI: [governanceduo:slot/accessType](https://w3id.org/sage-bionetworks/governanc
 ```yaml
 name: accessType
 description: The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE).
-  Range is the same AccessTypeEnum used by AccessGrant.permission in governance_graph.yaml
-  — one real Synapse ACCESS_TYPE type backs both an ACL grant's permission and an
-  Access Requirement's own governed access kind.
+  Range is the graph layer's own Permission vocabulary (linkml/graph/vocabularies.yaml)
+  — one real Synapse ACCESS_TYPE type backs both gov:AccessRequirement.accessType
+  and an ACL Authorization's own mode.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - SynapseAccessRequirementMixin
-range: AccessTypeEnum
+range: Permission
 
 ```
 </details></div>

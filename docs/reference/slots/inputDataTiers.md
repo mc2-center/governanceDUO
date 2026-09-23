@@ -6,7 +6,7 @@ search:
 # Slot: inputDataTiers 
 
 
-_The combination of input DataTierEnum values this rule governs._
+_The combination of input DataTier values this rule governs._
 
 
 
@@ -38,7 +38,7 @@ URI: [governanceduo:inputDataTiers](https://w3id.org/sage-bionetworks/governance
 
 | Property | Value |
 | --- | --- |
-| Range | [DataTierEnum](../enums/DataTierEnum.md) |
+| Range | [DataTier](../enums/DataTier.md) |
 | Domain Of | [DerivationRule](../classes/DerivationRule.md) |
 | Slot URI | [governanceduo:inputDataTiers](https://w3id.org/sage-bionetworks/governance-duo/inputDataTiers) |
 
@@ -87,13 +87,13 @@ URI: [governanceduo:inputDataTiers](https://w3id.org/sage-bionetworks/governance
 <details>
 ```yaml
 name: inputDataTiers
-description: The combination of input DataTierEnum values this rule governs.
+description: The combination of input DataTier values this rule governs.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: governanceduo:inputDataTiers
 domain_of:
 - DerivationRule
-range: DataTierEnum
+range: DataTier
 required: true
 multivalued: true
 

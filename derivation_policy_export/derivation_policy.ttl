@@ -1,0 +1,31 @@
+@prefix gov: <https://w3id.org/synapse/governance#> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+<https://w3id.org/synapse/governance/control-label/syn10081783> a gov:ControlLabel ;
+    gov:dataTier gov:UnclassifiedTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn10081783 .
+
+<https://w3id.org/synapse/governance/control-label/syn2343195> a gov:ControlLabel ;
+    gov:dataTier gov:UnclassifiedTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn2343195 .
+
+<https://w3id.org/synapse/governance/control-label/syn30000001> a gov:ControlLabel ;
+    gov:computedFrom <https://w3id.org/synapse/governance/activity/1001> ;
+    gov:dataTier gov:UnclassifiedTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn30000001 .
+
+<https://w3id.org/synapse/governance/control-label/syn30000002> a gov:ControlLabel ;
+    gov:computedFrom <https://w3id.org/synapse/governance/activity/1002> ;
+    gov:dataTier gov:UnclassifiedTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn30000002 .
+
+<https://w3id.org/synapse/governance/control-label/syn30000003> a gov:ControlLabel ;
+    gov:computedFrom <https://w3id.org/synapse/governance/activity/1002> ;
+    gov:dataTier gov:UnclassifiedTier ;
+    gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> ;
+    gov:subject syn:syn30000003 .
+

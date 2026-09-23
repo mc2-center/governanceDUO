@@ -60,8 +60,8 @@ URI: [governanceduo:class/Study](https://w3id.org/sage-bionetworks/governance-du
     
         
         
-        Study --> "*" DataTierEnum : dataTier
-        click DataTierEnum href "../../enums/DataTierEnum/"
+        Study --> "*" DataTier : dataTier
+        click DataTier href "../../enums/DataTier/"
     
 
         
@@ -240,7 +240,7 @@ URI: [governanceduo:class/Study](https://w3id.org/sage-bionetworks/governance-du
 | [populationType](../slots/populationType.md) | 0..1 <br/> [String](../types/String.md) | The population studied in the research associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [deidentificationType](../slots/deidentificationType.md) | * <br/> [DeidentificationTypeEnum](../enums/DeidentificationTypeEnum.md) | The type of de-identification applied to the data associated with the access ... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [dataPermission](../slots/dataPermission.md) | * <br/> [DataPermissionEnum](../enums/DataPermissionEnum.md) | The permissions associated with the data under the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
-| [dataTier](../slots/dataTier.md) | * <br/> [DataTierEnum](../enums/DataTierEnum.md) | The tier of data access associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
+| [dataTier](../slots/dataTier.md) | * <br/> [DataTier](../enums/DataTier.md) | The tier of data access associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [license](../slots/license.md) | * <br/> [LicenseEnum](../enums/LicenseEnum.md) | The license under which the data associated with the access requirement is sh... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [attribution](../slots/attribution.md) | 0..1 <br/> [String](../types/String.md) | The attribution statement for the data associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [requiredAgreementDocumentId](../slots/requiredAgreementDocumentId.md) | 0..1 <br/> [String](../types/String.md) | DID of the terms/agreement document the requester must accept before this acc... | [GovernanceMixin](../classes/GovernanceMixin.md) |
@@ -783,7 +783,9 @@ attributes:
   dataTier:
     name: dataTier
     description: The tier of data access associated with the access requirement. Equivalent
-      to DUOPlus5.
+      to DUOPlus5. Range is the graph layer's own DataTier vocabulary (linkml/graph/vocabularies.yaml),
+      the same one gov:AccessRequirement.dataTier uses -- one tier vocabulary, curated
+      here and read by the graph builder (scripts/build_graph.py).
     comments:
     - Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules.
     - 'NCIT:C175887 "Open or Controlled Data Access Indicator" (synonym: "Data Access
@@ -797,8 +799,7 @@ attributes:
     owner: Study
     domain_of:
     - GovernanceMixin
-    - ControlLabel
-    range: DataTierEnum
+    range: DataTier
     multivalued: true
   license:
     name: license

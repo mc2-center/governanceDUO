@@ -6,7 +6,7 @@ search:
 # Slot: requiresReview 
 
 
-_Whether this combination is only conditionally permitted, pending a human DerivationReview, rather than flatly permitted/denied._
+_Whether this combination is only conditionally permitted, pending a human DerivationReview (a graph-layer record, linkml/graph/governance.yaml), rather than flatly permitted/denied._
 
 
 
@@ -86,7 +86,8 @@ URI: [governanceduo:requiresReview](https://w3id.org/sage-bionetworks/governance
 ```yaml
 name: requiresReview
 description: Whether this combination is only conditionally permitted, pending a human
-  DerivationReview, rather than flatly permitted/denied.
+  DerivationReview (a graph-layer record, linkml/graph/governance.yaml), rather than
+  flatly permitted/denied.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: governanceduo:requiresReview

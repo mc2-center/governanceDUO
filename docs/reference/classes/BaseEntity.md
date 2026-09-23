@@ -34,32 +34,8 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
         click Schema href "../../classes/Schema/"
       BaseEntity <|-- Study
         click Study href "../../classes/Study/"
-      BaseEntity <|-- SynapseEntity
-        click SynapseEntity href "../../classes/SynapseEntity/"
-      BaseEntity <|-- AccessGrant
-        click AccessGrant href "../../classes/AccessGrant/"
-      BaseEntity <|-- AccessRequirementAssociation
-        click AccessRequirementAssociation href "../../classes/AccessRequirementAssociation/"
-      BaseEntity <|-- DataAccessSubmission
-        click DataAccessSubmission href "../../classes/DataAccessSubmission/"
-      BaseEntity <|-- AccessApproval
-        click AccessApproval href "../../classes/AccessApproval/"
-      BaseEntity <|-- ResearchProject
-        click ResearchProject href "../../classes/ResearchProject/"
-      BaseEntity <|-- DataAccessRequest
-        click DataAccessRequest href "../../classes/DataAccessRequest/"
-      BaseEntity <|-- AccessRequirementTemplate
-        click AccessRequirementTemplate href "../../classes/AccessRequirementTemplate/"
-      BaseEntity <|-- IRBRequirement
-        click IRBRequirement href "../../classes/IRBRequirement/"
-      BaseEntity <|-- Program
-        click Program href "../../classes/Program/"
-      BaseEntity <|-- Activity
-        click Activity href "../../classes/Activity/"
       BaseEntity <|-- DerivationRule
         click DerivationRule href "../../classes/DerivationRule/"
-      BaseEntity <|-- DerivationReview
-        click DerivationReview href "../../classes/DerivationReview/"
       
       BaseEntity : id
         
@@ -76,19 +52,7 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
     * [Resource](../classes/Resource.md) [ [GovernanceMixin](../classes/GovernanceMixin.md)]
     * [Schema](../classes/Schema.md)
     * [Study](../classes/Study.md) [ [GovernanceMixin](../classes/GovernanceMixin.md)]
-    * [SynapseEntity](../classes/SynapseEntity.md)
-    * [AccessGrant](../classes/AccessGrant.md)
-    * [AccessRequirementAssociation](../classes/AccessRequirementAssociation.md)
-    * [DataAccessSubmission](../classes/DataAccessSubmission.md)
-    * [AccessApproval](../classes/AccessApproval.md)
-    * [ResearchProject](../classes/ResearchProject.md)
-    * [DataAccessRequest](../classes/DataAccessRequest.md)
-    * [AccessRequirementTemplate](../classes/AccessRequirementTemplate.md)
-    * [IRBRequirement](../classes/IRBRequirement.md)
-    * [Program](../classes/Program.md)
-    * [Activity](../classes/Activity.md)
     * [DerivationRule](../classes/DerivationRule.md)
-    * [DerivationReview](../classes/DerivationReview.md)
 
 
 ## Slots

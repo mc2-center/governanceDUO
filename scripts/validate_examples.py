@@ -7,11 +7,10 @@ finding 8). This is the only place the schema's DUO conditional `rules:` are
 enforced: gen-shacl doesn't compile them and build_owl.py leaves them out of the
 OWL, so without this a rule-violating example would pass validate-all.
 
-Each example's target class comes from the manifests the converters already use
--- convert_examples_to_rdf.EXAMPLE_CLASSES and
-build_governance_graph.EXAMPLE_CLASSES -- plus EXTRA_CLASSES for examples no
-converter reads. An example with no mapped class fails the check rather than
-being skipped. Examples under linkml/examples/graph/ are graph-layer bundles,
+Each example's target class comes from the manifest scripts/convert_examples_to_rdf.py
+already uses (EXAMPLE_CLASSES), plus EXTRA_CLASSES for examples no converter
+reads. An example with no mapped class fails the check rather than being
+skipped. Examples under linkml/examples/graph/ are graph-layer bundles,
 validated as GovernanceGraph against linkml/graph/governance.yaml
 (plans/model_refactor.md). The records the regression fixtures feed the builders
 (FIXTURE_RECORDS) are validated too, so a fixture can't pass the builders a
@@ -32,7 +31,6 @@ from linkml.validator import Validator
 from linkml.validator.plugins import JsonschemaValidationPlugin
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build_governance_graph import EXAMPLE_CLASSES as GOVERNANCE_GRAPH_CLASSES  # noqa: E402
 from convert_examples_to_rdf import EXAMPLE_CLASSES  # noqa: E402
 
 EXAMPLES = Path("linkml/examples")
@@ -53,8 +51,7 @@ FIXTURE_RECORDS = {
 
 def target_class(path: Path) -> str | None:
     stem = path.name.removesuffix(".example.yaml")
-    manifest = GOVERNANCE_GRAPH_CLASSES if path.parent.name == "governance_graph" else EXAMPLE_CLASSES
-    return manifest.get(stem) or EXTRA_CLASSES.get(stem)
+    return EXAMPLE_CLASSES.get(stem) or EXTRA_CLASSES.get(stem)
 
 
 def main():

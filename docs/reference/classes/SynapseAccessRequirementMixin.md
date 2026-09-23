@@ -33,8 +33,8 @@ URI: [governanceduo:class/SynapseAccessRequirementMixin](https://w3id.org/sage-b
     
         
         
-        SynapseAccessRequirementMixin --> "0..1" AccessTypeEnum : accessType
-        click AccessTypeEnum href "../../enums/AccessTypeEnum/"
+        SynapseAccessRequirementMixin --> "0..1" Permission : accessType
+        click Permission href "../../enums/Permission/"
     
 
         
@@ -44,8 +44,8 @@ URI: [governanceduo:class/SynapseAccessRequirementMixin](https://w3id.org/sage-b
     
         
         
-        SynapseAccessRequirementMixin --> "0..1" AccessRequirementConcreteTypeEnum : concreteType
-        click AccessRequirementConcreteTypeEnum href "../../enums/AccessRequirementConcreteTypeEnum/"
+        SynapseAccessRequirementMixin --> "0..1" AccessRequirementType : concreteType
+        click AccessRequirementType href "../../enums/AccessRequirementType/"
     
 
         
@@ -83,8 +83,8 @@ URI: [governanceduo:class/SynapseAccessRequirementMixin](https://w3id.org/sage-b
 | [name](../slots/name.md) | 0..1 <br/> [String](../types/String.md) | A Synapse-native display name | direct |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | direct |
 | [currentRevNum](../slots/currentRevNum.md) | 0..1 <br/> [Integer](../types/Integer.md) | The current revision number of the record | direct |
-| [accessType](../slots/accessType.md) | 0..1 <br/> [AccessTypeEnum](../enums/AccessTypeEnum.md) | The kind of access this Access Requirement governs (ACCESS_REQUIREMENT | direct |
-| [concreteType](../slots/concreteType.md) | 0..1 <br/> [AccessRequirementConcreteTypeEnum](../enums/AccessRequirementConcreteTypeEnum.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT | direct |
+| [accessType](../slots/accessType.md) | 0..1 <br/> [Permission](../enums/Permission.md) | The kind of access this Access Requirement governs (ACCESS_REQUIREMENT | direct |
+| [concreteType](../slots/concreteType.md) | 0..1 <br/> [AccessRequirementType](../enums/AccessRequirementType.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT | direct |
 | [isTwoFaRequired](../slots/isTwoFaRequired.md) | 0..1 <br/> [Boolean](../types/Boolean.md) | Whether two-factor authentication is required (ACCESS_REQUIREMENT | direct |
 | [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | direct |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | direct |
@@ -197,10 +197,6 @@ attributes:
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - Program
-    - Activity
-    - Usage
     range: string
   etag:
     name: etag
@@ -213,12 +209,6 @@ attributes:
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - DataAccessSubmission
-    - AccessApproval
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: string
   currentRevNum:
     name: currentRevNum
@@ -230,31 +220,32 @@ attributes:
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
     range: integer
   accessType:
     name: accessType
     description: The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE).
-      Range is the same AccessTypeEnum used by AccessGrant.permission in governance_graph.yaml
-      — one real Synapse ACCESS_TYPE type backs both an ACL grant's permission and
-      an Access Requirement's own governed access kind.
+      Range is the graph layer's own Permission vocabulary (linkml/graph/vocabularies.yaml)
+      — one real Synapse ACCESS_TYPE type backs both gov:AccessRequirement.accessType
+      and an ACL Authorization's own mode.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    range: AccessTypeEnum
+    range: Permission
   concreteType:
     name: concreteType
     description: Which kind of Access Requirement this is (ACCESS_REQUIREMENT.CONCRETE_TYPE).
       The real Synapse column stores the full Java class name (e.g. "org.sagebionetworks.repo.model.ManagedACTAccessRequirement");
-      this enum uses the short class name for readability.
+      this vocabulary uses the short class name for readability. Range is the graph
+      layer's own AccessRequirementType vocabulary (linkml/graph/vocabularies.yaml),
+      the same one gov:AccessRequirement.requirementType uses.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    range: AccessRequirementConcreteTypeEnum
+    range: AccessRequirementType
   isTwoFaRequired:
     name: isTwoFaRequired
     description: Whether two-factor authentication is required (ACCESS_REQUIREMENT.IS_TWO_FA_REQUIRED).
@@ -285,10 +276,6 @@ attributes:
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -302,12 +289,6 @@ attributes:
     owner: SynapseAccessRequirementMixin
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - AccessGrant
-    - AccessApproval
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: integer
 
 ```

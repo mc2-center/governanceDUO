@@ -21,18 +21,17 @@ import shutil
 from pathlib import Path
 
 # source path (relative to --examples-dir) -> destination filename (<ClassName>-<name>.yaml)
+# The pre-refactor governance_graph/ entries (AccessGrant, SynapseEntity, ...)
+# are gone: those record-layer classes moved to the graph layer
+# (linkml/graph/governance.yaml), which gen-doc doesn't render from this
+# schema, and their facts now live in the canonical example
+# (linkml/examples/graph/governance_graph.example.yaml) -- see
+# plans/model_refactor.md.
 EXAMPLE_MAP = {
     "access_requirement.example.yaml": "AccessRequirement-001.yaml",
     "access_requirement_policy_fabric.example.yaml": "AccessRequirement-002-policy-fabric.yaml",
     "study.example.yaml": "Study-001.yaml",
-    "governance_graph/access_grant.example.yaml": "AccessGrant-001.yaml",
-    "governance_graph/access_requirement_association.example.yaml": "AccessRequirementAssociation-001.yaml",
-    "governance_graph/data_access_submission.example.yaml": "DataAccessSubmission-001.yaml",
-    "governance_graph/data_access_submission_status.example.yaml": "DataAccessSubmissionStatus-001.yaml",
-    "governance_graph/principal_team_x.example.yaml": "Principal-001-team-x.yaml",
-    "governance_graph/principal_user_2000001.example.yaml": "Principal-002-user.yaml",
-    "governance_graph/synapse_entity_file.example.yaml": "SynapseEntity-001-file.yaml",
-    "governance_graph/synapse_entity_study.example.yaml": "SynapseEntity-002-study.yaml",
+    "derivation_policy/derivation_rule.example.yaml": "DerivationRule-001.yaml",
 }
 
 

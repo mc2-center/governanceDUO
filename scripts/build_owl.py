@@ -60,16 +60,30 @@ with shapes/governance_graph.owl.ttl and imported by sagebrain-model:
   parse. Reporting owl:Thing instead makes that filler owl:Thing, which
   skip_vacuous_local_range_axioms then drops.
 - Literal enums (plans/enum_values_match_owl.md): an enum marked
-  `implements: [rdfs:Literal]` (DataTierEnum, LicenseEnum, ...) has string
-  values in the data, so it's a named rdfs:Datatype defined as owl:oneOf its
-  strings, and the slots ranging over it are owl:DatatypeProperty. owlgen honors
-  the marker only partly, so GovernanceOwlGenerator corrects three gaps
-  (approved as a workaround; remove once fixed upstream): add_enum() also
-  declares the enum owl:Class (an illegal class/datatype pun) and attaches
-  owl:oneOf to the named datatype directly rather than through an
-  owl:equivalentClass definition; slot_owl_type() and slot_node_owltypes() treat
-  every enum range as an object range. Enums whose values carry meaning: IRIs
-  (DUO codes, the gov: graph enums) stay classes, with those IRIs as members.
+  `implements: [rdfs:Literal]` (LicenseEnum, ...) has string values in the data,
+  so it's a named rdfs:Datatype defined as owl:oneOf its strings, and the slots
+  ranging over it are owl:DatatypeProperty. owlgen honors the marker only
+  partly, so GovernanceOwlGenerator corrects three gaps (approved as a
+  workaround; remove once fixed upstream): add_enum() also declares the enum
+  owl:Class (an illegal class/datatype pun) and attaches owl:oneOf to the named
+  datatype directly rather than through an owl:equivalentClass definition;
+  slot_owl_type() and slot_node_owltypes() treat every enum range as an object
+  range. Enums whose values carry meaning: IRIs (DUO codes, the graph
+  vocabularies) stay classes, with those IRIs as members.
+- Vocabulary enums (plans/model_refactor.md): mixins.yaml imports
+  linkml/graph/vocabularies.yaml for AccessType/AccessRequirementConcreteType/
+  DataTier (now Permission/AccessRequirementType/DataTier), so a slot ranging
+  over one of them (accessType, concreteType, dataTier) pulls the whole
+  vocabularies schema into this merged build. Those SKOS vocabularies are owned
+  and fully declared once, by shapes/governance.owl.ttl
+  (scripts/build_graph_tbox.py) -- the "not ours to give" rule already applied
+  to prov:/DUO: terms above extends to them here: add_enum() skips the normal
+  per-value class generation for any enum marked `implements: [skos:Concept]`
+  or `[owl:Class]` (the same marker build_graph_tbox.py reads) and declares
+  only the bare concept class (when the enum has one of its own -- an
+  `owl:Class`-marked enum like DataUseTerm lists external classes as values and
+  has none), so a slot's rdfs:range still resolves against a declared term
+  without this file re-asserting the graph TBox's own SKOS structure.
 - repair_generator_output() fills three owlgen gaps under use_native_uris=False,
   using only the schema (approved as a workaround; remove once fixed upstream):
     1. a slot_usage that gives a slot its own slot_uri (e.g. SynapseEntity.name ->
@@ -151,6 +165,14 @@ class GovernanceOwlGenerator(OwlSchemaGenerator):
         enum_def = self.schemaview.get_enum(name) if name else None
         return enum_def is not None and "rdfs:Literal" in (enum_def.implements or [])
 
+    def is_vocabulary_enum(self, name) -> bool:
+        """Whether `name` is one of the graph layer's vocabularies
+        (linkml/graph/vocabularies.yaml), owned and fully declared by
+        shapes/governance.owl.ttl -- see module docstring."""
+        enum_def = self.schemaview.get_enum(name) if name else None
+        implements = set(enum_def.implements or []) if enum_def is not None else set()
+        return enum_def is not None and bool(implements & {"skos:Concept", "owl:Class"})
+
     def slot_range(self, slot, owning_class):
         if isinstance(slot, SlotDefinition) and isinstance(owning_class, ClassDefinition):
             return self.schemaview.induced_slot(slot.name, owning_class.name).range
@@ -175,6 +197,10 @@ class GovernanceOwlGenerator(OwlSchemaGenerator):
         return super().slot_owl_type(slot)
 
     def add_enum(self, e):
+        if self.is_vocabulary_enum(e.name):
+            if e.enum_uri:
+                self.graph.add((self._enum_uri(e.name), RDF.type, OWL.Class))
+            return
         super().add_enum(e)
         if not self.is_literal_enum(e.name):
             return

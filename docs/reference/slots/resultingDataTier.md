@@ -6,7 +6,7 @@ search:
 # Slot: resultingDataTier 
 
 
-_The DataTierEnum the derived output carries when permitted. Defaults to max(inputDataTiers) per the note's own recommendation, but a rule may explicitly override it for a specific combination (e.g. an aggregation that demonstrably reduces sensitivity below its inputs' max). The override applies to what the output inherits: it never lowers the output below its own direct AccessRequirement bindings._
+_The DataTier the derived output carries when permitted. Defaults to max(inputDataTiers) per the note's own recommendation, but a rule may explicitly override it for a specific combination (e.g. an aggregation that demonstrably reduces sensitivity below its inputs' max). The override applies to what the output inherits: it never lowers the output below its own direct AccessRequirement bindings._
 
 
 
@@ -38,7 +38,7 @@ URI: [governanceduo:resultingDataTier](https://w3id.org/sage-bionetworks/governa
 
 | Property | Value |
 | --- | --- |
-| Range | [DataTierEnum](../enums/DataTierEnum.md) |
+| Range | [DataTier](../enums/DataTier.md) |
 | Domain Of | [DerivationRule](../classes/DerivationRule.md) |
 | Slot URI | [governanceduo:resultingDataTier](https://w3id.org/sage-bionetworks/governance-duo/resultingDataTier) |
 
@@ -85,8 +85,8 @@ URI: [governanceduo:resultingDataTier](https://w3id.org/sage-bionetworks/governa
 <details>
 ```yaml
 name: resultingDataTier
-description: 'The DataTierEnum the derived output carries when permitted. Defaults
-  to max(inputDataTiers) per the note''s own recommendation, but a rule may explicitly
+description: 'The DataTier the derived output carries when permitted. Defaults to
+  max(inputDataTiers) per the note''s own recommendation, but a rule may explicitly
   override it for a specific combination (e.g. an aggregation that demonstrably reduces
   sensitivity below its inputs'' max). The override applies to what the output inherits:
   it never lowers the output below its own direct AccessRequirement bindings.'
@@ -95,7 +95,7 @@ rank: 1000
 slot_uri: governanceduo:resultingDataTier
 domain_of:
 - DerivationRule
-range: DataTierEnum
+range: DataTier
 
 ```
 </details></div>

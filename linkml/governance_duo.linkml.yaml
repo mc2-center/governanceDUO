@@ -3,12 +3,13 @@ name: governance_duo
 description: >-
   LinkML representation of the Sage Bionetworks governanceDUO data model (Access
   Requirement, Resource, Schema, Study), its Policy Fabric integration
-  (policy_fabric.yaml), its RDF Governance Graph representation
-  (governance_graph.yaml), a Provenance Graph layering real PROV-O structure on top
-  of it (provenance.yaml) plus a Derivation Policy Graph consuming that lineage
-  (derivation_policy.yaml — see plans/prov_o_integration.md), and a design-only
-  GA4GH Data Repository Service (DRS) interoperability crosswalk
-  (drs_alignment.yaml). Architecturally aligned with
+  (policy_fabric.yaml), and a design-only GA4GH Data Repository Service (DRS)
+  interoperability crosswalk (drs_alignment.yaml). The graph-layer knowledge graph
+  (ACLs, Access Requirements, provenance, and the derived ControlLabel/
+  DerivationReview records a DerivationRule -- derivation_policy.yaml, kept here in
+  the record layer -- configures) is a separate schema, linkml/graph/governance.yaml
+  (plans/model_refactor.md), imported by mixins.yaml for its shared vocabularies
+  rather than by this file. Architecturally aligned with
   SageCommonDataModel (https://github.com/Sage-Bionetworks/SageCommonDataModel — one
   file per entity, a shared BaseEntity + mixins, slot_usage narrowing, prefix/URI
   discipline). Shaped to interoperate with sagebrain-model
@@ -37,6 +38,9 @@ prefixes:
   dpv: https://w3id.org/dpv#
   sagegov: https://sagebionetworks.org/governance/
   syn: "https://www.synapse.org/Synapse:"
+  gov: https://w3id.org/synapse/governance#
+  acl: http://www.w3.org/ns/auth/acl#
+  foaf: http://xmlns.com/foaf/0.1/
 default_prefix: governanceduo
 default_range: string
 imports:
@@ -49,7 +53,5 @@ imports:
   - resource
   - schema
   - study
-  - governance_graph
-  - provenance
   - derivation_policy
   - drs_alignment

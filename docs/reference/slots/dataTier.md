@@ -6,7 +6,7 @@ search:
 # Slot: dataTier 
 
 
-_The tier of data access associated with the access requirement. Equivalent to DUOPlus5._
+_The tier of data access associated with the access requirement. Equivalent to DUOPlus5. Range is the graph layer's own DataTier vocabulary (linkml/graph/vocabularies.yaml), the same one gov:AccessRequirement.dataTier uses -- one tier vocabulary, curated here and read by the graph builder (scripts/build_graph.py)._
 
 
 
@@ -26,7 +26,6 @@ URI: [governanceduo:slot/dataTier](https://w3id.org/sage-bionetworks/governance-
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [GovernanceMixin](../classes/GovernanceMixin.md) | DUO-based data-use-modifier vocabulary and its conditional-requirement rules,... |  no  |
-| [ControlLabel](../classes/ControlLabel.md) | A precomputed, per-SynapseEntity sensitivity label — the max DataTierEnum ran... |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  no  |
 | [Study](../classes/Study.md) | Studies associated with a grant |  no  |
@@ -42,8 +41,8 @@ URI: [governanceduo:slot/dataTier](https://w3id.org/sage-bionetworks/governance-
 
 | Property | Value |
 | --- | --- |
-| Range | [DataTierEnum](../enums/DataTierEnum.md) |
-| Domain Of | [GovernanceMixin](../classes/GovernanceMixin.md), [ControlLabel](../classes/ControlLabel.md) |
+| Range | [DataTier](../enums/DataTier.md) |
+| Domain Of | [GovernanceMixin](../classes/GovernanceMixin.md) |
 
 ### Cardinality and Requirements
 
@@ -96,7 +95,9 @@ URI: [governanceduo:slot/dataTier](https://w3id.org/sage-bionetworks/governance-
 ```yaml
 name: dataTier
 description: The tier of data access associated with the access requirement. Equivalent
-  to DUOPlus5.
+  to DUOPlus5. Range is the graph layer's own DataTier vocabulary (linkml/graph/vocabularies.yaml),
+  the same one gov:AccessRequirement.dataTier uses -- one tier vocabulary, curated
+  here and read by the graph builder (scripts/build_graph.py).
 comments:
 - Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules.
 - 'NCIT:C175887 "Open or Controlled Data Access Indicator" (synonym: "Data Access
@@ -109,8 +110,7 @@ exact_mappings:
 rank: 1000
 domain_of:
 - GovernanceMixin
-- ControlLabel
-range: DataTierEnum
+range: DataTier
 multivalued: true
 
 ```

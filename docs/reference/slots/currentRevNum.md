@@ -26,7 +26,6 @@ URI: [governanceduo:slot/currentRevNum](https://w3id.org/sage-bionetworks/govern
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) | The real Synapse-native ACCESS_REQUIREMENT row fields (verified against "sage... |  no  |
-| [SynapseEntity](../classes/SynapseEntity.md) | A concrete Synapse entity (project, folder, file, etc |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 
 
@@ -41,7 +40,7 @@ URI: [governanceduo:slot/currentRevNum](https://w3id.org/sage-bionetworks/govern
 | Property | Value |
 | --- | --- |
 | Range | [Integer](../types/Integer.md) |
-| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md), [SynapseEntity](../classes/SynapseEntity.md) |
+| Domain Of | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 
 ### Cardinality and Requirements
 
@@ -93,7 +92,6 @@ from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
 - SynapseAccessRequirementMixin
-- SynapseEntity
 range: integer
 
 ```

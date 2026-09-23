@@ -19,21 +19,25 @@ a Turtle `@prefix`, and `@prefix @base: <...> .` isn't valid Turtle, so the raw
 output had to be rebuilt into a fresh graph that skipped that one invalid binding
 before it could be re-parsed.
 
-Both workarounds are unnecessary once an id contains a colon: `Namespaces.uri_for()`
-then resolves it as a real CURIE against the schema's own already-declared
-`governanceduo:` prefix directly — no `@base` involved at all (confirmed directly:
-`sv.namespaces().uri_for("governanceduo:access_requirement.42")` resolves with no
-`@base` entry present, while the bare `"access_requirement.42"` form does not). So
-this script loads each instance exactly as before (its id is validated against the
-class's own bare-dotted `pattern` at load time, unchanged), then temporarily
-rewrites the loaded object's `id` to CURIE form — `governanceduo:access_requirement.42`
-— only for the RDF-dump call, restoring the bare form afterward. The *stored* id in
+Both workarounds are unnecessary once an id is rewritten to a full IRI:
+`Namespaces.uri_for()` resolves a string that already looks like an absolute IRI
+as-is, no `@base` involved. So this script loads each instance exactly as before
+(its id is validated against the class's own bare-dotted `pattern` at load time,
+unchanged), then temporarily rewrites the loaded object's `id` to its full IRI --
+`scripts/graph_iris.record_iri()`, the one IRI minter (plans/model_refactor.md
+R2/R5): a curated AccessRequirement shares its graph node's IRI
+(`https://w3id.org/synapse/governance/ar/42`), every other record-layer id keeps
+the record namespace (`https://w3id.org/sage-bionetworks/governance-duo/<id>`) --
+only for the RDF-dump call, restoring the bare id afterward. The *stored* id in
 every example YAML file, and every class's `slot_usage.id.pattern`, are completely
 unaffected — this preserves interoperability with SageCommonDataModel's own bare-id
-convention everywhere except this one transient export step. Which prefix and
-local-name shape that CURIE takes is decided by scripts/graph_iris.py (graph-facing
-classes such as Activity mint gov: instances, e.g. `sagegov:activity-1001`; every
-other record keeps `governanceduo:<id>`).
+convention everywhere except this one transient export step. See the script's
+docstring for the full explanation.
+
+This converts record examples only -- AccessRequirement, Study, DerivationRule.
+Graph-layer content (Activity, ControlLabel, DerivationReview, and everything else
+in linkml/graph/governance.yaml) is built by scripts/graph_rdf.py from
+linkml/examples/graph/*.example.yaml, not here (plans/model_refactor.md).
 
 Usage:
     python scripts/convert_examples_to_rdf.py [--schema linkml/governance_duo.linkml.yaml]
@@ -53,49 +57,14 @@ from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph
 
-# The pre-refactor IRI rule for record-layer examples. graph_iris.py now mints
-# the graph layer's IRIs; this stays only until Phase 2 moves provenance and
-# derivation examples into the graph layer (plans/model_refactor.md).
-LEGACY_GRAPH_KINDS = {"activity": "activity", "derivation_review": "derivation-review"}
-
-
-def graph_curie(record_id: str, default_prefix: str) -> str:
-    if ":" in record_id:
-        raise ValueError(f"'{record_id}' already contains a colon; expected a bare dotted id")
-    kind, _, local = record_id.partition(".")
-    if local and kind in LEGACY_GRAPH_KINDS:
-        return f"sagegov:{LEGACY_GRAPH_KINDS[kind]}-{local}"
-    return f"{default_prefix}:{record_id}"
+import graph_iris
 
 # example filename (without .example.yaml) -> target LinkML class name
 EXAMPLE_CLASSES = {
     "access_requirement": "AccessRequirement",
     "study": "Study",
-    "activity": "Activity",
-    "activity_multi_output": "Activity",
     "derivation_rule": "DerivationRule",
-    "derivation_review": "DerivationReview",
 }
-
-
-def to_curie(bare_id: str, default_prefix: str) -> str:
-    """`access_requirement.42` -> `governanceduo:access_requirement.42`, or a gov:
-    instance CURIE for graph-facing classes (`activity.1001` ->
-    `sagegov:activity-1001`). Thin wrapper over graph_iris.graph_curie(), which
-    owns the IRI policy."""
-    return graph_curie(bare_id, default_prefix)
-
-
-def from_curie(curie: str) -> str:
-    """Strips a CURIE's prefix -- `governanceduo:access_requirement.42` ->
-    `access_requirement.42`. Only the inverse of to_curie for schema-namespace
-    records: gov: instance CURIEs (`sagegov:activity-1001`) also reshape the local
-    name, so they don't round-trip. Not called by this script's own flow (the bare
-    id is restored from a saved variable, not by re-deriving it)."""
-    if ":" not in curie:
-        raise ValueError(f"'{curie}' has no colon; expected a CURIE")
-    _prefix, local = curie.split(":", 1)
-    return local
 
 
 def convert_one(example_path: Path, class_name: str, module, schemaview: SchemaView) -> Graph:
@@ -103,7 +72,7 @@ def convert_one(example_path: Path, class_name: str, module, schemaview: SchemaV
     obj = yaml_loader.load(str(example_path), target_class=target_class)
 
     bare_id = obj.id
-    obj.id = to_curie(bare_id, schemaview.schema.default_prefix)
+    obj.id = graph_iris.record_iri(bare_id)
     try:
         graph = RDFLibDumper().as_rdf_graph(obj, schemaview)
     finally:

@@ -41,8 +41,8 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
     
         
         
-        AccessRequirement --> "0..1" AccessTypeEnum : accessType
-        click AccessTypeEnum href "../../enums/AccessTypeEnum/"
+        AccessRequirement --> "0..1" Permission : accessType
+        click Permission href "../../enums/Permission/"
     
 
         
@@ -75,8 +75,8 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
     
         
         
-        AccessRequirement --> "0..1" AccessRequirementConcreteTypeEnum : concreteType
-        click AccessRequirementConcreteTypeEnum href "../../enums/AccessRequirementConcreteTypeEnum/"
+        AccessRequirement --> "0..1" AccessRequirementType : concreteType
+        click AccessRequirementType href "../../enums/AccessRequirementType/"
     
 
         
@@ -107,8 +107,8 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
     
         
         
-        AccessRequirement --> "*" DataTierEnum : dataTier
-        click DataTierEnum href "../../enums/DataTierEnum/"
+        AccessRequirement --> "*" DataTier : dataTier
+        click DataTier href "../../enums/DataTier/"
     
 
         
@@ -252,7 +252,7 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | [populationType](../slots/populationType.md) | 0..1 <br/> [String](../types/String.md) | The population studied in the research associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [deidentificationType](../slots/deidentificationType.md) | * <br/> [DeidentificationTypeEnum](../enums/DeidentificationTypeEnum.md) | The type of de-identification applied to the data associated with the access ... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [dataPermission](../slots/dataPermission.md) | * <br/> [DataPermissionEnum](../enums/DataPermissionEnum.md) | The permissions associated with the data under the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
-| [dataTier](../slots/dataTier.md) | * <br/> [DataTierEnum](../enums/DataTierEnum.md) | The tier of data access associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
+| [dataTier](../slots/dataTier.md) | * <br/> [DataTier](../enums/DataTier.md) | The tier of data access associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [license](../slots/license.md) | * <br/> [LicenseEnum](../enums/LicenseEnum.md) | The license under which the data associated with the access requirement is sh... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [attribution](../slots/attribution.md) | 0..1 <br/> [String](../types/String.md) | The attribution statement for the data associated with the access requirement | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [requiredAgreementDocumentId](../slots/requiredAgreementDocumentId.md) | 0..1 <br/> [String](../types/String.md) | DID of the terms/agreement document the requester must accept before this acc... | [GovernanceMixin](../classes/GovernanceMixin.md) |
@@ -274,8 +274,8 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | [name](../slots/name.md) | 0..1 <br/> [String](../types/String.md) | A Synapse-native display name | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 | [etag](../slots/etag.md) | 0..1 <br/> [String](../types/String.md) | Entity tag for optimistic concurrency control (a 36-character UUID) | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 | [currentRevNum](../slots/currentRevNum.md) | 0..1 <br/> [Integer](../types/Integer.md) | The current revision number of the record | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
-| [accessType](../slots/accessType.md) | 0..1 <br/> [AccessTypeEnum](../enums/AccessTypeEnum.md) | The kind of access this Access Requirement governs (ACCESS_REQUIREMENT | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
-| [concreteType](../slots/concreteType.md) | 0..1 <br/> [AccessRequirementConcreteTypeEnum](../enums/AccessRequirementConcreteTypeEnum.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
+| [accessType](../slots/accessType.md) | 0..1 <br/> [Permission](../enums/Permission.md) | The kind of access this Access Requirement governs (ACCESS_REQUIREMENT | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
+| [concreteType](../slots/concreteType.md) | 0..1 <br/> [AccessRequirementType](../enums/AccessRequirementType.md) | Which kind of Access Requirement this is (ACCESS_REQUIREMENT | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 | [isTwoFaRequired](../slots/isTwoFaRequired.md) | 0..1 <br/> [Boolean](../types/Boolean.md) | Whether two-factor authentication is required (ACCESS_REQUIREMENT | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 | [createdBy](../slots/createdBy.md) | 0..1 <br/> [Integer](../types/Integer.md) | Synapse numeric user id of the record's creator | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
 | [createdOn](../slots/createdOn.md) | 0..1 <br/> [Integer](../types/Integer.md) | When the record was created (epoch milliseconds in the source Synapse tables) | [SynapseAccessRequirementMixin](../classes/SynapseAccessRequirementMixin.md) |
@@ -648,7 +648,9 @@ attributes:
   dataTier:
     name: dataTier
     description: The tier of data access associated with the access requirement. Equivalent
-      to DUOPlus5.
+      to DUOPlus5. Range is the graph layer's own DataTier vocabulary (linkml/graph/vocabularies.yaml),
+      the same one gov:AccessRequirement.dataTier uses -- one tier vocabulary, curated
+      here and read by the graph builder (scripts/build_graph.py).
     comments:
     - Required when dataUseModifiers contains DUOPlus5 — see GovernanceMixin rules.
     - 'NCIT:C175887 "Open or Controlled Data Access Indicator" (synonym: "Data Access
@@ -662,8 +664,7 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - GovernanceMixin
-    - ControlLabel
-    range: DataTierEnum
+    range: DataTier
     multivalued: true
   license:
     name: license
@@ -962,10 +963,6 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - Program
-    - Activity
-    - Usage
     range: string
   etag:
     name: etag
@@ -978,12 +975,6 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - DataAccessSubmission
-    - AccessApproval
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: string
   currentRevNum:
     name: currentRevNum
@@ -995,31 +986,32 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
     range: integer
   accessType:
     name: accessType
     description: The kind of access this Access Requirement governs (ACCESS_REQUIREMENT.ACCESS_TYPE).
-      Range is the same AccessTypeEnum used by AccessGrant.permission in governance_graph.yaml
-      — one real Synapse ACCESS_TYPE type backs both an ACL grant's permission and
-      an Access Requirement's own governed access kind.
+      Range is the graph layer's own Permission vocabulary (linkml/graph/vocabularies.yaml)
+      — one real Synapse ACCESS_TYPE type backs both gov:AccessRequirement.accessType
+      and an ACL Authorization's own mode.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    range: AccessTypeEnum
+    range: Permission
   concreteType:
     name: concreteType
     description: Which kind of Access Requirement this is (ACCESS_REQUIREMENT.CONCRETE_TYPE).
       The real Synapse column stores the full Java class name (e.g. "org.sagebionetworks.repo.model.ManagedACTAccessRequirement");
-      this enum uses the short class name for readability.
+      this vocabulary uses the short class name for readability. Range is the graph
+      layer's own AccessRequirementType vocabulary (linkml/graph/vocabularies.yaml),
+      the same one gov:AccessRequirement.requirementType uses.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    range: AccessRequirementConcreteTypeEnum
+    range: AccessRequirementType
   isTwoFaRequired:
     name: isTwoFaRequired
     description: Whether two-factor authentication is required (ACCESS_REQUIREMENT.IS_TWO_FA_REQUIRED).
@@ -1050,10 +1042,6 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: integer
   createdOn:
     name: createdOn
@@ -1067,12 +1055,6 @@ attributes:
     owner: AccessRequirement
     domain_of:
     - SynapseAccessRequirementMixin
-    - SynapseEntity
-    - AccessGrant
-    - AccessApproval
-    - ResearchProject
-    - DataAccessRequest
-    - Activity
     range: integer
   id:
     name: id
