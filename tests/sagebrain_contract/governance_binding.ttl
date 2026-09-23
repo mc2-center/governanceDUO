@@ -16,12 +16,11 @@
 # (https://w3id.org/synapse/governance#SynapseEntity) that carries no SHACL
 # obligations of its own here.
 @prefix gov: <https://w3id.org/synapse/governance#> .
-@prefix govid: <https://w3id.org/synapse/governance/> .
 @prefix syn: <https://www.synapse.org/Synapse:> .
 
 syn:syn27000001 a gov:SynapseEntity ;
     gov:benefactor syn:syn27000001 ;
-    gov:requiresAR govid:ar/42 .
+    gov:requiresAR <https://w3id.org/synapse/governance/ar/42> .
 
-govid:ar/42 a gov:AccessRequirement ;
+<https://w3id.org/synapse/governance/ar/42> a gov:AccessRequirement ;
     gov:dataTier gov:ControlledTier .

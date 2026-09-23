@@ -66,12 +66,11 @@ SAGEBRAIN_EXAMPLES = ["examples/AD-cohort.ttl", "examples/pipeline_provenance.tt
 
 LABEL_QUERY = """
 PREFIX gov: <https://w3id.org/synapse/governance#>
-PREFIX govid: <https://w3id.org/synapse/governance/>
 PREFIX association: <https://w3id.org/synapse/ad/association/>
 ASK {
     ?label a gov:ControlLabel ;
            gov:subject association:apoe-expr-samp01 ;
-           gov:sourceAccessRequirements govid:ar/42 .
+           gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/42> .
 }
 """
 
