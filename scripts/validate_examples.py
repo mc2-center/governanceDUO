@@ -11,7 +11,9 @@ Each example's target class comes from the manifests the converters already use
 -- convert_examples_to_rdf.EXAMPLE_CLASSES and
 build_governance_graph.EXAMPLE_CLASSES -- plus EXTRA_CLASSES for examples no
 converter reads. An example with no mapped class fails the check rather than
-being skipped.
+being skipped. The records the regression fixtures feed the builders
+(FIXTURE_RECORDS) are validated too, so a fixture can't pass the builders a
+record the schema rejects.
 
 Usage:
     python scripts/validate_examples.py [--schema linkml/governance_duo.linkml.yaml]
@@ -34,6 +36,13 @@ from convert_examples_to_rdf import EXAMPLE_CLASSES  # noqa: E402
 EXAMPLES = Path("linkml/examples")
 # Examples read by neither converter (build_policy_fabric.py takes this one by path).
 EXTRA_CLASSES = {"access_requirement_policy_fabric": "AccessRequirement"}
+# Fixture records (glob -> class) read by check_derivation_policy.py and
+# check_sync_governance.py.
+FIXTURE_RECORDS = {
+    "linkml/examples/derivation_policy/fixture/access_requirements/*.yaml": "AccessRequirement",
+    "linkml/examples/derivation_policy/fixture/derivation_rule.*.yaml": "DerivationRule",
+    "tests/sync_governance/access_requirements/*.yaml": "AccessRequirement",
+}
 
 
 def target_class(path: Path) -> str | None:
@@ -49,9 +58,13 @@ def main():
 
     validator = Validator(args.schema, validation_plugins=[JsonschemaValidationPlugin(closed=True)])
     failures = []
-    examples = sorted(EXAMPLES.rglob("*.example.yaml"))
-    for path in examples:
-        class_name = target_class(path)
+    examples = [(path, target_class(path)) for path in sorted(EXAMPLES.rglob("*.example.yaml"))]
+    for pattern, class_name in FIXTURE_RECORDS.items():
+        matches = sorted(Path().glob(pattern))
+        if not matches:
+            failures.append(f"{pattern}: no fixture records found (moved?)")
+        examples += [(path, class_name) for path in matches]
+    for path, class_name in examples:
         if class_name is None:
             failures.append(f"{path}: no target class mapped (add it to a converter's EXAMPLE_CLASSES)")
             continue
@@ -63,7 +76,7 @@ def main():
         for failure in failures:
             print(f"        - {failure}")
         sys.exit(1)
-    print(f"linkml-validate: all {len(examples)} examples conform (including the DUO rules).")
+    print(f"linkml-validate: all {len(examples)} examples and fixture records conform (including the DUO rules).")
 
 
 if __name__ == "__main__":

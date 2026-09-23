@@ -1,5 +1,7 @@
 # Fixture only: a Controlled AccessRequirement shared by several inputs, so their
 # combination is not disjoint and any review comes from the DerivationRule.
 id: access_requirement.7003
+contributorName: Fixture Curator
+contributionDate: "2026-01-01"
 dataTier:
   - Controlled

@@ -1,3 +1,5 @@
 # Fixture only: a curated AccessRequirement with no recorded tier -- must fail
 # closed to Unclassified.
 id: access_requirement.7002
+contributorName: Fixture Curator
+contributionDate: "2026-01-01"
