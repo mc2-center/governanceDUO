@@ -30,3 +30,7 @@ sagegov:AR-7003 a sagegov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.7003 .
 sagegov:AR-7004 a sagegov:AccessRequirement ;
     owl:sameAs governanceduo:access_requirement.7004 .
+
+# A second Private-bound input, with no derivation ancestry of its own.
+syn:syn70000017 a sagegov:SynapseEntity ;
+    sagegov:hasAccessRequirement sagegov:AR-7004 .

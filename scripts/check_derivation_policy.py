@@ -13,8 +13,12 @@ README.md) and asserts the output with SPARQL ASK queries:
     inputs a Controlled rule covers, stays Private (a rule never lowers an
     entity's own binding);
   - Flagged DerivationReviews for gov:activity-7001 (disjoint ARs),
-    gov:activity-7002 (the rule) and gov:activity-7003 (three inputs sharing one
-    AR, flagged because the rule covers each pair) -- exactly three;
+    gov:activity-7002 (the rule, per its notes) and gov:activity-7003 (three
+    inputs sharing one AR, flagged because the rule covers each pair), and for
+    gov:activity-7005, whose notes lead with the Private+Private rule that forbids
+    it ahead of the Controlled+Controlled review rule -- exactly four;
+  - the Controlled+Private rule lowers unbound syn70000016 (from a Controlled
+    and a Private input) to Controlled, and flags nothing;
   - the sagebrain-shaped Association inherits the output's label through
     sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom);
   - every domain/range axiom (enum membership included) holds on the output.
@@ -77,10 +81,30 @@ ASSERTIONS = {
                    sagegov:dataTier "Private" ;
                    sagegov:sourceAccessRequirements sagegov:AR-7003, sagegov:AR-7004 .
         }""",
-    "a Flagged DerivationReview exists for gov:activity-7002 (the rule, not disjointness)": """
-        ASK { ?review sagegov:activity sagegov:activity-7002 ; sagegov:reviewStatus "Flagged" . }""",
-    "a Flagged DerivationReview exists for three-input gov:activity-7003 (the rule, pairwise)": """
-        ASK { ?review sagegov:activity sagegov:activity-7003 ; sagegov:reviewStatus "Flagged" . }""",
+    "gov:activity-7002 is flagged by the Controlled+Controlled rule, not disjointness": """
+        ASK {
+            ?review sagegov:activity sagegov:activity-7002 ; sagegov:reviewStatus "Flagged" ;
+                    sagegov:reviewNotes ?notes .
+            FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
+            FILTER(!CONTAINS(?notes, "disjoint"))
+        }""",
+    "three-input gov:activity-7003 is flagged by the pairwise rule, not disjointness": """
+        ASK {
+            ?review sagegov:activity sagegov:activity-7003 ; sagegov:reviewStatus "Flagged" ;
+                    sagegov:reviewNotes ?notes .
+            FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
+            FILTER(!CONTAINS(?notes, "disjoint"))
+        }""",
+    "the Controlled+Private rule lowers unbound syn70000016 from Private to Controlled": """
+        ASK { ?label sagegov:subject syn:syn70000016 ; sagegov:dataTier "Controlled" . }""",
+    "gov:activity-7004 (Controlled+Private, not flagged, not disjoint) has no review": """
+        ASK { FILTER NOT EXISTS { ?review sagegov:activity sagegov:activity-7004 } }""",
+    "gov:activity-7005's notes lead with the forbidding rule and keep the review one": """
+        ASK {
+            ?review sagegov:activity sagegov:activity-7005 ; sagegov:reviewNotes ?notes .
+            FILTER(STRSTARTS(?notes, "DerivationRule derivation_rule.fixture-private-pair forbids"))
+            FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
+        }""",
     "the Association inherits syn70000003's label through sagebrain:derived_from": """
         ASK {
             ?label sagegov:subject association:fixture-assoc-01 ;
@@ -122,8 +146,8 @@ def main():
         tbox.parse(path)
     failures += [f"domain/range: {v}" for v in violations(tbox, g)]
     reviews = int(next(iter(g.query(REVIEW_COUNT)))[0])
-    if reviews != 3:
-        failures.append(f"expected exactly 3 DerivationReviews, got {reviews}")
+    if reviews != 4:
+        failures.append(f"expected exactly 4 DerivationReviews, got {reviews}")
 
     if failures:
         print("build_derivation_policy.py fixture check FAILED:")

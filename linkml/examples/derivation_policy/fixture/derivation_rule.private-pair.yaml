@@ -1,0 +1,8 @@
+# Fixture only: joining two Private inputs is forbidden.
+id: derivation_rule.fixture-private-pair
+inputDataTiers:
+  - Private
+  - Private
+permitted: false
+requiresReview: true
+rationale: Fixture rule for a forbidden combination alongside a review-only one.

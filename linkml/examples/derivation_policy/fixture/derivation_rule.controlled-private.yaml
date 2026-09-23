@@ -1,0 +1,10 @@
+# Fixture only: an explicit override that lowers the inherited tier -- joining a
+# Controlled and a Private input yields Controlled, without review.
+id: derivation_rule.fixture-controlled-private
+inputDataTiers:
+  - Controlled
+  - Private
+permitted: true
+resultingDataTier: Controlled
+requiresReview: false
+rationale: Fixture rule for the case where an override lowers what an output inherits.

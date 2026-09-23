@@ -286,25 +286,29 @@ def compute_derivation_reviews(
         # still carries the risk of any two of them.
         tiers = [il["dataTier"] for il in input_labels if il["dataTier"]]
         combos = {tuple(sorted(pair)) for pair in combinations(tiers, 2)} | {tuple(sorted(tiers))}
-        rule = next(
-            (
-                derivation_rules[combo]
-                for combo in sorted(combos)
-                if combo in derivation_rules
-                and (derivation_rules[combo].get("requiresReview") or derivation_rules[combo].get("permitted") is False)
-            ),
-            None,
-        )
-        rule_flags_review = rule is not None
+        # Every flagging rule is reported, forbidding ones first, so a
+        # permitted: false rule is never hidden behind a requiresReview one.
+        flagging = [
+            derivation_rules[combo]
+            for combo in sorted(combos)
+            if combo in derivation_rules
+            and (derivation_rules[combo].get("requiresReview") or derivation_rules[combo].get("permitted") is False)
+        ]
+        flagging.sort(key=lambda rule: rule.get("permitted") is not False)
+        rule_flags_review = bool(flagging)
 
         if not (disjoint or rule_flags_review):
             continue
 
-        reasons = []
+        reasons = [
+            f"DerivationRule {rule.get('id')} "
+            f"{'forbids' if rule.get('permitted') is False else 'requires review of'} this combination"
+            for rule in flagging
+        ]
         if disjoint:
-            reasons.append("inputs bound to disjoint AccessRequirements")
-        if rule_flags_review:
-            reasons.append(f"DerivationRule {rule.get('id')} flags this combination")
+            # after any forbidding rule, so the notes lead with the strongest reason
+            reasons.insert(sum(rule.get("permitted") is False for rule in flagging),
+                           "inputs bound to disjoint AccessRequirements")
         reviews.append(
             {
                 "activity": activity,

@@ -25,3 +25,22 @@ sagegov:activity-7003 a prov:Activity ;
         [ a prov:Usage ; prov:entity syn:syn70000011 ; sagegov:wasExecuted false ] ,
         [ a prov:Usage ; prov:entity syn:syn70000012 ; sagegov:wasExecuted false ] ,
         [ a prov:Usage ; prov:entity syn:syn70000014 ; sagegov:wasExecuted false ] .
+
+# Controlled + Private inputs; the Controlled+Private rule lowers the output to
+# Controlled (it has no binding of its own), and nothing is flagged.
+sagegov:activity-7004 a prov:Activity ;
+    prov:generated syn:syn70000016 ;
+    prov:qualifiedUsage
+        [ a prov:Usage ; prov:entity syn:syn70000011 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000013 ; sagegov:wasExecuted false ] .
+
+# Controlled, Controlled, Private, Private: the Private+Private pair is forbidden
+# and the Controlled+Controlled pair needs review; the notes must lead with the
+# forbidding rule.
+sagegov:activity-7005 a prov:Activity ;
+    prov:generated syn:syn70000018 ;
+    prov:qualifiedUsage
+        [ a prov:Usage ; prov:entity syn:syn70000011 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000012 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000013 ; sagegov:wasExecuted false ] ,
+        [ a prov:Usage ; prov:entity syn:syn70000017 ; sagegov:wasExecuted false ] .
