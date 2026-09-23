@@ -1,0 +1,24 @@
+entities:
+  - iri: syn:syn50000000
+  - iri: syn:syn50000001
+users:
+  - iri: https://www.synapse.org/Profile:3000001
+  - iri: https://www.synapse.org/Profile:3000003
+teams:
+  - iri: https://www.synapse.org/Team:3000002
+    hasMember: [https://www.synapse.org/Profile:3000003]
+authorizations:
+  - iri: https://w3id.org/synapse/governance/authorization/syn50000000-3000001
+    accessTo: syn:syn50000000
+    default: syn:syn50000000
+    agent: https://www.synapse.org/Profile:3000001
+    mode: [READ, DOWNLOAD]
+  - iri: https://w3id.org/synapse/governance/authorization/syn50000000-3000002
+    accessTo: syn:syn50000000
+    default: syn:syn50000000
+    agentGroup: https://www.synapse.org/Team:3000002
+    mode: [READ]
+approvals:
+  - iri: https://w3id.org/synapse/governance/approval/8001
+    status: APPROVED
+    expiresAt: "2099-01-01T00:00:00Z"

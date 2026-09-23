@@ -1,0 +1,26 @@
+@prefix sagegov: <https://sagebionetworks.org/governance/> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+sagegov:control-label-syn10081783 a sagegov:ControlLabel ;
+    sagegov:dataTier "Unclassified" ;
+    sagegov:sourceAccessRequirements sagegov:AR-42 ;
+    sagegov:subject syn:syn10081783 .
+
+sagegov:control-label-syn30000001 a sagegov:ControlLabel ;
+    sagegov:computedFrom sagegov:activity-1001 ;
+    sagegov:dataTier "Unclassified" ;
+    sagegov:sourceAccessRequirements sagegov:AR-42 ;
+    sagegov:subject syn:syn30000001 .
+
+sagegov:control-label-syn30000002 a sagegov:ControlLabel ;
+    sagegov:computedFrom sagegov:activity-1002 ;
+    sagegov:dataTier "Unclassified" ;
+    sagegov:sourceAccessRequirements sagegov:AR-42 ;
+    sagegov:subject syn:syn30000002 .
+
+sagegov:control-label-syn30000003 a sagegov:ControlLabel ;
+    sagegov:computedFrom sagegov:activity-1002 ;
+    sagegov:dataTier "Unclassified" ;
+    sagegov:sourceAccessRequirements sagegov:AR-42 ;
+    sagegov:subject syn:syn30000003 .
+

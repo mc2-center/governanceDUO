@@ -1,0 +1,109 @@
+@prefix gov: <https://sagebionetworks.org/governance/> .
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix syn: <https://www.synapse.org/Synapse:> .
+
+gov:access-approval-8001 a gov:AccessApproval ;
+    gov:createdOn "1717286400000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:expiresAt "4070908800000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:heldBy gov:principal-3000003 ;
+    gov:satisfies gov:AR-9001 ;
+    gov:sourceApprovalId 8001 ;
+    gov:status gov:APPROVED ;
+    gov:submittedBy gov:principal-3000003 .
+
+gov:access-approval-8002 a gov:AccessApproval ;
+    gov:createdOn "1546300800000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:expiresAt "1577836800000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:heldBy gov:principal-3000001 ;
+    gov:satisfies gov:AR-9001 ;
+    gov:sourceApprovalId 8002 ;
+    gov:status gov:APPROVED ;
+    gov:submittedBy gov:principal-3000001 .
+
+gov:ar-association-syn50000001-9001 a gov:AccessRequirementAssociation ;
+    gov:accessRequirement gov:AR-9001 ;
+    gov:bindingType gov:Inherited ;
+    gov:resource syn:syn50000001 ;
+    gov:source gov:Synapse .
+
+gov:data-access-submission-7001 a gov:DataAccessSubmission ;
+    gov:accessRequirement gov:AR-9001 ;
+    gov:requestId gov:data-access-request-6001 ;
+    gov:state gov:APPROVED ;
+    gov:statusModifiedOn "1717286400000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:submittedBy gov:principal-3000005 ;
+    gov:submittedOn "1717200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
+
+gov:principal-3000006 a gov:Principal,
+        gov:User ;
+    gov:affiliatedWith gov:site-mount-sinai ;
+    gov:principalId 3000006 .
+
+gov:AR-9001-condition-DUO-0000042 a gov:Condition ;
+    gov:conditionDetail "did:example:fixture-dua-9001" ;
+    gov:conditionType "GRU" ;
+    gov:description "General Research Use - This data use permission indicates that use is allowed for general research use for any research purpose." ;
+    gov:duoCode <http://purl.obolibrary.org/obo/DUO_0000042> .
+
+gov:data-access-request-6001 a gov:DataAccessRequest ;
+    gov:accessRequirement gov:AR-9001 .
+
+gov:grant-syn50000001-0 a gov:AccessGrant ;
+    gov:bindingType gov:Inherited ;
+    gov:permission gov:ACCESS,
+        gov:DOWNLOAD,
+        gov:READ ;
+    gov:principal gov:principal-3000001 ;
+    gov:resource syn:syn50000001 ;
+    gov:source gov:Synapse .
+
+gov:grant-syn50000001-1 a gov:AccessGrant ;
+    gov:bindingType gov:Inherited ;
+    gov:permission gov:READ ;
+    gov:principal gov:principal-3000002 ;
+    gov:resource syn:syn50000001 ;
+    gov:source gov:Synapse .
+
+gov:principal-3000002 a gov:Principal,
+        gov:Team ;
+    gov:principalId 3000002 .
+
+gov:principal-3000005 a gov:Principal,
+        gov:User ;
+    gov:affiliatedWith gov:site-mount-sinai ;
+    gov:principalId 3000005 .
+
+syn:syn50000000 a gov:SynapseEntity .
+
+gov:principal-3000003 a gov:Principal,
+        gov:User ;
+    gov:affiliatedWith gov:site-mount-sinai ;
+    gov:hasApproval gov:AR-9001 ;
+    gov:principalId 3000003 .
+
+gov:principal-3000001 a gov:Principal,
+        gov:User ;
+    gov:affiliatedWith gov:site-mount-sinai ;
+    gov:principalId 3000001 .
+
+syn:syn50000001 a gov:SynapseEntity ;
+    gov:createdByUserId 3000001 ;
+    gov:createdOn "1714521600000"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    gov:currentRevNum 1 ;
+    gov:etag "e-1" ;
+    gov:hasACL gov:grant-syn50000001-0,
+        gov:grant-syn50000001-1 ;
+    gov:hasAccessRequirement gov:AR-9001 ;
+    gov:maxRevNum 1 ;
+    gov:name "reads.bam" ;
+    gov:nodeType "file" ;
+    gov:parentId syn:syn50000000 .
+
+gov:site-mount-sinai a gov:Site ;
+    gov:institution "Mount Sinai" .
+
+gov:AR-9001 a gov:AccessRequirement ;
+    owl:sameAs governanceduo:access_requirement.9001 ;
+    gov:hasCondition gov:AR-9001-condition-DUO-0000042 .
+

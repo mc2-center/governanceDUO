@@ -1,0 +1,83 @@
+id: https://w3id.org/synapse/governance
+name: spike
+default_prefix: gov
+prefixes:
+  gov: https://w3id.org/synapse/governance#
+  linkml: https://w3id.org/linkml/
+  acl: http://www.w3.org/ns/auth/acl#
+  vcard: http://www.w3.org/2006/vcard/ns#
+  foaf: http://xmlns.com/foaf/0.1/
+  skos: http://www.w3.org/2004/02/skos/core#
+  syn: "https://www.synapse.org/Synapse:"
+imports: [linkml:types]
+default_range: string
+enums:
+  Permission:
+    enum_uri: gov:Permission
+    implements: [skos:Concept]
+    description: A Synapse ACCESS_TYPE, as an access mode.
+    permissible_values:
+      READ:
+        meaning: gov:Read
+        description: Read metadata.
+        implements: [acl:Read]
+      DOWNLOAD:
+        meaning: gov:Download
+        description: Download file content.
+        implements: [acl:Read]
+      CHANGE_PERMISSIONS:
+        meaning: gov:ChangePermissions
+        implements: [acl:Control]
+  ApprovalStatus:
+    enum_uri: gov:ApprovalStatus
+    implements: [skos:Concept]
+    permissible_values:
+      APPROVED: {meaning: gov:Approved}
+      REVOKED: {meaning: gov:Revoked}
+  SubmissionState:
+    enum_uri: gov:SubmissionState
+    implements: [skos:Concept]
+    permissible_values:
+      APPROVED: {meaning: gov:Approved}
+      REJECTED: {meaning: gov:Rejected}
+classes:
+  SynapseEntity:
+    class_uri: gov:SynapseEntity
+    attributes:
+      iri: {identifier: true, range: uriorcurie}
+  Principal:
+    class_uri: gov:Principal
+    abstract: true
+    attributes:
+      iri: {identifier: true, range: uriorcurie}
+  User:
+    is_a: Principal
+    class_uri: gov:User
+  Team:
+    is_a: Principal
+    class_uri: vcard:Group
+    attributes:
+      hasMember: {slot_uri: vcard:hasMember, range: User, multivalued: true}
+  Authorization:
+    class_uri: acl:Authorization
+    attributes:
+      iri: {identifier: true, range: uriorcurie}
+      accessTo: {slot_uri: acl:accessTo, range: SynapseEntity, required: true}
+      default: {slot_uri: acl:default, range: SynapseEntity}
+      agent: {slot_uri: acl:agent, range: User}
+      agentGroup: {slot_uri: acl:agentGroup, range: Team}
+      mode: {slot_uri: acl:mode, range: Permission, multivalued: true, required: true}
+  Approval:
+    class_uri: gov:Approval
+    attributes:
+      iri: {identifier: true, range: uriorcurie}
+      status: {slot_uri: gov:status, range: ApprovalStatus, required: true}
+      expiresAt: {slot_uri: gov:expiresAt, range: datetime}
+  Graph:
+    tree_root: true
+    attributes:
+      entities: {range: SynapseEntity, multivalued: true, inlined_as_list: true}
+      users: {range: User, multivalued: true, inlined_as_list: true}
+      teams: {range: Team, multivalued: true, inlined_as_list: true}
+      authorizations: {range: Authorization, multivalued: true, inlined_as_list: true}
+      approvals: {range: Approval, multivalued: true, inlined_as_list: true}

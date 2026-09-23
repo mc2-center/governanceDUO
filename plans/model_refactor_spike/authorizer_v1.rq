@@ -1,0 +1,22 @@
+# Projection: canonical WAC graph -> sagebrain-infra fc6de51 authorizer contract (direct agents).
+PREFIX acl:   <http://www.w3.org/ns/auth/acl#>
+PREFIX gov:   <https://w3id.org/synapse/governance#>
+PREFIX old:   <https://sagebionetworks.org/governance/>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+CONSTRUCT {
+  ?e old:hasACL ?grant .
+  ?grant a old:AccessGrant ; old:principal ?principal ; old:permission ?perm ;
+         old:bindingType ?binding .
+}
+WHERE {
+  ?e gov:benefactor ?b .
+  ?auth a acl:Authorization ; acl:default ?b ; acl:mode ?mode ; acl:agent ?member .
+  ?mode skos:notation ?notation .
+  BIND(REPLACE(STR(?member), "^.*[:/]", "") AS ?pid)
+  BIND(IRI(CONCAT(STR(old:), "principal-", ?pid)) AS ?principal)
+  BIND(IRI(CONCAT(STR(old:), "grant-", STRAFTER(STR(?e), "Synapse:"), "-", ?pid)) AS ?grant)
+  BIND(IF(?e = ?b, old:Direct, old:Inferred) AS ?binding)
+  VALUES ?derived { false true }
+  FILTER(!?derived || ?notation = "DOWNLOAD")
+  BIND(IRI(CONCAT(STR(old:), IF(?derived, "ACCESS", ?notation))) AS ?perm)
+}

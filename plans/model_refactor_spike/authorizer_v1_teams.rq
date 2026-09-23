@@ -1,0 +1,26 @@
+# Projection (flag-gated stopgap): expand acl:agentGroup grants to per-member grants.
+PREFIX acl:   <http://www.w3.org/ns/auth/acl#>
+PREFIX gov:   <https://w3id.org/synapse/governance#>
+PREFIX old:   <https://sagebionetworks.org/governance/>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+CONSTRUCT {
+  ?e old:hasACL ?grant .
+  ?grant a old:AccessGrant ; old:principal ?principal ; old:permission ?perm ;
+         old:bindingType ?binding ; old:viaTeam ?team .
+}
+WHERE {
+  ?e gov:benefactor ?b .
+  ?auth a acl:Authorization ; acl:default ?b ; acl:mode ?mode ; acl:agentGroup ?group .
+  ?group vcard:hasMember ?member .
+  ?mode skos:notation ?notation .
+  BIND(REPLACE(STR(?member), "^.*[:/]", "") AS ?pid)
+  BIND(REPLACE(STR(?group), "^.*[:/]", "") AS ?tid)
+  BIND(IRI(CONCAT(STR(old:), "principal-", ?pid)) AS ?principal)
+  BIND(IRI(CONCAT(STR(old:), "principal-", ?tid)) AS ?team)
+  BIND(IRI(CONCAT(STR(old:), "grant-", STRAFTER(STR(?e), "Synapse:"), "-", ?pid, "-via-", ?tid)) AS ?grant)
+  BIND(IF(?e = ?b, old:Direct, old:Inferred) AS ?binding)
+  VALUES ?derived { false true }
+  FILTER(!?derived || ?notation = "DOWNLOAD")
+  BIND(IRI(CONCAT(STR(old:), IF(?derived, "ACCESS", ?notation))) AS ?perm)
+}
