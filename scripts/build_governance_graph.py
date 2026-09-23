@@ -56,12 +56,11 @@ IRIs are identical either way (`sagegov:`/`gov:` are the same namespace; see
 governance_graph.yaml's own prefix-block comment).
 
 Permissible-value-typed slots (`permission`, `source`, `bindingType`, `state`,
-`principalType`) mint one individual per enum value directly from the value string
-(`gov:DOWNLOAD`, `gov:Direct`, etc.) rather than through a schema-declared mapping —
-none of AccessTypeEnum/BindingTypeEnum/SubmissionStateEnum/PrincipalTypeEnum's
-permissible values carry a `meaning:` URI in this namespace, so this is a
-deterministic "value string -> gov:<value>" convention, not a second source of truth
-that can drift independently of the schema the way a renamed slot could.
+`status`, `principalType`) are written as the IRI each value's `meaning:` declares
+(`gov:DOWNLOAD`, `gov:Direct`, `gov:APPROVED`, the class `gov:User`, ...), resolved
+by enum_iri() -- so the schema, the generated OWL and this output agree on every
+value's IRI (plans/enum_values_match_owl.md). The one exception is the derived
+`gov:ACCESS` permission below, which isn't a Synapse ACCESS_TYPE value.
 
 Usage:
     python scripts/build_governance_graph.py [--examples-dir linkml/examples/governance_graph]
@@ -222,7 +221,7 @@ def add_principal(g: Graph, data: dict):
     # TBox and do subclass entailment) should still find every Principal individual.
     g.add((subject, RDF.type, TYPE("Principal")))
     # Permissible-value-typed: see module docstring's note on PrincipalTypeEnum.
-    g.add((subject, RDF.type, GOV[data["principalType"]]))
+    g.add((subject, RDF.type, enum_iri("PrincipalTypeEnum", data["principalType"])))
     g.add((subject, PREDICATE("principalId", "Principal"), Literal(data["principalId"])))
     # UserProfile.company only exists for individual users -- Synapse's real
     # Team object has no institution/affiliation field at all (verified
@@ -239,7 +238,7 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     g.add((subject, PREDICATE("resource", "AccessGrant"), SYN[data["resource"]]))
     g.add((subject, PREDICATE("principal", "AccessGrant"), principal_node))
     for perm in data.get("permission", []):
-        g.add((subject, PREDICATE("permission", "AccessGrant"), GOV[perm]))
+        g.add((subject, PREDICATE("permission", "AccessGrant"), enum_iri("AccessTypeEnum", perm)))
     # Derived: SageBrain's authorizer (sagebrain-infra authorize.py) asks whether a
     # grant permits the abstract Cedar action "ACCESS" by comparing each
     # gov:permission's local name to it. Synapse has no ACCESS permission, so it
@@ -250,7 +249,7 @@ def add_access_grant(g: Graph, data: dict, principal_node):
     if ACCESS_GRANTING_PERMISSION in data.get("permission", []):
         g.add((subject, PREDICATE("permission", "AccessGrant"), GOV.ACCESS))
     g.add((subject, PREDICATE("source", "AccessGrant"), enum_iri("SourceSystemEnum", data["source"])))
-    g.add((subject, PREDICATE("bindingType", "AccessGrant"), GOV[data["bindingType"]]))
+    g.add((subject, PREDICATE("bindingType", "AccessGrant"), enum_iri("BindingTypeEnum", data["bindingType"])))
     if data.get("createdOn") is not None:
         g.add((subject, PREDICATE("createdOn", "AccessGrant"), Literal(data["createdOn"], datatype=XSD.long)))
     # design doc: "syn10081783 -- hasACL --> ACL:syn10081783 -- (grants) --> ...";
@@ -267,7 +266,7 @@ def add_access_requirement_association(g: Graph, data: dict):
     g.add((subject, PREDICATE("resource", "AccessRequirementAssociation"), SYN[data["resource"]]))
     g.add((subject, PREDICATE("accessRequirement", "AccessRequirementAssociation"), ar_node))
     g.add((subject, PREDICATE("source", "AccessRequirementAssociation"), enum_iri("SourceSystemEnum", data["source"])))
-    g.add((subject, PREDICATE("bindingType", "AccessRequirementAssociation"), GOV[data["bindingType"]]))
+    g.add((subject, PREDICATE("bindingType", "AccessRequirementAssociation"), enum_iri("BindingTypeEnum", data["bindingType"])))
     # Derived convenience triple; no governance_graph.yaml slot backs hasAccessRequirement.
     g.add((SYN[data["resource"]], GOV.hasAccessRequirement, ar_node))
     # NOT TYPE("AccessRequirement"): that class is defined in access_requirement.yaml
@@ -400,7 +399,7 @@ def add_access_approval(g: Graph, data: dict, principal_nodes: dict, as_of_ms: i
     g.add((subject, PREDICATE("submitterId", "AccessApproval"), principal_nodes[data["submitterId"]]))
     accessor_node = principal_nodes[data["accessorId"]]
     g.add((subject, PREDICATE("accessorId", "AccessApproval"), accessor_node))
-    g.add((subject, PREDICATE("status", "AccessApproval"), GOV[data["status"]]))
+    g.add((subject, PREDICATE("status", "AccessApproval"), enum_iri("ApprovalStateEnum", data["status"])))
     if data.get("expiredOn") is not None:
         g.add((subject, PREDICATE("expiredOn", "AccessApproval"), Literal(data["expiredOn"], datatype=XSD.long)))
     if data.get("createdOn") is not None:
@@ -561,7 +560,7 @@ def add_data_access_submission_status(g: Graph, data: dict, submission_node):
     # DataAccessSubmissionStatus has no class_uri (see governance_graph.yaml --
     # it's merged, not its own individual), so state/rejectedReason/etc. have no
     # PREDICATE() entry to resolve either; kept as bare GOV.<name> constants.
-    g.add((submission_node, GOV.state, GOV[data["state"]]))
+    g.add((submission_node, GOV.state, enum_iri("SubmissionStateEnum", data["state"])))
     if data.get("rejectedReason"):
         g.add((submission_node, GOV.rejectedReason, Literal(data["rejectedReason"])))
     if data.get("modifiedOn") is not None:

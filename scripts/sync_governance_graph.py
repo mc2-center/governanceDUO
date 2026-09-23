@@ -89,6 +89,16 @@ from build_governance_graph import GOV, SYN, GOVERNANCEDUO
 CURATED_AR_ID_PATTERN = re.compile(r"^access_requirement\.[A-Za-z0-9_-]+$")
 
 
+def known_value(enum_name: str, value, context: str) -> bool:
+    """Whether `value` is one of `enum_name`'s permissible values. The graph writes
+    each value as the IRI its meaning: declares, so an unknown one (e.g. a new
+    Synapse ACCESS_TYPE) is warned and skipped rather than minted or fatal."""
+    if value in bgg._schemaview.get_enum(enum_name).permissible_values:
+        return True
+    warn(f"{context}: {value!r} is not a {enum_name} value; skipping it.")
+    return False
+
+
 def warn(message: str):
     print(f"WARNING: {message}", file=sys.stderr)
 
@@ -360,7 +370,10 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
         grant_data = {
             "id": f"grant.{entity_id}-{index}",
             "resource": entity_id,
-            "permission": entry.get("accessType", []),
+            "permission": [
+                p for p in entry.get("accessType", [])
+                if known_value("AccessTypeEnum", p, f"{entity_id} ACL entry for {principal_id}")
+            ],
             "source": "Synapse",
             "bindingType": "Direct" if is_direct_acl else "Inherited",
         }
@@ -461,7 +474,8 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "rejectedReason": submission.get("rejectedReason"),
                 "modifiedOn": to_millis(submission.get("modifiedOn")),
             }
-            bgg.add_data_access_submission_status(g, status_data, submission_node)
+            if known_value("SubmissionStateEnum", status_data["state"], f"submission {submission['id']}"):
+                bgg.add_data_access_submission_status(g, status_data, submission_node)
 
             # DataAccessRequest itself: no REST path exists for anyone else's
             # request (confirmed -- Submission carries only a bare requestId, no
@@ -511,7 +525,8 @@ def sync_entity(syn: Synapse, entity_id: str, state: dict):
                 "sourceApprovalId": approval.get("id"),
                 "etag": approval.get("etag"),
             }
-            bgg.add_access_approval(g, approval_data, state["principal_nodes"], state["as_of_ms"])
+            if known_value("ApprovalStateEnum", approval_data["status"], f"access approval {approval['id']}"):
+                bgg.add_access_approval(g, approval_data, state["principal_nodes"], state["as_of_ms"])
 
 
 def main():
