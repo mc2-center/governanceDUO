@@ -12,16 +12,19 @@ README.md) and asserts the output with SPARQL ASK queries:
   - syn70000013, bound directly to a Private AR and derived from two Controlled
     inputs a Controlled rule covers, stays Private (a rule never lowers an
     entity's own binding);
-  - Flagged DerivationReviews for gov:activity-7001 (disjoint ARs),
-    gov:activity-7002 (the rule, per its notes) and gov:activity-7003 (three
+  - Flagged DerivationReviews for govid:activity/7001 (disjoint ARs),
+    govid:activity/7002 (the rule, per its notes) and govid:activity/7003 (three
     inputs sharing one AR, flagged because the rule covers each pair), and for
-    gov:activity-7005, whose notes lead with the Private+Private rule that forbids
-    it ahead of the Controlled+Controlled review rule -- exactly four;
+    govid:activity/7005, whose notes lead with the Private+Private rule that
+    forbids it ahead of the Controlled+Controlled review rule -- exactly four;
   - the Controlled+Private rule lowers unbound syn70000016 (from a Controlled
     and a Private input) to Controlled, and flags nothing;
   - the sagebrain-shaped Association inherits the output's label through
     sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom);
-  - every domain/range axiom (enum membership included) holds on the output.
+  - the output, merged with its three input graphs, conforms to
+    shapes/governance.shacl.ttl (ont shapes/governance.owl.ttl) -- replacing the
+    pre-refactor pipeline's domain/range check now that both TBoxes are one
+    generated TBox and shape set.
 
 Usage:
     python scripts/check_derivation_policy.py
@@ -36,84 +39,87 @@ from pathlib import Path
 
 from rdflib import Graph
 
-sys.path.insert(0, str(Path(__file__).parent))
-from check_domain_range import TBOXES, violations  # noqa: E402
-
 FIXTURE = Path("linkml/examples/derivation_policy/fixture")
+SHAPES = "shapes/governance.shacl.ttl"
+ONT = "shapes/governance.owl.ttl"
 
 PREFIXES = """
-PREFIX sagegov: <https://sagebionetworks.org/governance/>
+PREFIX gov: <https://w3id.org/synapse/governance#>
 PREFIX syn: <https://www.synapse.org/Synapse:>
 PREFIX association: <https://w3id.org/synapse/ad/association/>
 """
 
 ASSERTIONS = {
-    "output file syn70000003 is labeled Unclassified, citing both ARs, computed from gov:activity-7001": """
+    "output file syn70000003 is labeled Unclassified, citing both ARs, computed from govid:activity/7001": """
         ASK {
-            ?label a sagegov:ControlLabel ;
-                   sagegov:subject syn:syn70000003 ;
-                   sagegov:dataTier "Unclassified" ;
-                   sagegov:sourceAccessRequirements sagegov:AR-7001, sagegov:AR-7002 ;
-                   sagegov:computedFrom sagegov:activity-7001 .
+            ?label a gov:ControlLabel ;
+                   gov:subject syn:syn70000003 ;
+                   gov:dataTier gov:UnclassifiedTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7001>, <https://w3id.org/synapse/governance/ar/7002> ;
+                   gov:computedFrom <https://w3id.org/synapse/governance/activity/7001> .
         }""",
-    "Controlled input syn70000001 is labeled Controlled, citing gov:AR-7001": """
+    "Controlled input syn70000001 is labeled Controlled, citing govid:ar/7001": """
         ASK {
-            ?label sagegov:subject syn:syn70000001 ;
-                   sagegov:dataTier "Controlled" ;
-                   sagegov:sourceAccessRequirements sagegov:AR-7001 .
+            ?label gov:subject syn:syn70000001 ;
+                   gov:dataTier gov:ControlledTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7001> .
         }""",
-    "tierless input syn70000002 keeps an Unclassified label citing gov:AR-7002": """
+    "tierless input syn70000002 keeps an Unclassified label citing govid:ar/7002": """
         ASK {
-            ?label sagegov:subject syn:syn70000002 ;
-                   sagegov:dataTier "Unclassified" ;
-                   sagegov:sourceAccessRequirements sagegov:AR-7002 .
+            ?label gov:subject syn:syn70000002 ;
+                   gov:dataTier gov:UnclassifiedTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7002> .
         }""",
-    "a Flagged DerivationReview exists for gov:activity-7001, linking both input labels": """
+    "a Flagged DerivationReview exists for govid:activity/7001, linking both input labels": """
         ASK {
-            ?review a sagegov:DerivationReview ;
-                    sagegov:activity sagegov:activity-7001 ;
-                    sagegov:reviewStatus "Flagged" ;
-                    sagegov:inputLabels sagegov:control-label-syn70000001, sagegov:control-label-syn70000002 .
+            ?review a gov:DerivationReview ;
+                    gov:activity <https://w3id.org/synapse/governance/activity/7001> ;
+                    gov:reviewStatus gov:DerivationFlagged ;
+                    gov:inputLabels ?l1, ?l2 .
+            ?l1 gov:subject syn:syn70000001 .
+            ?l2 gov:subject syn:syn70000002 .
         }""",
     "syn70000013 keeps its own Private tier despite the Controlled+Controlled rule": """
         ASK {
-            ?label sagegov:subject syn:syn70000013 ;
-                   sagegov:dataTier "Private" ;
-                   sagegov:sourceAccessRequirements sagegov:AR-7003, sagegov:AR-7004 .
+            ?label gov:subject syn:syn70000013 ;
+                   gov:dataTier gov:PrivateTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7003>, <https://w3id.org/synapse/governance/ar/7004> .
         }""",
-    "gov:activity-7002 is flagged by the Controlled+Controlled rule, not disjointness": """
+    "govid:activity/7002 is flagged by the Controlled+Controlled rule, not disjointness": """
         ASK {
-            ?review sagegov:activity sagegov:activity-7002 ; sagegov:reviewStatus "Flagged" ;
-                    sagegov:reviewNotes ?notes .
+            ?review gov:activity <https://w3id.org/synapse/governance/activity/7002> ; gov:reviewStatus gov:DerivationFlagged ;
+                    gov:reviewNotes ?notes .
             FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
             FILTER(!CONTAINS(?notes, "disjoint"))
         }""",
-    "three-input gov:activity-7003 is flagged by the pairwise rule, not disjointness": """
+    "three-input govid:activity/7003 is flagged by the pairwise rule, not disjointness": """
         ASK {
-            ?review sagegov:activity sagegov:activity-7003 ; sagegov:reviewStatus "Flagged" ;
-                    sagegov:reviewNotes ?notes .
+            ?review gov:activity <https://w3id.org/synapse/governance/activity/7003> ; gov:reviewStatus gov:DerivationFlagged ;
+                    gov:reviewNotes ?notes .
             FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
             FILTER(!CONTAINS(?notes, "disjoint"))
         }""",
     "the Controlled+Private rule lowers unbound syn70000016 from Private to Controlled": """
-        ASK { ?label sagegov:subject syn:syn70000016 ; sagegov:dataTier "Controlled" . }""",
-    "gov:activity-7004 (Controlled+Private, not flagged, not disjoint) has no review": """
-        ASK { FILTER NOT EXISTS { ?review sagegov:activity sagegov:activity-7004 } }""",
-    "gov:activity-7005's notes lead with the forbidding rule and keep the review one": """
+        ASK { ?label gov:subject syn:syn70000016 ; gov:dataTier gov:ControlledTier . }""",
+    "govid:activity/7004 (Controlled+Private, not flagged, not disjoint) has no review": """
+        ASK { FILTER NOT EXISTS { ?review gov:activity <https://w3id.org/synapse/governance/activity/7004> } }""",
+    "govid:activity/7005's notes lead with the forbidding rule and keep the review one": """
         ASK {
-            ?review sagegov:activity sagegov:activity-7005 ; sagegov:reviewNotes ?notes .
+            ?review gov:activity <https://w3id.org/synapse/governance/activity/7005> ; gov:reviewNotes ?notes .
             FILTER(STRSTARTS(?notes, "DerivationRule derivation_rule.fixture-private-pair forbids"))
             FILTER(CONTAINS(?notes, "derivation_rule.fixture-controlled-pair requires review"))
         }""",
     "the Association inherits syn70000003's label through sagebrain:derived_from": """
         ASK {
-            ?label sagegov:subject association:fixture-assoc-01 ;
-                   sagegov:dataTier "Unclassified" ;
-                   sagegov:sourceAccessRequirements sagegov:AR-7001, sagegov:AR-7002 .
+            ?label gov:subject association:fixture-assoc-01 ;
+                   gov:dataTier gov:UnclassifiedTier ;
+                   gov:sourceAccessRequirements <https://w3id.org/synapse/governance/ar/7001>, <https://w3id.org/synapse/governance/ar/7002> .
         }""",
 }
 
-REVIEW_COUNT = PREFIXES + "SELECT (COUNT(DISTINCT ?r) AS ?n) WHERE { ?r a sagegov:DerivationReview . }"
+REVIEW_COUNT = PREFIXES + "SELECT (COUNT(DISTINCT ?r) AS ?n) WHERE { ?r a gov:DerivationReview . }"
+
+FIXTURE_INPUTS = (FIXTURE / "governance.ttl", FIXTURE / "provenance.ttl", FIXTURE / "sagebrain.ttl")
 
 
 def main():
@@ -123,11 +129,10 @@ def main():
             [
                 sys.executable,
                 "scripts/build_derivation_policy.py",
-                "--provenance-graph", str(FIXTURE / "provenance.ttl"),
-                "--governance-graph", str(FIXTURE / "governance.ttl"),
+                "--graph", str(FIXTURE / "governance.ttl"),
+                "--graph", str(FIXTURE / "provenance.ttl"),
                 "--extra-graph", str(FIXTURE / "sagebrain.ttl"),
                 "--derivation-rules", str(FIXTURE),
-                "--access-requirement-dir", str(FIXTURE / "access_requirements"),
                 "--out", str(out),
             ],
             capture_output=True,
@@ -139,15 +144,25 @@ def main():
             sys.exit(1)
         g = Graph().parse(out)
 
+        merged = Graph().parse(out)
+        for path in FIXTURE_INPUTS:
+            merged.parse(path)
+        merged_path = Path(tmp) / "merged.ttl"
+        merged.serialize(destination=str(merged_path), format="turtle")
+        shacl = subprocess.run(
+            [sys.executable, "scripts/validate_graph.py", "--data", str(merged_path),
+             "--shapes", SHAPES, "--ont", ONT],
+            capture_output=True, text=True,
+        )
+
     failures = [name for name, query in ASSERTIONS.items() if not g.query(PREFIXES + query).askAnswer]
-    # The output's values must fit the TBox too (e.g. every dataTier a DataTierEnum string).
-    tbox = Graph()
-    for path in TBOXES:
-        tbox.parse(path)
-    failures += [f"domain/range: {v}" for v in violations(tbox, g)]
     reviews = int(next(iter(g.query(REVIEW_COUNT)))[0])
     if reviews != 4:
         failures.append(f"expected exactly 4 DerivationReviews, got {reviews}")
+    if shacl.returncode != 0:
+        failures.append(
+            f"the output merged with its inputs does not conform to {SHAPES}:\n{shacl.stdout[-1500:]}"
+        )
 
     if failures:
         print("build_derivation_policy.py fixture check FAILED:")

@@ -164,21 +164,21 @@ derivation-policy-example-rdf:
 derivation-policy-validate: owl shacl derivation-policy-example-rdf
 	python3 scripts/validate_graph.py --data shapes/governance_duo.owl.ttl --shapes shapes/governance_duo.shacl.ttl --instances linkml/examples/derivation_policy/rdf/all_examples.ttl
 
-# Computes ControlLabel/DerivationReview from a Provenance Graph + Governance Graph.
-# Defaults to the illustrative example-driven builds (linkml/examples/provenance/rdf/
-# all_examples.ttl + governance_graph_export/governance_graph.ttl, both built by the
-# targets above/governance-graph) so this works with no live Synapse access; pass
-# PROVENANCE_GRAPH=provenance_graph_export/provenance_graph_synced.ttl (after
-# sync-provenance-graph) for real data.
-PROVENANCE_GRAPH := linkml/examples/provenance/rdf/all_examples.ttl
-GOVERNANCE_GRAPH := governance_graph_export/governance_graph.ttl
-derivation-policy: provenance-example-rdf governance-graph
-	python3 scripts/build_derivation_policy.py --provenance-graph $(PROVENANCE_GRAPH) --governance-graph $(GOVERNANCE_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
+# Computes ControlLabel/DerivationReview from the canonical governance graph
+# (plans/model_refactor.md). Defaults to the canonical example
+# (linkml/examples/graph/rdf/governance_graph.ttl, built by graph-example-rdf) so
+# this works with no live Synapse access; pass
+# DERIVATION_POLICY_GRAPH=governance_graph_export/governance_graph_synced.ttl
+# (after sync-governance-graph/sync-provenance-graph) for real data.
+DERIVATION_POLICY_GRAPH := $(GRAPH_EXAMPLE_RDF)
+derivation-policy: graph-example-rdf
+	python3 scripts/build_derivation_policy.py --graph $(DERIVATION_POLICY_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
 
 # Regression check: runs build_derivation_policy.py on the committed fixture in
 # linkml/examples/derivation_policy/fixture/ and asserts its labels/reviews, and
-# that its output fits both TBoxes (hence `owl`).
-derivation-policy-check: owl
+# that its output (merged with its inputs) conforms to the one generated graph
+# TBox and shape set (hence `graph-tbox`).
+derivation-policy-check: graph-tbox
 	python3 scripts/check_derivation_policy.py
 
 # Contract check against sagebrain-infra's authorizer: runs its governance query

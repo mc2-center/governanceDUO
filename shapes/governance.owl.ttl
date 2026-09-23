@@ -189,6 +189,12 @@ gov:computedOn a owl:DatatypeProperty ;
     rdfs:domain gov:ControlLabel ;
     rdfs:range xsd:dateTime .
 
+gov:conditionDetail a owl:DatatypeProperty ;
+    rdfs:label "conditionDetail" ;
+    rdfs:domain gov:Condition ;
+    rdfs:range xsd:string ;
+    skos:definition "A parameter of the condition other than a disease, as the curated record gives it (the GovernanceMixin companion field its DUO rule names)." .
+
 gov:createdBy a owl:ObjectProperty ;
     rdfs:label "createdBy" ;
     rdfs:domain [ a owl:Class ;
@@ -461,7 +467,7 @@ gov:status a owl:ObjectProperty ;
 gov:subject a owl:ObjectProperty ;
     rdfs:label "subject" ;
     rdfs:domain gov:ControlLabel ;
-    skos:definition "The Synapse entity the label is about." .
+    skos:definition "What the label is about: a Synapse entity, or anything derivation reaches (a sagebrain-model Association, say)." .
 
 gov:submittedBy a owl:ObjectProperty ;
     rdfs:label "submittedBy" ;
@@ -787,10 +793,6 @@ gov:Program a owl:Class ;
 
 prov:Usage a owl:Class .
 
-gov:Condition a owl:Class ;
-    rdfs:label "Condition" ;
-    skos:definition "One data-use condition of an Access Requirement: a DUO term, with the disease(s) it names when the term takes one (DUO:0000007)." .
-
 gov:DerivationReviewStatusScheme a skos:ConceptScheme ;
     rdfs:label "DerivationReviewStatus scheme" ;
     skos:hasTopConcept gov:DerivationApproved,
@@ -816,6 +818,10 @@ gov:AccessRequirementTypeScheme a skos:ConceptScheme ;
         gov:ManagedACTRequirement,
         gov:SelfSignRequirement,
         gov:TermsOfUseRequirement .
+
+gov:Condition a owl:Class ;
+    rdfs:label "Condition" ;
+    skos:definition "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." .
 
 gov:DataTierScheme a skos:ConceptScheme ;
     rdfs:label "DataTier scheme" ;

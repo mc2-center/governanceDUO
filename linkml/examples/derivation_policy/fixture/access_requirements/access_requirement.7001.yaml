@@ -1,6 +1,0 @@
-# Fixture only: a curated AccessRequirement with a recorded tier.
-id: access_requirement.7001
-contributorName: Fixture Curator
-contributionDate: "2026-01-01"
-dataTier:
-  - Controlled

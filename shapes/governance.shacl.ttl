@@ -281,7 +281,7 @@ shape:AuthorizationShape a sh:NodeShape ;
                         sh:path acl:agentClass ] ] ) .
 
 shape:ConditionShape a sh:NodeShape ;
-    rdfs:comment "One data-use condition of an Access Requirement: a DUO term, with the disease(s) it names when the term takes one (DUO:0000007)." ;
+    rdfs:comment "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:nodeKind sh:IRI ;
@@ -291,16 +291,21 @@ shape:ConditionShape a sh:NodeShape ;
             sh:order 0 ;
             sh:path gov:dataUseTerm ],
         [ sh:datatype xsd:string ;
-            sh:description "A free-text description." ;
-            sh:maxCount 1 ;
+            sh:description "A parameter of the condition other than a disease, as the curated record gives it (the GovernanceMixin companion field its DUO rule names)." ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
-            sh:path gov:description ],
+            sh:path gov:conditionDetail ],
         [ sh:description "A MONDO disease the condition names." ;
             sh:nodeKind sh:IRI ;
             sh:order 1 ;
             sh:path gov:diseaseContext ;
-            sh:pattern "^(MONDO:|http://purl\\.obolibrary\\.org/obo/MONDO_)[0-9]{7}$" ] ;
+            sh:pattern "^(MONDO:|http://purl\\.obolibrary\\.org/obo/MONDO_)[0-9]{7}$" ],
+        [ sh:datatype xsd:string ;
+            sh:description "A free-text description." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path gov:description ] ;
     sh:targetClass gov:Condition .
 
 shape:ControlLabelShape a sh:NodeShape ;
@@ -322,18 +327,17 @@ shape:ControlLabelShape a sh:NodeShape ;
             sh:nodeKind sh:IRI ;
             sh:order 2 ;
             sh:path gov:sourceAccessRequirements ],
-        [ sh:class prov:Activity ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 3 ;
-            sh:path gov:computedFrom ],
-        [ sh:description "The Synapse entity the label is about." ;
+        [ sh:description "What the label is about: a Synapse entity, or anything derivation reaches (a sagebrain-model Association, say)." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 0 ;
-            sh:path gov:subject ;
-            sh:pattern "^(syn:|https://www\\.synapse\\.org/Synapse:)syn[0-9]+$" ] ;
+            sh:path gov:subject ],
+        [ sh:class prov:Activity ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:computedFrom ] ;
     sh:targetClass gov:ControlLabel .
 
 shape:DataAccessRequestShape a sh:NodeShape ;

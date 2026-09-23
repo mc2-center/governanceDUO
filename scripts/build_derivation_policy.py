@@ -1,21 +1,21 @@
 """
 build_derivation_policy.py
 
-Computes the Derivation Policy Graph (linkml/derivation_policy.yaml, Layer 4 of
-plans/prov_o_integration.md) from a Provenance Graph (Layer 3, provenance.yaml) plus
-the Governance Graph (governance_graph.yaml). Two explicitly separate passes, per
-the note this repo's plan formalizes ("[the leakage evaluation] has to happen at
-the point the derived artifact is published, as its own step, not inferred from the
-graph after the fact"):
+Computes the Derivation Policy Graph -- ControlLabel and DerivationReview nodes
+(linkml/graph/governance.yaml) -- from the canonical governance graph
+(plans/model_refactor.md): the graph layer's own Access Requirement bindings and
+provenance, not the pre-refactor Governance/Provenance Graph pair. Two explicitly
+separate passes, per the note this repo's plan formalizes ("[the leakage
+evaluation] has to happen at the point the derived artifact is published, as its
+own step, not inferred from the graph after the fact"):
 
 1. compute_control_labels() -- a precomputed, per-entity ControlLabel: the max
-   DataTierEnum rank across an entity's own direct AccessRequirement bindings
-   (Governance Graph) and its full derivation ancestry, consulting DerivationRule
-   for an explicit resultingDataTier override at each join point (matched on
-   the exact combination of parent tiers). An override can lower what is
-   inherited, never below the entity's own direct bindings. Mirrors the
-   note's own paragraph-18 design: computed once, not re-walked live on every
-   query.
+   DataTier rank across an entity's own direct Access Requirement bindings and
+   its full derivation ancestry, consulting DerivationRule for an explicit
+   resultingDataTier override at each join point (matched on the exact
+   combination of parent tiers). An override can lower what is inherited, never
+   below the entity's own direct bindings. Mirrors the note's own paragraph-18
+   design: computed once, not re-walked live on every query.
 2. compute_derivation_reviews() -- mints a Flagged DerivationReview for every
    multi-input Activity whose inputs' ControlLabels cite disjoint
    sourceAccessRequirements sets, and/or where a DerivationRule marks
@@ -23,73 +23,85 @@ graph after the fact"):
    (an Activity with three inputs carries the risk of each pair) -- the note's own
    paragraph-12 "composite risk from independent grants" case.
 
-Fail closed: an AccessRequirement with no curated dataTier contributes the
-`Unclassified` tier, ranked above Private, so an entity bound to it is labeled
+Fail closed: an Access Requirement with no gov:dataTier contributes the
+Unclassified tier, ranked above Private, so an entity bound to it is labeled
 rather than reading as unrestricted. Only an entity with neither AR bindings nor
 labeled ancestry gets no label.
 
-Derivation ancestry is prov:wasDerivedFrom plus every property declared
-`rdfs:subPropertyOf` it (transitively) in the loaded graphs. sagebrain-model
-declares `sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom` in its
+An entity's Access Requirements are its own gov:requiresAR edges plus those of
+every ancestor reachable over gov:parent+ (the graph layer doesn't materialize
+inheritance onto descendants; that's a projection's job -- see
+entity_access_requirements()). An AR's tier comes from its gov:dataTier concept,
+mapped back to a DataTier code through the enum's own `meaning`s
+(tier_codes_by_iri()); ranks come from GraphBuilder.rank(), which reads the
+DataTier concepts' own gov:rank, not a hardcoded table.
+
+Derivation ancestry is prov:wasDerivedFrom -- projected from the qualified usages
+by projections/provenance.rq, since the canonical graph records only what Synapse
+says (the usages), not the implied edge -- plus every property declared
+rdfs:subPropertyOf it (transitively) in the loaded graphs. sagebrain-model
+declares sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom in its
 governance layer, so loading its ontology and ABox with --extra-graph lets labels
 reach sagebrain's Associations and Samples, not just Synapse files.
 
-Joins compare full IRIs. Every cross-reference in the provenance and governance
-graphs is an absolute IRI (syn: for Synapse entities, gov: for AccessRequirement
-and Activity nodes -- see scripts/graph_iris.py), so no id normalization is needed.
+Joins compare full IRIs: every cross-reference in the canonical graph is an
+absolute IRI (syn: for Synapse entities, govid: for AccessRequirement and
+Activity nodes -- see scripts/graph_iris.py), so no id normalization is needed.
 
-Output IRIs are all gov: (plans/sagebrain_contract_and_owl_dl_fixes.md decision D6):
-ControlLabel nodes are gov:control-label-<subject>, DerivationReview nodes
-gov:derivation-review-<n>; `subject`, `sourceAccessRequirements` (the governance
-graph's gov:AR-<n> nodes) and `computedFrom` (the generating Activity) are IRIs.
+Output IRIs are minted by graph_iris (the only IRI minter, plans/model_refactor.md
+R2): ControlLabel nodes are graph_iris.control_label(subject), DerivationReview
+nodes graph_iris.derivation_review(activity). The output is built through
+build_graph.GraphBuilder and written with graph_rdf.to_rdf, like every other
+graph-layer emitter.
 
-DerivationRule/curated-AccessRequirement sourcing: DerivationRule instances are
-loaded from --derivation-rules (plain yaml.safe_load, same simplicity as
-load_curated_access_requirements() below -- these files are already SHACL/
-linkml-validate-checked elsewhere, so this script doesn't re-validate them).
-Curated AccessRequirement dataTier values are sourced via
-sync_governance_graph.load_curated_access_requirements(), reused unchanged.
+DerivationRule sourcing: DerivationRule instances are loaded from
+--derivation-rules (plain yaml.safe_load, same simplicity as before -- these
+files are already SHACL/linkml-validate-checked elsewhere, so this script doesn't
+re-validate them). They stay in the record layer (linkml/derivation_policy.yaml);
+only ControlLabel/DerivationReview moved to the graph layer.
 
 Usage:
-    python scripts/build_derivation_policy.py --provenance-graph PATH
-                                               --governance-graph PATH
+    python scripts/build_derivation_policy.py --graph PATH [--graph PATH ...]
                                                [--extra-graph PATH ...]
                                                [--derivation-rules linkml/examples/derivation_policy]
-                                               [--access-requirement-dir linkml/examples]
                                                [--out derivation_policy_export/derivation_policy.ttl]
-                                               [--schema linkml/governance_duo.linkml.yaml]
 
 author: orion.banks
 """
 
 import argparse
-import hashlib
 import re
-import sys
+from collections.abc import Callable
 from itertools import combinations
 from pathlib import Path
 
 import yaml
-from rdflib import Graph, Literal, URIRef
-from rdflib.namespace import RDF, RDFS
-from linkml_runtime.utils.schemaview import SchemaView
+from rdflib import Graph, Namespace, URIRef
+from rdflib.namespace import RDFS
 
-import build_governance_graph as bgg
-import sync_governance_graph as sgg
-import sync_provenance_graph as spg
-from graph_iris import control_label_local_name, graph_curie
+import graph_iris
+import graph_rdf
+from build_graph import GraphBuilder, warn
 
-DATA_TIER_RANK = {"Anonymous": 0, "Open": 1, "Controlled": 2, "Private": 3, "Unclassified": 4}
-RANK_TO_TIER = {v: k for k, v in DATA_TIER_RANK.items()}
-UNCLASSIFIED = "Unclassified"
+PROV = Namespace("http://www.w3.org/ns/prov#")
+GOV = Namespace("https://w3id.org/synapse/governance#")
+
+PROVENANCE_QUERY = "projections/provenance.rq"
 
 DERIVATION_RULE_ID_PATTERN = re.compile(r"^derivation_rule\.[A-Za-z0-9_-]+$")
 
+UNCLASSIFIED = "Unclassified"
 NO_LABEL = {"dataTier": None, "rank": None, "sourceARs": frozenset()}
 
-
-def warn(message: str):
-    print(f"WARNING: {message}", file=sys.stderr)
+ACTIVITY_INPUTS_QUERY = """
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX gov: <https://w3id.org/synapse/governance#>
+SELECT ?activity ?entity WHERE {
+    ?activity prov:qualifiedUsage ?usage .
+    ?usage prov:entity ?entity ;
+           gov:wasExecuted false .
+}
+"""
 
 
 def load_derivation_rules(directory: Path) -> dict[tuple, dict]:
@@ -112,38 +124,21 @@ def load_derivation_rules(directory: Path) -> dict[tuple, dict]:
     return rules
 
 
-def load_governance_bindings(graph: Graph) -> dict[URIRef, dict[URIRef, str | None]]:
-    """Maps entity IRI -> {gov:AR-<n> node -> curated AccessRequirement record id
-    (e.g. `access_requirement.42`), or None when the stub has no owl:sameAs to a
-    curated record}. Both edges are real, already-emitted triples in
-    governance_graph_export/governance_graph.ttl (see build_governance_graph.py's
-    AccessRequirementReference design). The record id is recovered by stripping the
-    known governanceduo: namespace from the owl:sameAs target."""
-    query = """
-    PREFIX gov: <https://sagebionetworks.org/governance/>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    SELECT ?entity ?arNode ?realAr WHERE {
-        ?entity gov:hasAccessRequirement ?arNode .
-        OPTIONAL { ?arNode owl:sameAs ?realAr . }
-    }
-    """
-    namespace = str(bgg.GOVERNANCEDUO)
-    bindings: dict[URIRef, dict[URIRef, str | None]] = {}
-    for row in graph.query(query):
-        record_id = None
-        if row.realAr is not None and str(row.realAr).startswith(namespace):
-            record_id = str(row.realAr)[len(namespace):]
-        ars = bindings.setdefault(row.entity, {})
-        if record_id or row.arNode not in ars:
-            ars[row.arNode] = record_id
-    return bindings
+def tier_codes_by_iri(sv) -> dict[str, str]:
+    """DataTier concept IRI (as written) -> its enum code, via the enum's own
+    `meaning`s (e.g. https://w3id.org/synapse/governance#ControlledTier ->
+    'Controlled'). An AR's gov:dataTier is stored as the concept IRI, not the
+    code, so labels read off it need this reverse lookup."""
+    ns = sv.namespaces()
+    return {str(ns.uri_for(pv.meaning)): code
+            for code, pv in sv.get_enum("DataTier").permissible_values.items() if pv.meaning}
 
 
 def derivation_properties(graph: Graph) -> set[URIRef]:
     """prov:wasDerivedFrom plus every property declared rdfs:subPropertyOf it,
     transitively, in `graph`."""
-    properties = {spg.PROV.wasDerivedFrom}
-    frontier = [spg.PROV.wasDerivedFrom]
+    properties = {PROV.wasDerivedFrom}
+    frontier = [PROV.wasDerivedFrom]
     while frontier:
         parent = frontier.pop()
         for child in graph.subjects(RDFS.subPropertyOf, parent):
@@ -153,67 +148,101 @@ def derivation_properties(graph: Graph) -> set[URIRef]:
     return properties
 
 
-def load_provenance_structure(
-    graph: Graph,
-) -> tuple[dict[URIRef, set[URIRef]], dict[URIRef, list[URIRef]], dict[URIRef, URIRef]]:
-    """Returns (direct_parents, activity_inputs, generated_by):
-    - direct_parents[entity] = entities it was derived from, one hop, over
-      prov:wasDerivedFrom and its sub-properties (see derivation_properties())
-    - activity_inputs[activity] = non-executed input entities, sorted
-    - generated_by[entity] = the Activity that prov:generated it
-    Computes prov:wasDerivedFrom fresh via sync_provenance_graph.add_was_derived_from()
-    -- neither the live-synced nor example-driven Provenance Graph asserts it
-    directly, see that function's own docstring."""
-    spg.add_was_derived_from(graph)
+def load_derivation_ancestry(graph: Graph, provenance_query: str) -> dict[URIRef, set[URIRef]]:
+    """direct_parents[entity] = entities it was derived from, one hop: the
+    prov:wasDerivedFrom projections/provenance.rq constructs from the qualified
+    usages, plus every property declared rdfs:subPropertyOf it, transitively
+    (derivation_properties()) -- e.g. sagebrain-model's sagebrain:derived_from,
+    asserted directly in an --extra-graph, not projected."""
+    combined = Graph()
+    combined += graph
+    for triple in graph.query(provenance_query):
+        combined.add(triple)
 
     direct_parents: dict[URIRef, set[URIRef]] = {}
-    for prop in derivation_properties(graph):
-        for s, o in graph.subject_objects(prop):
+    for prop in derivation_properties(combined):
+        for s, o in combined.subject_objects(prop):
             if isinstance(s, URIRef) and isinstance(o, URIRef):
                 direct_parents.setdefault(s, set()).add(o)
+    return direct_parents
 
+
+def load_activity_inputs(graph: Graph) -> dict[URIRef, list[URIRef]]:
+    """activity -> its non-executed input entities (qualified usages with
+    gov:wasExecuted false), sorted so review numbering is stable between runs."""
     activity_inputs: dict[URIRef, list[URIRef]] = {}
-    query = """
-    PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX sagegov: <https://sagebionetworks.org/governance/>
-    SELECT ?activity ?entity WHERE {
-        ?activity prov:qualifiedUsage ?usage .
-        ?usage prov:entity ?entity ;
-               sagegov:wasExecuted false .
-    }
-    """
-    for row in graph.query(query):
+    for row in graph.query(ACTIVITY_INPUTS_QUERY):
         activity_inputs.setdefault(row.activity, []).append(row.entity)
     for inputs in activity_inputs.values():
         inputs.sort()
+    return activity_inputs
 
-    generated_by = {entity: activity for activity, entity in graph.subject_objects(spg.PROV.generated)}
-    return direct_parents, activity_inputs, generated_by
+
+def load_entity_structure(graph: Graph) -> tuple[dict[URIRef, URIRef], dict[URIRef, set[URIRef]]]:
+    """(parent_of, requires_ar): parent_of[entity] = its gov:parent (one hop);
+    requires_ar[entity] = the AccessRequirements attached directly to it
+    (gov:requiresAR, one of the AR's own subjectIds -- see
+    scripts/sync_governance_graph.py). Inheritance onto descendants is not
+    materialized here; entity_access_requirements() walks it."""
+    parent_of = {s: o for s, o in graph.subject_objects(GOV.parent)}
+    requires_ar: dict[URIRef, set[URIRef]] = {}
+    for s, o in graph.subject_objects(GOV.requiresAR):
+        requires_ar.setdefault(s, set()).add(o)
+    return parent_of, requires_ar
+
+
+def make_ar_tier(graph: Graph, tier_by_iri: dict[str, str]) -> Callable[[URIRef], str]:
+    """A memoized entity -> str."""
+    cache: dict[URIRef, str] = {}
+
+    def ar_tier(ar: URIRef) -> str:
+        if ar not in cache:
+            concept = graph.value(ar, GOV.dataTier)
+            cache[ar] = tier_by_iri.get(str(concept), UNCLASSIFIED) if concept is not None else UNCLASSIFIED
+        return cache[ar]
+
+    return ar_tier
+
+
+def entity_access_requirements(
+    entity: URIRef,
+    parent_of: dict[URIRef, URIRef],
+    requires_ar: dict[URIRef, set[URIRef]],
+    ar_tier: Callable[[URIRef], str],
+) -> dict[URIRef, str]:
+    """An entity's Access Requirements (module docstring): its own gov:requiresAR
+    plus every ancestor's, walked over gov:parent+. Keyed by AR IRI -> its tier
+    code (ar_tier, Unclassified when the AR carries no gov:dataTier)."""
+    bindings: dict[URIRef, str] = {}
+    current, seen = entity, set()
+    while current is not None and current not in seen:
+        seen.add(current)
+        for ar in requires_ar.get(current, ()):
+            bindings.setdefault(ar, ar_tier(ar))
+        current = parent_of.get(current)
+    return bindings
 
 
 def compute_control_labels(
     entities: set[URIRef],
     direct_parents: dict[URIRef, set[URIRef]],
-    ar_bindings: dict[URIRef, dict[URIRef, str | None]],
-    curated_ars: dict[str, dict],
+    ar_bindings: dict[URIRef, dict[URIRef, str]],
+    graph_builder: GraphBuilder,
     derivation_rules: dict[tuple, dict],
 ) -> dict[URIRef, dict]:
     """Memoized per-entity ControlLabel computation -- see module docstring's
-    step 1. `curated_ars` is sync_governance_graph.load_curated_access_requirements()'s
-    own return shape (AR record id -> its full yaml dict, dataTier read off
-    directly). An AR with no curated record or no dataTier contributes
-    Unclassified."""
+    step 1. `ar_bindings` is entity_access_requirements()'s own return shape (AR
+    IRI -> its tier code, already resolved and defaulted to Unclassified)."""
+    tier_enum = graph_builder.sv.get_enum("DataTier")
+    rank_to_tier = {pv.rank: code for code, pv in tier_enum.permissible_values.items()}
+    rank = graph_builder.rank
+
     labels: dict[URIRef, dict] = {}
     in_progress: set[URIRef] = set()
 
-    def ar_rank(record_id: str | None) -> int:
-        tiers = (curated_ars.get(record_id, {}) or {}).get("dataTier", []) if record_id else []
-        ranks = [DATA_TIER_RANK[t] for t in tiers or [] if t in DATA_TIER_RANK]
-        return max(ranks) if ranks else DATA_TIER_RANK[UNCLASSIFIED]
-
     def direct_rank_and_ars(entity: URIRef) -> tuple[int | None, set[URIRef]]:
         ars = ar_bindings.get(entity, {})
-        ranks = [ar_rank(record_id) for record_id in ars.values()]
+        ranks = [rank(tier) for tier in ars.values()]
         return (max(ranks) if ranks else None), set(ars)
 
     def label_for(entity: URIRef) -> dict:
@@ -233,23 +262,27 @@ def compute_control_labels(
 
         rule = None
         if len(parent_labels) >= 2:
-            combo = tuple(sorted(RANK_TO_TIER[pl["rank"]] for pl in parent_labels if pl["rank"] is not None))
+            combo = tuple(sorted(rank_to_tier[pl["rank"]] for pl in parent_labels if pl["rank"] is not None))
             if combo:
                 rule = derivation_rules.get(combo)
 
         if rule and rule.get("resultingDataTier"):
             # A rule may lower what the entity inherits, never its own direct
             # binding: an entity bound to a Private AR stays at least Private.
-            rule_rank = DATA_TIER_RANK[rule["resultingDataTier"]]
-            final_tier = RANK_TO_TIER[max(rule_rank, own_rank if own_rank is not None else rule_rank)]
+            rule_rank = rank(rule["resultingDataTier"])
+            final_tier = rank_to_tier[max(rule_rank, own_rank if own_rank is not None else rule_rank)]
         else:
-            final_tier = RANK_TO_TIER.get(default_rank)
+            final_tier = rank_to_tier.get(default_rank)
 
         all_ars = set(own_ars)
         for pl in parent_labels:
             all_ars |= pl["sourceARs"]
 
-        result = {"dataTier": final_tier, "rank": DATA_TIER_RANK.get(final_tier), "sourceARs": frozenset(all_ars)}
+        result = {
+            "dataTier": final_tier,
+            "rank": rank(final_tier) if final_tier is not None else None,
+            "sourceARs": frozenset(all_ars),
+        }
         in_progress.discard(entity)
         labels[entity] = result
         return result
@@ -320,64 +353,15 @@ def compute_derivation_reviews(
     return reviews
 
 
-def subject_local_name(entity: URIRef, graph: Graph) -> str:
-    """Local name used to key an entity's ControlLabel node. Synapse entities use
-    their bare id (`syn10081783`); other IRIs use their prefix-qualified name with
-    ':' as '-' (`association-apoe-expr-samp01`) when a prefix is bound, else a
-    short hash of the full IRI -- unique either way, readable where possible."""
-    iri = str(entity)
-    syn_namespace = str(bgg.SYN)
-    if iri.startswith(syn_namespace):
-        return iri[len(syn_namespace):]
-    try:
-        prefix, _namespace, local = graph.namespace_manager.compute_qname(iri, generate=False)
-        if prefix and local:
-            return f"{prefix}-{local}"
-    except (KeyError, ValueError):
-        pass
-    return "iri-" + hashlib.sha1(iri.encode()).hexdigest()[:12]
-
-
-def control_label_node(entity: URIRef, graph: Graph) -> URIRef:
-    return bgg.GOV[control_label_local_name(subject_local_name(entity, graph))]
-
-
-def emit_control_label(g: Graph, entity: URIRef, label: dict, context: Graph, computed_from: URIRef | None):
-    if label.get("dataTier") is None:
-        return
-    node = control_label_node(entity, context)
-    g.add((node, RDF.type, bgg.TYPE("ControlLabel")))
-    g.add((node, bgg.PREDICATE("subject", "ControlLabel"), entity))
-    g.add((node, bgg.PREDICATE("dataTier", "ControlLabel"), Literal(label["dataTier"])))
-    for ar in sorted(label["sourceARs"]):
-        g.add((node, bgg.PREDICATE("sourceAccessRequirements", "ControlLabel"), ar))
-    if computed_from is not None:
-        g.add((node, bgg.PREDICATE("computedFrom", "ControlLabel"), computed_from))
-
-
-def emit_derivation_review(g: Graph, index: int, review: dict, context: Graph):
-    curie = graph_curie(f"derivation_review.{index:03d}", bgg._schemaview.schema.default_prefix)
-    node = URIRef(bgg._schemaview.expand_curie(curie))
-    g.add((node, RDF.type, bgg.TYPE("DerivationReview")))
-    g.add((node, bgg.PREDICATE("activity", "DerivationReview"), review["activity"]))
-    g.add((node, bgg.PREDICATE("reviewStatus", "DerivationReview"), Literal("Flagged")))
-    g.add((node, bgg.PREDICATE("reviewNotes", "DerivationReview"), Literal(review["notes"])))
-    for entity, label in zip(review["inputs"], review["input_labels"]):
-        if label.get("dataTier") is None:
-            continue
-        g.add((node, bgg.PREDICATE("inputLabels", "DerivationReview"), control_label_node(entity, context)))
-
-
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Computes ControlLabel/DerivationReview (Derivation Policy Graph) from a "
-            "Provenance Graph + Governance Graph. See plans/prov_o_integration.md "
-            "Section 4."
+            "Computes ControlLabel/DerivationReview from the canonical governance graph. "
+            "See plans/model_refactor.md and plans/prov_o_integration.md Section 4."
         )
     )
-    parser.add_argument("--provenance-graph", required=True)
-    parser.add_argument("--governance-graph", required=True)
+    parser.add_argument("--graph", dest="graphs", action="append", required=True,
+                        help="Canonical governance/provenance graph Turtle (repeatable).")
     parser.add_argument(
         "--extra-graph",
         action="append",
@@ -389,49 +373,69 @@ def main():
         ),
     )
     parser.add_argument("--derivation-rules", default="linkml/examples/derivation_policy")
-    parser.add_argument("--access-requirement-dir", default="linkml/examples")
     parser.add_argument("--out", default="derivation_policy_export/derivation_policy.ttl")
-    parser.add_argument("--schema", default="linkml/governance_duo.linkml.yaml")
+    parser.add_argument("--provenance-query", default=PROVENANCE_QUERY)
     args = parser.parse_args()
 
-    bgg._schemaview = SchemaView(args.schema)
+    graph = Graph()
+    for path in args.graphs + args.extra_graph:
+        graph.parse(path, format="turtle")
 
-    provenance_graph = Graph()
-    provenance_graph.parse(args.provenance_graph, format="turtle")
-    for path in args.extra_graph:
-        provenance_graph.parse(path, format="turtle")
-    governance_graph = Graph()
-    governance_graph.parse(args.governance_graph, format="turtle")
-
-    direct_parents, activity_inputs, generated_by = load_provenance_structure(provenance_graph)
-    ar_bindings = load_governance_bindings(governance_graph)
-    curated_ars = sgg.load_curated_access_requirements(Path(args.access_requirement_dir))
+    direct_parents = load_derivation_ancestry(graph, Path(args.provenance_query).read_text())
+    activity_inputs = load_activity_inputs(graph)
+    generated_by = {entity: activity for activity, entity in graph.subject_objects(PROV.generated)}
+    parent_of, requires_ar = load_entity_structure(graph)
     derivation_rules = load_derivation_rules(Path(args.derivation_rules))
 
-    entities = set(ar_bindings) | set(direct_parents)
+    builder = GraphBuilder()
+    ar_tier = make_ar_tier(graph, tier_codes_by_iri(builder.sv))
+
+    entities = set(requires_ar) | set(direct_parents)
     for parents in direct_parents.values():
         entities |= parents
     for inputs in activity_inputs.values():
         entities |= set(inputs)
 
-    labels = compute_control_labels(entities, direct_parents, ar_bindings, curated_ars, derivation_rules)
+    ar_bindings = {
+        entity: entity_access_requirements(entity, parent_of, requires_ar, ar_tier) for entity in entities
+    }
+
+    labels = compute_control_labels(entities, direct_parents, ar_bindings, builder, derivation_rules)
     reviews = compute_derivation_reviews(activity_inputs, labels, derivation_rules)
 
-    context = provenance_graph + governance_graph
-    g = Graph()
-    g.bind("sagegov", bgg.GOV)
-    g.bind("syn", bgg.SYN)
     for entity in sorted(labels):
-        emit_control_label(g, entity, labels[entity], context, generated_by.get(entity))
-    for i, review in enumerate(reviews, start=1):
-        emit_derivation_review(g, i, review, context)
+        label = labels[entity]
+        if label["dataTier"] is None:
+            continue
+        builder.add(
+            "ControlLabel",
+            id=graph_iris.control_label(str(entity)),
+            subject=str(entity),
+            dataTier=label["dataTier"],
+            sourceAccessRequirements=[str(ar) for ar in sorted(label["sourceARs"])],
+            computedFrom=str(generated_by[entity]) if entity in generated_by else None,
+        )
+    for review in reviews:
+        builder.add(
+            "DerivationReview",
+            id=graph_iris.derivation_review(str(review["activity"])),
+            activity=str(review["activity"]),
+            reviewStatus="Flagged",
+            reviewNotes=review["notes"],
+            inputLabels=[
+                graph_iris.control_label(str(entity))
+                for entity, label in zip(review["inputs"], review["input_labels"])
+                if label.get("dataTier") is not None
+            ],
+        )
 
+    rdf = graph_rdf.to_rdf(builder.container())
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    g.serialize(destination=str(out_path), format="turtle")
+    rdf.serialize(destination=str(out_path), format="turtle")
     labeled = sum(1 for label in labels.values() if label["dataTier"] is not None)
     print(f"Computed {labeled} ControlLabels ({len(labels)} entities considered), {len(reviews)} DerivationReviews.")
-    print(f"Wrote {len(g)} triples to {out_path}")
+    print(f"Wrote {len(rdf)} triples to {out_path}")
 
 
 if __name__ == "__main__":

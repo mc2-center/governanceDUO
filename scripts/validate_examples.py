@@ -42,9 +42,10 @@ GRAPH_CLASS = "GovernanceGraph"
 # Examples read by neither converter (build_policy_fabric.py takes this one by path).
 EXTRA_CLASSES = {"access_requirement_policy_fabric": "AccessRequirement"}
 # Fixture records (glob -> class) read by check_derivation_policy.py and
-# check_sync_governance.py.
+# check_sync_governance.py. check_derivation_policy.py's fixture no longer has its
+# own access_requirements/: AR tiers now live on the AR nodes in its governance.ttl
+# (plans/model_refactor.md R5), validated as graph content, not a record.
 FIXTURE_RECORDS = {
-    "linkml/examples/derivation_policy/fixture/access_requirements/*.yaml": "AccessRequirement",
     "linkml/examples/derivation_policy/fixture/derivation_rule.*.yaml": "DerivationRule",
     "tests/sync_governance/access_requirements/*.yaml": "AccessRequirement",
 }

@@ -38,7 +38,7 @@
     acl:default syn:syn10081783 ;
     acl:mode gov:Download .
 
-<https://w3id.org/synapse/governance/derivation-review/001> a gov:DerivationReview ;
+<https://w3id.org/synapse/governance/derivation-review/1001> a gov:DerivationReview ;
     gov:activity <https://w3id.org/synapse/governance/activity/1001> ;
     gov:inputLabels <https://w3id.org/synapse/governance/control-label/syn10081783>,
         <https://w3id.org/synapse/governance/control-label/syn40000002> ;

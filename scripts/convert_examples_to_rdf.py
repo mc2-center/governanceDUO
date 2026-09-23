@@ -53,7 +53,19 @@ from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph
 
-from graph_iris import graph_curie
+# The pre-refactor IRI rule for record-layer examples. graph_iris.py now mints
+# the graph layer's IRIs; this stays only until Phase 2 moves provenance and
+# derivation examples into the graph layer (plans/model_refactor.md).
+LEGACY_GRAPH_KINDS = {"activity": "activity", "derivation_review": "derivation-review"}
+
+
+def graph_curie(record_id: str, default_prefix: str) -> str:
+    if ":" in record_id:
+        raise ValueError(f"'{record_id}' already contains a colon; expected a bare dotted id")
+    kind, _, local = record_id.partition(".")
+    if local and kind in LEGACY_GRAPH_KINDS:
+        return f"sagegov:{LEGACY_GRAPH_KINDS[kind]}-{local}"
+    return f"{default_prefix}:{record_id}"
 
 # example filename (without .example.yaml) -> target LinkML class name
 EXAMPLE_CLASSES = {

@@ -210,7 +210,7 @@ controlLabels:
     computedOn: "2025-08-15T23:20:00Z"
 
 derivationReviews:
-  - id: govid:derivation-review/001
+  - id: govid:derivation-review/1001
     activity: govid:activity/1001
     inputLabels:
       - govid:control-label/syn10081783

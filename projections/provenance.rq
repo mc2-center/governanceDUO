@@ -1,0 +1,15 @@
+# Projection: the unqualified PROV edges the canonical provenance graph implies.
+#
+# For every Activity that generated ?out and used ?in as data (a qualified Usage
+# with gov:wasExecuted false -- not code that was run), ?out prov:wasDerivedFrom
+# ?in. The canonical graph records only what Synapse says (the qualified usages);
+# this is derived, so it lives here (plans/model_refactor.md).
+PREFIX gov:  <https://w3id.org/synapse/governance#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+CONSTRUCT { ?out prov:wasDerivedFrom ?in . }
+WHERE {
+  ?activity prov:generated ?out ;
+            prov:qualifiedUsage ?usage .
+  ?usage prov:entity ?in ;
+         gov:wasExecuted false .
+}

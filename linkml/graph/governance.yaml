@@ -195,10 +195,13 @@ classes:
     class_uri: gov:Condition
     description: >-
       One data-use condition of an Access Requirement: a DUO term, with the
-      disease(s) it names when the term takes one (DUO:0000007).
+      parameters the curated record gives it -- the disease(s) for DUO:0000007
+      as MONDO IRIs, anything else (an agreement document id, a region, a time
+      limit) as recorded.
     slots:
       - dataUseTerm
       - diseaseContext
+      - conditionDetail
       - description
 
   Approval:
@@ -543,6 +546,12 @@ slots:
     multivalued: true
     pattern: '^(MONDO:|http://purl\.obolibrary\.org/obo/MONDO_)[0-9]{7}$'
     description: A MONDO disease the condition names.
+  conditionDetail:
+    slot_uri: gov:conditionDetail
+    multivalued: true
+    description: >-
+      A parameter of the condition other than a disease, as the curated record
+      gives it (the GovernanceMixin companion field its DUO rule names).
 
   # Approvals and submissions
   satisfies:
@@ -635,8 +644,9 @@ slots:
   subject:
     slot_uri: gov:subject
     range: uriorcurie
-    pattern: '^(syn:|https://www\.synapse\.org/Synapse:)syn[0-9]+$'
-    description: The Synapse entity the label is about.
+    description: >-
+      What the label is about: a Synapse entity, or anything derivation reaches
+      (a sagebrain-model Association, say).
   sourceAccessRequirements:
     slot_uri: gov:sourceAccessRequirements
     range: AccessRequirement

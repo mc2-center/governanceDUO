@@ -1,6 +1,0 @@
-# Fixture only: a Private AccessRequirement bound directly to a derived output.
-id: access_requirement.7004
-contributorName: Fixture Curator
-contributionDate: "2026-01-01"
-dataTier:
-  - Private
