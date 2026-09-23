@@ -32,7 +32,9 @@ description: >-
   asserted in this file's own example-rdf ABox. Their values are graph IRIs
   written as CURIEs: `syn:syn<n>` for Synapse entities, `sagegov:AR-<n>` for the
   governance graph's AccessRequirement nodes, `sagegov:activity-<n>` for
-  Activities (see scripts/graph_iris.py).
+  Activities (see scripts/graph_iris.py). The RDF carries them as IRI nodes, so
+  shapes/governance_duo.owl.ttl types these slots owl:ObjectProperty and the SHACL
+  constrains them to sh:nodeKind sh:IRI.
 
   `ControlLabel`/`DerivationReview` and every slot they carry use gov: (sagegov:)
   IRIs: they are graph content that downstream consumers (sagebrain-infra's
@@ -185,7 +187,8 @@ slots:
     slot_uri: sagegov:subject
     description: >-
       The SynapseEntity this ControlLabel labels. range is uriorcurie, not
-      SynapseEntity — see this schema's own description.
+      SynapseEntity — see this schema's own description. The value is an IRI
+      node, typed owl:ObjectProperty in the OWL.
     range: uriorcurie
     required: true
   sourceAccessRequirements:
@@ -195,7 +198,8 @@ slots:
       subject's full derivation ancestry — what lets a later composite-risk check
       tell whether two ControlLabels trace back to the same AR or to genuinely
       different ones (the note's paragraph-12 case). range is uriorcurie, not
-      AccessRequirementReference — see this schema's own description.
+      AccessRequirementReference — see this schema's own description. The value
+      is an IRI node, typed owl:ObjectProperty in the OWL.
     range: uriorcurie
     multivalued: true
   computedFrom:
@@ -205,7 +209,8 @@ slots:
       Activity — see this schema's own description. Also the staleness signal
       Section 7 of plans/prov_o_integration.md relies on: if an AR named in
       sourceAccessRequirements is later revoked, any label computed before that
-      point is provably stale.
+      point is provably stale. The value is an IRI node, typed owl:ObjectProperty
+      in the OWL.
     range: uriorcurie
   computedOn:
     slot_uri: sagegov:computedOn
@@ -215,7 +220,8 @@ slots:
     slot_uri: sagegov:activity
     description: >-
       The derivation Activity being reviewed. range is uriorcurie, not Activity —
-      see this schema's own description.
+      see this schema's own description. The value is an IRI node, typed
+      owl:ObjectProperty in the OWL.
     range: uriorcurie
     required: true
   inputLabels:

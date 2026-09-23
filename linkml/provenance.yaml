@@ -29,7 +29,11 @@ description: >-
   Their values are `syn:` CURIEs (e.g. `syn:syn10081783`), which resolve to the
   exact IRIs the governance graph mints for its SynapseEntity nodes
   (https://www.synapse.org/Synapse:syn10081783) -- never bare ids, which the RDF
-  dumper would write as relative IRIs that don't join across files.
+  dumper would write as relative IRIs that don't join across files. The RDF
+  carries them as IRI nodes, not xsd:anyURI literals, so
+  shapes/governance_duo.owl.ttl types both slots owl:ObjectProperty (as W3C PROV-O
+  declares prov:generated and prov:entity) and the SHACL constrains them to
+  sh:nodeKind sh:IRI -- see scripts/build_owl.py.
 
   Activity instances are written into the graph as gov: nodes
   (`sagegov:activity-<n>`, from the record id `activity.<n>`) -- see
@@ -141,7 +145,8 @@ slots:
       Activity to another entity -- both confirmed against Synapse's OpenAPI
       spec). range is the untyped uriorcurie, not SynapseEntity itself — see this
       schema's own description for why (the referenced individual is never
-      asserted in this schema's own example-rdf ABox).
+      asserted in this schema's own example-rdf ABox). The value is an IRI node,
+      so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does.
     range: uriorcurie
     multivalued: true
   qualifiedUsage:
@@ -170,7 +175,8 @@ slots:
       The SynapseEntity referenced by this Usage, as a syn: CURIE, when
       Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not
       SynapseEntity — same cross-ABox reasoning as Activity.generated above.
-      Absent when this Usage instead carries url/name (a UsedURL).
+      Absent when this Usage instead carries url/name (a UsedURL). The value is an
+      IRI node, so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does.
     range: uriorcurie
   entityVersionNumber:
     slot_uri: sagegov:entityVersionNumber
