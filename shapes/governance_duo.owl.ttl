@@ -630,7 +630,8 @@ sagegov:currentRevNum a owl:DatatypeProperty ;
     rdfs:label "currentRevNum" .
 
 sagegov:dataTier a owl:DatatypeProperty ;
-    rdfs:label "dataTier" .
+    rdfs:label "dataTier" ;
+    rdfs:range governanceduo:DataTierEnum .
 
 sagegov:domain a owl:DatatypeProperty ;
     rdfs:label "domain" ;
@@ -2636,17 +2637,6 @@ governanceduo:BindingTypeEnum a owl:Class ;
     linkml:permissible_values sagegov:Direct,
         sagegov:Inherited .
 
-governanceduo:DataTierEnum a rdfs:Datatype ;
-    rdfs:label "DataTierEnum" ;
-    owl:equivalentClass [ a rdfs:Datatype ;
-            owl:oneOf ( "Anonymous" "Open" "Controlled" "Private" "Unclassified" ) ] ;
-    skos:inScheme governanceduo:governance_duo ;
-    linkml:permissible_values "Anonymous",
-        "Controlled",
-        "Open",
-        "Private",
-        "Unclassified" .
-
 governanceduo:GovernanceMixin a owl:Class ;
     rdfs:label "GovernanceMixin" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -2846,7 +2836,8 @@ sagegov:accessRequirement a owl:ObjectProperty ;
     skos:note "slot_uri intentionally reuses sagegov:accessRequirement, the same predicate AccessRequirementAssociation.accessRequirement uses, even though this is a differently-named LinkML slot -- so \"what AccessRequirement does this concern?\" is a uniform gov:accessRequirement query regardless of subject class. See scripts/build_governance_graph.py." .
 
 sagegov:createdBy a owl:ObjectProperty ;
-    rdfs:label "createdBy" .
+    rdfs:label "createdBy" ;
+    rdfs:range sagegov:Principal .
 
 sagegov:institution a owl:DatatypeProperty ;
     rdfs:label "institution" ;
@@ -2855,6 +2846,17 @@ sagegov:institution a owl:DatatypeProperty ;
 
 sagegov:name a owl:DatatypeProperty ;
     rdfs:label "name" .
+
+governanceduo:DataTierEnum a rdfs:Datatype ;
+    rdfs:label "DataTierEnum" ;
+    owl:equivalentClass [ a rdfs:Datatype ;
+            owl:oneOf ( "Anonymous" "Open" "Controlled" "Private" "Unclassified" ) ] ;
+    skos:inScheme governanceduo:governance_duo ;
+    linkml:permissible_values "Anonymous",
+        "Controlled",
+        "Open",
+        "Private",
+        "Unclassified" .
 
 governanceduo:synapseId a owl:DatatypeProperty ;
     rdfs:label "synapseId" ;
@@ -2879,6 +2881,9 @@ governanceduo:SubmissionStateEnum a owl:Class ;
         sagegov:REJECTED,
         sagegov:SUBMITTED .
 
+sagegov:createdOn a owl:DatatypeProperty ;
+    rdfs:label "createdOn" .
+
 sagegov:Principal a owl:Class ;
     rdfs:label "Principal" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -2895,9 +2900,6 @@ sagegov:Principal a owl:Class ;
 `company` mirrors Synapse's real UserProfile.company field ("This person's current affiliation") -- a genuine per-Principal institution signal, verified directly against the OpenAPI spec, resolving the target ontology's gov:affiliatedWith (Principal -> Site) as real data, not just an aspiration (see plans/governance_graph_open_questions.md Section C). Only meaningful for `principalType: User`: Synapse's real Team object has no institution/affiliation field of its own.""" ;
     skos:exactMatch governanceduo:Principal ;
     skos:inScheme governanceduo:governance_duo .
-
-sagegov:createdOn a owl:DatatypeProperty ;
-    rdfs:label "createdOn" .
 
 xsd:integer a rdfs:Datatype .
 

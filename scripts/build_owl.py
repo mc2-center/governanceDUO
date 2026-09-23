@@ -74,7 +74,8 @@ with shapes/governance_graph.owl.ttl and imported by sagebrain-model:
   using only the schema (approved as a workaround; remove once fixed upstream):
     1. a slot_usage that gives a slot its own slot_uri (e.g. SynapseEntity.name ->
        sagegov:name) is used in restrictions but never declared -- declared here,
-       typed from the induced range (a literal enum is a data range);
+       typed from the induced range (a literal enum is a data range), with that
+       range as rdfs:range when it's a class or enum;
     2. a slot_usage with no slot_uri of its own (e.g. every per-class `id`
        pattern) is restricted under governanceduo:<name> instead of the slot's
        declared slot_uri (dcterms:identifier) -- retargeted here;
@@ -218,6 +219,13 @@ def repair_generator_output(graph: Graph, sv: SchemaView) -> dict:
             )
             graph.add((prop, RDF.type, OWL.ObjectProperty if is_object else OWL.DatatypeProperty))
             graph.add((prop, RDFS.label, Literal(slot_name)))
+            # A class or enum range is declared too, so checks and reasoners see
+            # it (e.g. sagegov:dataTier ranges over DataTierEnum). Datatype ranges
+            # are left to the hand-written TBox, which already types these shared
+            # predicates (sagegov:createdOn, ...).
+            range_def = sv.get_class(induced.range) or enum_def
+            if range_def is not None:
+                graph.add((prop, RDFS.range, URIRef(sv.get_uri(range_def, expand=True))))
             declared.add(prop)
             counts["declared"] += 1
 

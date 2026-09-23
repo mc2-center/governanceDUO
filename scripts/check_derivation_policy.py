@@ -16,7 +16,8 @@ README.md) and asserts the output with SPARQL ASK queries:
     gov:activity-7002 (the rule) and gov:activity-7003 (three inputs sharing one
     AR, flagged because the rule covers each pair) -- exactly three;
   - the sagebrain-shaped Association inherits the output's label through
-    sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom).
+    sagebrain:derived_from (a declared sub-property of prov:wasDerivedFrom);
+  - every domain/range axiom (enum membership included) holds on the output.
 
 Usage:
     python scripts/check_derivation_policy.py
@@ -30,6 +31,9 @@ import tempfile
 from pathlib import Path
 
 from rdflib import Graph
+
+sys.path.insert(0, str(Path(__file__).parent))
+from check_domain_range import TBOXES, violations  # noqa: E402
 
 FIXTURE = Path("linkml/examples/derivation_policy/fixture")
 
@@ -112,6 +116,11 @@ def main():
         g = Graph().parse(out)
 
     failures = [name for name, query in ASSERTIONS.items() if not g.query(PREFIXES + query).askAnswer]
+    # The output's values must fit the TBox too (e.g. every dataTier a DataTierEnum string).
+    tbox = Graph()
+    for path in TBOXES:
+        tbox.parse(path)
+    failures += [f"domain/range: {v}" for v in violations(tbox, g)]
     reviews = int(next(iter(g.query(REVIEW_COUNT)))[0])
     if reviews != 3:
         failures.append(f"expected exactly 3 DerivationReviews, got {reviews}")
