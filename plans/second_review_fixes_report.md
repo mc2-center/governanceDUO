@@ -18,7 +18,7 @@ see the end of the report.
 | 6 | `42670c8` | Review notes list every flagging rule, forbidding ones first, with disjointness after them. | The new `gov:activity-7005` (Private+Private forbidden, Controlled+Controlled review) fails on the old builder. |
 | 7 | `de6e26a` | `validate_examples.py` also validates the fixture records the builders read, and fails if a glob finds none. The five fixture ARs gain `contributorName`/`contributionDate`, and the sync fixture's DUO:0000042 AR gains its rule-required `requiredAgreementDocumentId`. | 29 records are validated (was 21). Removing that id from the sync fixture fails on the DUO rule. |
 | 8 | `42670c8` | Derivation assertions 9 → 12. The 7002/7003 reviews must be attributed to the rule, not to disjointness. `gov:activity-7004` has a Controlled+Private rule lower an unbound output from Private to Controlled. 7005's notes must lead with the forbidding rule. | A mutant floor, `max(rule, default_rank)`, fails the lowering assertion. |
-| 9, 10 | `b5fe085` | `domain-range-check`, `sync-governance-check` and `derivation-policy-check` depend on `owl`. The sync-provenance comment is back above its own target. | — |
+| 9, 10 | `848d6b0` | `domain-range-check`, `sync-governance-check` and `derivation-policy-check` depend on `owl`. The sync-provenance comment is back above its own target. | — |
 
 ## Open items from earlier plans
 
@@ -32,8 +32,8 @@ see the end of the report.
 - **`Pending Annotation`:** unchanged. Giving it a `meaning:` would make the
   builder mint a Condition for it, reversing the earlier decision to skip
   Conditions for it. No example uses it.
-- **Shared `gov:APPROVED`:** the approved trade-off. With #4 it is one named
-  individual in both state enums' `owl:oneOf`.
+- **Shared `gov:APPROVED`:** the approved trade-off, unchanged by the #4 revert;
+  the SKOS refactor plan revisits it.
 - **sagebrain-model re-import:** needs this branch pushed and then a bump of
   `GOVERNANCEDUO_COMMIT` in sagebrain-model. Not done here: both are
   outward-facing and need a go-ahead.
