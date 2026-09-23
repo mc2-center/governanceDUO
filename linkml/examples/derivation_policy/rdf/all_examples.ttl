@@ -9,14 +9,14 @@ sagegov:derivation-review-001 a sagegov:DerivationReview ;
             sagegov:computedFrom sagegov:activity-1001 ;
             sagegov:computedOn 1755300000000 ;
             sagegov:dataTier "Controlled" ;
-            sagegov:sourceAccessRequirements sagegov:AR-99 ;
-            sagegov:subject syn:syn40000002 ],
+            sagegov:sourceAccessRequirements sagegov:AR-42 ;
+            sagegov:subject syn:syn10081783 ],
         [ a sagegov:ControlLabel ;
             sagegov:computedFrom sagegov:activity-1001 ;
             sagegov:computedOn 1755300000000 ;
             sagegov:dataTier "Controlled" ;
-            sagegov:sourceAccessRequirements sagegov:AR-42 ;
-            sagegov:subject syn:syn10081783 ] ;
+            sagegov:sourceAccessRequirements sagegov:AR-99 ;
+            sagegov:subject syn:syn40000002 ] ;
     sagegov:reviewNotes "Auto-flagged: inputs bound to disjoint AccessRequirements (AR-42, AR-99), both Controlled tier. Pending ACT review." ;
     sagegov:reviewStatus "Flagged" .
 

@@ -499,10 +499,9 @@ def add_program(g: Graph, data: dict):
 
 
 def add_irb_requirement(g: Graph, data: dict, template_node, program_nodes: dict):
-    """studyId bridges to this repo's real governanceduo:Study individual via
-    owl:sameAs -- governance_graph.yaml declares studyId's slot_uri as
-    owl:sameAs itself (see that slot's description), so PREDICATE() resolves
-    it like any other slot rather than a hardcoded OWL.sameAs constant."""
+    """studyId relates the requirement to this repo's real governanceduo:Study
+    individual via sagegov:forStudy, studyId's slot_uri (see that slot's
+    description for why it isn't owl:sameAs)."""
     subject = gov_id(data["id"])
     g.add((subject, RDF.type, TYPE("IRBRequirement")))
     if template_node is not None:

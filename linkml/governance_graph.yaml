@@ -560,10 +560,8 @@ classes:
       per the target ontology proposed in review on sagebrain-infra PR #54
       (thomasyu888,
       https://github.com/Sage-Bionetworks-IT/sagebrain-infra/pull/54#discussion_r3926030399).
-      studyId bridges to this repo's existing, *real* governanceduo:Study
-      class via the same owl:sameAs pattern
-      add_access_requirement_association() already uses for gov:AR-<n> <->
-      governanceduo:access_requirement.<n> -- Study has a real example
+      studyId (sagegov:forStudy) relates it to this repo's existing, *real*
+      governanceduo:Study class -- Study has a real example
       (study.mc2-jax-5xfad) and a real AccessRequirementKey link to an
       AccessRequirement, so this is a genuine integration point, not an
       invented one. `institution` (reusing ResearchProject/DataAccessRequest's
@@ -1019,17 +1017,15 @@ slots:
     slot_uri: sagegov:arType
     description: Free-text access requirement type, e.g. "IRB".
   studyId:
-    slot_uri: owl:sameAs
+    slot_uri: sagegov:forStudy
     range: uriorcurie
     description: >-
       The Study (this repo's real governanceduo:Study class, study.yaml) this
-      IRBRequirement's language was authored for. slot_uri is owl:sameAs
-      itself, not a domain-specific predicate: Study lives in a different
-      namespace (governanceduo:), so this declares a co-reference rather
-      than a same-namespace object property -- the same pattern
-      AccessRequirement stubs need (see add_access_requirement_association())
-      but can't yet declare, since that stub has no governance_graph.yaml
-      class of its own to hang a slot_uri off of. range is the untyped
+      IRBRequirement's language was authored for. A plain relation, not
+      owl:sameAs: the IRB requirement is not the Study, and a co-reference
+      would give the Study every IRBRequirement property and merge two IRB
+      requirements authored for the same study into one individual
+      (plans/pre_pr_review_fixes.md, finding 4). range is the untyped
       uriorcurie, not Study itself: the referenced Study individual is never
       asserted (type or otherwise) in this ABox -- its full definition lives
       only in the separately-built linkml/examples/rdf/ graph -- so an

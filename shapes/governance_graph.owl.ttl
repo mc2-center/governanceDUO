@@ -82,7 +82,7 @@ gov:AccessRequirementTemplate a owl:Class ;
     rdfs:comment "A reusable set of DUO-backed Conditions an IRBRequirement can extend. Illustrative structural capability -- no real Synapse or repo data source exists for AR-template reuse itself; its hasCondition edges reuse real gov:Condition individuals already minted from access_requirement.42's dataUseModifiers." .
 
 gov:IRBRequirement a owl:Class ;
-    rdfs:comment "A site/program-specific instantiation of an AccessRequirementTemplate, per the target ontology proposed in review on sagebrain-infra PR #54 (thomasyu888). Bridges to this repo's real governanceduo:Study individual via owl:sameAs." .
+    rdfs:comment "A site/program-specific instantiation of an AccessRequirementTemplate, per the target ontology proposed in review on sagebrain-infra PR #54 (thomasyu888). Relates to this repo's real governanceduo:Study individual via gov:forStudy." .
 
 gov:Program a owl:Class ;
     rdfs:comment "A multi-site research consortium (e.g. AD Knowledge Portal, NF-OSI). Illustrative-only -- no real Synapse or repo data source exists for Program-level grouping. Do not conflate with the real governanceduo:Study class, which models a single research study one level more granular than a Program." .
@@ -363,6 +363,10 @@ gov:domain a owl:DatatypeProperty ;
 gov:extendsTemplate a owl:ObjectProperty ;
     rdfs:domain gov:IRBRequirement ;
     rdfs:range gov:AccessRequirementTemplate .
+
+gov:forStudy a owl:ObjectProperty ;
+    rdfs:domain gov:IRBRequirement ;
+    rdfs:comment "The governanceduo:Study individual this IRB requirement was authored for. A plain relation rather than owl:sameAs: the requirement is not the Study. No rdfs:range, since governanceduo:Study is declared in governance_duo.owl.ttl, not this TBox." .
 
 gov:arType a owl:DatatypeProperty ;
     rdfs:domain gov:IRBRequirement ;

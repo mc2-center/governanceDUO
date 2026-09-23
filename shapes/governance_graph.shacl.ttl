@@ -277,7 +277,7 @@ gov:DataAccessRequestShape a sh:NodeShape ;
 # direction confirmed by the user (see
 # plans/governance_graph_open_questions.md Section C.2). Program and the
 # Program/Site-reuse pairing are illustrative-only; AccessRequirementTemplate
-# and IRBRequirement's studyId/hasCondition are real integration points.
+# and IRBRequirement's studyId (gov:forStudy) are real integration points.
 #################################################################
 
 gov:AccessRequirementTemplateShape a sh:NodeShape ;
@@ -290,8 +290,8 @@ gov:AccessRequirementTemplateShape a sh:NodeShape ;
 gov:IRBRequirementShape a sh:NodeShape ;
     sh:targetClass gov:IRBRequirement ;
     sh:property
-        [ sh:path owl:sameAs ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
-            sh:description "Identity bridge to the corresponding real governanceduo:Study individual." ],
+        [ sh:path gov:forStudy ; sh:nodeKind sh:IRI ; sh:maxCount 1 ;
+            sh:description "The governanceduo:Study individual this IRB requirement was authored for." ],
         [ sh:path gov:extendsTemplate ; sh:class gov:AccessRequirementTemplate ; sh:nodeKind sh:IRI ; sh:maxCount 1 ],
         [ sh:path gov:arType ; sh:datatype xsd:string ; sh:maxCount 1 ],
         [ sh:path gov:language ; sh:datatype xsd:string ; sh:maxCount 1 ],

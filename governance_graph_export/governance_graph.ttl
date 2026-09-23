@@ -31,9 +31,9 @@ gov:data-access-submission-555 a gov:DataAccessSubmission ;
     gov:submittedOn "1755200000000"^^<http://www.w3.org/2001/XMLSchema#long> .
 
 gov:irb-requirement-irb-genomics-adkp a gov:IRBRequirement ;
-    owl:sameAs governanceduo:study.mc2-jax-5xfad ;
     gov:arType "IRB" ;
     gov:extendsTemplate gov:access-requirement-template-ar-genomics ;
+    gov:forStudy governanceduo:study.mc2-jax-5xfad ;
     gov:language "Illustrative ADKP-specific consent language -- not sourced from a real IRB document." ;
     gov:scopedToProgram gov:program-adkp ;
     gov:scopedToSite gov:site-mount-sinai .

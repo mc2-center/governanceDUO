@@ -7,11 +7,11 @@
 sagegov:activity-1001 a prov:Activity ;
     prov:generated syn:syn30000001 ;
     prov:qualifiedUsage [ a prov:Usage ;
-            prov:entity syn:syn10081783 ;
-            sagegov:wasExecuted false ],
-        [ a prov:Usage ;
             prov:entity syn:syn40000002 ;
-            sagegov:wasExecuted true ] ;
+            sagegov:wasExecuted true ],
+        [ a prov:Usage ;
+            prov:entity syn:syn10081783 ;
+            sagegov:wasExecuted false ] ;
     sagegov:createdOn 1755200000000 ;
     sagegov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
     sagegov:name "Derive per-sample QC summary" ;
