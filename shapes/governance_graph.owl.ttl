@@ -136,9 +136,8 @@ gov:createdByUserId a owl:DatatypeProperty ;
     rdfs:comment "A raw Synapse numeric user id (NODE.CREATED_BY)." .
 
 gov:submittedBy a owl:ObjectProperty ;
-    rdfs:domain gov:DataAccessSubmission ;
     rdfs:range gov:Principal ;
-    rdfs:comment "The submission's own submitter, as an IRI reference to a gov:Principal node. Synapse's live Submission REST object names this field submittedBy, not createdBy (see governance_graph.yaml's corrected description). Do not confuse with gov:modifiedBy below (the same submission's status can later be modified by a different Principal, e.g. an ACT reviewer) or gov:createdByUserId (a raw literal id on SynapseEntity, not a Principal reference)." .
+    rdfs:comment "The submission's own submitter, as an IRI reference to a gov:Principal node. No rdfs:domain: AccessApproval reuses it for its submitter. Synapse's live Submission REST object names this field submittedBy, not createdBy (see governance_graph.yaml's corrected description). Do not confuse with gov:modifiedBy below (the same submission's status can later be modified by a different Principal, e.g. an ACT reviewer) or gov:createdByUserId (a raw literal id on SynapseEntity, not a Principal reference)." .
 
 gov:submittedOn a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessSubmission ;
@@ -146,9 +145,8 @@ gov:submittedOn a owl:DatatypeProperty ;
     rdfs:comment "Epoch milliseconds. Synapse's live Submission REST object names this field submittedOn, not createdOn." .
 
 gov:modifiedBy a owl:ObjectProperty ;
-    rdfs:domain gov:DataAccessSubmission ;
     rdfs:range gov:Principal ;
-    rdfs:comment "Who last modified this submission's status, as an IRI reference to a gov:Principal node. Synapse's live Submission REST object carries this field directly on Submission itself, not on DataAccessSubmissionStatus (which has no such field live) -- see governance_graph.yaml's corrected description." .
+    rdfs:comment "Who last modified this submission's status, as an IRI reference to a gov:Principal node. No rdfs:domain: DataAccessRequest reuses it. Synapse's live Submission REST object carries this field directly on Submission itself, not on DataAccessSubmissionStatus (which has no such field live) -- see governance_graph.yaml's corrected description." .
 
 gov:statusModifiedOn a owl:DatatypeProperty ;
     rdfs:domain gov:DataAccessSubmission ;
@@ -185,8 +183,8 @@ gov:nodeType a owl:DatatypeProperty ;
     rdfs:range xsd:string .
 
 gov:etag a owl:DatatypeProperty ;
-    rdfs:domain gov:SynapseEntity ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    rdfs:comment "Synapse's optimistic-concurrency etag. No rdfs:domain: SynapseEntity, AccessApproval, ResearchProject and DataAccessRequest all carry one." .
 
 gov:alias a owl:DatatypeProperty ;
     rdfs:domain gov:SynapseEntity ;
@@ -215,9 +213,8 @@ gov:hasApproval a owl:ObjectProperty ;
     rdfs:comment "Emitted only when the paired DataAccessSubmissionStatus.state is APPROVED -- mirrors the design doc's simplified gov:hasApproval predicate." .
 
 gov:hasCondition a owl:ObjectProperty ;
-    rdfs:domain gov:AccessRequirement ;
     rdfs:range gov:Condition ;
-    rdfs:comment "Derived convenience triple emitted alongside each Condition, same as gov:hasACL/gov:hasAccessRequirement above; not its own governance_graph.yaml slot (the real AccessRequirement class lives in access_requirement.yaml, which governance_graph.yaml imports -- not the other way around -- so a slot declared there could never range over Condition, defined here, without an import cycle). See scripts/build_governance_graph.py's add_access_requirement()." .
+    rdfs:comment "Derived convenience triple emitted alongside each Condition, same as gov:hasACL/gov:hasAccessRequirement above; not its own governance_graph.yaml slot (the real AccessRequirement class lives in access_requirement.yaml, which governance_graph.yaml imports -- not the other way around -- so a slot declared there could never range over Condition, defined here, without an import cycle). See scripts/build_governance_graph.py's add_access_requirement(). No rdfs:domain: AccessRequirementTemplate carries Conditions too." .
 
 gov:conditionType a owl:DatatypeProperty ;
     rdfs:domain gov:Condition ;
@@ -260,9 +257,8 @@ gov:DUOPlus7 a owl:NamedIndividual ;
     rdfs:comment "Sage-local data-use extension (DataUseModifierEnum.DUOPlus7): Attribution conditions are associated with this Study. If providing this term, please provide the attribution statement in column attribution." .
 
 gov:description a owl:DatatypeProperty ;
-    rdfs:domain gov:Condition ;
     rdfs:range xsd:string ;
-    rdfs:comment "DataUseModifierEnum.permissible_values[code]'s own description: text, not re-authored." .
+    rdfs:comment "On a Condition, DataUseModifierEnum.permissible_values[code]'s own description: text, not re-authored. No rdfs:domain: prov:Activity (provenance.yaml) uses it for the Activity's description." .
 
 gov:conditionDetail a owl:DatatypeProperty ;
     rdfs:domain gov:Condition ;
