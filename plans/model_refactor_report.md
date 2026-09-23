@@ -116,3 +116,18 @@ were run by hand from the spike directory.
   TBox, shapes and example RDF are byte-identical over three rebuilds.
 - `skos:ConceptScheme` needed declaring. Every class used as an `rdf:type` or
   `rdfs:subClassOf` object is now declared.
+
+### Verification (on `d8a9db7`)
+
+- `make validate-all`: exit 0. That includes the new `graph-validate` and
+  `graph-owl-profile`: the example conforms, all 8 defects are caught, and the
+  TBox is OWL 2 DL both alone and merged with the example graph.
+  `linkml-validate-examples` now covers 30 records (was 29).
+- `make artifact-drift-check`: all 262 generated artifacts match HEAD (was
+  259; the graph TBox, shapes and example RDF are new).
+- `make sagebrain-contract-check`: all four parts pass. The old artifacts it
+  reads are unchanged.
+- The old pipeline's regenerated SHACL and example RDF still reorder their
+  blank nodes on each build. Graph-equal, so they were restored rather than
+  committed. The graph layer's own outputs have no blank nodes, apart from the
+  TBox's domain unions, which are canonicalized, and are byte-stable.
