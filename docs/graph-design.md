@@ -341,7 +341,8 @@ follow its `sagebrain:derived_from` edges to its Associations and Samples.
 - the exported graph, against sagebrain-infra's authorizer query
   (`make infra-contract-check`);
 - the OWL, against the OWL 2 DL profile, alone and merged with the hand-authored
-  TBox (`make owl-profile`).
+  TBox, and its `prov:` terms against the types W3C PROV-O declares
+  (`make owl-profile`).
 
 `make sagebrain-contract-check SAGEBRAIN_MODEL=<path>` checks the layer inside
 sagebrain-model's graph. It's opt-in because it needs that checkout.
@@ -523,6 +524,9 @@ The governance graph is a layer of sagebrain-model's graph, not a separate graph
 - **The check.** `make sagebrain-contract-check` verifies, against a sagebrain-model
   checkout:
   - the union of both ontologies is OWL 2 DL;
+  - every `prov:` term this repository declares has the type sagebrain-model's
+    vendored `prov.ttl` gives it (the union leaves `prov.ttl` out, for PROV-O's
+    own puns);
   - a worked example joining both repositories' data conforms to both repositories'
     shapes;
   - a label reaches `association:apoe-expr-samp01`.

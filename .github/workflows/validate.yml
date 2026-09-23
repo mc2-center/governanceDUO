@@ -3,7 +3,7 @@ name: Validate
 # Runs `make validate-all`: SHACL validation of every example ABox and the built
 # governance graph, the offline sync and derivation-policy regression checks, the
 # sagebrain-infra authorizer contract check, and the OWL 2 DL profile check (ROBOT,
-# which needs Java).
+# which needs Java) with its W3C PROV-O type-agreement check.
 
 on:
   push:
@@ -30,10 +30,12 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Cache ROBOT
+      - name: Cache ROBOT and PROV-O
         uses: actions/cache@v4
         with:
-          path: tools/robot.jar
+          path: |
+            tools/robot.jar
+            build/prov-o-20130430.ttl
           key: robot-${{ hashFiles('Makefile') }}
 
       - name: Install dependencies

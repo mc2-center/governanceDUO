@@ -131,7 +131,8 @@ make example-rdf      # convert linkml/examples/*.example.yaml to RDF individual
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
 make validate-all     # every SHACL validation below plus the regression/contract
                        # checks and the OWL 2 DL profile check (what CI runs)
-make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar)
+make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar),
+                       # plus prov: types vs W3C PROV-O (fetched to build/)
 make release-check    # validate-all + every published artifact carries VERSION
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # individuals against the SHACL shapes, via pyshacl with
@@ -365,7 +366,8 @@ into the graph:
   for real DUO codes (`gov:DUOPlus1`–`7` for the Sage-local extensions).
 
 `make owl-profile` checks the OWL artifacts against the OWL 2 DL profile, alone and
-merged, and runs in CI (`.github/workflows/validate.yml`). Two deliberate gaps between
+merged, checks that every `prov:` term they declare has the type W3C PROV-O gives it
+(`scripts/check_prov_alignment.py`), and runs in CI (`.github/workflows/validate.yml`). Two deliberate gaps between
 the LinkML schema and the generated OWL are documented in `scripts/build_owl.py`: the
 `rules:` conditionals are enforced by `linkml-validate`, not expressed in the OWL, and
 a small schema-derived repair pass fills gaps in LinkML's OWL generator.
