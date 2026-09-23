@@ -17,7 +17,7 @@ decisions can no longer stop at "may this user download this file?". They have t
 answer three questions:
 
 1. **Direct access.** Which principals hold which permissions on a Synapse entity,
-   and which Access Requirements (with which data-use conditions) govern it?
+   and which Access Requirements (with which data use/access conditions) govern it?
 2. **Conditions.** What does an Access Requirement actually demand, expressed as
    Data Use Ontology (DUO) terms a machine can reason over?
 3. **Derived access.** When content in the graph was computed from controlled data,
@@ -26,14 +26,14 @@ answer three questions:
 
 The governance graph answers these as RDF, in the same store and on the same IRIs as
 the rest of Sage Brain's graph, so a query layer can decide what a requester may see
-or traverse.
-
-What it deliberately does **not** do: it doesn't enforce anything at query time, it
-doesn't judge whether a derived artifact is safe to publish (small-cell suppression,
-aggregation thresholds), and it doesn't settle what revocation of an AR should mean
-for content derived while it was active. It records the facts those decisions need —
-grants, conditions, lineage, precomputed labels — and leaves the decisions to the
+or traverse. It records the facts those decisions need — grants, conditions, lineage, precomputed labels — and leaves the decisions to the
 policy and query layers (see section 7).
+
+What it deliberately does **not** do:
+
+1. It doesn't enforce anything at query time
+2. It doesn't judge whether a derived artifact is safe to publish (small-cell suppression, aggregation thresholds)
+3. It doesn't settle what revocation of an AR should mean for content derived while it was active. 
 
 ## 2. Where it sits in Sage Brain
 
