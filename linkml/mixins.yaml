@@ -766,7 +766,7 @@ classes:
       DUO-based data-use-modifier vocabulary and its conditional-requirement rules,
       shared by every class whose schematic DependsOn list includes
       dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the
-      generated sage-ar-model/*.json, which resolves the full field set via
+      generated (now archived) archive/sage-ar-model/*.json, which resolves the full field set via
       schematic's own dependency expansion).
     slots:
       - dataUseModifiers

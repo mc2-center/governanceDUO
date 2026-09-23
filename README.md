@@ -14,7 +14,7 @@ workflow.
 | [`linkml/`](linkml/governance_duo.linkml.yaml) | Source of truth: the LinkML schema (DUO governance model, Policy Fabric crosswalk, Governance Graph design), plus hand-written example instances under `linkml/examples/` |
 | [`model/`](model/) | The modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) that `linkml/` was derived from and stays aligned with |
 | [`shapes/`](shapes/) | OWL/SHACL artifacts for both schemas: `governance_duo.{owl,shacl}.ttl` (generated — `make owl`/`make shacl`) and `governance_graph.{owl,shacl}.ttl` (hand-authored) |
-| [`sage-ar-model/`](sage-ar-model/) | Generated outputs of the schematic pipeline (`make collate convert generate-json`): the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema |
+| [`archive/sage-ar-model/`](archive/sage-ar-model/) | Archived, no longer built: outputs of the former schematic pipeline (the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema) |
 | [`governance_graph_export/`](governance_graph_export/) | Generated Turtle export of the worked Governance Graph example (`make governance-graph`) |
 | [`policy_fabric_export/`](policy_fabric_export/) | Generated Policy Fabric input JSON (`make policy-fabric`) |
 | [`derivation_policy_export/`](derivation_policy_export/) | Generated Turtle export of computed `ControlLabel`/`DerivationReview` individuals (`make derivation-policy`) — see `linkml/provenance.yaml`/`linkml/derivation_policy.yaml` and `plans/prov_o_integration.md` |
@@ -174,12 +174,10 @@ afterward. The *stored* id in every example YAML file and every class's
 SageCommonDataModel's bare-id convention everywhere except this one transient
 export step. See the script's docstring for the full explanation.
 
-**Known follow-up, not yet done:**
-- `make convert` and `scripts/create_json_from_model.py` must be re-run (they require
-  `schematic` and an authenticated `synapseclient` session, unavailable in the
-  environment this schema was built in) to refresh `sage-ar-model/sage-ar.model.jsonld`
-  and the `sage-ar-model/*_validation_schema-updated.json` files after the `Pattern`
-  additions to `model/*.model.csv`.
+The schematic pipeline's outputs (`archive/sage-ar-model/`) and its generator
+(`archive/scripts/create_json_from_model.py`) are archived and no longer built, so
+they don't reflect later `model/*.model.csv` changes such as the `Pattern`
+additions.
 
 ## Policy Fabric alignment
 

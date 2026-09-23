@@ -3952,7 +3952,7 @@ governanceduo:GovernanceMixin a owl:Class ;
                     owl:onDatatype xsd:string ;
                     owl:withRestrictions ( [ xsd:pattern "^did:[a-z0-9]+:.+$" ] ) ] ;
             owl:onProperty governanceduo:requiredAgreementDocumentId ] ;
-    skos:definition "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
+    skos:definition "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated (now archived) archive/sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
     skos:inScheme governanceduo:governance_duo .
 
 governanceduo:PrincipalTypeEnum a owl:Class ;

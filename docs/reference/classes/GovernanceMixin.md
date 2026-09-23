@@ -6,7 +6,7 @@ search:
 # Class: GovernanceMixin 
 
 
-_DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)._
+_DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated (now archived) archive/sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)._
 
 
 
@@ -536,8 +536,9 @@ URI: [governanceduo:class/GovernanceMixin](https://w3id.org/sage-bionetworks/gov
 name: GovernanceMixin
 description: DUO-based data-use-modifier vocabulary and its conditional-requirement
   rules, shared by every class whose schematic DependsOn list includes dataUseModifiers
-  (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json,
-  which resolves the full field set via schematic's own dependency expansion).
+  (AccessRequirement, Resource, Study — confirmed against the generated (now archived)
+  archive/sage-ar-model/*.json, which resolves the full field set via schematic's
+  own dependency expansion).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 mixin: true
 slots:
@@ -929,8 +930,9 @@ rules:
 name: GovernanceMixin
 description: DUO-based data-use-modifier vocabulary and its conditional-requirement
   rules, shared by every class whose schematic DependsOn list includes dataUseModifiers
-  (AccessRequirement, Resource, Study — confirmed against the generated sage-ar-model/*.json,
-  which resolves the full field set via schematic's own dependency expansion).
+  (AccessRequirement, Resource, Study — confirmed against the generated (now archived)
+  archive/sage-ar-model/*.json, which resolves the full field set via schematic's
+  own dependency expansion).
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 mixin: true
 attributes:

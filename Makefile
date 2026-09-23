@@ -1,23 +1,6 @@
-CSV := sage-ar-model/sage-ar.model.csv
-CONFIG := ar_config.yml
-DATA := AccessRequirement Resource Study
-
-all: collate generate-json
-
-build-csv:
-	$(foreach d,$(DATA), schematic manifest -c ${CONFIG} get -dt $(d);)
-	rm *.schema.json
-
-collate:
-	@echo "Collating module components..."
-	head -1 model/Study.model.csv > ${CSV}
-	tail -n +2 -q model/*.model.csv >> ${CSV}
-
-convert:
-	schematic schema convert ${CSV}
-
-generate-json:
-	python scripts/create_json_from_model.py ${DATA}
+# `make` with no target runs what CI runs. (The schematic-pipeline targets that
+# built sage-ar-model/ were removed with it; see archive/.)
+.DEFAULT_GOAL := validate-all
 
 LINKML_SCHEMA := linkml/governance_duo.linkml.yaml
 
