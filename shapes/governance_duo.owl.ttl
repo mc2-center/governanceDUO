@@ -328,10 +328,10 @@ prov:Activity a owl:Class ;
             owl:onProperty sagegov:description ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:etag ],
+            owl:onProperty sagegov:createdOn ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty governanceduo:createdOn ],
+            owl:onProperty governanceduo:etag ],
         governanceduo:BaseEntity ;
     skos:definition "Mirrors Synapse's real Activity object (org.sagebionetworks.repo.model.provenance.Activity — id/name/description/ etag/createdOn/modifiedOn/createdBy/modifiedBy/used — verified directly against rest-docs.synapse.org). Returned by GET /entity/{id}/generatedBy and GET /entity/{id}/version/{versionNumber}/generatedBy (both confirmed to exist, both OAuth `view` scope — the same auth tier scripts/sync_governance_graph.py already requires, no new credential type needed). See plans/prov_o_integration.md Section 1." ;
     skos:exactMatch governanceduo:Activity ;
@@ -1248,6 +1248,13 @@ governanceduo:contributorName a owl:DatatypeProperty ;
     skos:definition "The name of the person who added this access requirement." ;
     skos:inScheme governanceduo:governance_duo ;
     skos:note "prov:wasAttributedTo relates a prov:Entity to a prov:Agent; this slot holds a literal name rather than an Agent reference, so the mapping is close, not exact." .
+
+governanceduo:createdOn a owl:DatatypeProperty ;
+    rdfs:label "createdOn" ;
+    rdfs:range xsd:integer ;
+    skos:definition "When the record was created (epoch milliseconds in the source Synapse tables). Shared the same way as `name` above. Distinct from ContributionMixin's contributionDate for the same reason as createdBy above." ;
+    skos:exactMatch dcterms:created ;
+    skos:inScheme governanceduo:governance_duo .
 
 governanceduo:credentialType a owl:ObjectProperty ;
     rdfs:label "credentialType" ;
@@ -3743,13 +3750,6 @@ governanceduo:createdBy a owl:DatatypeProperty ;
     skos:inScheme governanceduo:governance_duo ;
     skos:note "scripts/build_governance_graph.py emits this integer two different ways depending on which class it's on: as an IRI reference to a gov:Principal node (gov:createdBy) on DataAccessSubmission -- since a submission's creator can be looked up as a first-class Principal individual -- but as a plain literal (gov:createdByUserId, a distinct predicate, not gov:createdBy) on SynapseEntity, which has no corresponding Principal record to link to. This divergence is deliberate and documented in shapes/governance_graph.owl.ttl, not a schema/export mismatch to fix." .
 
-governanceduo:createdOn a owl:DatatypeProperty ;
-    rdfs:label "createdOn" ;
-    rdfs:range xsd:integer ;
-    skos:definition "When the record was created (epoch milliseconds in the source Synapse tables). Shared the same way as `name` above. Distinct from ContributionMixin's contributionDate for the same reason as createdBy above." ;
-    skos:exactMatch dcterms:created ;
-    skos:inScheme governanceduo:governance_duo .
-
 governanceduo:dataUseModifier a owl:ObjectProperty ;
     rdfs:label "dataUseModifier" ;
     rdfs:range governanceduo:DataUseModifierEnum ;
@@ -3999,9 +3999,6 @@ governanceduo:synapseId a owl:DatatypeProperty ;
 
 xsd:boolean a rdfs:Datatype .
 
-sagegov:createdOn a owl:DatatypeProperty ;
-    rdfs:label "createdOn" .
-
 sagegov:etag a owl:DatatypeProperty ;
     rdfs:label "etag" .
 
@@ -4071,6 +4068,9 @@ sagegov:Principal a owl:Class ;
 `company` mirrors Synapse's real UserProfile.company field ("This person's current affiliation") -- a genuine per-Principal institution signal, verified directly against the OpenAPI spec, resolving the target ontology's gov:affiliatedWith (Principal -> Site) as real data, not just an aspiration (see plans/governance_graph_open_questions.md Section C). Only meaningful for `principalType: User`: Synapse's real Team object has no institution/affiliation field of its own.""" ;
     skos:exactMatch governanceduo:Principal ;
     skos:inScheme governanceduo:governance_duo .
+
+sagegov:createdOn a owl:DatatypeProperty ;
+    rdfs:label "createdOn" .
 
 governanceduo:AccessRequirementConcreteTypeEnum a owl:Class ;
     rdfs:label "AccessRequirementConcreteTypeEnum" ;

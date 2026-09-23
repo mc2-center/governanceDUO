@@ -33,7 +33,10 @@ description: >-
 
   Activity instances are written into the graph as gov: nodes
   (`sagegov:activity-<n>`, from the record id `activity.<n>`) -- see
-  scripts/graph_iris.py. Activity.createdBy reuses the global `createdBy` slot
+  scripts/graph_iris.py. Activity.createdOn/modifiedOn use the governance graph's
+  own timestamp predicates (sagegov:createdOn/sagegov:modifiedOn, epoch
+  milliseconds), the same ones SynapseEntity, AccessGrant and the other
+  governance-graph classes emit. Activity.createdBy reuses the global `createdBy` slot
   (mixins.yaml) unmodified: a plain `integer` raw Synapse user id. Activity.modifiedBy
   mirrors it via slot_usage (`governanceduo:modifiedBy`, integer) rather than
   reusing governance_graph.yaml's `modifiedBy` slot, which is a Principal
@@ -83,6 +86,8 @@ classes:
           - value: activity.1001
       name:
         slot_uri: sagegov:name
+      createdOn:
+        slot_uri: sagegov:createdOn
       modifiedBy:
         description: >-
           Synapse numeric user id of who last modified this Activity

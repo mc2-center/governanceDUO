@@ -8,17 +8,17 @@ sagegov:activity-1002 a prov:Activity ;
     prov:generated syn:syn30000002,
         syn:syn30000003 ;
     prov:qualifiedUsage [ a prov:Usage ;
-            prov:entity syn:syn10081783 ;
-            sagegov:entityVersionNumber 2 ;
-            sagegov:wasExecuted false ],
-        [ a prov:Usage ;
             sagegov:name "nf-core/rnaseq v3.11.1" ;
             sagegov:url "https://nf-co.re/rnaseq/3.11.1" ;
-            sagegov:wasExecuted true ] ;
+            sagegov:wasExecuted true ],
+        [ a prov:Usage ;
+            prov:entity syn:syn10081783 ;
+            sagegov:entityVersionNumber 2 ;
+            sagegov:wasExecuted false ] ;
+    sagegov:createdOn 1755200000000 ;
     sagegov:description "Illustrative structural example -- not sourced from a real Synapse Activity record." ;
     sagegov:modifiedOn 1755200500000 ;
     sagegov:name "nf-core/rnaseq reprocessing run" ;
     governanceduo:createdBy 1000001 ;
-    governanceduo:createdOn 1755200000000 ;
     governanceduo:modifiedBy 1000001 .
 

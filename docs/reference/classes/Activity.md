@@ -170,6 +170,9 @@ slot_usage:
   name:
     name: name
     slot_uri: sagegov:name
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
   modifiedBy:
     name: modifiedBy
     description: Synapse numeric user id of who last modified this Activity (Activity.modifiedBy).
@@ -209,6 +212,9 @@ slot_usage:
   name:
     name: name
     slot_uri: sagegov:name
+  createdOn:
+    name: createdOn
+    slot_uri: sagegov:createdOn
   modifiedBy:
     name: modifiedBy
     description: Synapse numeric user id of who last modified this Activity (Activity.modifiedBy).
@@ -279,6 +285,7 @@ attributes:
     exact_mappings:
     - dcterms:created
     rank: 1000
+    slot_uri: sagegov:createdOn
     owner: Activity
     domain_of:
     - SynapseAccessRequirementMixin
