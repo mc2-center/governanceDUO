@@ -1,0 +1,828 @@
+@prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gov: <https://w3id.org/synapse/governance#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shape: <https://w3id.org/synapse/governance/shapes#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+shape:AccessRequirementShape a sh:NodeShape ;
+    rdfs:comment "A Synapse Access Requirement. The curated record (the record layer's AccessRequirement) describes the same IRI, so there is one node per AR. An AR attached to an entity also governs that entity's descendants." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type gov:arType gov:domain gov:extendsTemplate gov:forStudy gov:language gov:scopedToProgram gov:scopedToSite ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:in ( gov:TermsOfUseRequirement gov:SelfSignRequirement gov:ACTRequirement gov:ManagedACTRequirement gov:LockRequirement ) ;
+            sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path gov:requirementType ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:modifiedOn ],
+        [ sh:in ( gov:AnonymousTier gov:OpenTier gov:ControlledTier gov:PrivateTier gov:UnclassifiedTier ) ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path gov:dataTier ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 7 ;
+            sh:path gov:createdBy ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The version number of an entity or Access Requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path gov:versionNumber ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:name ],
+        [ sh:description "The permission the Access Requirement gates, e.g. DOWNLOAD." ;
+            sh:in ( gov:Create gov:Read gov:Update gov:Delete gov:ChangePermissions gov:Download gov:Upload gov:Participate gov:Submit gov:ReadPrivateSubmission gov:UpdateSubmission gov:DeleteSubmission gov:TeamMembershipUpdate gov:SendMessage gov:ChangeSettings gov:Moderate gov:ReviewSubmissions gov:ExemptionEligible ) ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path gov:accessType ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:etag ],
+        [ sh:class gov:Condition ;
+            sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path gov:hasCondition ] ;
+    sh:targetClass gov:AccessRequirement .
+
+shape:AccessRequirementTemplateShape a sh:NodeShape ;
+    rdfs:comment "A reusable Access Requirement pattern for a data domain." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 10 ;
+            sh:path gov:modifiedOn ],
+        [ sh:in ( gov:TermsOfUseRequirement gov:SelfSignRequirement gov:ACTRequirement gov:ManagedACTRequirement gov:LockRequirement ) ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path gov:requirementType ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The version number of an entity or Access Requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:versionNumber ],
+        [ sh:datatype xsd:string ;
+            sh:description "The data domain a template covers, e.g. genomics." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:domain ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:createdOn ],
+        [ sh:in ( gov:AnonymousTier gov:OpenTier gov:ControlledTier gov:PrivateTier gov:UnclassifiedTier ) ;
+            sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path gov:dataTier ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 8 ;
+            sh:path gov:createdBy ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:name ],
+        [ sh:description "The permission the Access Requirement gates, e.g. DOWNLOAD." ;
+            sh:in ( gov:Create gov:Read gov:Update gov:Delete gov:ChangePermissions gov:Download gov:Upload gov:Participate gov:Submit gov:ReadPrivateSubmission gov:UpdateSubmission gov:DeleteSubmission gov:TeamMembershipUpdate gov:SendMessage gov:ChangeSettings gov:Moderate gov:ReviewSubmissions gov:ExemptionEligible ) ;
+            sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path gov:accessType ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:etag ],
+        [ sh:class gov:Condition ;
+            sh:nodeKind sh:IRI ;
+            sh:order 6 ;
+            sh:path gov:hasCondition ] ;
+    sh:targetClass gov:AccessRequirementTemplate .
+
+shape:ActivityShape a sh:NodeShape ;
+    rdfs:comment "A Synapse provenance Activity." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:modifiedOn ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path gov:createdBy ],
+        [ sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path prov:generated ;
+            sh:pattern "^(syn:|https://www\\.synapse\\.org/Synapse:)syn[0-9]+$" ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:name ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 6 ;
+            sh:path gov:modifiedBy ],
+        [ sh:class prov:Usage ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path prov:qualifiedUsage ],
+        [ sh:datatype xsd:string ;
+            sh:description "A free-text description." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:description ] ;
+    sh:targetClass prov:Activity .
+
+shape:ApprovalShape a sh:NodeShape ;
+    rdfs:comment "A Synapse AccessApproval: a user holds an approval of an Access Requirement at a version, with a status and an expiry. Every approval is recorded, whatever its status; whether it holds at a given time is for the evaluator. Close to a GA4GH Passport ControlledAccessGrants visa (which has no RDF IRI to map to)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:in ( gov:Approved gov:Revoked ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 4 ;
+            sh:path gov:status ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:modifiedOn ],
+        [ sh:datatype xsd:integer ;
+            sh:description "Synapse's AccessApproval id." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path gov:sourceApprovalId ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The Access Requirement version the approval or submission is for." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:requirementVersion ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:expiresAt ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:submittedBy ],
+        [ sh:class gov:User ;
+            sh:description "The user who holds the approval (Synapse's accessorId)." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:heldBy ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:etag ],
+        [ sh:class gov:AccessRequirement ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:satisfies ] ;
+    sh:targetClass gov:Approval .
+
+shape:AuthorizationShape a sh:NodeShape ;
+    rdfs:comment "One entry of a Synapse ACL: the permissions one principal holds. A Synapse ACL lives on its benefactor entity and covers every descendant that has no ACL of its own, which is WAC's acl:default. So acl:accessTo and acl:default both name the benefactor. Exactly one of acl:agent, acl:agentGroup or acl:agentClass names the principal." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:in ( foaf:Agent acl:AuthenticatedAgent ) ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path acl:agentClass ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path acl:agent ],
+        [ sh:class gov:SynapseEntity ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path acl:default ],
+        [ sh:class gov:SynapseEntity ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path acl:accessTo ],
+        [ sh:in ( gov:Create gov:Read gov:Update gov:Delete gov:ChangePermissions gov:Download gov:Upload gov:Participate gov:Submit gov:ReadPrivateSubmission gov:UpdateSubmission gov:DeleteSubmission gov:TeamMembershipUpdate gov:SendMessage gov:ChangeSettings gov:Moderate gov:ReviewSubmissions gov:ExemptionEligible ) ;
+            sh:minCount 1 ;
+            sh:order 5 ;
+            sh:path acl:mode ],
+        [ sh:class vcard:Group ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path acl:agentGroup ] ;
+    sh:targetClass acl:Authorization ;
+    sh:xone ( [ sh:property [ sh:minCount 1 ;
+                        sh:path acl:agent ] ] [ sh:property [ sh:minCount 1 ;
+                        sh:path acl:agentGroup ] ] [ sh:property [ sh:minCount 1 ;
+                        sh:path acl:agentClass ] ] ) .
+
+shape:ConditionShape a sh:NodeShape ;
+    rdfs:comment "One data-use condition of an Access Requirement: a DUO term, with the disease(s) it names when the term takes one (DUO:0000007)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:in ( DUO:0000042 DUO:0000027 DUO:0000016 DUO:0000029 DUO:0000043 DUO:0000015 DUO:0000004 DUO:0000045 DUO:0000011 DUO:0000046 DUO:0000018 DUO:0000044 DUO:0000021 DUO:0000006 DUO:0000019 DUO:0000026 DUO:0000020 DUO:0000012 DUO:0000025 DUO:0000024 DUO:0000028 DUO:0000022 DUO:0000007 gov:DUOPlus1 gov:DUOPlus2 gov:DUOPlus3 gov:DUOPlus4 gov:DUOPlus5 gov:DUOPlus6 gov:DUOPlus7 ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path gov:dataUseTerm ],
+        [ sh:datatype xsd:string ;
+            sh:description "A free-text description." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path gov:description ],
+        [ sh:description "A MONDO disease the condition names." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:diseaseContext ;
+            sh:pattern "^(MONDO:|http://purl\\.obolibrary\\.org/obo/MONDO_)[0-9]{7}$" ] ;
+    sh:targetClass gov:Condition .
+
+shape:ControlLabelShape a sh:NodeShape ;
+    rdfs:comment "A precomputed sensitivity label on a Synapse entity: its data tier and the Access Requirements it inherits, direct or through derivation." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:computedOn ],
+        [ sh:in ( gov:AnonymousTier gov:OpenTier gov:ControlledTier gov:PrivateTier gov:UnclassifiedTier ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path gov:dataTier ],
+        [ sh:class gov:AccessRequirement ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:sourceAccessRequirements ],
+        [ sh:class prov:Activity ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:computedFrom ],
+        [ sh:description "The Synapse entity the label is about." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:subject ;
+            sh:pattern "^(syn:|https://www\\.synapse\\.org/Synapse:)syn[0-9]+$" ] ;
+    sh:targetClass gov:ControlLabel .
+
+shape:DataAccessRequestShape a sh:NodeShape ;
+    rdfs:comment "The request a DataAccessSubmission was made from." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 14 ;
+            sh:path gov:modifiedOn ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 10 ;
+            sh:path gov:summaryOfUse ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:requestPrincipalInvestigatorName ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 12 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:requestSigningOfficialEmail ],
+        [ sh:datatype xsd:string ;
+            sh:description "An institution's name, as written." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path gov:institution ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 11 ;
+            sh:path gov:createdBy ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path gov:requestConcreteType ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:publication ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 13 ;
+            sh:path gov:modifiedBy ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:requestSigningOfficialName ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 15 ;
+            sh:path gov:etag ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:requestPrincipalInvestigatorEmail ],
+        [ sh:class gov:AccessRequirement ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:accessRequirement ],
+        [ sh:class gov:ResearchProject ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:researchProject ],
+        [ sh:class gov:Site ;
+            sh:description "A site the user, request or project is affiliated with." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:affiliatedWith ] ;
+    sh:targetClass gov:DataAccessRequest .
+
+shape:DataAccessSubmissionShape a sh:NodeShape ;
+    rdfs:comment "A request for access submitted against a managed Access Requirement, with its current state." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:modifiedOn ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path gov:submittedBy ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:rejectedReason ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:submittedOn ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The Access Requirement version the approval or submission is for." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:requirementVersion ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 8 ;
+            sh:path gov:modifiedBy ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 10 ;
+            sh:path gov:etag ],
+        [ sh:class gov:DataAccessRequest ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:request ],
+        [ sh:in ( gov:Submitted gov:Approved gov:Rejected gov:Cancelled ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 6 ;
+            sh:path gov:state ],
+        [ sh:class gov:AccessRequirement ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:accessRequirement ],
+        [ sh:class gov:ResearchProject ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:researchProject ] ;
+    sh:targetClass gov:DataAccessSubmission .
+
+shape:DerivationReviewShape a sh:NodeShape ;
+    rdfs:comment "A review of an Activity whose inputs' labels combine in a way a rule forbids or flags, or whose Access Requirement sets are disjoint." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:in ( gov:DerivationFlagged gov:DerivationReviewed gov:DerivationApproved gov:DerivationDenied ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path gov:reviewStatus ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:reviewedOn ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:reviewNotes ],
+        [ sh:class prov:Activity ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:activity ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:reviewedBy ],
+        [ sh:class gov:ControlLabel ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:inputLabels ] ;
+    sh:targetClass gov:DerivationReview .
+
+shape:IRBRequirementShape a sh:NodeShape ;
+    rdfs:comment "An IRB-specific Access Requirement extending a template, optionally scoped to a program or site." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 15 ;
+            sh:path gov:modifiedOn ],
+        [ sh:in ( gov:AnonymousTier gov:OpenTier gov:ControlledTier gov:PrivateTier gov:UnclassifiedTier ) ;
+            sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path gov:dataTier ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 14 ;
+            sh:path gov:createdOn ],
+        [ sh:in ( gov:TermsOfUseRequirement gov:SelfSignRequirement gov:ACTRequirement gov:ManagedACTRequirement gov:LockRequirement ) ;
+            sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path gov:requirementType ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The version number of an entity or Access Requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:versionNumber ],
+        [ sh:class gov:Program ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path gov:scopedToProgram ],
+        [ sh:class gov:AccessRequirementTemplate ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:extendsTemplate ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 13 ;
+            sh:path gov:createdBy ],
+        [ sh:datatype xsd:string ;
+            sh:description "The kind of IRB requirement, e.g. IRB." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:arType ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:name ],
+        [ sh:class gov:Condition ;
+            sh:nodeKind sh:IRI ;
+            sh:order 11 ;
+            sh:path gov:hasCondition ],
+        [ sh:description "The study (a record-layer Study IRI) the requirement is for." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:forStudy ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 12 ;
+            sh:path gov:etag ],
+        [ sh:description "The permission the Access Requirement gates, e.g. DOWNLOAD." ;
+            sh:in ( gov:Create gov:Read gov:Update gov:Delete gov:ChangePermissions gov:Download gov:Upload gov:Participate gov:Submit gov:ReadPrivateSubmission gov:UpdateSubmission gov:DeleteSubmission gov:TeamMembershipUpdate gov:SendMessage gov:ChangeSettings gov:Moderate gov:ReviewSubmissions gov:ExemptionEligible ) ;
+            sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path gov:accessType ],
+        [ sh:class gov:Site ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path gov:scopedToSite ],
+        [ sh:datatype xsd:string ;
+            sh:description "The requirement's consent language." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path gov:language ] ;
+    sh:targetClass gov:IRBRequirement .
+
+shape:ProgramShape a sh:NodeShape ;
+    rdfs:comment "A research program an IRB requirement can be scoped to." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:name ] ;
+    sh:targetClass gov:Program .
+
+shape:ResearchProjectShape a sh:NodeShape ;
+    rdfs:comment "The research project a data access request is made for." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:intendedDataUseStatement ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path gov:projectLead ],
+        [ sh:datatype xsd:string ;
+            sh:description "An institution's name, as written." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:institution ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path gov:createdBy ],
+        [ sh:class gov:Site ;
+            sh:description "A site the user, request or project is affiliated with." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:affiliatedWith ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path gov:etag ],
+        [ sh:class gov:AccessRequirement ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path gov:accessRequirement ] ;
+    sh:targetClass gov:ResearchProject .
+
+shape:SiteShape a sh:NodeShape ;
+    rdfs:comment "An institution principals and requests are affiliated with." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:class gov:Program ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:participatesIn ],
+        [ sh:datatype xsd:string ;
+            sh:description "An institution's name, as written." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:institution ] ;
+    sh:targetClass gov:Site .
+
+shape:SynapseEntityShape a sh:NodeShape ;
+    rdfs:comment "A concrete Synapse entity (project, folder, file, ...), identified by its syn: IRI. ACLs, Access Requirements and provenance attach here." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 9 ;
+            sh:path gov:modifiedOn ],
+        [ sh:class gov:User ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 7 ;
+            sh:path gov:createdBy ],
+        [ sh:datatype xsd:integer ;
+            sh:description "The version number of an entity or Access Requirement." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path gov:versionNumber ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path gov:createdOn ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:name ],
+        [ sh:class gov:AccessRequirement ;
+            sh:description "An Access Requirement attached directly to this entity (one of the AR's subjectIds). It also governs the entity's descendants; projections materialize that." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path gov:requiresAR ],
+        [ sh:class gov:SynapseEntity ;
+            sh:description "The entity's parent in Synapse's container hierarchy." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:parent ],
+        [ sh:datatype xsd:string ;
+            sh:description "The Synapse entity's concreteType, e.g. org.sagebionetworks.repo.model.FileEntity." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:entityType ],
+        [ sh:class gov:SynapseEntity ;
+            sh:description "The entity whose ACL governs this one: itself if it has its own ACL, otherwise its nearest ancestor that does." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gov:benefactor ],
+        [ sh:datatype xsd:string ;
+            sh:description "Synapse's concurrency token for the record." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path gov:etag ] ;
+    sh:targetClass gov:SynapseEntity .
+
+shape:TeamShape a sh:NodeShape ;
+    rdfs:comment "A Synapse team, identified by its team URL. Membership is recorded, so an evaluator can resolve a team grant to its members." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:class gov:User ;
+            sh:description "A member of the team." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path vcard:hasMember ] ;
+    sh:targetClass vcard:Group .
+
+shape:UsageShape a sh:NodeShape ;
+    rdfs:comment "One thing an Activity used: a Synapse entity (prov:entity), or code at a URL. wasExecuted separates code that was run from data that was read." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:boolean ;
+            sh:description "True for code that was run; false for data that was read." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path gov:wasExecuted ],
+        [ sh:datatype xsd:integer ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path gov:entityVersionNumber ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gov:url ],
+        [ sh:datatype xsd:string ;
+            sh:description "A human-readable name." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path gov:name ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 0 ;
+            sh:path prov:entity ;
+            sh:pattern "^(syn:|https://www\\.synapse\\.org/Synapse:)syn[0-9]+$" ] ;
+    sh:targetClass prov:Usage .
+
+shape:UserShape a sh:NodeShape ;
+    rdfs:comment "An individual Synapse user, identified by their profile URL." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:nodeKind sh:IRI ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "The company field of the user's Synapse profile, as written." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path gov:company ],
+        [ sh:class gov:Site ;
+            sh:description "A site the user, request or project is affiliated with." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:affiliatedWith ] ;
+    sh:targetClass gov:User .
+

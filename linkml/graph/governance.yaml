@@ -1,0 +1,667 @@
+id: https://w3id.org/synapse/governance
+name: governance
+title: Sage governance graph
+description: >-
+  The governance graph layer (plans/model_refactor.md): who may do what to which
+  Synapse entity, under which Access Requirements, and what derived content
+  inherits from controlled inputs. It records facts only. Anything an evaluator
+  needs precomputed (per-entity inherited grants, flattened team grants, "active
+  approval" shortcuts) is a projection built from this graph (projections/).
+
+  Conventions. Standard vocabularies are used directly where they fit: W3C Web
+  Access Control for ACL entries (acl:Authorization), vCard for teams
+  (vcard:Group, vcard:hasMember), PROV-O for provenance, SKOS for this layer's
+  own vocabularies (vocabularies.yaml), DUO for data-use terms. The generated
+  OWL makes no axioms about terms outside gov:; constraints on reused classes
+  live in the SHACL. Every node has an IRI (no blank nodes): Synapse's own URLs
+  for entities, users and teams, and w3id IRIs beside the model's namespace for
+  everything this layer mints (scripts/graph_iris.py). Timestamps are
+  xsd:dateTime.
+version: 0.2.0
+license: https://creativecommons.org/publicdomain/zero/1.0/
+prefixes:
+  gov: https://w3id.org/synapse/governance#
+  govid: https://w3id.org/synapse/governance/
+  linkml: https://w3id.org/linkml/
+  skos: http://www.w3.org/2004/02/skos/core#
+  owl: http://www.w3.org/2002/07/owl#
+  acl: http://www.w3.org/ns/auth/acl#
+  vcard: http://www.w3.org/2006/vcard/ns#
+  foaf: http://xmlns.com/foaf/0.1/
+  prov: http://www.w3.org/ns/prov#
+  syn: "https://www.synapse.org/Synapse:"
+  synuser: "https://www.synapse.org/Profile:"
+  synteam: "https://www.synapse.org/Team:"
+  DUO: http://purl.obolibrary.org/obo/DUO_
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+default_prefix: gov
+default_range: string
+imports:
+  - linkml:types
+  - vocabularies
+
+classes:
+
+  # --- Entities and agents -------------------------------------------------
+
+  Node:
+    abstract: true
+    description: Anything in the graph. Its IRI is its identity.
+    slots:
+      - id
+
+  SynapseEntity:
+    is_a: Node
+    class_uri: gov:SynapseEntity
+    description: >-
+      A concrete Synapse entity (project, folder, file, ...), identified by its
+      syn: IRI. ACLs, Access Requirements and provenance attach here.
+    close_mappings:
+      - prov:Entity
+    slots:
+      - name
+      - entityType
+      - parent
+      - benefactor
+      - requiresAR
+      - versionNumber
+      - etag
+      - createdBy
+      - createdOn
+      - modifiedOn
+    slot_usage:
+      id:
+        pattern: '^(syn:|https://www\.synapse\.org/Synapse:)syn[0-9]+$'
+      benefactor:
+        required: true
+
+  Agent:
+    is_a: Node
+    abstract: true
+    class_uri: foaf:Agent
+    description: A Synapse principal an ACL entry can name.
+
+  User:
+    is_a: Agent
+    class_uri: gov:User
+    description: An individual Synapse user, identified by their profile URL.
+    slots:
+      - company
+      - affiliatedWith
+    slot_usage:
+      id:
+        pattern: '^(synuser:|https://www\.synapse\.org/Profile:)[0-9]+$'
+
+  Team:
+    is_a: Agent
+    class_uri: vcard:Group
+    description: >-
+      A Synapse team, identified by its team URL. Membership is recorded, so an
+      evaluator can resolve a team grant to its members.
+    slots:
+      - hasMember
+    slot_usage:
+      id:
+        pattern: '^(synteam:|https://www\.synapse\.org/Team:)[0-9]+$'
+
+  Site:
+    is_a: Node
+    class_uri: gov:Site
+    description: An institution principals and requests are affiliated with.
+    slots:
+      - institution
+      - participatesIn
+
+  Program:
+    is_a: Node
+    class_uri: gov:Program
+    description: A research program an IRB requirement can be scoped to.
+    slots:
+      - name
+
+  # --- ACLs ----------------------------------------------------------------
+
+  Authorization:
+    is_a: Node
+    class_uri: acl:Authorization
+    description: >-
+      One entry of a Synapse ACL: the permissions one principal holds. A Synapse
+      ACL lives on its benefactor entity and covers every descendant that has
+      no ACL of its own, which is WAC's acl:default. So acl:accessTo and
+      acl:default both name the benefactor. Exactly one of acl:agent,
+      acl:agentGroup or acl:agentClass names the principal.
+    slots:
+      - accessTo
+      - default
+      - agent
+      - agentGroup
+      - agentClass
+      - mode
+    exactly_one_of:
+      - slot_conditions:
+          agent:
+            required: true
+      - slot_conditions:
+          agentGroup:
+            required: true
+      - slot_conditions:
+          agentClass:
+            required: true
+
+  # --- Access Requirements -------------------------------------------------
+
+  AccessRequirement:
+    is_a: Node
+    class_uri: gov:AccessRequirement
+    description: >-
+      A Synapse Access Requirement. The curated record (the record layer's
+      AccessRequirement) describes the same IRI, so there is one node per AR.
+      An AR attached to an entity also governs that entity's descendants.
+    slots:
+      - name
+      - requirementType
+      - accessType
+      - versionNumber
+      - dataTier
+      - hasCondition
+      - etag
+      - createdBy
+      - createdOn
+      - modifiedOn
+
+  AccessRequirementTemplate:
+    is_a: AccessRequirement
+    class_uri: gov:AccessRequirementTemplate
+    description: A reusable Access Requirement pattern for a data domain.
+    slots:
+      - domain
+
+  IRBRequirement:
+    is_a: AccessRequirement
+    class_uri: gov:IRBRequirement
+    description: >-
+      An IRB-specific Access Requirement extending a template, optionally
+      scoped to a program or site.
+    slots:
+      - extendsTemplate
+      - arType
+      - forStudy
+      - language
+      - scopedToProgram
+      - scopedToSite
+
+  Condition:
+    is_a: Node
+    class_uri: gov:Condition
+    description: >-
+      One data-use condition of an Access Requirement: a DUO term, with the
+      disease(s) it names when the term takes one (DUO:0000007).
+    slots:
+      - dataUseTerm
+      - diseaseContext
+      - description
+
+  Approval:
+    is_a: Node
+    class_uri: gov:Approval
+    description: >-
+      A Synapse AccessApproval: a user holds an approval of an Access
+      Requirement at a version, with a status and an expiry. Every approval is
+      recorded, whatever its status; whether it holds at a given time is for
+      the evaluator. Close to a GA4GH Passport ControlledAccessGrants visa
+      (which has no RDF IRI to map to).
+    slots:
+      - satisfies
+      - requirementVersion
+      - heldBy
+      - submittedBy
+      - status
+      - expiresAt
+      - createdOn
+      - modifiedOn
+      - sourceApprovalId
+      - etag
+    slot_usage:
+      satisfies:
+        required: true
+      heldBy:
+        required: true
+      status:
+        required: true
+
+  DataAccessSubmission:
+    is_a: Node
+    class_uri: gov:DataAccessSubmission
+    description: >-
+      A request for access submitted against a managed Access Requirement,
+      with its current state.
+    slots:
+      - accessRequirement
+      - requirementVersion
+      - request
+      - researchProject
+      - submittedBy
+      - submittedOn
+      - state
+      - rejectedReason
+      - modifiedBy
+      - modifiedOn
+      - etag
+    slot_usage:
+      accessRequirement:
+        required: true
+      state:
+        required: true
+
+  DataAccessRequest:
+    is_a: Node
+    class_uri: gov:DataAccessRequest
+    description: The request a DataAccessSubmission was made from.
+    slots:
+      - accessRequirement
+      - researchProject
+      - institution
+      - affiliatedWith
+      - requestPrincipalInvestigatorName
+      - requestPrincipalInvestigatorEmail
+      - requestSigningOfficialName
+      - requestSigningOfficialEmail
+      - requestConcreteType
+      - publication
+      - summaryOfUse
+      - createdBy
+      - createdOn
+      - modifiedBy
+      - modifiedOn
+      - etag
+    slot_usage:
+      accessRequirement:
+        required: true
+
+  ResearchProject:
+    is_a: Node
+    class_uri: gov:ResearchProject
+    description: The research project a data access request is made for.
+    slots:
+      - accessRequirement
+      - institution
+      - affiliatedWith
+      - projectLead
+      - intendedDataUseStatement
+      - createdBy
+      - createdOn
+      - etag
+    slot_usage:
+      accessRequirement:
+        required: true
+
+  # --- Provenance and derivation -------------------------------------------
+
+  Activity:
+    is_a: Node
+    class_uri: prov:Activity
+    description: A Synapse provenance Activity.
+    slots:
+      - name
+      - description
+      - generated
+      - qualifiedUsage
+      - createdBy
+      - createdOn
+      - modifiedBy
+      - modifiedOn
+
+  Usage:
+    is_a: Node
+    class_uri: prov:Usage
+    description: >-
+      One thing an Activity used: a Synapse entity (prov:entity), or code at a
+      URL. wasExecuted separates code that was run from data that was read.
+    slots:
+      - entity
+      - entityVersionNumber
+      - url
+      - name
+      - wasExecuted
+    slot_usage:
+      wasExecuted:
+        required: true
+
+  ControlLabel:
+    is_a: Node
+    class_uri: gov:ControlLabel
+    description: >-
+      A precomputed sensitivity label on a Synapse entity: its data tier and
+      the Access Requirements it inherits, direct or through derivation.
+    slots:
+      - subject
+      - dataTier
+      - sourceAccessRequirements
+      - computedFrom
+      - computedOn
+    slot_usage:
+      subject:
+        required: true
+      dataTier:
+        required: true
+
+  DerivationReview:
+    is_a: Node
+    class_uri: gov:DerivationReview
+    description: >-
+      A review of an Activity whose inputs' labels combine in a way a rule
+      forbids or flags, or whose Access Requirement sets are disjoint.
+    slots:
+      - activity
+      - inputLabels
+      - reviewStatus
+      - reviewedBy
+      - reviewedOn
+      - reviewNotes
+    slot_usage:
+      activity:
+        required: true
+      inputLabels:
+        required: true
+      reviewStatus:
+        required: true
+
+  # --- Container (examples and emitters only; not graph content) -----------
+
+  GovernanceGraph:
+    tree_root: true
+    description: >-
+      A bundle of graph nodes, for example files and the emitters. It is not
+      itself graph content: scripts/build_graph_tbox.py leaves it out of the
+      OWL and SHACL, and the emitters dump its members, not it.
+    attributes:
+      entities: {range: SynapseEntity, multivalued: true, inlined_as_list: true}
+      users: {range: User, multivalued: true, inlined_as_list: true}
+      teams: {range: Team, multivalued: true, inlined_as_list: true}
+      sites: {range: Site, multivalued: true, inlined_as_list: true}
+      programs: {range: Program, multivalued: true, inlined_as_list: true}
+      authorizations: {range: Authorization, multivalued: true, inlined_as_list: true}
+      accessRequirements: {range: AccessRequirement, multivalued: true, inlined_as_list: true}
+      templates: {range: AccessRequirementTemplate, multivalued: true, inlined_as_list: true}
+      irbRequirements: {range: IRBRequirement, multivalued: true, inlined_as_list: true}
+      conditions: {range: Condition, multivalued: true, inlined_as_list: true}
+      approvals: {range: Approval, multivalued: true, inlined_as_list: true}
+      submissions: {range: DataAccessSubmission, multivalued: true, inlined_as_list: true}
+      requests: {range: DataAccessRequest, multivalued: true, inlined_as_list: true}
+      researchProjects: {range: ResearchProject, multivalued: true, inlined_as_list: true}
+      activities: {range: Activity, multivalued: true, inlined_as_list: true}
+      controlLabels: {range: ControlLabel, multivalued: true, inlined_as_list: true}
+      derivationReviews: {range: DerivationReview, multivalued: true, inlined_as_list: true}
+
+slots:
+
+  id:
+    identifier: true
+    range: uriorcurie
+    description: >-
+      The node's IRI. Not a property in the graph; it is the subject. Patterns on
+      IRI-valued slots accept the CURIE (as written in YAML) or the full IRI (as
+      the SHACL sees it).
+
+  # Entity structure
+  name:
+    slot_uri: gov:name
+    description: A human-readable name.
+  description:
+    slot_uri: gov:description
+    description: A free-text description.
+  entityType:
+    slot_uri: gov:entityType
+    description: The Synapse entity's concreteType, e.g. org.sagebionetworks.repo.model.FileEntity.
+  parent:
+    slot_uri: gov:parent
+    range: SynapseEntity
+    description: The entity's parent in Synapse's container hierarchy.
+  benefactor:
+    slot_uri: gov:benefactor
+    range: SynapseEntity
+    description: >-
+      The entity whose ACL governs this one: itself if it has its own ACL,
+      otherwise its nearest ancestor that does.
+  requiresAR:
+    slot_uri: gov:requiresAR
+    range: AccessRequirement
+    multivalued: true
+    description: >-
+      An Access Requirement attached directly to this entity (one of the AR's
+      subjectIds). It also governs the entity's descendants; projections
+      materialize that.
+  versionNumber:
+    slot_uri: gov:versionNumber
+    range: integer
+    description: The version number of an entity or Access Requirement.
+  etag:
+    slot_uri: gov:etag
+    description: Synapse's concurrency token for the record.
+  createdBy:
+    slot_uri: gov:createdBy
+    range: User
+  createdOn:
+    slot_uri: gov:createdOn
+    range: datetime
+  modifiedBy:
+    slot_uri: gov:modifiedBy
+    range: User
+  modifiedOn:
+    slot_uri: gov:modifiedOn
+    range: datetime
+
+  # Agents
+  company:
+    slot_uri: gov:company
+    description: The company field of the user's Synapse profile, as written.
+  affiliatedWith:
+    slot_uri: gov:affiliatedWith
+    range: Site
+    multivalued: true
+    description: A site the user, request or project is affiliated with.
+  hasMember:
+    slot_uri: vcard:hasMember
+    range: User
+    multivalued: true
+    description: A member of the team.
+  institution:
+    slot_uri: gov:institution
+    description: An institution's name, as written.
+  participatesIn:
+    slot_uri: gov:participatesIn
+    range: Program
+    multivalued: true
+
+  # WAC
+  accessTo:
+    slot_uri: acl:accessTo
+    range: SynapseEntity
+    required: true
+  default:
+    slot_uri: acl:default
+    range: SynapseEntity
+  agent:
+    slot_uri: acl:agent
+    range: User
+  agentGroup:
+    slot_uri: acl:agentGroup
+    range: Team
+  agentClass:
+    slot_uri: acl:agentClass
+    range: AgentClass
+  mode:
+    slot_uri: acl:mode
+    range: Permission
+    multivalued: true
+    required: true
+
+  # Access Requirements
+  requirementType:
+    slot_uri: gov:requirementType
+    range: AccessRequirementType
+  accessType:
+    slot_uri: gov:accessType
+    range: Permission
+    description: The permission the Access Requirement gates, e.g. DOWNLOAD.
+  dataTier:
+    slot_uri: gov:dataTier
+    range: DataTier
+  hasCondition:
+    slot_uri: gov:hasCondition
+    range: Condition
+    multivalued: true
+  domain:
+    slot_uri: gov:domain
+    description: The data domain a template covers, e.g. genomics.
+  extendsTemplate:
+    slot_uri: gov:extendsTemplate
+    range: AccessRequirementTemplate
+  arType:
+    slot_uri: gov:arType
+    description: The kind of IRB requirement, e.g. IRB.
+  forStudy:
+    slot_uri: gov:forStudy
+    range: uriorcurie
+    description: The study (a record-layer Study IRI) the requirement is for.
+  language:
+    slot_uri: gov:language
+    description: The requirement's consent language.
+  scopedToProgram:
+    slot_uri: gov:scopedToProgram
+    range: Program
+  scopedToSite:
+    slot_uri: gov:scopedToSite
+    range: Site
+  dataUseTerm:
+    slot_uri: gov:dataUseTerm
+    range: DataUseTerm
+    required: true
+  diseaseContext:
+    slot_uri: gov:diseaseContext
+    range: uriorcurie
+    multivalued: true
+    pattern: '^(MONDO:|http://purl\.obolibrary\.org/obo/MONDO_)[0-9]{7}$'
+    description: A MONDO disease the condition names.
+
+  # Approvals and submissions
+  satisfies:
+    slot_uri: gov:satisfies
+    range: AccessRequirement
+  requirementVersion:
+    slot_uri: gov:requirementVersion
+    range: integer
+    description: The Access Requirement version the approval or submission is for.
+  heldBy:
+    slot_uri: gov:heldBy
+    range: User
+    description: The user who holds the approval (Synapse's accessorId).
+  submittedBy:
+    slot_uri: gov:submittedBy
+    range: User
+  submittedOn:
+    slot_uri: gov:submittedOn
+    range: datetime
+  status:
+    slot_uri: gov:status
+    range: ApprovalStatus
+  expiresAt:
+    slot_uri: gov:expiresAt
+    range: datetime
+  sourceApprovalId:
+    slot_uri: gov:sourceApprovalId
+    range: integer
+    description: Synapse's AccessApproval id.
+  accessRequirement:
+    slot_uri: gov:accessRequirement
+    range: AccessRequirement
+  request:
+    slot_uri: gov:request
+    range: DataAccessRequest
+  researchProject:
+    slot_uri: gov:researchProject
+    range: ResearchProject
+  state:
+    slot_uri: gov:state
+    range: SubmissionState
+  rejectedReason:
+    slot_uri: gov:rejectedReason
+  requestPrincipalInvestigatorName:
+    slot_uri: gov:requestPrincipalInvestigatorName
+  requestPrincipalInvestigatorEmail:
+    slot_uri: gov:requestPrincipalInvestigatorEmail
+  requestSigningOfficialName:
+    slot_uri: gov:requestSigningOfficialName
+  requestSigningOfficialEmail:
+    slot_uri: gov:requestSigningOfficialEmail
+  requestConcreteType:
+    slot_uri: gov:requestConcreteType
+  publication:
+    slot_uri: gov:publication
+  summaryOfUse:
+    slot_uri: gov:summaryOfUse
+  projectLead:
+    slot_uri: gov:projectLead
+  intendedDataUseStatement:
+    slot_uri: gov:intendedDataUseStatement
+
+  # Provenance
+  generated:
+    slot_uri: prov:generated
+    range: uriorcurie
+    multivalued: true
+    pattern: '^(syn:|https://www\.synapse\.org/Synapse:)syn[0-9]+$'
+  qualifiedUsage:
+    slot_uri: prov:qualifiedUsage
+    range: Usage
+    multivalued: true
+    inlined_as_list: true
+  entity:
+    slot_uri: prov:entity
+    range: uriorcurie
+    pattern: '^(syn:|https://www\.synapse\.org/Synapse:)syn[0-9]+$'
+  entityVersionNumber:
+    slot_uri: gov:entityVersionNumber
+    range: integer
+  url:
+    slot_uri: gov:url
+    range: uri
+  wasExecuted:
+    slot_uri: gov:wasExecuted
+    range: boolean
+    description: True for code that was run; false for data that was read.
+
+  # Derivation
+  subject:
+    slot_uri: gov:subject
+    range: uriorcurie
+    pattern: '^(syn:|https://www\.synapse\.org/Synapse:)syn[0-9]+$'
+    description: The Synapse entity the label is about.
+  sourceAccessRequirements:
+    slot_uri: gov:sourceAccessRequirements
+    range: AccessRequirement
+    multivalued: true
+  computedFrom:
+    slot_uri: gov:computedFrom
+    range: Activity
+  computedOn:
+    slot_uri: gov:computedOn
+    range: datetime
+  activity:
+    slot_uri: gov:activity
+    range: Activity
+  inputLabels:
+    slot_uri: gov:inputLabels
+    range: ControlLabel
+    multivalued: true
+  reviewStatus:
+    slot_uri: gov:reviewStatus
+    range: DerivationReviewStatus
+  reviewedBy:
+    slot_uri: gov:reviewedBy
+    range: User
+  reviewedOn:
+    slot_uri: gov:reviewedOn
+    range: datetime
+  reviewNotes:
+    slot_uri: gov:reviewNotes

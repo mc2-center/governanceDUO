@@ -11,7 +11,9 @@ Each example's target class comes from the manifests the converters already use
 -- convert_examples_to_rdf.EXAMPLE_CLASSES and
 build_governance_graph.EXAMPLE_CLASSES -- plus EXTRA_CLASSES for examples no
 converter reads. An example with no mapped class fails the check rather than
-being skipped. The records the regression fixtures feed the builders
+being skipped. Examples under linkml/examples/graph/ are graph-layer bundles,
+validated as GovernanceGraph against linkml/graph/governance.yaml
+(plans/model_refactor.md). The records the regression fixtures feed the builders
 (FIXTURE_RECORDS) are validated too, so a fixture can't pass the builders a
 record the schema rejects.
 
@@ -34,6 +36,9 @@ from build_governance_graph import EXAMPLE_CLASSES as GOVERNANCE_GRAPH_CLASSES  
 from convert_examples_to_rdf import EXAMPLE_CLASSES  # noqa: E402
 
 EXAMPLES = Path("linkml/examples")
+GRAPH_EXAMPLES = EXAMPLES / "graph"
+GRAPH_SCHEMA = "linkml/graph/governance.yaml"
+GRAPH_CLASS = "GovernanceGraph"
 # Examples read by neither converter (build_policy_fabric.py takes this one by path).
 EXTRA_CLASSES = {"access_requirement_policy_fabric": "AccessRequirement"}
 # Fixture records (glob -> class) read by check_derivation_policy.py and
@@ -57,8 +62,11 @@ def main():
     args = parser.parse_args()
 
     validator = Validator(args.schema, validation_plugins=[JsonschemaValidationPlugin(closed=True)])
+    graph_validator = Validator(GRAPH_SCHEMA, validation_plugins=[JsonschemaValidationPlugin(closed=True)])
     failures = []
-    examples = [(path, target_class(path)) for path in sorted(EXAMPLES.rglob("*.example.yaml"))]
+    all_examples = sorted(EXAMPLES.rglob("*.example.yaml"))
+    graph_examples = [p for p in all_examples if GRAPH_EXAMPLES in p.parents]
+    examples = [(path, target_class(path)) for path in all_examples if path not in graph_examples]
     for pattern, class_name in FIXTURE_RECORDS.items():
         matches = sorted(Path().glob(pattern))
         if not matches:
@@ -70,6 +78,10 @@ def main():
             continue
         for result in validator.validate(yaml.safe_load(path.read_text()), class_name).results:
             failures.append(f"{path} ({class_name}): {result.message}")
+    for path in graph_examples:
+        for result in graph_validator.validate(yaml.safe_load(path.read_text()), GRAPH_CLASS).results:
+            failures.append(f"{path} ({GRAPH_CLASS}): {result.message}")
+    examples += [(path, GRAPH_CLASS) for path in graph_examples]
 
     if failures:
         print(f"FAIL  {len(failures)} example validation error(s):")

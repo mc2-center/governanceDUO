@@ -9,6 +9,15 @@ LINKML_SCHEMA := linkml/governance_duo.linkml.yaml
 # carry it in their owl:Ontology headers, and `make release-check` verifies they agree.
 VERSION ?= 0.1.0
 
+# The graph layer (plans/model_refactor.md): linkml/graph/ is the one source of
+# every graph term; build_graph_tbox.py generates its one TBox and shape set.
+# It runs beside the pre-refactor pipeline below until Phase 2 replaces that.
+GRAPH_SCHEMA  := linkml/graph/governance.yaml
+GRAPH_VERSION ?= 0.2.0
+GRAPH_TBOX    := shapes/governance.owl.ttl
+GRAPH_SHAPES  := shapes/governance.shacl.ttl
+GRAPH_EXAMPLE_RDF := linkml/examples/graph/rdf/governance_graph.ttl
+
 # ROBOT (https://robot.obolibrary.org) for the OWL 2 DL profile check. Fetched, not
 # committed (78 MB), and pinned so the check is reproducible -- the same version and
 # download rule sagebrain-model uses. Overridable: ROBOT_JAR, ROBOT_VERSION.
@@ -26,6 +35,7 @@ PROV_O_URL    ?= https://www.w3.org/ns/prov-o-20130430
 # snake_case, since those names are also live Synapse annotation keys.
 linkml-lint:
 	linkml-lint --ignore-warnings ${LINKML_SCHEMA}
+	linkml-lint --ignore-warnings $(GRAPH_SCHEMA)
 
 owl:
 	python3 scripts/build_owl.py --schema ${LINKML_SCHEMA} --out shapes/governance_duo.owl.ttl --version $(VERSION)
@@ -60,6 +70,28 @@ owl-profile: owl | $(ROBOT_JAR) $(PROV_O)
 	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_merged.owl.ttl --output build/owl-profile-merged.txt || (cat build/owl-profile-merged.txt; exit 1)
 	@echo "OWL 2 DL profile: governance_duo, governance_graph, and their merge all in profile."
 	python3 scripts/check_prov_alignment.py --prov-o $(PROV_O)
+
+graph-tbox:
+	python3 scripts/build_graph_tbox.py --schema $(GRAPH_SCHEMA) --owl $(GRAPH_TBOX) --shacl $(GRAPH_SHAPES) --version $(GRAPH_VERSION)
+
+graph-example-rdf:
+	mkdir -p $(dir $(GRAPH_EXAMPLE_RDF))
+	python3 scripts/graph_rdf.py linkml/examples/graph/*.example.yaml --out $(GRAPH_EXAMPLE_RDF)
+
+# The canonical example conforms to the generated shapes, and check_graph.py
+# confirms the shapes catch a set of deliberate defects and the TBox keeps the
+# layer's conventions (SKOS completeness, no axioms on other vocabularies' terms).
+graph-validate: graph-tbox graph-example-rdf
+	python3 scripts/validate_graph.py --data $(GRAPH_EXAMPLE_RDF) --shapes $(GRAPH_SHAPES) --ont $(GRAPH_TBOX)
+	python3 scripts/check_graph.py
+
+# OWL 2 DL on the graph TBox alone and merged with the example graph.
+graph-owl-profile: graph-tbox graph-example-rdf | $(ROBOT_JAR)
+	mkdir -p build
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input $(GRAPH_TBOX) --output build/owl-profile-governance.txt || (cat build/owl-profile-governance.txt; exit 1)
+	java -jar $(ROBOT_JAR) merge --input $(GRAPH_TBOX) --input $(GRAPH_EXAMPLE_RDF) --output build/governance_with_example.owl.ttl
+	java -jar $(ROBOT_JAR) validate-profile --profile DL --input build/governance_with_example.owl.ttl --output build/owl-profile-governance-abox.txt || (cat build/owl-profile-governance-abox.txt; exit 1)
+	@echo "OWL 2 DL profile: the graph TBox, alone and with the example graph, in profile."
 
 example-rdf:
 	python3 scripts/convert_examples_to_rdf.py --schema ${LINKML_SCHEMA} --examples-dir linkml/examples --out-dir linkml/examples/rdf
@@ -165,8 +197,8 @@ linkml-validate-examples:
 # Clears the generated directories first, so a committed file no generator
 # produces any more shows up as missing.
 artifact-drift-check:
-	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/provenance/rdf linkml/examples/derivation_policy/rdf
-	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric
+	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/provenance/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf
+	$(MAKE) owl shacl example-rdf provenance-example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf
 	python3 scripts/check_artifact_drift.py
 
 # OWL 2 DL on both TBoxes merged with the exported and example graphs: a value
@@ -187,7 +219,7 @@ enum-sync-check:
 domain-range-check: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox graph-validate graph-owl-profile
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching

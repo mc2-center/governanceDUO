@@ -1,0 +1,221 @@
+# The canonical governance graph example (plans/model_refactor.md): the facts of
+# the pre-refactor examples in linkml/examples/governance_graph/, provenance/ and
+# derivation_policy/, in the graph layer's model. Illustrative only; no record is
+# sourced from real Synapse data.
+#
+# What changed from the old examples, besides IRIs and xsd:dateTime:
+# - syn10081783 has its own ACL, so it is its own benefactor; AR-42 is attached
+#   to its parent project (the old example's "Inherited" association), and the
+#   projections materialize it onto the file.
+# - Team 9000001 lists a member (user 2000001), so a team grant can resolve.
+# - The approval is identified by Synapse's AccessApproval id (55001).
+# - The review's input labels are nodes of their own.
+
+entities:
+  - id: syn:syn2343195
+    name: NF2-related schwannomatosis RNA-seq study
+    entityType: org.sagebionetworks.repo.model.Project
+    benefactor: syn:syn2343195
+    requiresAR:
+      - govid:ar/42
+    etag: 8b7c6d5e-4f3a-4b2c-8d1e-0f9a8b7c6d5e
+    createdBy: synuser:1000002
+    createdOn: "2023-11-14T22:13:20Z"
+  - id: syn:syn10081783
+    name: HS01_CUDC907_Run1_S2_R1_001.fastq
+    entityType: org.sagebionetworks.repo.model.FileEntity
+    parent: syn:syn2343195
+    benefactor: syn:syn10081783
+    versionNumber: 2
+    etag: 3f9c9b8a-1a2b-4c3d-9e5f-6a7b8c9d0e1f
+    createdBy: synuser:1000001
+    createdOn: "2025-08-12T12:00:00Z"
+
+users:
+  - id: synuser:1000001
+  - id: synuser:1000002
+  - id: synuser:2000001
+    company: Mount Sinai
+    affiliatedWith:
+      - govid:site/mount-sinai
+
+teams:
+  - id: synteam:9000001
+    hasMember:
+      - synuser:2000001
+
+sites:
+  - id: govid:site/mount-sinai
+    institution: Mount Sinai
+
+programs:
+  - id: govid:program/adkp
+    name: AD Knowledge Portal
+
+authorizations:
+  - id: govid:authorization/syn10081783-9000001
+    accessTo: syn:syn10081783
+    default: syn:syn10081783
+    agentGroup: synteam:9000001
+    mode:
+      - DOWNLOAD
+
+accessRequirements:
+  - id: govid:ar/42
+    name: Illustrative disease-specific managed access requirement
+    requirementType: ManagedACTAccessRequirement
+    accessType: DOWNLOAD
+    versionNumber: 1
+    hasCondition:
+      - govid:ar/42/condition/DUO_0000007
+  - id: govid:ar/99
+    name: Illustrative second managed access requirement
+    requirementType: ManagedACTAccessRequirement
+    accessType: DOWNLOAD
+    versionNumber: 1
+
+conditions:
+  - id: govid:ar/42/condition/DUO_0000007
+    dataUseTerm: DUO:0000007
+    diseaseContext:
+      - http://purl.obolibrary.org/obo/MONDO_0004975
+    description: >-
+      Disease Specific Research - This data use permission indicates that use is
+      allowed provided it is related to the specified disease.
+
+templates:
+  - id: govid:ar-template/genomics
+    domain: genomics
+    hasCondition:
+      - govid:ar/42/condition/DUO_0000007
+
+irbRequirements:
+  - id: govid:irb-requirement/irb-genomics-adkp
+    extendsTemplate: govid:ar-template/genomics
+    arType: IRB
+    forStudy: https://w3id.org/sage-bionetworks/governance-duo/study.mc2-jax-5xfad
+    language: >-
+      Illustrative ADKP-specific consent language -- not sourced from a real IRB
+      document.
+    scopedToProgram: govid:program/adkp
+    scopedToSite: govid:site/mount-sinai
+
+approvals:
+  - id: govid:approval/55001
+    satisfies: govid:ar/42
+    requirementVersion: 1
+    heldBy: synuser:2000001
+    submittedBy: synuser:2000001
+    status: APPROVED
+    expiresAt: "2026-08-14T19:33:20Z"
+    createdOn: "2025-08-14T19:33:20Z"
+    sourceApprovalId: 55001
+    etag: 2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a
+
+submissions:
+  - id: govid:submission/555
+    accessRequirement: govid:ar/42
+    requirementVersion: 1
+    request: govid:request/7001
+    researchProject: govid:research-project/8001
+    submittedBy: synuser:2000001
+    submittedOn: "2025-08-14T19:33:20Z"
+    state: SUBMITTED
+    modifiedBy: synuser:2000001
+    modifiedOn: "2025-08-14T19:33:20Z"
+    etag: 1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f
+
+requests:
+  - id: govid:request/7001
+    accessRequirement: govid:ar/42
+    researchProject: govid:research-project/8001
+    institution: Mount Sinai
+    affiliatedWith:
+      - govid:site/mount-sinai
+    requestPrincipalInvestigatorName: Jane Doe
+    requestPrincipalInvestigatorEmail: jane.doe@mountsinai.org
+    requestSigningOfficialName: John Smith
+    requestSigningOfficialEmail: john.smith@mountsinai.org
+    requestConcreteType: Request
+    createdBy: synuser:2000001
+    createdOn: "2025-08-14T02:53:20Z"
+    modifiedBy: synuser:2000001
+    modifiedOn: "2025-08-14T05:40:00Z"
+    etag: 5d6e7f8a-9b0c-4d2e-9f3a-4b5c6d7e8f9a
+
+researchProjects:
+  - id: govid:research-project/8001
+    accessRequirement: govid:ar/42
+    institution: Mount Sinai
+    affiliatedWith:
+      - govid:site/mount-sinai
+    projectLead: Jane Doe
+    intendedDataUseStatement: >-
+      Investigating tumor microenvironment signaling in a genetically engineered
+      mouse model cohort, for the purposes described in the associated Access
+      Requirement.
+    createdBy: synuser:2000001
+    createdOn: "2025-08-14T05:40:00Z"
+    etag: 4c5d6e7f-8a9b-4c1d-9e2f-3a4b5c6d7e8f
+
+activities:
+  - id: govid:activity/1001
+    name: Derive per-sample QC summary
+    description: Illustrative structural example -- not sourced from a real Synapse Activity record.
+    generated:
+      - syn:syn30000001
+    qualifiedUsage:
+      - id: govid:activity/1001/usage/1
+        entity: syn:syn10081783
+        wasExecuted: false
+      - id: govid:activity/1001/usage/2
+        entity: syn:syn40000002
+        wasExecuted: true
+    createdBy: synuser:1000001
+    createdOn: "2025-08-14T19:33:20Z"
+  - id: govid:activity/1002
+    name: nf-core/rnaseq reprocessing run
+    description: Illustrative structural example -- not sourced from a real Synapse Activity record.
+    generated:
+      - syn:syn30000002
+      - syn:syn30000003
+    qualifiedUsage:
+      - id: govid:activity/1002/usage/1
+        url: https://nf-co.re/rnaseq/3.11.1
+        name: nf-core/rnaseq v3.11.1
+        wasExecuted: true
+      - id: govid:activity/1002/usage/2
+        entity: syn:syn10081783
+        entityVersionNumber: 2
+        wasExecuted: false
+    createdBy: synuser:1000001
+    createdOn: "2025-08-14T19:33:20Z"
+    modifiedBy: synuser:1000001
+    modifiedOn: "2025-08-14T19:41:40Z"
+
+controlLabels:
+  - id: govid:control-label/syn10081783
+    subject: syn:syn10081783
+    dataTier: Controlled
+    sourceAccessRequirements:
+      - govid:ar/42
+    computedFrom: govid:activity/1001
+    computedOn: "2025-08-15T23:20:00Z"
+  - id: govid:control-label/syn40000002
+    subject: syn:syn40000002
+    dataTier: Controlled
+    sourceAccessRequirements:
+      - govid:ar/99
+    computedFrom: govid:activity/1001
+    computedOn: "2025-08-15T23:20:00Z"
+
+derivationReviews:
+  - id: govid:derivation-review/001
+    activity: govid:activity/1001
+    inputLabels:
+      - govid:control-label/syn10081783
+      - govid:control-label/syn40000002
+    reviewStatus: Flagged
+    reviewNotes: >-
+      Auto-flagged: inputs bound to disjoint AccessRequirements (AR-42, AR-99),
+      both Controlled tier. Pending ACT review.
