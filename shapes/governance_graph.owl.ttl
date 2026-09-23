@@ -110,7 +110,7 @@ gov:principal a owl:ObjectProperty ;
 
 gov:permission a owl:ObjectProperty ;
     rdfs:domain gov:AccessGrant ;
-    rdfs:comment "Range: an AccessTypeEnum value minted as its own IRI, e.g. gov:DOWNLOAD -- not a literal, despite governanceduo:permission's range being a plain enum -- plus the derived gov:ACCESS below. See shapes/governance_graph.shacl.ttl's sh:in list for the closed vocabulary." .
+    rdfs:comment "Range: a GrantPermissionEnum value as the IRI its meaning: declares, e.g. gov:DOWNLOAD -- the Synapse AccessTypeEnum values plus the derived gov:ACCESS below. See shapes/governance_graph.shacl.ttl's sh:in list for the closed vocabulary." .
 
 gov:ACCESS a owl:NamedIndividual ;
     rdfs:label "ACCESS" ;

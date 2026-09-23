@@ -16,8 +16,9 @@
 ## still produced 42 violations, because most of the mismatch was never about
 ## namespace identity -- it's that this ABox's own RDF conventions diverge from what a
 ## generic LinkML dump assumes: enum values are minted as their own IRI individuals
-## (sagegov:Synapse, sagegov:DOWNLOAD, ...) where gen-shacl expects sh:in string
-## literals; createdBy/modifiedBy/submittedBy/heldBy are emitted as sagegov:Principal
+## (sagegov:Synapse, sagegov:DOWNLOAD, ...) where gen-shacl then expected sh:in string
+## literals (those enums have since been given meaning: IRIs, so gen-shacl now agrees
+## -- plans/enum_values_match_owl.md); createdBy/modifiedBy/submittedBy/heldBy are emitted as sagegov:Principal
 ## IRI references (the schema now declares those slots range Principal, but a
 ## generic dump still can't mint gov:principal-<n> from the integer key);
 ## DataAccessSubmission and DataAccessSubmissionStatus are merged onto one RDF subject
