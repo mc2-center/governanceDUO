@@ -165,12 +165,22 @@ derivation-policy-check:
 infra-contract-check: governance-graph
 	python3 scripts/check_infra_contract.py
 
+# linkml-validate every example: the only enforcer of the DUO `rules:`, which
+# neither the SHACL nor the OWL carries.
+linkml-validate-examples:
+	python3 scripts/validate_examples.py
+
+# Committed generated artifacts must match what the schema and scripts produce.
+# Run after validate-all (which regenerates them); CI does.
+artifact-drift-check:
+	python3 scripts/check_artifact_drift.py
+
 # Every rdfs:domain/class rdfs:range in both TBoxes must already hold on the
 # exported and example graphs; a reasoner would otherwise re-type nodes with them.
 domain-range-check: governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
-validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check owl-profile
+validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples owl-profile
 
 # Opt-in: checks this repo's governance layer works as a layer of sagebrain-model's
 # graph (union OWL 2 DL, SHACL on a joined worked example, ControlLabels reaching

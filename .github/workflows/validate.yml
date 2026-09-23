@@ -3,7 +3,8 @@ name: Validate
 # Runs `make validate-all`: SHACL validation of every example ABox and the built
 # governance graph, the offline sync and derivation-policy regression checks, the
 # sagebrain-infra authorizer contract check, and the OWL 2 DL profile check (ROBOT,
-# which needs Java) with its W3C PROV-O type-agreement check.
+# which needs Java) with its W3C PROV-O type-agreement check, then checks that the
+# committed generated artifacts match the regenerated ones.
 
 on:
   push:
@@ -43,3 +44,7 @@ jobs:
 
       - name: Validate
         run: make validate-all
+
+      # validate-all regenerated the artifacts; they must match what's committed.
+      - name: Committed artifacts match the schema
+        run: make artifact-drift-check

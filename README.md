@@ -134,6 +134,9 @@ make validate-all     # every SHACL validation below plus the regression/contrac
 make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar),
                        # plus prov: types vs W3C PROV-O (fetched to build/)
 make release-check    # validate-all + every published artifact carries VERSION
+make linkml-validate-examples  # linkml-validate every example (the only DUO-rules check)
+make artifact-drift-check      # committed generated artifacts match a fresh rebuild
+                               # (run after validate-all; CI does)
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # individuals against the SHACL shapes, via pyshacl with
                        # inference disabled and the ontology passed as ont_graph —
@@ -147,7 +150,8 @@ Example instances validating the DUO conditional-requirement rules live under
 AccessRequirement linkml/examples/access_requirement.example.yaml`). Note that
 `gen-shacl` does not compile those `rules:` conditionals into SHACL, and
 `scripts/build_owl.py` deliberately leaves them out of the OWL — only
-`linkml-validate`'s JSON Schema path enforces them; `make shacl-validate` covers
+`linkml-validate`'s JSON Schema path enforces them (`make linkml-validate-examples`,
+part of `validate-all`); `make shacl-validate` covers
 everything else (required fields, enum membership, regex patterns, datatypes,
 cardinality) against real instance data, converted via
 `scripts/convert_examples_to_rdf.py`. This schema's ids are dotted, colon-free
