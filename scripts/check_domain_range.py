@@ -10,11 +10,11 @@ SynapseEntity made every AccessApproval carrying an etag a SynapseEntity.
 
 For each axiom `p rdfs:domain C` (or `p rdfs:range C`, C a class), every subject
 (object) of p in the graphs must be asserted a C, or a subclass of C per the
-TBoxes' rdfs:subClassOf. No other entailment is applied. Datatype ranges are
-not checked here; SHACL covers literal datatypes. Neither are ranges over LinkML
-enums (classes carrying linkml:permissible_values): the generated OWL models an
-enum as the union of its permissible-value IRIs, which the data doesn't use yet
-(see plans/pre_pr_review_fixes_report.md, open items).
+TBoxes' rdfs:subClassOf. No other entailment is applied. A range over a LinkML
+enum is checked by membership instead (plans/enum_values_match_owl.md): an enum
+modeled as a class (its values carry meaning: IRIs) must be given one of those
+IRIs, and a literal enum (a datatype defined by owl:oneOf) one of its strings.
+Other datatype ranges are not checked here; SHACL covers literal datatypes.
 
 Usage:
     python scripts/check_domain_range.py [--tbox PATH ...] [--data PATH ...]
@@ -26,7 +26,8 @@ import argparse
 import sys
 from collections import Counter
 
-from rdflib import Graph, Namespace, URIRef
+from rdflib import Graph, Literal, Namespace, URIRef
+from rdflib.collection import Collection
 from rdflib.namespace import OWL, RDF, RDFS
 
 LINKML = Namespace("https://w3id.org/linkml/")
@@ -51,8 +52,8 @@ def superclasses(tbox: Graph, cls) -> set:
 
 
 def violations(tbox: Graph, data: Graph) -> list[str]:
-    classes = set(tbox.subjects(RDF.type, OWL.Class)) | set(tbox.subjects(RDF.type, RDFS.Class))
-    classes -= set(tbox.subjects(LINKML.permissible_values, None))
+    enums = set(tbox.subjects(LINKML.permissible_values, None))
+    classes = (set(tbox.subjects(RDF.type, OWL.Class)) | set(tbox.subjects(RDF.type, RDFS.Class))) - enums
     types = {}
 
     def asserted_types(node) -> set:
@@ -77,6 +78,22 @@ def violations(tbox: Graph, data: Graph) -> list[str]:
                     f"{name(prop)} rdfs:{name(axiom).split(':')[-1]} {name(cls)}: "
                     f"{count} node(s) typed {node_types}"
                 )
+    for prop, enum in sorted(tbox.subject_objects(RDFS.range)):
+        if enum not in enums:
+            continue
+        definition = tbox.value(enum, OWL.equivalentClass)
+        if definition is not None and tbox.value(definition, OWL.oneOf) is not None:
+            allowed = {str(v) for v in Collection(tbox, tbox.value(definition, OWL.oneOf))}
+            member = lambda v: isinstance(v, Literal) and str(v) in allowed  # noqa: E731
+        else:
+            allowed = set(tbox.objects(enum, LINKML.permissible_values))
+            member = lambda v: v in allowed  # noqa: E731
+        wrong = sorted({v for v in data.objects(None, prop) if not member(v)}, key=str)
+        if wrong:
+            failures.append(
+                f"{name(prop)} rdfs:range {name(enum)}: values not in the enum: "
+                + ", ".join(v.n3(tbox.namespace_manager) for v in wrong)
+            )
     return failures
 
 
