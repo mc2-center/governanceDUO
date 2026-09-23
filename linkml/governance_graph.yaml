@@ -56,11 +56,17 @@ enums:
       (ACTDataAccessSubmissionWidget.java's exhaustive state switch) — the
       "sagebrain governance graph ACL_AR data - AR table schemas.csv" only says
       DATA_ACCESS_SUBMISSION_STATUS.STATE is TEXT, with no NOTES-column value list.
+      Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:state (APPROVED is shared with ApprovalStateEnum -- see
+      that enum).
     permissible_values:
-      SUBMITTED: {}
-      APPROVED: {}
-      REJECTED: {}
-      CANCELLED: {}
+      SUBMITTED:
+        meaning: sagegov:SUBMITTED
+      APPROVED:
+        meaning: sagegov:APPROVED
+      REJECTED:
+        meaning: sagegov:REJECTED
+      CANCELLED:
+        meaning: sagegov:CANCELLED
   SourceSystemEnum:
     description: >-
       The system a governance relationship (AccessGrant,
@@ -83,29 +89,42 @@ enums:
       ACL tables record only the direct binding, so inheritance has to be
       resolved (via SynapseEntity.parentId) and recorded explicitly, per the
       design doc's "Direct and Inherited Governance" section.
+      Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:bindingType.
     permissible_values:
-      Direct: {}
-      Inherited: {}
+      Direct:
+        meaning: sagegov:Direct
+      Inherited:
+        meaning: sagegov:Inherited
   PrincipalTypeEnum:
     description: >-
       Whether a Principal is an individual user or a team — from the design
       doc: "Principals may represent either individual users or teams."
       ACL_RESOURCE_ACCESS.GROUP_ID itself doesn't distinguish the two; Synapse
       resolves that from the id's own type at runtime, so this is recorded
-      explicitly here rather than inferred.
+      explicitly here rather than inferred. Each value's meaning: is the gov:
+      class scripts/build_governance_graph.py asserts on the Principal
+      (rdf:type gov:User/gov:Team).
     permissible_values:
-      User: {}
-      Team: {}
+      User:
+        meaning: sagegov:User
+      Team:
+        meaning: sagegov:Team
   ApprovalStateEnum:
     description: >-
       Synapse's real AccessApproval state values
       (org.sagebionetworks.repo.model.ApprovalState), verified directly
       against the OpenAPI spec -- APPROVED/REVOKED only. A distinct, smaller
-      enum from SubmissionStateEnum above; do not conflate the two even though
-      both happen to include "APPROVED".
+      enum from SubmissionStateEnum above. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for gov:status. The two
+      enums' APPROVED share one IRI, gov:APPROVED, as the graph has always
+      written it; the predicate (gov:status on an AccessApproval, gov:state on a
+      DataAccessSubmission) tells them apart. Should they ever need different
+      definitions, or the enums be declared disjoint, APPROVED needs a distinct
+      IRI per enum (plans/enum_values_match_owl.md).
     permissible_values:
-      APPROVED: {}
-      REVOKED: {}
+      APPROVED:
+        meaning: sagegov:APPROVED
+      REVOKED:
+        meaning: sagegov:REVOKED
 classes:
   SynapseEntity:
     is_a: BaseEntity

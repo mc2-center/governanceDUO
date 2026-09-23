@@ -408,47 +408,68 @@ enums:
       Shared by AccessGrant.permission (an ACL grant's permission —
       ACL_RESOURCE_ACCESS_TYPE.STRING_ELE) in governance_graph.yaml and this file's
       own accessType slot (ACCESS_REQUIREMENT.ACCESS_TYPE) — the same underlying
-      Synapse type in both places.
+      Synapse type in both places. Each value's meaning: is the gov: IRI scripts/build_governance_graph.py emits for
+      gov:permission.
     permissible_values:
       CREATE:
+        meaning: sagegov:CREATE
         description: Permission to create a new entity or resource.
       READ:
+        meaning: sagegov:READ
         description: Permission to read or view the entity or resource.
       UPDATE:
+        meaning: sagegov:UPDATE
         description: Permission to modify or update the entity or resource.
       DELETE:
+        meaning: sagegov:DELETE
         description: Permission to delete the entity or resource.
       CHANGE_PERMISSIONS:
+        meaning: sagegov:CHANGE_PERMISSIONS
         description: Permission to change access permissions for the entity or resource.
       DOWNLOAD:
+        meaning: sagegov:DOWNLOAD
         description: Permission to download files or data from the entity or resource.
       UPLOAD:
+        meaning: sagegov:UPLOAD
         description: Deprecated; adding this to an ACL has no effect.
         annotations:
           deprecated: true
       PARTICIPATE:
+        meaning: sagegov:PARTICIPATE
         description: Permission to participate in activities related to the entity, such as discussions or challenges.
       SUBMIT:
+        meaning: sagegov:SUBMIT
         description: Permission to submit content or data to the entity or resource.
       READ_PRIVATE_SUBMISSION:
+        meaning: sagegov:READ_PRIVATE_SUBMISSION
         description: Permission to read private submissions associated with the entity.
       UPDATE_SUBMISSION:
+        meaning: sagegov:UPDATE_SUBMISSION
         description: Permission to update or modify a submission.
       DELETE_SUBMISSION:
+        meaning: sagegov:DELETE_SUBMISSION
         description: Permission to delete a submission.
       TEAM_MEMBERSHIP_UPDATE:
+        meaning: sagegov:TEAM_MEMBERSHIP_UPDATE
         description: Permission to update team membership, such as adding or removing members.
       SEND_MESSAGE:
+        meaning: sagegov:SEND_MESSAGE
         description: Permission to send messages related to the entity or resource.
       CHANGE_SETTINGS:
+        meaning: sagegov:CHANGE_SETTINGS
         description: Permission to change settings or configuration for the entity or resource.
       MODERATE:
+        meaning: sagegov:MODERATE
         description: Permission to moderate content or activity related to the entity or resource.
       REVIEW_SUBMISSIONS:
+        meaning: sagegov:REVIEW_SUBMISSIONS
         description: Enables reviewing submission groups (e.g., on Access Requirements) for specified objects.
       EXEMPTION_ELIGIBLE:
+        meaning: sagegov:EXEMPTION_ELIGIBLE
         description: Qualifies for exemption when granted on Access Requirement ACLs.
   AccessRequirementConcreteTypeEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       Synapse's real AccessRequirement subclasses, verified via
       Sage-Bionetworks/Synapse-Repository-Services's AccessRequirementType.java
@@ -704,6 +725,8 @@ enums:
       Pending Annotation:
         description: The data use modifier for this record has not yet been annotated.
   DataPermissionEnum:
+    implements:
+      - rdfs:Literal
     permissible_values:
       Agreement:
         description: "Data use conditions are derived from a Data Use Agreement."
@@ -714,6 +737,8 @@ enums:
       Other:
         description: "Other permissions may apply to the data access."
   DataTierEnum:
+    implements:
+      - rdfs:Literal
     permissible_values:
       Anonymous:
         description: "Data can be viewed and downloaded anonymously by anyone on the internet."
@@ -730,6 +755,8 @@ enums:
           recorded tier fails closed (scripts/build_derivation_policy.py ranks it
           highest) rather than reading as unrestricted.
   LicenseEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the
       standalone CV reference model/valid_values.csv previously documented

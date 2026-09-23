@@ -57,6 +57,8 @@ imports:
   - mixins
 enums:
   DerivationReviewStatusEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       Workflow state of a DerivationReview — the same enum-per-workflow-state
       convention ApprovalStateEnum/SubmissionStateEnum already use in

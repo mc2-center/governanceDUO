@@ -21,6 +21,8 @@ imports:
   - mixins
 enums:
   CredentialTypeEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       The 15 Verifiable Credential types defined in tmp-policies/credentials/*.schema.json.
     permissible_values:

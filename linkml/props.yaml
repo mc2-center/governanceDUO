@@ -46,6 +46,8 @@ slots:
       foreign_key: true
 enums:
   GeographicalRegionEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots
       geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the
@@ -551,6 +553,8 @@ enums:
       ZW:
         description: "Zimbabwe"
   DeidentificationTypeEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       De-identification method categories. Shared by Study.studyDeidentificationType
       and the shared/GovernanceMixin deidentificationType slot (DUOPlus3) — the source

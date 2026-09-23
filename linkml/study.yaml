@@ -130,6 +130,8 @@ slots:
     pattern: '^syn\d+$'
 enums:
   StudyIndexDateEnum:
+    implements:
+      - rdfs:Literal
     permissible_values:
       Diagnosis Date: {}
       Enrollment Date: {}

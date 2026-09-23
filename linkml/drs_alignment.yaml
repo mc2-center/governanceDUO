@@ -47,6 +47,8 @@ imports:
   - policy_fabric
 enums:
   DrsAuthTypeEnum:
+    implements:
+      - rdfs:Literal
     description: >-
       Mirrors DRS's Authorizations.supported_types enum
       (https://ga4gh.github.io/data-repository-service-schemas/docs/). More than one
