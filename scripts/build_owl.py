@@ -53,17 +53,28 @@ with shapes/governance_graph.owl.ttl and imported by sagebrain-model:
   writes IRI nodes for them, gen-shacl already constrains them to sh:nodeKind
   sh:IRI, and W3C PROV-O declares prov:generated/prov:entity as object properties;
   typing them as datatype properties puns them against PROV-O wherever both load.
-  IriRangeOwlGenerator corrects one owlgen gap the flag leaves (approved as a
+  GovernanceOwlGenerator corrects one owlgen gap the flag leaves (approved as a
   workaround; remove once fixed upstream): slot_node_owltypes() ignores the flag,
   so add_class() fills these slots' allValuesFrom with the schema's default_range
   (xsd:string) -- a datatype restriction on an object property, which OWLAPI can't
   parse. Reporting owl:Thing instead makes that filler owl:Thing, which
   skip_vacuous_local_range_axioms then drops.
+- Literal enums (plans/enum_values_match_owl.md): an enum marked
+  `implements: [rdfs:Literal]` (DataTierEnum, LicenseEnum, ...) has string
+  values in the data, so it's a named rdfs:Datatype defined as owl:oneOf its
+  strings, and the slots ranging over it are owl:DatatypeProperty. owlgen honors
+  the marker only partly, so GovernanceOwlGenerator corrects three gaps
+  (approved as a workaround; remove once fixed upstream): add_enum() also
+  declares the enum owl:Class (an illegal class/datatype pun) and attaches
+  owl:oneOf to the named datatype directly rather than through an
+  owl:equivalentClass definition; slot_owl_type() and slot_node_owltypes() treat
+  every enum range as an object range. Enums whose values carry meaning: IRIs
+  (DUO codes, the gov: graph enums) stay classes, with those IRIs as members.
 - repair_generator_output() fills three owlgen gaps under use_native_uris=False,
   using only the schema (approved as a workaround; remove once fixed upstream):
     1. a slot_usage that gives a slot its own slot_uri (e.g. SynapseEntity.name ->
        sagegov:name) is used in restrictions but never declared -- declared here,
-       typed from the induced range;
+       typed from the induced range (a literal enum is a data range);
     2. a slot_usage with no slot_uri of its own (e.g. every per-class `id`
        pattern) is restricted under governanceduo:<name> instead of the slot's
        declared slot_uri (dcterms:identifier) -- retargeted here;
@@ -131,21 +142,49 @@ def schema_without_rules(schema_path: str) -> SchemaView:
     return sv
 
 
-class IriRangeOwlGenerator(OwlSchemaGenerator):
-    """OwlSchemaGenerator whose slot_node_owltypes() honors xsd_anyuri_as_iri --
-    see module docstring. Remove once fixed upstream."""
+class GovernanceOwlGenerator(OwlSchemaGenerator):
+    """OwlSchemaGenerator with two owlgen gaps corrected -- see module docstring.
+    Each correction is an approved workaround; remove once fixed upstream."""
+
+    def is_literal_enum(self, name) -> bool:
+        enum_def = self.schemaview.get_enum(name) if name else None
+        return enum_def is not None and "rdfs:Literal" in (enum_def.implements or [])
+
+    def slot_range(self, slot, owning_class):
+        if isinstance(slot, SlotDefinition) and isinstance(owning_class, ClassDefinition):
+            return self.schemaview.induced_slot(slot.name, owning_class.name).range
+        return getattr(slot, "range", None)
 
     def slot_node_owltypes(self, slot, owning_class=None):
         node_types = super().slot_node_owltypes(slot, owning_class)
-        if not (self.xsd_anyuri_as_iri and isinstance(slot, SlotDefinition)):
+        if not isinstance(slot, SlotDefinition):
             return node_types
-        slot_range = slot.range
-        if isinstance(owning_class, ClassDefinition):
-            slot_range = self.schemaview.induced_slot(slot.name, owning_class.name).range
-        if is_xsd_anyuri_range(self.schemaview, slot_range):
+        slot_range = self.slot_range(slot, owning_class)
+        if self.xsd_anyuri_as_iri and is_xsd_anyuri_range(self.schemaview, slot_range):
             node_types.discard(RDFS.Datatype)
             node_types.add(OWL.Thing)
+        if self.is_literal_enum(slot_range):
+            node_types.discard(OWL.Thing)
+            node_types.add(RDFS.Datatype)
         return node_types
+
+    def slot_owl_type(self, slot):
+        if self.is_literal_enum(slot.range):
+            return OWL.DatatypeProperty
+        return super().slot_owl_type(slot)
+
+    def add_enum(self, e):
+        super().add_enum(e)
+        if not self.is_literal_enum(e.name):
+            return
+        enum_uri = self._enum_uri(e.name)
+        self.graph.remove((enum_uri, RDF.type, OWL.Class))
+        values = self.graph.value(enum_uri, OWL.oneOf)
+        self.graph.remove((enum_uri, OWL.oneOf, values))
+        definition = BNode()
+        self.graph.add((definition, RDF.type, RDFS.Datatype))
+        self.graph.add((definition, OWL.oneOf, values))
+        self.graph.add((enum_uri, OWL.equivalentClass, definition))
 
 
 def remove_node(graph: Graph, node):
@@ -173,7 +212,10 @@ def repair_generator_output(graph: Graph, sv: SchemaView) -> dict:
             prop = URIRef(sv.expand_curie(induced.slot_uri))
             if prop in declared or is_reserved(prop):
                 continue
-            is_object = induced.range in sv.all_classes() or induced.range in sv.all_enums()
+            enum_def = sv.get_enum(induced.range) if induced.range in sv.all_enums() else None
+            is_object = induced.range in sv.all_classes() or (
+                enum_def is not None and "rdfs:Literal" not in (enum_def.implements or [])
+            )
             graph.add((prop, RDF.type, OWL.ObjectProperty if is_object else OWL.DatatypeProperty))
             graph.add((prop, RDFS.label, Literal(slot_name)))
             declared.add(prop)
@@ -237,7 +279,7 @@ def stable_graph(graph: Graph) -> Graph:
 
 def build(schema_path: str, version: str) -> Graph:
     sv = schema_without_rules(schema_path)
-    gen = IriRangeOwlGenerator(
+    gen = GovernanceOwlGenerator(
         sv.schema,
         skip_vacuous_min_zero_cardinality_axioms=True,
         skip_vacuous_local_range_axioms=True,
