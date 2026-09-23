@@ -8,11 +8,14 @@ the output graph's shape.
 The fake client returns one Activity for two requested entities (Synapse lets one
 Activity be the generatedBy of several entities), with one UsedURL input
 (executed) and one versioned UsedEntity input (not executed); a third requested
-entity has no Activity and must be skipped with a warning. Asserts:
+entity has no Activity and must be skipped with a warning. The Activity carries
+ISO-8601 createdOn/modifiedOn (as Synapse returns them) and a third, unrecognized
+Used subtype. Asserts:
   - exactly one Activity node, minted as sagegov:activity-<n>, with both outputs
     as prov:generated;
-  - exactly two prov:Usage nodes (no per-output duplication), the URL one named
-    with sagegov:name;
+  - exactly two prov:Usage nodes (no per-output duplication, the unrecognized
+    entry skipped with a warning), the URL one named with sagegov:name;
+  - createdOn/modifiedOn converted to epoch-millisecond integers;
   - every IRI is absolute (none resolved against a file path);
   - exactly the two expected prov:wasDerivedFrom edges, and the script reports 2.
 
@@ -30,7 +33,7 @@ import types
 from pathlib import Path
 
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF, XSD
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -42,6 +45,9 @@ ACTIVITY = {
     "id": "9606",
     "name": "nf-core rnaseq run",
     "createdBy": "3321",
+    # Synapse's Activity returns ISO-8601 date-times, not epoch milliseconds.
+    "createdOn": "2024-03-01T12:00:00.000Z",
+    "modifiedOn": "2024-03-02T08:30:00.000Z",
     "used": [
         {
             "concreteType": "org.sagebionetworks.repo.model.provenance.UsedURL",
@@ -54,6 +60,8 @@ ACTIVITY = {
             "reference": {"targetId": "syn10081783", "targetVersionNumber": 2},
             "wasExecuted": False,
         },
+        # An unrecognized Used subtype: warned and skipped, never a crash.
+        {"concreteType": "org.sagebionetworks.repo.model.provenance.UsedSomethingNew"},
     ],
 }
 OUTPUTS = ["syn30000001", "syn30000002"]
@@ -91,8 +99,8 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "synced.ttl"
         sys.argv = ["sync_provenance_graph.py", *OUTPUTS, "syn99999999", "--out", str(out)]
-        stdout = io.StringIO()
-        with contextlib.redirect_stdout(stdout):
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
             sync_provenance_graph.main()
         g = Graph().parse(out)
 
@@ -108,6 +116,13 @@ def main():
         failures.append(f"expected 2 prov:Usage nodes, got {len(usages)}")
     if (None, GOV.name, Literal("nf-core/rnaseq v3.11.1")) not in g:
         failures.append("URL Usage is missing sagegov:name")
+    if "unrecognized Used.concreteType" not in stderr.getvalue():
+        failures.append(f"expected a warning for the unrecognized Used entry; stderr was: {stderr.getvalue()!r}")
+
+    for predicate, millis in ((GOV.createdOn, 1709294400000), (GOV.modifiedOn, 1709368200000)):
+        values = set(g.objects(GOV["activity-9606"], predicate))
+        if {(v.toPython(), v.datatype) for v in values} != {(millis, XSD.integer)}:
+            failures.append(f"expected {predicate.n3()} {millis} (xsd:integer), got {sorted(values)}")
 
     relative = sorted(
         str(t) for triple in g for t in triple if isinstance(t, URIRef) and str(t).startswith("file:")

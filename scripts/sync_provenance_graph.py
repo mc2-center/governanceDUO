@@ -58,6 +58,7 @@ from synapseclient import Synapse
 from synapseclient.core.exceptions import SynapseHTTPError
 
 from graph_iris import graph_curie
+from sync_governance_graph import to_millis
 
 PROV = Namespace("http://www.w3.org/ns/prov#")
 SAGEGOV = Namespace("https://sagebionetworks.org/governance/")
@@ -115,15 +116,15 @@ def build_activity(module, generated_ids: list[str], activity: dict):
                 )
             )
         else:
-            warn(f"{entity_id}: unrecognized Used.concreteType {concrete_type!r}; skipping that usage entry.")
+            warn(f"activity {activity['id']}: unrecognized Used.concreteType {concrete_type!r}; skipping that usage entry.")
 
     return module.Activity(
         id=f"activity.{activity['id']}",
         name=activity.get("name"),
         description=activity.get("description"),
         etag=activity.get("etag"),
-        createdOn=activity.get("createdOn"),
-        modifiedOn=activity.get("modifiedOn"),
+        createdOn=to_millis(activity.get("createdOn")),
+        modifiedOn=to_millis(activity.get("modifiedOn")),
         createdBy=int(activity["createdBy"]) if activity.get("createdBy") is not None else None,
         modifiedBy=int(activity["modifiedBy"]) if activity.get("modifiedBy") is not None else None,
         generated=[syn_curie(e) for e in generated_ids],
