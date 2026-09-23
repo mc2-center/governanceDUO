@@ -4,7 +4,7 @@ check_sagebrain_contract.py
 Opt-in check that this repo's governance layer works as a layer of sagebrain-model's
 graph (make sagebrain-contract-check SAGEBRAIN_MODEL=<path>). Needs a sagebrain-model
 checkout, so it isn't part of validate-all; sagebrain-model runs the equivalent check
-from its side. Three parts, each reported separately:
+from its side. Four parts, each reported separately:
 
 1. OWL 2 DL on the union of sagebrain-model's ontology (ontology/main, its
    ontology/imports except the vendored external vocabularies prov.ttl/duo.ttl --
@@ -12,7 +12,10 @@ from its side. Three parts, each reported separately:
    ontology/governance modules) and this repo's shapes/governance_duo.owl.ttl +
    shapes/governance_graph.owl.ttl. Merged to a file, then validated: chaining
    `robot merge ... validate-profile` in one call reports spurious violations.
-2. SHACL on one joined worked example -- sagebrain-model's examples/AD-cohort.ttl and
+2. Every prov: term this repo's two TBoxes declare has the type sagebrain-model's
+   vendored ontology/imports/prov.ttl gives it (check_prov_alignment.py) -- the
+   one conflict with prov.ttl that leaving it out of (1)'s union would hide.
+3. SHACL on one joined worked example -- sagebrain-model's examples/AD-cohort.ttl and
    examples/pipeline_provenance.ttl, this repo's exported governance graph and
    provenance examples, and tests/sagebrain_contract/governance_binding.ttl --
    against both repos' shapes (sagebrain-model's ontology/shacl/*.ttl, this repo's
@@ -22,7 +25,7 @@ from its side. Three parts, each reported separately:
    one make governance-graph-validate uses. shapes/governance_duo.owl.ttl
    describes LinkML records, not this graph, and mixing its ~5,000 triples into
    the data graph makes pyshacl take tens of minutes.
-3. scripts/build_derivation_policy.py over that joined example, asserting
+4. scripts/build_derivation_policy.py over that joined example, asserting
    association:apoe-expr-samp01 (sagebrain:derived_from the pipeline's output)
    receives a ControlLabel citing gov:AR-42 -- which requires sagebrain-model to
    declare sagebrain:derived_from rdfs:subPropertyOf prov:wasDerivedFrom.
@@ -42,6 +45,8 @@ from pathlib import Path
 from pyshacl import validate
 from rdflib import Graph
 from rdflib.namespace import SH
+
+from check_prov_alignment import type_mismatches
 
 GOVERNANCE_TBOXES = ["shapes/governance_duo.owl.ttl", "shapes/governance_graph.owl.ttl"]
 GOVERNANCE_SHAPES = ["shapes/governance_graph.shacl.ttl", "shapes/provenance_layer.shacl.ttl"]
@@ -64,7 +69,10 @@ ASK {
 
 
 # Vendored external vocabularies sagebrain-model imports but doesn't DL-check
-# itself (they carry their own profile issues, e.g. puns inside prov.ttl).
+# itself (they carry their own profile issues, e.g. puns inside prov.ttl). Leaving
+# prov.ttl out of the union would also hide the one conflict this repo can cause
+# with it -- declaring a prov: term with a different type than PROV-O -- so that is
+# checked separately, against the same prov.ttl, by check_prov_alignment().
 EXTERNAL_VOCABULARIES = {"prov.ttl", "duo.ttl"}
 
 
@@ -94,6 +102,10 @@ def check_dl(sources: list[Path], robot_jar: str, tmp: Path) -> list[str]:
     lines = report.read_text().splitlines() if report.exists() else [result.stderr]
     violations = [line[:240] for line in lines[1:]]
     return [f"union is not OWL 2 DL ({len(violations)} violations), first: {v}" for v in violations[:5]]
+
+
+def check_prov_alignment(root: Path) -> list[str]:
+    return type_mismatches(GOVERNANCE_TBOXES, Graph().parse(root / "ontology/imports/prov.ttl"))
 
 
 def check_shacl(root: Path, ontology: Graph) -> list[str]:
@@ -154,6 +166,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp = Path(tmp_dir)
         results["OWL 2 DL (union)"] = check_dl([*sources, *map(Path, GOVERNANCE_TBOXES)], args.robot_jar, tmp)
+        results["prov: types match sagebrain's prov.ttl"] = check_prov_alignment(root)
         results["SHACL (joined worked example)"] = check_shacl(root, ontology)
         results["ControlLabel reaches sagebrain Association"] = check_derivation(root, tmp)
 
