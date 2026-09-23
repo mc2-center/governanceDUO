@@ -115,13 +115,14 @@ provenance-validate: owl shacl provenance-example-rdf
 sync-provenance-graph:
 	python3 scripts/sync_provenance_graph.py $(ENTITY_IDS)
 
-# Offline regression check for sync_provenance_graph.py (fake Synapse client, no
-# network or credentials) -- see scripts/check_sync_provenance.py.
 # Offline check of sync_governance_graph.py against a fake Synapse client (no
 # network/credentials): grants, ARs, submissions, approvals, and unknown values.
-sync-governance-check:
+# Reads both TBoxes for its domain/range assertions, hence `owl`.
+sync-governance-check: owl
 	python3 scripts/check_sync_governance.py
 
+# Offline regression check for sync_provenance_graph.py (fake Synapse client, no
+# network or credentials) -- see scripts/check_sync_provenance.py.
 sync-provenance-check:
 	python3 scripts/check_sync_provenance.py
 
@@ -143,8 +144,9 @@ derivation-policy: provenance-example-rdf governance-graph
 	python3 scripts/build_derivation_policy.py --provenance-graph $(PROVENANCE_GRAPH) --governance-graph $(GOVERNANCE_GRAPH) --derivation-rules linkml/examples/derivation_policy --out derivation_policy_export/derivation_policy.ttl
 
 # Regression check: runs build_derivation_policy.py on the committed fixture in
-# linkml/examples/derivation_policy/fixture/ and asserts its labels/reviews.
-derivation-policy-check:
+# linkml/examples/derivation_policy/fixture/ and asserts its labels/reviews, and
+# that its output fits both TBoxes (hence `owl`).
+derivation-policy-check: owl
 	python3 scripts/check_derivation_policy.py
 
 # Contract check against sagebrain-infra's authorizer: runs its governance query
@@ -182,7 +184,7 @@ enum-sync-check:
 
 # Every rdfs:domain/class rdfs:range in both TBoxes must already hold on the
 # exported and example graphs; a reasoner would otherwise re-type nodes with them.
-domain-range-check: governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
+domain-range-check: owl governance-graph example-rdf provenance-example-rdf derivation-policy-example-rdf
 	python3 scripts/check_domain_range.py
 
 validate-all: shacl-validate governance-graph-validate provenance-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check domain-range-check approval-expiry-check linkml-validate-examples enum-sync-check owl-profile owl-profile-abox
