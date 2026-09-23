@@ -6,7 +6,7 @@ search:
 # Slot: computedFrom 
 
 
-_The Activity this label was (re)computed from. range is uriorcurie, not Activity — see this schema's own description. Also the staleness signal Section 7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements is later revoked, any label computed before that point is provably stale._
+_The Activity this label was (re)computed from. range is uriorcurie, not Activity — see this schema's own description. Also the staleness signal Section 7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements is later revoked, any label computed before that point is provably stale. The value is an IRI node, typed owl:ObjectProperty in the OWL._
 
 
 
@@ -88,7 +88,8 @@ name: computedFrom
 description: 'The Activity this label was (re)computed from. range is uriorcurie,
   not Activity — see this schema''s own description. Also the staleness signal Section
   7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements
-  is later revoked, any label computed before that point is provably stale.'
+  is later revoked, any label computed before that point is provably stale. The value
+  is an IRI node, typed owl:ObjectProperty in the OWL.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:computedFrom

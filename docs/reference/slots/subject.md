@@ -6,7 +6,7 @@ search:
 # Slot: subject 
 
 
-_The SynapseEntity this ControlLabel labels. range is uriorcurie, not SynapseEntity — see this schema's own description._
+_The SynapseEntity this ControlLabel labels. range is uriorcurie, not SynapseEntity — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty in the OWL._
 
 
 
@@ -87,7 +87,8 @@ URI: [sagegov:subject](https://sagebionetworks.org/governance/subject)
 ```yaml
 name: subject
 description: The SynapseEntity this ControlLabel labels. range is uriorcurie, not
-  SynapseEntity — see this schema's own description.
+  SynapseEntity — see this schema's own description. The value is an IRI node, typed
+  owl:ObjectProperty in the OWL.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:subject

@@ -17,6 +17,8 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+xsd:anyURI a rdfs:Datatype .
+
 xsd:date a rdfs:Datatype .
 
 xsd:dateTime a rdfs:Datatype .
@@ -39,10 +41,9 @@ skos:note a owl:AnnotationProperty .
 
 skos:scopeNote a owl:AnnotationProperty .
 
-prov:generated a owl:DatatypeProperty ;
+prov:generated a owl:ObjectProperty ;
     rdfs:label "generated" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued: Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId> attaches an existing Activity to another entity -- both confirmed against Synapse's OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox)." ;
+    skos:definition "The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued: Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId> attaches an existing Activity to another entity -- both confirmed against Synapse's OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox). The value is an IRI node, so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does." ;
     skos:inScheme governanceduo:governance_duo .
 
 prov:qualifiedUsage a owl:ObjectProperty ;
@@ -66,10 +67,9 @@ sagegov:hasCondition a owl:ObjectProperty ;
     skos:definition "The DUO-backed Conditions this attaches to -- gov:Condition individuals add_access_requirement() mints from real dataUseModifiers data (see plans/rebac_governance_graph_alignment.md). Shared by AccessRequirementReference (the AR stub these Conditions are minted onto in the first place) and AccessRequirementTemplate (which reuses the same real Condition nodes)." ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:sourceAccessRequirements a owl:DatatypeProperty ;
+sagegov:sourceAccessRequirements a owl:ObjectProperty ;
     rdfs:label "sourceAccessRequirements" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "Every AccessRequirement contributing to this label's dataTier, across the subject's full derivation ancestry — what lets a later composite-risk check tell whether two ControlLabels trace back to the same AR or to genuinely different ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference — see this schema's own description." ;
+    skos:definition "Every AccessRequirement contributing to this label's dataTier, across the subject's full derivation ancestry — what lets a later composite-risk check tell whether two ControlLabels trace back to the same AR or to genuinely different ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty in the OWL." ;
     skos:inScheme governanceduo:governance_duo .
 
 linkml:DateOrDatetime a rdfs:Datatype .
@@ -358,10 +358,9 @@ prov:Usage a owl:Class ;
     skos:exactMatch governanceduo:Usage ;
     skos:inScheme governanceduo:governance_duo .
 
-prov:entity a owl:DatatypeProperty ;
+prov:entity a owl:ObjectProperty ;
     rdfs:label "entity" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL)." ;
+    skos:definition "The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL). The value is an IRI node, so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does." ;
     skos:inScheme governanceduo:governance_duo .
 
 sagegov:AccessApproval a owl:Class ;
@@ -585,10 +584,9 @@ sagegov:Synapse a owl:Class ;
     rdfs:subClassOf governanceduo:SourceSystemEnum ;
     skos:definition "Derived from Synapse's own ACL or AccessRequirement records." .
 
-sagegov:activity a owl:DatatypeProperty ;
+sagegov:activity a owl:ObjectProperty ;
     rdfs:label "activity" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "The derivation Activity being reviewed. range is uriorcurie, not Activity — see this schema's own description." ;
+    skos:definition "The derivation Activity being reviewed. range is uriorcurie, not Activity — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty in the OWL." ;
     skos:inScheme governanceduo:governance_duo .
 
 sagegov:alias a owl:DatatypeProperty ;
@@ -606,10 +604,9 @@ sagegov:company a owl:DatatypeProperty ;
     skos:definition "Institution/company name, verbatim from Synapse's real UserProfile.company field (\"This person's current affiliation\"). Consumed by build_governance_graph.py's site_node_for() to derive a gov:affiliatedWith edge to a gov:Site node -- not independently re-emitted as its own literal predicate on the Principal subject. Only meaningful for `principalType: User`." ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:computedFrom a owl:DatatypeProperty ;
+sagegov:computedFrom a owl:ObjectProperty ;
     rdfs:label "computedFrom" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "The Activity this label was (re)computed from. range is uriorcurie, not Activity — see this schema's own description. Also the staleness signal Section 7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements is later revoked, any label computed before that point is provably stale." ;
+    skos:definition "The Activity this label was (re)computed from. range is uriorcurie, not Activity — see this schema's own description. Also the staleness signal Section 7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements is later revoked, any label computed before that point is provably stale. The value is an IRI node, typed owl:ObjectProperty in the OWL." ;
     skos:inScheme governanceduo:governance_duo .
 
 sagegov:computedOn a owl:DatatypeProperty ;
@@ -835,10 +832,9 @@ sagegov:status a owl:ObjectProperty ;
     skos:definition "The state of this approval (AccessApproval.state in Synapse's live REST API -- renamed to \"status\" here specifically to avoid colliding with DataAccessSubmission/Status's own \"state\" slot, which ranges over the unrelated SubmissionStateEnum). Maps onto the target ontology's gov:status." ;
     skos:inScheme governanceduo:governance_duo .
 
-sagegov:subject a owl:DatatypeProperty ;
+sagegov:subject a owl:ObjectProperty ;
     rdfs:label "subject" ;
-    rdfs:range xsd:anyURI ;
-    skos:definition "The SynapseEntity this ControlLabel labels. range is uriorcurie, not SynapseEntity — see this schema's own description." ;
+    skos:definition "The SynapseEntity this ControlLabel labels. range is uriorcurie, not SynapseEntity — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty in the OWL." ;
     skos:inScheme governanceduo:governance_duo .
 
 sagegov:submittedOn a owl:DatatypeProperty ;
@@ -4049,8 +4045,6 @@ governanceduo:SubmissionStateEnum a owl:Class ;
         <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#CANCELLED>,
         <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#REJECTED>,
         <https://w3id.org/sage-bionetworks/governance-duo/SubmissionStateEnum#SUBMITTED> .
-
-xsd:anyURI a rdfs:Datatype .
 
 sagegov:Principal a owl:Class ;
     rdfs:label "Principal" ;

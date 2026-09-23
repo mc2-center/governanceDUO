@@ -190,7 +190,8 @@ attributes:
   subject:
     name: subject
     description: The SynapseEntity this ControlLabel labels. range is uriorcurie,
-      not SynapseEntity — see this schema's own description.
+      not SynapseEntity — see this schema's own description. The value is an IRI node,
+      typed owl:ObjectProperty in the OWL.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:subject
@@ -233,7 +234,8 @@ attributes:
       the subject's full derivation ancestry — what lets a later composite-risk check
       tell whether two ControlLabels trace back to the same AR or to genuinely different
       ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference
-      — see this schema's own description.
+      — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty
+      in the OWL.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:sourceAccessRequirements
@@ -247,7 +249,8 @@ attributes:
     description: 'The Activity this label was (re)computed from. range is uriorcurie,
       not Activity — see this schema''s own description. Also the staleness signal
       Section 7 of plans/prov_o_integration.md relies on: if an AR named in sourceAccessRequirements
-      is later revoked, any label computed before that point is provably stale.'
+      is later revoked, any label computed before that point is provably stale. The
+      value is an IRI node, typed owl:ObjectProperty in the OWL.'
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:computedFrom

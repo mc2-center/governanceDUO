@@ -6,7 +6,7 @@ search:
 # Slot: generated 
 
 
-_The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued: Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId> attaches an existing Activity to another entity -- both confirmed against Synapse's OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox)._
+_The SynapseEntities this Activity produced, as syn: CURIEs. Multivalued: Synapse lets one Activity be the generatedBy of several entities (GET /activity/{id}/generated returns a paginated list; PUT /entity/{id}/generatedBy?generatedBy=<activityId> attaches an existing Activity to another entity -- both confirmed against Synapse's OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this schema's own description for why (the referenced individual is never asserted in this schema's own example-rdf ABox). The value is an IRI node, so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does._
 
 
 
@@ -92,7 +92,8 @@ description: 'The SynapseEntities this Activity produced, as syn: CURIEs. Multiv
   attaches an existing Activity to another entity -- both confirmed against Synapse''s
   OpenAPI spec). range is the untyped uriorcurie, not SynapseEntity itself — see this
   schema''s own description for why (the referenced individual is never asserted in
-  this schema''s own example-rdf ABox).'
+  this schema''s own example-rdf ABox). The value is an IRI node, so the OWL types
+  this slot owl:ObjectProperty, as W3C PROV-O does.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: prov:generated

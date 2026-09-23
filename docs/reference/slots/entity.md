@@ -6,7 +6,7 @@ search:
 # Slot: entity 
 
 
-_The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL)._
+_The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity — same cross-ABox reasoning as Activity.generated above. Absent when this Usage instead carries url/name (a UsedURL). The value is an IRI node, so the OWL types this slot owl:ObjectProperty, as W3C PROV-O does._
 
 
 
@@ -88,7 +88,8 @@ name: entity
 description: 'The SynapseEntity referenced by this Usage, as a syn: CURIE, when Used.concreteType
   is UsedEntity (Used.reference.targetId). range is uriorcurie, not SynapseEntity
   — same cross-ABox reasoning as Activity.generated above. Absent when this Usage
-  instead carries url/name (a UsedURL).'
+  instead carries url/name (a UsedURL). The value is an IRI node, so the OWL types
+  this slot owl:ObjectProperty, as W3C PROV-O does.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: prov:entity

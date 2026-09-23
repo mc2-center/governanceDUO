@@ -190,7 +190,8 @@ attributes:
   activity:
     name: activity
     description: The derivation Activity being reviewed. range is uriorcurie, not
-      Activity — see this schema's own description.
+      Activity — see this schema's own description. The value is an IRI node, typed
+      owl:ObjectProperty in the OWL.
     from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
     rank: 1000
     slot_uri: sagegov:activity

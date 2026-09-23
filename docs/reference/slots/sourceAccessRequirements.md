@@ -6,7 +6,7 @@ search:
 # Slot: sourceAccessRequirements 
 
 
-_Every AccessRequirement contributing to this label's dataTier, across the subject's full derivation ancestry — what lets a later composite-risk check tell whether two ControlLabels trace back to the same AR or to genuinely different ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference — see this schema's own description._
+_Every AccessRequirement contributing to this label's dataTier, across the subject's full derivation ancestry — what lets a later composite-risk check tell whether two ControlLabels trace back to the same AR or to genuinely different ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty in the OWL._
 
 
 
@@ -90,7 +90,8 @@ description: Every AccessRequirement contributing to this label's dataTier, acro
   the subject's full derivation ancestry — what lets a later composite-risk check
   tell whether two ControlLabels trace back to the same AR or to genuinely different
   ones (the note's paragraph-12 case). range is uriorcurie, not AccessRequirementReference
-  — see this schema's own description.
+  — see this schema's own description. The value is an IRI node, typed owl:ObjectProperty
+  in the OWL.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: sagegov:sourceAccessRequirements
