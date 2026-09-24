@@ -17,10 +17,26 @@ The [schema reference](reference/index.md) lists every class and slot.
 
 Synapse already records who may access what: access control lists (ACLs) grant
 permissions to users and teams, and Access Requirements (ARs) add conditions a user
-must satisfy first. Sage Brain turns Synapse metadata and derived scientific content
-into a knowledge graph, and a knowledge graph is built to be traversed — so access
-decisions can no longer stop at "may this user download this file?". They have to
-answer three questions:
+must satisfy first. **The governance graph's job is to capture that information —
+plus what Synapse can't express structurally (DUO conditions, derivation risk) — in
+a machine-readable, sufficiently detailed form to support Sage Brain: its knowledge
+graph, and the ReBAC authorization layer that decides what a requester may see or
+traverse.** That's the one goal; every layer, script and page in this repository
+serves it.
+
+Getting there isn't one job — it's several intertwining workstreams, each feeding
+the same canonical graph rather than running independently: pulling ACLs, Access
+Requirements, submissions and approvals from Synapse's own API; capturing DUO
+conditions (today curator-authored; moving toward direct AR-level annotation, which
+folds this workstream into the Synapse pull above instead of running it separately —
+section 5); following Synapse's own provenance feature to compute what derived
+content inherits; and projecting the result into the exact shape sagebrain-infra's
+ReBAC authorizer already expects, so none of this requires a change on its side.
+Section 2 shows how these workstreams and their owners fit together into one
+pipeline.
+
+A knowledge graph is built to be traversed, so access decisions can't stop at "may
+this user download this file?" — they have to answer three questions:
 
 1. **Direct access.** Which principals hold which permissions on a Synapse entity,
    and which Access Requirements (with which data use/access conditions) govern it?
@@ -90,6 +106,11 @@ flowchart LR
     query --> authz
     authz --> projStore
 ```
+
+Every workstream named in section 1 shows up here as one arrow into one of two
+places: the canonical graph store, or the projection built on top of it. Nothing
+feeding the graph runs as an independent project with its own destination — this is
+one pipeline, owned across several parties:
 
 | Party | Role |
 |---|---|
@@ -187,6 +208,14 @@ checked before anything is trusted:
 - A **projection** step derives, from the canonical graph, exactly the shape of data
   sagebrain-infra's authorizer already expects — so the authorizer doesn't need to
   change even though the canonical model underneath it does.
+
+That's four separate workstreams feeding one graph today: a curator-maintained
+record repository, a live Synapse pull, a derivation computation, and a
+projection. Once ACT's AR-level annotation lands, it drops to three — DUO
+conditions arrive in the same Synapse pull that already retrieves the AR, instead
+of needing their own separately-maintained source and submission process. That's
+the concrete shape of the simplification: one fewer moving part to keep in sync,
+not just less manual curation.
 
 Everything generated this way is checked before it's trusted: every export
 validates against a machine-generated set of constraints (so the constraints can't
