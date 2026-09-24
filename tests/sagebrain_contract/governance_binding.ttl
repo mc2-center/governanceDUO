@@ -22,5 +22,14 @@ syn:syn27000001 a gov:SynapseEntity ;
     gov:benefactor syn:syn27000001 ;
     gov:requiresAR <https://w3id.org/synapse/governance/ar/42> .
 
+# syn:syn26999999 is the sagebrain-model pipeline's terminal output entity (the
+# derivation chain's last syn27000001 -> ... -> syn26999999 hop), which
+# sagebrain-model's own examples/AD-cohort.ttl types as gov:SynapseEntity via
+# association:apoe-expr-samp01's sagebrain:derived_from -- so it too needs a
+# benefactor to satisfy the closed shape:SynapseEntityShape when the two graphs
+# are joined.
+syn:syn26999999 a gov:SynapseEntity ;
+    gov:benefactor syn:syn26999999 .
+
 <https://w3id.org/synapse/governance/ar/42> a gov:AccessRequirement ;
     gov:dataTier gov:ControlledTier .
