@@ -9,7 +9,7 @@ search:
 
 
 
-_Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model documents for its own external-term reuse). The Sage-local DUOPlus1-7 extensions carry `meaning:` gov: IRIs (sagegov:DUOPlus<n>), declared as individuals in shapes/governance_graph.owl.ttl, so every data-use code in the graph is an IRI -- joinable against sagebrain-model's DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has no meaning: it is a curation state, not a data-use condition._
+_Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7 extensions (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model documents for its own external-term reuse). The Sage-local DUOPlus1-7 extensions carry `meaning:` sagegov: IRIs (the pre-refactor namespace, https://sagebionetworks.org/governance/ — distinct from the graph layer's own gov:DUOPlus1-7, linkml/graph/vocabularies.yaml's DataUseTerm, which this enum is NOT unified with; see plans/model_refactor_report.md's Phase 2 "Stopped on"), declared as individuals directly in the generated shapes/governance_duo.owl.ttl (`make owl`), so every data-use code in the graph is an IRI -- joinable against sagebrain-model's DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has no meaning: it is a curation state, not a data-use condition._
 
 
 
@@ -97,10 +97,13 @@ description: 'Data Use Ontology (DUO) modifier codes, plus Sage-local DUOPlus1-7
   (see README) and "Pending Annotation". Real DUO terms carry `meaning:` pointing
   at the actual obo:DUO_ IRI (reuse-by-IRI, not re-minting — the same convention sagebrain-model
   documents for its own external-term reuse). The Sage-local DUOPlus1-7 extensions
-  carry `meaning:` gov: IRIs (sagegov:DUOPlus<n>), declared as individuals in shapes/governance_graph.owl.ttl,
-  so every data-use code in the graph is an IRI -- joinable against sagebrain-model''s
-  DUO import -- rather than a mix of IRIs and strings. "Pending Annotation" has no
-  meaning: it is a curation state, not a data-use condition.'
+  carry `meaning:` sagegov: IRIs (the pre-refactor namespace, https://sagebionetworks.org/governance/
+  — distinct from the graph layer''s own gov:DUOPlus1-7, linkml/graph/vocabularies.yaml''s
+  DataUseTerm, which this enum is NOT unified with; see plans/model_refactor_report.md''s
+  Phase 2 "Stopped on"), declared as individuals directly in the generated shapes/governance_duo.owl.ttl
+  (`make owl`), so every data-use code in the graph is an IRI -- joinable against
+  sagebrain-model''s DUO import -- rather than a mix of IRIs and strings. "Pending
+  Annotation" has no meaning: it is a curation state, not a data-use condition.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:

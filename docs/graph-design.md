@@ -148,6 +148,17 @@ grant model:
   `ACCESS_TYPE` values, each also `rdfs:subClassOf` the WAC mode it amounts to
   (`acl:Read`, `acl:Write`, `acl:Append`, `acl:Control`, or bare `acl:Access` when it
   has none).
+- A **`Team`** (`vcard:Group`) carries its membership, `vcard:hasMember`, so an
+  evaluator can resolve a team grant down to the individual it covers — a WAC
+  `acl:agentGroup` grant alone doesn't say who is in the group. This is a
+  deliberate data-exposure decision, not an incidental one: team rosters, which
+  Synapse otherwise scopes per-team, become queryable graph-wide to anyone who
+  can read the governance graph. The alternative — resolving membership only at
+  query time, outside the graph — was rejected because the authorizer's
+  contract (section 7) needs a static, replayable grant set to expand teams
+  into per-member ones (`authorizer_v1_teams.rq`); storing the roster once here
+  is what makes that projection possible without a live Synapse call per
+  authorization.
 - The canonical graph does **not** materialize inherited bindings onto every
   descendant the way the pre-refactor pipeline did. Instead, each `SynapseEntity`
   records `gov:benefactor` (which entity's ACL governs it — itself, or its nearest

@@ -21,7 +21,12 @@ For each requested entity:
      record (--access-requirement-dir) adds its data-use conditions and tier;
   4. for managed ARs only, their DataAccessSubmissions (POST
      /accessRequirement/{id}/submissions); for every AR, every AccessApproval
-     (POST /accessApproval/search), whatever its state or expiry.
+     (POST /accessApproval/search), whatever its state or expiry. A
+     submission's or approval's own requirementVersion is compared against the
+     AR's current versionNumber (both recorded, never dropped); a mismatch is
+     warned, not corrected -- it means the AR changed since that submission or
+     approval was made, which is exactly the situation a person, not this
+     script, should judge.
 
 Auth: the credential must have ACT membership (or be a validated reviewer for the
 ARs in scope); the submission and approval searches require it. Uses
@@ -262,11 +267,12 @@ class Sync:
                 self.graph.curated_access_requirement(self.curated[rid], self.rules)
             else:
                 warn(f"No curated record for AR {rid} under {self.curated_dir}: it has no conditions or tier.")
+            current_version = ar.get("versionNumber")
             if requirement_type == MANAGED:
-                self.add_submissions(rid, iri)
-            self.add_approvals(rid, iri)
+                self.add_submissions(rid, iri, current_version)
+            self.add_approvals(rid, iri, current_version)
 
-    def add_submissions(self, rid: str, requirement: str) -> None:
+    def add_submissions(self, rid: str, requirement: str, current_version) -> None:
         try:
             submissions = token_post(self.syn, f"/accessRequirement/{rid}/submissions",
                                      {"accessRequirementId": rid})
@@ -294,10 +300,14 @@ class Sync:
                 # the submission says about it.
                 request = self.graph.add("DataAccessRequest", id=graph_iris.request(s["requestId"]),
                                          accessRequirement=requirement, researchProject=project)
+            submission_version = s.get("accessRequirementVersion")
+            if submission_version is not None and current_version is not None and submission_version != current_version:
+                warn(f"submission {s['id']}: made against AR {rid} version {submission_version}, "
+                     f"which is now at version {current_version}.")
             self.graph.add(
                 "DataAccessSubmission", id=graph_iris.submission(s["id"]),
                 accessRequirement=requirement,
-                requirementVersion=s.get("accessRequirementVersion"),
+                requirementVersion=submission_version,
                 request=request, researchProject=project,
                 submittedBy=self.graph.user(s.get("submittedBy")),
                 submittedOn=to_datetime(s.get("submittedOn")),
@@ -306,7 +316,7 @@ class Sync:
                 modifiedOn=to_datetime(s.get("modifiedOn")), etag=s.get("etag"),
             )
 
-    def add_approvals(self, rid: str, requirement: str) -> None:
+    def add_approvals(self, rid: str, requirement: str, current_version) -> None:
         try:
             approvals = token_post(self.syn, "/accessApproval/search", {"accessRequirementId": rid})
         except SynapseHTTPError as exc:
@@ -315,9 +325,13 @@ class Sync:
         for a in approvals:
             if not self.graph.known("ApprovalStatus", a.get("state"), f"access approval {a['id']}"):
                 continue
+            approval_version = a.get("requirementVersion")
+            if approval_version is not None and current_version is not None and approval_version != current_version:
+                warn(f"approval {a['id']}: holds AR {rid} at version {approval_version}, "
+                     f"which is now at version {current_version}.")
             self.graph.add(
                 "Approval", id=graph_iris.approval(a["id"]),
-                satisfies=requirement, requirementVersion=a.get("requirementVersion"),
+                satisfies=requirement, requirementVersion=approval_version,
                 heldBy=self.graph.user(a["accessorId"]),
                 submittedBy=self.graph.user(a.get("submitterId")),
                 status=a["state"],

@@ -10,51 +10,74 @@
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-DUO:0000004 a owl:Class .
+DUO:0000004 a owl:Class ;
+    skos:scopeNote "No Restriction - This data use permission indicates there is no restriction on use." .
 
-DUO:0000006 a owl:Class .
+DUO:0000006 a owl:Class ;
+    skos:scopeNote "Health or Medical or Biomedical Research - This data use permission indicates that use is allowed for health/medical/biomedical purposes; does not include the study of population origins or ancestry." .
 
-DUO:0000007 a owl:Class .
+DUO:0000007 a owl:Class ;
+    skos:scopeNote "Disease Specific Research - This data use permission indicates that use is allowed provided it is related to the specified disease. If providing this term, please provide the disease MONDO ID(s) in column diseaseSpecificResearch." .
 
-DUO:0000011 a owl:Class .
+DUO:0000011 a owl:Class ;
+    skos:scopeNote "Population Origins or Ancestry Research Only - This data use permission indicates that use of the data is limited to the study of population origins or ancestry." .
 
-DUO:0000012 a owl:Class .
+DUO:0000012 a owl:Class ;
+    skos:scopeNote "Research Specific Restrictions - This data use modifier indicates that use is limited to studies of a certain research type. If providing this term, please note the research type(s) in column researchSpecificRestrictions." .
 
-DUO:0000015 a owl:Class .
+DUO:0000015 a owl:Class ;
+    skos:scopeNote "No General Methods Research - This data use modifier indicates that use does not allow methods development research (e.g., development of software or algorithms)." .
 
-DUO:0000016 a owl:Class .
+DUO:0000016 a owl:Class ;
+    skos:scopeNote "Genetic Studies Only - This data use modifier indicates that use is limited to genetic studies only (i.e., studies that include genotype research alone or both genotype and phenotype research, but not phenotype research exclusively)" .
 
-DUO:0000018 a owl:Class .
+DUO:0000018 a owl:Class ;
+    skos:scopeNote "Not-for-Profit, Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit organizations and not-for-profit use, non-commercial use." .
 
-DUO:0000019 a owl:Class .
+DUO:0000019 a owl:Class ;
+    skos:scopeNote "Publication Required - This data use modifier indicates that requestor agrees to make results of studies using the data available to the larger scientific community." .
 
-DUO:0000020 a owl:Class .
+DUO:0000020 a owl:Class ;
+    skos:scopeNote "Collaboration Required - This data use modifier indicates that the requestor must agree to collaboration with the primary study investigator(s). If providing this term, please note the contact email in column collaborationRequired." .
 
-DUO:0000021 a owl:Class .
+DUO:0000021 a owl:Class ;
+    skos:scopeNote "Ethics Approval Required - This data use modifier indicates that the requestor must provide documentation of local IRB/ERB approval." .
 
-DUO:0000022 a owl:Class .
+DUO:0000022 a owl:Class ;
+    skos:scopeNote "Geographical Restriction - This data use modifier indicates that use is limited to within a specific geographic region. If providing this term, please provide the applicable country code(s) in column geographicalRestriction." .
 
-DUO:0000024 a owl:Class .
+DUO:0000024 a owl:Class ;
+    skos:scopeNote "Publication Moratorium - This data use modifier indicates that requestor agrees not to publish results of studies until a specific date. If providing this term, please provide the date in column publicationMoratorium." .
 
-DUO:0000025 a owl:Class .
+DUO:0000025 a owl:Class ;
+    skos:scopeNote "Time Limit on Use - This data use modifier indicates that use is approved for a specific number of months. If providing this term, please provide the number of months in column timeLimitOnUse." .
 
-DUO:0000026 a owl:Class .
+DUO:0000026 a owl:Class ;
+    skos:scopeNote "User Specific Restriction - This data use modifier indicates that use is limited to use by approved users. If providing this term, please describe the restrictions in column userSpecificRestriction." .
 
-DUO:0000027 a owl:Class .
+DUO:0000027 a owl:Class ;
+    skos:scopeNote "Project Specific Restriction - This data use modifier indicates that use is limited to use within an approved project." .
 
-DUO:0000028 a owl:Class .
+DUO:0000028 a owl:Class ;
+    skos:scopeNote "Institution Specific Restriction - This data use modifier indicates that use is limited to use within an approved institution. If providing this term, please provide the institution ROR ID(s) in column institutionSpecificRestriction." .
 
-DUO:0000029 a owl:Class .
+DUO:0000029 a owl:Class ;
+    skos:scopeNote "Return to Database or Resource - This data use modifier indicates that the requestor must return derived/enriched data to the database/resource." .
 
-DUO:0000042 a owl:Class .
+DUO:0000042 a owl:Class ;
+    skos:scopeNote "General Research Use - This data use permission indicates that use is allowed for general research use for any research purpose." .
 
-DUO:0000043 a owl:Class .
+DUO:0000043 a owl:Class ;
+    skos:scopeNote "Clinical Care Use - This data use modifier indicates that use is allowed for clinical use and care." .
 
-DUO:0000044 a owl:Class .
+DUO:0000044 a owl:Class ;
+    skos:scopeNote "Population Origins or Ancestry Research Prohibited - This data use modifier indicates use for purposes of population, origin, or ancestry research is prohibited." .
 
-DUO:0000045 a owl:Class .
+DUO:0000045 a owl:Class ;
+    skos:scopeNote "Not-for-Profit Organisation Use Only - This data use modifier indicates that use of the data is limited to not-for-profit organizations." .
 
-DUO:0000046 a owl:Class .
+DUO:0000046 a owl:Class ;
+    skos:scopeNote "Non-Commercial Use Only - This data use modifier indicates that use of the data is limited to not-for-profit use." .
 
 skos:closeMatch a owl:AnnotationProperty .
 
@@ -68,13 +91,19 @@ skos:notation a owl:AnnotationProperty .
 
 skos:prefLabel a owl:AnnotationProperty .
 
-vcard:Group a owl:Class .
+skos:scopeNote a owl:AnnotationProperty .
 
-vcard:hasMember a owl:ObjectProperty .
+vcard:Group a owl:Class ;
+    skos:scopeNote "A Synapse team, identified by its team URL. Membership is recorded, so an evaluator can resolve a team grant to its members." .
 
-acl:AuthenticatedAgent a owl:Class .
+vcard:hasMember a owl:ObjectProperty ;
+    skos:scopeNote "A member of the team." .
 
-acl:Authorization a owl:Class .
+acl:AuthenticatedAgent a owl:Class ;
+    skos:scopeNote "Any signed-in Synapse user (Synapse's AUTHENTICATED_USERS group, 273948)." .
+
+acl:Authorization a owl:Class ;
+    skos:scopeNote "One entry of a Synapse ACL: the permissions one principal holds. A Synapse ACL lives on its benefactor entity and covers every descendant that has no ACL of its own, which is WAC's acl:default. So acl:accessTo and acl:default both name the benefactor. Exactly one of acl:agent, acl:agentGroup or acl:agentClass names the principal." .
 
 acl:accessTo a owl:ObjectProperty .
 
@@ -104,417 +133,494 @@ Conventions. Standard vocabularies are used directly where they fit: W3C Web Acc
 gov:DUOPlus1 a owl:Class ;
     rdfs:label "DUOPlus1" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Source geography is relevant to governance decisions. If providing this term, please provide the applicable country code(s) in column sourceGeography." .
 
 gov:DUOPlus2 a owl:Class ;
     rdfs:label "DUOPlus2" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Study population is relevant to governance decisions. If providing this term, please provide the applicable population type(s) in column populationType." .
 
 gov:DUOPlus3 a owl:Class ;
     rdfs:label "DUOPlus3" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Data deidentification is relevant to governance decisions. If providing this term, please provide the applicable deidentification type(s) in column deidentificationType." .
 
 gov:DUOPlus4 a owl:Class ;
     rdfs:label "DUOPlus4" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A data permission designation is associated with the Study. If providing this term, please provide the applicable permission type(s) in column dataPermission." .
 
 gov:DUOPlus5 a owl:Class ;
     rdfs:label "DUOPlus5" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A data tier designation is associated with the Study. If providing this term, please provide the applicable data tier designation(s) in column dataTier." .
 
 gov:DUOPlus6 a owl:Class ;
     rdfs:label "DUOPlus6" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A license is associated with the Study. If providing this term, please provide the applicable license in column license." .
 
 gov:DUOPlus7 a owl:Class ;
     rdfs:label "DUOPlus7" ;
     rdfs:subClassOf DUO:0000017 ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Attribution conditions are associated with this Study. If providing this term, please provide the attribution statement in column attribution." .
 
 gov:accessRequirement a owl:ObjectProperty ;
     rdfs:label "accessRequirement" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:DataAccessRequest gov:DataAccessSubmission gov:ResearchProject ) ] ;
-    rdfs:range gov:AccessRequirement .
+    rdfs:range gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" .
 
 gov:accessType a owl:ObjectProperty ;
     rdfs:label "accessType" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:IRBRequirement ) ] ;
     rdfs:range gov:Permission ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The permission the Access Requirement gates, e.g. DOWNLOAD." .
 
 gov:activity a owl:ObjectProperty ;
     rdfs:label "activity" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range prov:Activity .
+    rdfs:range prov:Activity ;
+    owl:versionInfo "0.2.0" .
 
 gov:affiliatedWith a owl:ObjectProperty ;
     rdfs:label "affiliatedWith" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:DataAccessRequest gov:ResearchProject gov:User ) ] ;
     rdfs:range gov:Site ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A site the user, request or project is affiliated with." .
 
 gov:arType a owl:DatatypeProperty ;
     rdfs:label "arType" ;
     rdfs:domain gov:IRBRequirement ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The kind of IRB requirement, e.g. IRB." .
 
 gov:benefactor a owl:ObjectProperty ;
     rdfs:label "benefactor" ;
     rdfs:domain gov:SynapseEntity ;
     rdfs:range gov:SynapseEntity ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The entity whose ACL governs this one: itself if it has its own ACL, otherwise its nearest ancestor that does." .
 
 gov:company a owl:DatatypeProperty ;
     rdfs:label "company" ;
     rdfs:domain gov:User ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The company field of the user's Synapse profile, as written." .
 
 gov:computedFrom a owl:ObjectProperty ;
     rdfs:label "computedFrom" ;
     rdfs:domain gov:ControlLabel ;
-    rdfs:range prov:Activity .
+    rdfs:range prov:Activity ;
+    owl:versionInfo "0.2.0" .
 
 gov:computedOn a owl:DatatypeProperty ;
     rdfs:label "computedOn" ;
     rdfs:domain gov:ControlLabel ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:conditionDetail a owl:DatatypeProperty ;
     rdfs:label "conditionDetail" ;
     rdfs:domain gov:Condition ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A parameter of the condition other than a disease, as the curated record gives it (the GovernanceMixin companion field its DUO rule names)." .
 
 gov:createdBy a owl:ObjectProperty ;
     rdfs:label "createdBy" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity gov:AccessRequirement gov:AccessRequirementTemplate gov:DataAccessRequest gov:IRBRequirement gov:ResearchProject gov:SynapseEntity ) ] ;
-    rdfs:range gov:User .
+    rdfs:range gov:User ;
+    owl:versionInfo "0.2.0" .
 
 gov:createdOn a owl:DatatypeProperty ;
     rdfs:label "createdOn" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity gov:AccessRequirement gov:AccessRequirementTemplate gov:Approval gov:DataAccessRequest gov:IRBRequirement gov:ResearchProject gov:SynapseEntity ) ] ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:dataTier a owl:ObjectProperty ;
     rdfs:label "dataTier" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:ControlLabel gov:IRBRequirement ) ] ;
-    rdfs:range gov:DataTier .
+    rdfs:range gov:DataTier ;
+    owl:versionInfo "0.2.0" .
 
 gov:dataUseTerm a owl:ObjectProperty ;
     rdfs:label "dataUseTerm" ;
-    rdfs:domain gov:Condition .
+    rdfs:domain gov:Condition ;
+    owl:versionInfo "0.2.0" .
 
 gov:description a owl:DatatypeProperty ;
     rdfs:label "description" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity gov:Condition ) ] ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A free-text description." .
 
 gov:diseaseContext a owl:ObjectProperty ;
     rdfs:label "diseaseContext" ;
     rdfs:domain gov:Condition ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A MONDO disease the condition names." .
 
 gov:domain a owl:DatatypeProperty ;
     rdfs:label "domain" ;
     rdfs:domain gov:AccessRequirementTemplate ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The data domain a template covers, e.g. genomics." .
 
 gov:entityType a owl:DatatypeProperty ;
     rdfs:label "entityType" ;
     rdfs:domain gov:SynapseEntity ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The Synapse entity's concreteType, e.g. org.sagebionetworks.repo.model.FileEntity." .
 
 gov:entityVersionNumber a owl:DatatypeProperty ;
     rdfs:label "entityVersionNumber" ;
     rdfs:domain prov:Usage ;
-    rdfs:range xsd:integer .
+    rdfs:range xsd:integer ;
+    owl:versionInfo "0.2.0" .
 
 gov:etag a owl:DatatypeProperty ;
     rdfs:label "etag" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:Approval gov:DataAccessRequest gov:DataAccessSubmission gov:IRBRequirement gov:ResearchProject gov:SynapseEntity ) ] ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Synapse's concurrency token for the record." .
 
 gov:expiresAt a owl:DatatypeProperty ;
     rdfs:label "expiresAt" ;
     rdfs:domain gov:Approval ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:extendsTemplate a owl:ObjectProperty ;
     rdfs:label "extendsTemplate" ;
     rdfs:domain gov:IRBRequirement ;
-    rdfs:range gov:AccessRequirementTemplate .
+    rdfs:range gov:AccessRequirementTemplate ;
+    owl:versionInfo "0.2.0" .
 
 gov:forStudy a owl:ObjectProperty ;
     rdfs:label "forStudy" ;
     rdfs:domain gov:IRBRequirement ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The study (a record-layer Study IRI) the requirement is for." .
 
 gov:hasCondition a owl:ObjectProperty ;
     rdfs:label "hasCondition" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:IRBRequirement ) ] ;
-    rdfs:range gov:Condition .
+    rdfs:range gov:Condition ;
+    owl:versionInfo "0.2.0" .
 
 gov:heldBy a owl:ObjectProperty ;
     rdfs:label "heldBy" ;
     rdfs:domain gov:Approval ;
     rdfs:range gov:User ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The user who holds the approval (Synapse's accessorId)." .
 
 gov:inputLabels a owl:ObjectProperty ;
     rdfs:label "inputLabels" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range gov:ControlLabel .
+    rdfs:range gov:ControlLabel ;
+    owl:versionInfo "0.2.0" .
 
 gov:institution a owl:DatatypeProperty ;
     rdfs:label "institution" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:DataAccessRequest gov:ResearchProject gov:Site ) ] ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An institution's name, as written." .
 
 gov:intendedDataUseStatement a owl:DatatypeProperty ;
     rdfs:label "intendedDataUseStatement" ;
     rdfs:domain gov:ResearchProject ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:language a owl:DatatypeProperty ;
     rdfs:label "language" ;
     rdfs:domain gov:IRBRequirement ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The requirement's consent language." .
 
 gov:modifiedBy a owl:ObjectProperty ;
     rdfs:label "modifiedBy" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity gov:DataAccessRequest gov:DataAccessSubmission ) ] ;
-    rdfs:range gov:User .
+    rdfs:range gov:User ;
+    owl:versionInfo "0.2.0" .
 
 gov:modifiedOn a owl:DatatypeProperty ;
     rdfs:label "modifiedOn" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity gov:AccessRequirement gov:AccessRequirementTemplate gov:Approval gov:DataAccessRequest gov:DataAccessSubmission gov:IRBRequirement gov:SynapseEntity ) ] ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:name a owl:DatatypeProperty ;
     rdfs:label "name" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( prov:Activity prov:Usage gov:AccessRequirement gov:AccessRequirementTemplate gov:IRBRequirement gov:Program gov:SynapseEntity ) ] ;
     rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A human-readable name." .
 
 gov:parent a owl:ObjectProperty ;
     rdfs:label "parent" ;
     rdfs:domain gov:SynapseEntity ;
     rdfs:range gov:SynapseEntity ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The entity's parent in Synapse's container hierarchy." .
 
 gov:participatesIn a owl:ObjectProperty ;
     rdfs:label "participatesIn" ;
     rdfs:domain gov:Site ;
-    rdfs:range gov:Program .
+    rdfs:range gov:Program ;
+    owl:versionInfo "0.2.0" .
 
 gov:projectLead a owl:DatatypeProperty ;
     rdfs:label "projectLead" ;
     rdfs:domain gov:ResearchProject ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:publication a owl:DatatypeProperty ;
     rdfs:label "publication" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:rank a owl:DatatypeProperty ;
     rdfs:label "rank" ;
     rdfs:range xsd:integer ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A concept's position in its scheme's order." .
 
 gov:rejectedReason a owl:DatatypeProperty ;
     rdfs:label "rejectedReason" ;
     rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:request a owl:ObjectProperty ;
     rdfs:label "request" ;
     rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range gov:DataAccessRequest .
+    rdfs:range gov:DataAccessRequest ;
+    owl:versionInfo "0.2.0" .
 
 gov:requestConcreteType a owl:DatatypeProperty ;
     rdfs:label "requestConcreteType" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:requestPrincipalInvestigatorEmail a owl:DatatypeProperty ;
     rdfs:label "requestPrincipalInvestigatorEmail" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:requestPrincipalInvestigatorName a owl:DatatypeProperty ;
     rdfs:label "requestPrincipalInvestigatorName" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:requestSigningOfficialEmail a owl:DatatypeProperty ;
     rdfs:label "requestSigningOfficialEmail" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:requestSigningOfficialName a owl:DatatypeProperty ;
     rdfs:label "requestSigningOfficialName" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:requirementType a owl:ObjectProperty ;
     rdfs:label "requirementType" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:IRBRequirement ) ] ;
-    rdfs:range gov:AccessRequirementType .
+    rdfs:range gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" .
 
 gov:requirementVersion a owl:DatatypeProperty ;
     rdfs:label "requirementVersion" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:Approval gov:DataAccessSubmission ) ] ;
     rdfs:range xsd:integer ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The Access Requirement version the approval or submission is for." .
 
 gov:requiresAR a owl:ObjectProperty ;
     rdfs:label "requiresAR" ;
     rdfs:domain gov:SynapseEntity ;
     rdfs:range gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An Access Requirement attached directly to this entity (one of the AR's subjectIds). It also governs the entity's descendants; projections materialize that." .
 
 gov:researchProject a owl:ObjectProperty ;
     rdfs:label "researchProject" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:DataAccessRequest gov:DataAccessSubmission ) ] ;
-    rdfs:range gov:ResearchProject .
+    rdfs:range gov:ResearchProject ;
+    owl:versionInfo "0.2.0" .
 
 gov:reviewNotes a owl:DatatypeProperty ;
     rdfs:label "reviewNotes" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:reviewStatus a owl:ObjectProperty ;
     rdfs:label "reviewStatus" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range gov:DerivationReviewStatus .
+    rdfs:range gov:DerivationReviewStatus ;
+    owl:versionInfo "0.2.0" .
 
 gov:reviewedBy a owl:ObjectProperty ;
     rdfs:label "reviewedBy" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range gov:User .
+    rdfs:range gov:User ;
+    owl:versionInfo "0.2.0" .
 
 gov:reviewedOn a owl:DatatypeProperty ;
     rdfs:label "reviewedOn" ;
     rdfs:domain gov:DerivationReview ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:satisfies a owl:ObjectProperty ;
     rdfs:label "satisfies" ;
     rdfs:domain gov:Approval ;
-    rdfs:range gov:AccessRequirement .
+    rdfs:range gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" .
 
 gov:scopedToProgram a owl:ObjectProperty ;
     rdfs:label "scopedToProgram" ;
     rdfs:domain gov:IRBRequirement ;
-    rdfs:range gov:Program .
+    rdfs:range gov:Program ;
+    owl:versionInfo "0.2.0" .
 
 gov:scopedToSite a owl:ObjectProperty ;
     rdfs:label "scopedToSite" ;
     rdfs:domain gov:IRBRequirement ;
-    rdfs:range gov:Site .
+    rdfs:range gov:Site ;
+    owl:versionInfo "0.2.0" .
 
 gov:sourceAccessRequirements a owl:ObjectProperty ;
     rdfs:label "sourceAccessRequirements" ;
     rdfs:domain gov:ControlLabel ;
-    rdfs:range gov:AccessRequirement .
+    rdfs:range gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" .
 
 gov:sourceApprovalId a owl:DatatypeProperty ;
     rdfs:label "sourceApprovalId" ;
     rdfs:domain gov:Approval ;
     rdfs:range xsd:integer ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Synapse's AccessApproval id." .
 
 gov:state a owl:ObjectProperty ;
     rdfs:label "state" ;
     rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range gov:SubmissionState .
+    rdfs:range gov:SubmissionState ;
+    owl:versionInfo "0.2.0" .
 
 gov:status a owl:ObjectProperty ;
     rdfs:label "status" ;
     rdfs:domain gov:Approval ;
-    rdfs:range gov:ApprovalStatus .
+    rdfs:range gov:ApprovalStatus ;
+    owl:versionInfo "0.2.0" .
 
 gov:subject a owl:ObjectProperty ;
     rdfs:label "subject" ;
     rdfs:domain gov:ControlLabel ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "What the label is about: a Synapse entity, or anything derivation reaches (a sagebrain-model Association, say)." .
 
 gov:submittedBy a owl:ObjectProperty ;
     rdfs:label "submittedBy" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:Approval gov:DataAccessSubmission ) ] ;
-    rdfs:range gov:User .
+    rdfs:range gov:User ;
+    owl:versionInfo "0.2.0" .
 
 gov:submittedOn a owl:DatatypeProperty ;
     rdfs:label "submittedOn" ;
     rdfs:domain gov:DataAccessSubmission ;
-    rdfs:range xsd:dateTime .
+    rdfs:range xsd:dateTime ;
+    owl:versionInfo "0.2.0" .
 
 gov:summaryOfUse a owl:DatatypeProperty ;
     rdfs:label "summaryOfUse" ;
     rdfs:domain gov:DataAccessRequest ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:versionInfo "0.2.0" .
 
 gov:url a owl:ObjectProperty ;
     rdfs:label "url" ;
-    rdfs:domain prov:Usage .
+    rdfs:domain prov:Usage ;
+    owl:versionInfo "0.2.0" .
 
 gov:versionNumber a owl:DatatypeProperty ;
     rdfs:label "versionNumber" ;
     rdfs:domain [ a owl:Class ;
             owl:unionOf ( gov:AccessRequirement gov:AccessRequirementTemplate gov:IRBRequirement gov:SynapseEntity ) ] ;
     rdfs:range xsd:integer ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The version number of an entity or Access Requirement." .
 
 gov:wasExecuted a owl:DatatypeProperty ;
     rdfs:label "wasExecuted" ;
     rdfs:domain prov:Usage ;
     rdfs:range xsd:boolean ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "True for code that was run; false for data that was read." .
 
 acl:Append a owl:Class .
 
 acl:Control a owl:Class .
 
-foaf:Agent a owl:Class .
+foaf:Agent a owl:Class ;
+    skos:scopeNote "A Synapse principal an ACL entry can name.",
+        "Anyone, signed in or not (Synapse's PUBLIC group, 273949)." .
 
 gov:ACTRequirement a gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Controlled by the Access and Compliance Team (AccessRequirementType.ATC)." ;
     skos:inScheme gov:AccessRequirementTypeScheme ;
     skos:notation "ACTAccessRequirement" ;
     skos:prefLabel "ACTAccessRequirement" .
 
 gov:AnonymousTier a gov:DataTier ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Data can be viewed and downloaded anonymously by anyone on the internet." ;
     skos:inScheme gov:DataTierScheme ;
     skos:notation "Anonymous" ;
@@ -522,6 +628,7 @@ gov:AnonymousTier a gov:DataTier ;
     gov:rank 0 .
 
 gov:Cancelled a gov:SubmissionState ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Cancelled by the submitter." ;
     skos:inScheme gov:SubmissionStateScheme ;
     skos:notation "CANCELLED" ;
@@ -530,6 +637,7 @@ gov:Cancelled a gov:SubmissionState ;
 gov:ChangePermissions a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Control ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to change access permissions for the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "CHANGE_PERMISSIONS" ;
@@ -538,12 +646,14 @@ gov:ChangePermissions a owl:Class,
 gov:ChangeSettings a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to change settings or configuration for the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "CHANGE_SETTINGS" ;
     skos:prefLabel "CHANGE_SETTINGS" .
 
 gov:ControlledTier a gov:DataTier ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Users must have a Synapse account and satisfy access conditions to download data." ;
     skos:inScheme gov:DataTierScheme ;
     skos:notation "Controlled" ;
@@ -553,6 +663,7 @@ gov:ControlledTier a gov:DataTier ;
 gov:Create a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Write ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to create a new entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "CREATE" ;
@@ -561,6 +672,7 @@ gov:Create a owl:Class,
 gov:Delete a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Write ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to delete the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "DELETE" ;
@@ -569,30 +681,35 @@ gov:Delete a owl:Class,
 gov:DeleteSubmission a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to delete a submission." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "DELETE_SUBMISSION" ;
     skos:prefLabel "DELETE_SUBMISSION" .
 
 gov:DerivationApproved a gov:DerivationReviewStatus ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The combination was reviewed and judged safe to permit." ;
     skos:inScheme gov:DerivationReviewStatusScheme ;
     skos:notation "Approved" ;
     skos:prefLabel "Approved" .
 
 gov:DerivationDenied a gov:DerivationReviewStatus ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The combination was reviewed and judged unsafe; access to the derived output should be blocked." ;
     skos:inScheme gov:DerivationReviewStatusScheme ;
     skos:notation "Denied" ;
     skos:prefLabel "Denied" .
 
 gov:DerivationFlagged a gov:DerivationReviewStatus ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Minted automatically because a derivation rule or disjoint sourceAccessRequirements need a person to look; not yet reviewed." ;
     skos:inScheme gov:DerivationReviewStatusScheme ;
     skos:notation "Flagged" ;
     skos:prefLabel "Flagged" .
 
 gov:DerivationReviewed a gov:DerivationReviewStatus ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A person has looked at this combination but not yet recorded a decision." ;
     skos:inScheme gov:DerivationReviewStatusScheme ;
     skos:notation "Reviewed" ;
@@ -601,6 +718,7 @@ gov:DerivationReviewed a gov:DerivationReviewStatus ;
 gov:Download a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Read ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to download files or data from the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "DOWNLOAD" ;
@@ -609,18 +727,21 @@ gov:Download a owl:Class,
 gov:ExemptionEligible a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Qualifies for exemption when granted on Access Requirement ACLs." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "EXEMPTION_ELIGIBLE" ;
     skos:prefLabel "EXEMPTION_ELIGIBLE" .
 
 gov:LockRequirement a gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Controlled by the Access and Compliance Team; locks an entity (AccessRequirementType.LOCK)." ;
     skos:inScheme gov:AccessRequirementTypeScheme ;
     skos:notation "LockAccessRequirement" ;
     skos:prefLabel "LockAccessRequirement" .
 
 gov:ManagedACTRequirement a gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Controlled by the Access and Compliance Team, with a managed data access submission workflow (AccessRequirementType.MANAGED_ATC). The only type with DataAccessSubmissions." ;
     skos:inScheme gov:AccessRequirementTypeScheme ;
     skos:notation "ManagedACTAccessRequirement" ;
@@ -629,12 +750,14 @@ gov:ManagedACTRequirement a gov:AccessRequirementType ;
 gov:Moderate a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to moderate content or activity related to the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "MODERATE" ;
     skos:prefLabel "MODERATE" .
 
 gov:OpenTier a gov:DataTier ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Users must have a Synapse account to download data." ;
     skos:inScheme gov:DataTierScheme ;
     skos:notation "Open" ;
@@ -644,12 +767,14 @@ gov:OpenTier a gov:DataTier ;
 gov:Participate a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to participate in activities related to the entity, such as discussions or challenges." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "PARTICIPATE" ;
     skos:prefLabel "PARTICIPATE" .
 
 gov:PrivateTier a gov:DataTier ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Users must be provided access to data in Synapse by a project administrator." ;
     skos:inScheme gov:DataTierScheme ;
     skos:notation "Private" ;
@@ -659,6 +784,7 @@ gov:PrivateTier a gov:DataTier ;
 gov:Read a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Read ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to read or view the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "READ" ;
@@ -667,12 +793,14 @@ gov:Read a owl:Class,
 gov:ReadPrivateSubmission a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to read private submissions associated with the entity." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "READ_PRIVATE_SUBMISSION" ;
     skos:prefLabel "READ_PRIVATE_SUBMISSION" .
 
 gov:Rejected a gov:SubmissionState ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Reviewed and rejected." ;
     skos:inScheme gov:SubmissionStateScheme ;
     skos:notation "REJECTED" ;
@@ -681,18 +809,21 @@ gov:Rejected a gov:SubmissionState ;
 gov:ReviewSubmissions a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Enables reviewing submission groups (e.g., on Access Requirements) for specified objects." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "REVIEW_SUBMISSIONS" ;
     skos:prefLabel "REVIEW_SUBMISSIONS" .
 
 gov:Revoked a gov:ApprovalStatus ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The approval was revoked." ;
     skos:inScheme gov:ApprovalStatusScheme ;
     skos:notation "REVOKED" ;
     skos:prefLabel "REVOKED" .
 
 gov:SelfSignRequirement a gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Restricted by terms of use, self-signed (AccessRequirementType.SELF_SIGNED)." ;
     skos:inScheme gov:AccessRequirementTypeScheme ;
     skos:notation "SelfSignAccessRequirement" ;
@@ -701,6 +832,7 @@ gov:SelfSignRequirement a gov:AccessRequirementType ;
 gov:SendMessage a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to send messages related to the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "SEND_MESSAGE" ;
@@ -709,12 +841,14 @@ gov:SendMessage a owl:Class,
 gov:Submit a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to submit content or data to the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "SUBMIT" ;
     skos:prefLabel "SUBMIT" .
 
 gov:Submitted a gov:SubmissionState ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Submitted and awaiting review." ;
     skos:inScheme gov:SubmissionStateScheme ;
     skos:notation "SUBMITTED" ;
@@ -723,18 +857,21 @@ gov:Submitted a gov:SubmissionState ;
 gov:TeamMembershipUpdate a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to update team membership, such as adding or removing members." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "TEAM_MEMBERSHIP_UPDATE" ;
     skos:prefLabel "TEAM_MEMBERSHIP_UPDATE" .
 
 gov:TermsOfUseRequirement a gov:AccessRequirementType ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Restricted by terms of use (AccessRequirementType.TOU)." ;
     skos:inScheme gov:AccessRequirementTypeScheme ;
     skos:notation "TermsOfUseAccessRequirement" ;
     skos:prefLabel "TermsOfUseAccessRequirement" .
 
 gov:UnclassifiedTier a gov:DataTier ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Tier not yet determined by a curator. Ranked above Private, so an entity bound to an Access Requirement with no recorded tier fails closed rather than reading as unrestricted." ;
     skos:inScheme gov:DataTierScheme ;
     skos:notation "Unclassified" ;
@@ -744,6 +881,7 @@ gov:UnclassifiedTier a gov:DataTier ;
 gov:Update a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Write ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to modify or update the entity or resource." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "UPDATE" ;
@@ -752,6 +890,7 @@ gov:Update a owl:Class,
 gov:UpdateSubmission a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Access ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Permission to update or modify a submission." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "UPDATE_SUBMISSION" ;
@@ -760,6 +899,7 @@ gov:UpdateSubmission a owl:Class,
 gov:Upload a owl:Class,
         gov:Permission ;
     rdfs:subClassOf acl:Append ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Deprecated; adding this to an ACL has no effect." ;
     skos:inScheme gov:PermissionScheme ;
     skos:notation "UPLOAD" ;
@@ -769,11 +909,13 @@ acl:Read a owl:Class .
 
 gov:ApprovalStatusScheme a skos:ConceptScheme ;
     rdfs:label "ApprovalStatus scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:Approved,
         gov:Revoked .
 
 gov:Approved a gov:ApprovalStatus,
         gov:SubmissionState ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Approved. One concept in both the ApprovalStatus and SubmissionState schemes." ;
     skos:inScheme gov:ApprovalStatusScheme,
         gov:SubmissionStateScheme ;
@@ -785,16 +927,20 @@ acl:Write a owl:Class .
 gov:ApprovalStatus a owl:Class ;
     rdfs:label "ApprovalStatus" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An AccessApproval's state (org.sagebionetworks.repo.model.ApprovalState), verified against Synapse's OpenAPI spec." .
 
 gov:Program a owl:Class ;
     rdfs:label "Program" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A research program an IRB requirement can be scoped to." .
 
-prov:Usage a owl:Class .
+prov:Usage a owl:Class ;
+    skos:scopeNote "One thing an Activity used: a Synapse entity (prov:entity), or code at a URL. wasExecuted separates code that was run from data that was read." .
 
 gov:DerivationReviewStatusScheme a skos:ConceptScheme ;
     rdfs:label "DerivationReviewStatus scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:DerivationApproved,
         gov:DerivationDenied,
         gov:DerivationFlagged,
@@ -802,10 +948,12 @@ gov:DerivationReviewStatusScheme a skos:ConceptScheme ;
 
 gov:Site a owl:Class ;
     rdfs:label "Site" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An institution principals and requests are affiliated with." .
 
 gov:SubmissionStateScheme a skos:ConceptScheme ;
     rdfs:label "SubmissionState scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:Approved,
         gov:Cancelled,
         gov:Rejected,
@@ -813,6 +961,7 @@ gov:SubmissionStateScheme a skos:ConceptScheme ;
 
 gov:AccessRequirementTypeScheme a skos:ConceptScheme ;
     rdfs:label "AccessRequirementType scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:ACTRequirement,
         gov:LockRequirement,
         gov:ManagedACTRequirement,
@@ -821,10 +970,12 @@ gov:AccessRequirementTypeScheme a skos:ConceptScheme ;
 
 gov:Condition a owl:Class ;
     rdfs:label "Condition" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." .
 
 gov:DataTierScheme a skos:ConceptScheme ;
     rdfs:label "DataTier scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:AnonymousTier,
         gov:ControlledTier,
         gov:OpenTier,
@@ -834,11 +985,13 @@ gov:DataTierScheme a skos:ConceptScheme ;
 gov:DerivationReviewStatus a owl:Class ;
     rdfs:label "DerivationReviewStatus" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "Where a DerivationReview stands." .
 
 gov:SubmissionState a owl:Class ;
     rdfs:label "SubmissionState" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A DataAccessSubmission's state (DataAccessSubmissionState), verified against SynapseWebClient's ACTDataAccessSubmissionWidget." .
 
 skos:Concept a owl:Class .
@@ -848,19 +1001,23 @@ skos:ConceptScheme a owl:Class .
 gov:AccessRequirementType a owl:Class ;
     rdfs:label "AccessRequirementType" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An Access Requirement's Synapse concreteType, by its short class name." .
 
 gov:ControlLabel a owl:Class ;
     rdfs:label "ControlLabel" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A precomputed sensitivity label on a Synapse entity: its data tier and the Access Requirements it inherits, direct or through derivation." .
 
 gov:DataTier a owl:Class ;
     rdfs:label "DataTier" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "How restricted data is, in increasing order. Each concept's gov:rank is its position: a derived output takes the highest rank among its inputs." .
 
 gov:DerivationReview a owl:Class ;
     rdfs:label "DerivationReview" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A review of an Activity whose inputs' labels combine in a way a rule forbids or flags, or whose Access Requirement sets are disjoint." .
 
 DUO:0000017 a owl:Class .
@@ -868,49 +1025,60 @@ DUO:0000017 a owl:Class .
 gov:User a owl:Class ;
     rdfs:label "User" ;
     rdfs:subClassOf foaf:Agent ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An individual Synapse user, identified by their profile URL." .
 
-prov:Activity a owl:Class .
+prov:Activity a owl:Class ;
+    skos:scopeNote "A Synapse provenance Activity." .
 
 gov:ResearchProject a owl:Class ;
     rdfs:label "ResearchProject" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The research project a data access request is made for." .
 
 gov:Approval a owl:Class ;
     rdfs:label "Approval" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A Synapse AccessApproval: a user holds an approval of an Access Requirement at a version, with a status and an expiry. Every approval is recorded, whatever its status; whether it holds at a given time is for the evaluator. Close to a GA4GH Passport ControlledAccessGrants visa (which has no RDF IRI to map to)." .
 
 acl:Access a owl:Class .
 
 gov:DataAccessSubmission a owl:Class ;
     rdfs:label "DataAccessSubmission" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A request for access submitted against a managed Access Requirement, with its current state." .
 
 gov:AccessRequirementTemplate a owl:Class ;
     rdfs:label "AccessRequirementTemplate" ;
     rdfs:subClassOf gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A reusable Access Requirement pattern for a data domain." .
 
 gov:SynapseEntity a owl:Class ;
     rdfs:label "SynapseEntity" ;
+    owl:versionInfo "0.2.0" ;
     skos:closeMatch prov:Entity ;
     skos:definition "A concrete Synapse entity (project, folder, file, ...), identified by its syn: IRI. ACLs, Access Requirements and provenance attach here." .
 
 gov:AccessRequirement a owl:Class ;
     rdfs:label "AccessRequirement" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A Synapse Access Requirement. The curated record (the record layer's AccessRequirement) describes the same IRI, so there is one node per AR. An AR attached to an entity also governs that entity's descendants." .
 
 gov:IRBRequirement a owl:Class ;
     rdfs:label "IRBRequirement" ;
     rdfs:subClassOf gov:AccessRequirement ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "An IRB-specific Access Requirement extending a template, optionally scoped to a program or site." .
 
 gov:DataAccessRequest a owl:Class ;
     rdfs:label "DataAccessRequest" ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "The request a DataAccessSubmission was made from." .
 
 gov:PermissionScheme a skos:ConceptScheme ;
     rdfs:label "Permission scheme" ;
+    owl:versionInfo "0.2.0" ;
     skos:hasTopConcept gov:ChangePermissions,
         gov:ChangeSettings,
         gov:Create,
@@ -933,5 +1101,6 @@ gov:PermissionScheme a skos:ConceptScheme ;
 gov:Permission a owl:Class ;
     rdfs:label "Permission" ;
     rdfs:subClassOf skos:Concept ;
+    owl:versionInfo "0.2.0" ;
     skos:definition "A Synapse ACCESS_TYPE (org.sagebionetworks.repo.model.ACCESS_TYPE), as a Web Access Control access mode. Each value is also rdfs:subClassOf the WAC mode it amounts to (acl:Read, acl:Write, acl:Append, acl:Control), or of acl:Access when it has no WAC counterpart. The authorizer's derived ACCESS action isn't a value here; the authorizer_v1 projection derives it." .
 

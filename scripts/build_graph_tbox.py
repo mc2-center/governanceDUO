@@ -25,7 +25,16 @@ applies the layer's conventions to their output:
   under DUO:0000017); external values are only declared.
 - Terms outside gov: get declarations only. The OWL never makes axioms about
   another vocabulary's terms (acl:Authorization, vcard:Group, prov:Activity,
-  DUO classes); the SHACL carries every constraint on them.
+  DUO classes); the SHACL carries every constraint on them. A reused term does
+  get one annotation, skos:scopeNote, whenever this schema itself wrote a
+  description for it (a class whose class_uri is external, e.g. Team's
+  vcard:Group, or a permissible value's own `description`, e.g. a DUO term or
+  AgentClass's PUBLIC/AUTHENTICATED_USERS) -- scopeNote is SKOS's own
+  "how this vocabulary uses the concept" annotation, not a definition, so it
+  doesn't claim to give the term its meaning.
+- Every gov: term (class, property, vocabulary concept and concept scheme, and
+  a gov: value of a class-valued enum) gets owl:versionInfo, the schema's own
+  version -- not just the ontology header.
 - The identifier slot is the subject, not a property, and the GovernanceGraph
   container is not graph content. Both are left out.
 - IRI-valued slots (range uriorcurie/uri) are object properties.
@@ -111,16 +120,18 @@ class GraphLayer:
         return URIRef(self.sv.get_uri(slot, expand=True))
 
 
-def add_vocabulary(g: Graph, layer: GraphLayer, name: str, e) -> None:
+def add_vocabulary(g: Graph, layer: GraphLayer, name: str, e, version: str) -> None:
     concept_class = layer.uri(e.enum_uri)
     scheme = URIRef(f"{concept_class}Scheme")
     g.add((concept_class, RDF.type, OWL.Class))
     g.add((concept_class, RDFS.subClassOf, SKOS.Concept))
     g.add((concept_class, RDFS.label, Literal(name)))
+    g.add((concept_class, OWL.versionInfo, Literal(version)))
     if e.description:
         g.add((concept_class, SKOS.definition, Literal(e.description)))
     g.add((scheme, RDF.type, SKOS.ConceptScheme))
     g.add((scheme, RDFS.label, Literal(f"{name} scheme")))
+    g.add((scheme, OWL.versionInfo, Literal(version)))
     for text, pv in e.permissible_values.items():
         concept = layer.uri(pv.meaning)
         g.add((concept, RDF.type, concept_class))
@@ -128,6 +139,8 @@ def add_vocabulary(g: Graph, layer: GraphLayer, name: str, e) -> None:
         g.add((concept, SKOS.notation, Literal(text)))
         g.add((concept, SKOS.inScheme, scheme))
         g.add((scheme, SKOS.hasTopConcept, concept))
+        if is_gov(concept):
+            g.add((concept, OWL.versionInfo, Literal(version)))
         if pv.description:
             existing = g.value(concept, SKOS.definition)
             if existing is not None and str(existing) != pv.description:
@@ -140,13 +153,18 @@ def add_vocabulary(g: Graph, layer: GraphLayer, name: str, e) -> None:
             g.add((concept, RDFS.subClassOf, layer.uri(parent)))
 
 
-def add_class_valued(g: Graph, layer: GraphLayer, e) -> None:
+def add_class_valued(g: Graph, layer: GraphLayer, e, version: str) -> None:
     for text, pv in e.permissible_values.items():
         value = layer.uri(pv.meaning)
         g.add((value, RDF.type, OWL.Class))
         if not is_gov(value):
+            # A reused term: not ours to label or define, but its own
+            # description here is this schema's own note on how it's used.
+            if pv.description:
+                g.add((value, SKOS.scopeNote, Literal(pv.description)))
             continue
         g.add((value, RDFS.label, Literal(pv.title or text)))
+        g.add((value, OWL.versionInfo, Literal(version)))
         if pv.description:
             g.add((value, SKOS.definition, Literal(pv.description)))
         for parent in pv.implements or []:
@@ -209,11 +227,18 @@ def build_owl(layer: GraphLayer, version: str) -> Graph:
         cls = layer.class_uri(name)
         g.add((cls, RDF.type, OWL.Class))
         if not is_gov(cls):
+            # A reused class_uri (Team's vcard:Group, Activity's prov:Activity,
+            # ...): not ours to label or define, but this schema's own
+            # description of it, if it wrote one, is our note on how we use it.
+            description = layer.sv.get_class(name).description
+            if description:
+                g.add((cls, SKOS.scopeNote, Literal(description.strip())))
             continue
         for p in (RDFS.label, SKOS.definition, SKOS.closeMatch, SKOS.exactMatch):
             for o in raw.objects(cls, p):
                 if o != cls:
                     g.add((cls, p, o))
+        g.add((cls, OWL.versionInfo, Literal(version)))
         parent = layer.sv.get_class(name).is_a
         if parent in layer.graph_class_names:
             g.add((cls, RDFS.subClassOf, layer.class_uri(parent)))
@@ -225,8 +250,13 @@ def build_owl(layer: GraphLayer, version: str) -> Graph:
         owl_type, rng = range_of(g, layer, slot)
         g.add((prop, RDF.type, owl_type))
         if not is_gov(prop):
+            # A reused property (vcard:hasMember, ...): same scopeNote
+            # treatment as a reused class, keyed on the slot's own description.
+            if slot.description:
+                g.add((prop, SKOS.scopeNote, Literal(slot.description.strip())))
             continue
         g.add((prop, RDFS.label, Literal(slot_name)))
+        g.add((prop, OWL.versionInfo, Literal(version)))
         if slot.description:
             g.add((prop, SKOS.definition, Literal(slot.description.strip())))
         if rng is not None:
@@ -236,12 +266,13 @@ def build_owl(layer: GraphLayer, version: str) -> Graph:
             g.add((prop, RDFS.domain, class_expression(g, domain)))
 
     for name, e in layer.vocabularies.items():
-        add_vocabulary(g, layer, name, e)
+        add_vocabulary(g, layer, name, e, version)
     for e in layer.class_valued.values():
-        add_class_valued(g, layer, e)
+        add_class_valued(g, layer, e, version)
     if (None, GOV.rank, None) in g:
         g.add((GOV.rank, RDF.type, OWL.DatatypeProperty))
         g.add((GOV.rank, RDFS.label, Literal("rank")))
+        g.add((GOV.rank, OWL.versionInfo, Literal(version)))
         g.add((GOV.rank, SKOS.definition, Literal("A concept's position in its scheme's order.")))
         g.add((GOV.rank, RDFS.range, XSD.integer))
 

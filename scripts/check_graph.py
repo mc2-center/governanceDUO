@@ -13,7 +13,9 @@ Checks the governance graph layer's generated TBox and shapes
 3. The TBox keeps the layer's conventions:
    - every vocabulary concept has one skos:prefLabel, one skos:notation per
      scheme it's in, and at most one skos:definition;
-   - no axiom is made about a term outside gov: (declarations only);
+   - no axiom is made about a term outside gov: (declarations only, plus an
+     optional skos:scopeNote wherever this schema wrote its own description of
+     a reused term -- an annotation on how we use it, not a definition of it);
    - every gov: class and property has an rdfs:label;
    - the only blank nodes are the domain unions;
    - nothing refers to the pre-refactor namespace.
@@ -96,8 +98,9 @@ def tbox_problems(tbox: Graph) -> list[str]:
 
     for s, p, o in tbox:
         if isinstance(s, URIRef) and not str(s).startswith(str(GOV)) and s != URIRef(str(GOV)[:-1]):
-            if not (p == RDF.type and o in (OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty,
-                                           OWL.AnnotationProperty)):
+            declaration = p == RDF.type and o in (OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty,
+                                                  OWL.AnnotationProperty)
+            if not (declaration or p == SKOS.scopeNote):
                 problems.append(f"axiom about a term outside gov:: {s} {p} {o}")
         if LEGACY_NS in str(s) or LEGACY_NS in str(o):
             problems.append(f"legacy namespace: {s} {p} {o}")

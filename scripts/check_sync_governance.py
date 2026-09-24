@@ -26,9 +26,12 @@ Asserts:
   - AR 9001's type, version and DUO condition (with its agreement document as
     conditionDetail); AR 9002 warned as uncurated, and its submissions never
     fetched, since it isn't managed;
-  - Submission 7001 gov:Approved; 7002 warned and left out;
+  - Submission 7001 gov:Approved, made against AR 9001 at version 1 while the
+    AR is now at version 2 (warned, recorded anyway); 7002 warned and left out;
   - every recognized approval recorded with its status and expiry, expired and
-    revoked ones included; 8003 warned and left out;
+    revoked ones included; 8003 warned and left out; 8002 (expired) also holds
+    AR 9001 at a stale version 1 (warned, recorded anyway); 8001 holds it at
+    the current version 2 (no warning);
   - timestamps are xsd:dateTime, sourceApprovalId an integer, no blank nodes,
     and the output conforms to shapes/governance.shacl.ttl.
 
@@ -94,14 +97,14 @@ GETS = {
 }
 SUBMISSIONS = [
     {"id": "7001", "requestId": "6001", "submittedBy": "3000005", "submittedOn": "2024-06-01T00:00:00.000Z",
-     "state": "APPROVED", "modifiedOn": "2024-06-02T00:00:00.000Z", "accessRequirementVersion": 2},
+     "state": "APPROVED", "modifiedOn": "2024-06-02T00:00:00.000Z", "accessRequirementVersion": 1},
     {"id": "7002", "submittedBy": "3000005", "submittedOn": "2024-06-03T00:00:00.000Z", "state": "UNDER_REVIEW_NEW"},
 ]
 APPROVALS = [
     {"id": "8001", "submitterId": "3000003", "accessorId": "3000003", "state": "APPROVED",
      "expiredOn": FUTURE, "createdOn": "2024-06-02T00:00:00.000Z", "requirementVersion": 2},
     {"id": "8002", "submitterId": "3000001", "accessorId": "3000001", "state": "APPROVED",
-     "expiredOn": PAST, "createdOn": "2019-01-01T00:00:00.000Z"},
+     "expiredOn": PAST, "createdOn": "2019-01-01T00:00:00.000Z", "requirementVersion": 1},
     {"id": "8004", "submitterId": "3000008", "accessorId": "3000008", "state": "REVOKED"},
     {"id": "8003", "submitterId": "3000003", "accessorId": "3000003", "state": "PENDING_NEW"},
 ]
@@ -219,6 +222,10 @@ def main():
     expect("/accessRequirement/9002/submissions" not in POSTS, "submissions were fetched for a self-sign AR")
 
     expect((ID["submission/7001"], GOV.state, GOV.Approved) in g, "submission 7001 isn't gov:Approved")
+    expect((ID["submission/7001"], GOV.requirementVersion, Literal(1)) in g,
+           "submission 7001's stale requirementVersion (1) wasn't recorded")
+    expect("submission 7001: made against AR 9001 version 1, which is now at version 2." in warnings,
+           "no warning for submission 7001's stale requirementVersion")
     expect((ID["submission/7002"], None, None) not in g, "submission 7002 (unrecognized state) was minted")
     expect("'UNDER_REVIEW_NEW' is not a SubmissionState value" in warnings, "no warning for UNDER_REVIEW_NEW")
 
@@ -227,6 +234,11 @@ def main():
            f"approval statuses: {status}")
     expect((ID["approval/8003"], None, None) not in g, "approval 8003 (unrecognized state) was minted")
     expect("'PENDING_NEW' is not a ApprovalStatus value" in warnings, "no warning for PENDING_NEW")
+    expect((ID["approval/8002"], GOV.requirementVersion, Literal(1)) in g,
+           "approval 8002's stale requirementVersion (1) wasn't recorded")
+    expect("approval 8002: holds AR 9001 at version 1, which is now at version 2." in warnings,
+           "no warning for approval 8002's stale requirementVersion")
+    expect("approval 8001" not in warnings, "an unexpected version-mismatch warning for approval 8001")
     expires = g.value(ID["approval/8002"], GOV.expiresAt)
     expect(expires is not None and expires.datatype == XSD.dateTime and str(expires).startswith("2020-01-01"),
            f"approval 8002 expiresAt: {expires!r}")
