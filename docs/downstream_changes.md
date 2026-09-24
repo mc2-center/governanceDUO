@@ -4,9 +4,10 @@ This page lists the changes the graph-layer refactor
 ([`plans/model_refactor.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/model_refactor.md),
 decision 4) identified as needed in other repositories, without making them:
 this repository edits only itself. `authorizer_v1` (see
-[graph design, section 6](graph-design.md#projections)) exists specifically so
-none of these are required before the refactor can ship — sagebrain-infra keeps
-reading the contract it already has.
+[graph design, section 7](graph-design.md#7-rebac-alignment-in-brief), and
+[the technical detail](graph-design-implementation.md#3-how-the-graph-is-built))
+exists specifically so none of these are required before the refactor can ship —
+sagebrain-infra keeps reading the contract it already has.
 
 None of the items below are prerequisites for anything in this repository.
 They are recorded here so the work isn't lost, and so whoever picks each one up

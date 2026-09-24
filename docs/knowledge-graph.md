@@ -287,7 +287,7 @@ recorded tier fails closed to `Unclassified` (ranked above `Private`) rather tha
 reading as unrestricted. `gov:computedFrom` names the Activity the label traces to,
 and `gov:sourceAccessRequirements` every AR that contributed — this is what lets a
 query answer "which ARs does this derived file inherit?" without re-walking
-ancestry (section 8 of [Governance graph design](graph-design.md)).
+ancestry (section 6 of [Governance graph design](graph-design.md)).
 
 `make derivation-policy-check` runs this over a committed fixture
 (`linkml/examples/derivation_policy/fixture/`) and asserts 13 assertions on the
@@ -363,7 +363,8 @@ unlisted principal is denied.
 
 | For | See |
 |---|---|
-| Why the model is split this way, and how sagebrain-infra/sagebrain-model consume it | [Governance graph design](graph-design.md) |
+| Why the model is split this way, and how sagebrain-infra/sagebrain-model consume it, without predicate-level detail | [Governance graph design](graph-design.md) |
+| The same material as this page, at full technical depth (classes, predicates, the build pipeline, ReBAC internals, query cookbook) | [Technical implementation](graph-design-implementation.md) |
 | Every class, slot and enum in both schemas | [Schema reference](reference/index.md) |
 | LinkML conventions (mixins, rules, DUO shorthand) | [The LinkML model](linkml-model.md) |
 | Changes identified for other repositories, not made here | [Downstream changes](downstream_changes.md) |
