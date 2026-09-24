@@ -18,7 +18,11 @@ For each requested entity:
   3. the Access Requirements that apply to it (GET /entity/{id}/accessRequirement),
      each attached by gov:requiresAR to the entities in the chain that are its
      subjectIds, with its concreteType, accessType and version. A curator-authored
-     record (--access-requirement-dir) adds its data-use conditions and tier;
+     record (--access-requirement-dir) adds its data-use conditions and tier --
+     the current mechanism, not a permanent one: plans/ar_level_duo_annotations.md
+     is the adopted direction (an annotation on the AR itself, read from this same
+     step 3 pull instead of a separate curated file), blocked on a confirmed
+     Synapse mechanism for it;
   4. for managed ARs only, their DataAccessSubmissions (POST
      /accessRequirement/{id}/submissions); for every AR, every AccessApproval
      (POST /accessApproval/search), whatever its state or expiry. A

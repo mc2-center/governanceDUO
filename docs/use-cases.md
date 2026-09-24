@@ -3,8 +3,10 @@
 This page answers three questions this repo's other docs assume you already know
 the answer to: **what is this model for**, **where is the data supposed to come
 from**, and **is there an actual pipeline that gets it there today**. The short
-version: the DUO-core model has a real, operational (if partly in-development)
-curator submission pipeline; the Governance Graph's live-Synapse sync is implemented
+version: the DUO-core model has a real, operational record-submission pipeline
+(one earlier piece of it, deriving AR annotations from entity annotations via a
+conditional schema, was never put into practice and is deprecated); the Governance
+Graph's live-Synapse sync is implemented
 and tested offline but hasn't been run against real Synapse credentials yet; the
 Policy Fabric crosswalk is operational but manually triggered; DRS interoperability
 is a design document with no data or pipeline at all. Details below.
@@ -16,9 +18,14 @@ is a design document with no data or pipeline at all. Details below.
 The core use case, per the root [`README.md`](https://github.com/mc2-center/governanceDUO/blob/main/README.md): DUO ("Data Use
 Ontology") tags let Sage Bionetworks programs semantically describe *how* a dataset
 may be used, then have Synapse automatically gate access to that data based on those
-tags — an **Access Requirement (AR)** gets applied to an entity because of its DUO
-annotation, rather than a human manually configuring access per-entity. ARs come in
-two flavors: a **clickwrap** (the user just agrees to terms) or a **managed AR**,
+tags. The adopted direction for how an entity ends up governed by a DUO-tagged
+**Access Requirement (AR)** is annotation on the AR itself, applied once by ACT and
+inherited by every entity the AR is assigned to — not a human manually configuring
+access per-entity, and not (an earlier, deprecated design) deriving the AR's
+annotation from tags already applied to entities beneath it; see
+[`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
+ARs come in two flavors: a **clickwrap** (the user just agrees to terms) or a
+**managed AR**,
 which can demand evidence of Authentication (training certification, profile
 validation, two-factor auth) and/or Authorization (an intended-data-use statement, a
 data use certificate, an IRB/IEC ethics approval letter). `Study`/`Resource`/`Schema`
@@ -75,16 +82,10 @@ flowchart TD
     synproj["Synapse Project syn71723047\n(per-program folders: requirements / resources / studies)"]
     task["Curation task\n(named program.dataType, e.g. mc2.Study)"]
     records["Study / Resource / AccessRequirement / Schema\nrecords"]
-    condgen["generate_duo_schema.py\n(in development — see access_requirement_JSON/)"]
-    condschema["Conditional JSON schema\n(bound with derivedAnnotations = TRUE)"]
-    entity["Synapse entity\n(annotated data)"]
 
     curator -->|"Curator Record Sets,\nor CSV + schematic CLI"| synproj
     synproj --> task
     task --> records
-    records -->|"🚧 in development"| condgen
-    condgen --> condschema
-    condschema -->|"bound to a folder;\nderives AR annotation from\nmatching entity annotations"| entity
 ```
 
 Two supported ways to get `Study`/`Resource`/`AccessRequirement`/`Schema` records into
@@ -100,18 +101,22 @@ to the database"):
    mode) to the target folder.
 
 Either way, records land in one of three per-program folders under a single, shared
-Synapse Project, and any conditional JSON schemas generated from those records get
-stored in a dedicated schemas folder and registered so their URI can be bound
-elsewhere. **The step that actually generates a conditional JSON schema from
-submitted AR records is explicitly marked "🚧 Content in development 🚧"** in the root
-README today. The mechanism it's meant to produce is documented separately in
-[`access_requirement_JSON/README.md`](https://github.com/mc2-center/governanceDUO/blob/main/access_requirement_JSON/README.md): a Data
-Dictionary CSV (DUO codes + AR id + governed entity ids + activation annotation key)
-feeds an external, still-WIP script
-([`generate_duo_schema.py`](https://github.com/mc2-center/mc2-center-dcc/blob/add-ARjson-build-script/utils/generate_duo_schema.py),
-mirrored in this repo's own `scripts/generate_duo_schema.py`) that emits the
-conditional schema — but this isn't yet a single, polished, end-to-end flow a curator
-can run unassisted.
+Synapse Project.
+
+**Deprecated, never put into practice: deriving an AR's DUO annotation from a
+conditional JSON schema bound to a folder.** An earlier design
+(`access_requirement_JSON/README.md`'s Data Dictionary CSV feeding an external
+script, `generate_duo_schema.py`, to emit a schema that would bind to a folder and
+derive the AR's annotation from matching entity annotations) never shipped as a
+working end-to-end flow — confirmed by the user, 2026-09-24, and consistent with
+`plans/governance_graph_ingestion.md`'s own framing of that same
+`generate_duo_schema.py` framework as "archived... a pilot process being
+superseded, not a design to stay compatible with." Don't read the root README's
+"🚧 Content in development 🚧" marker as an active effort; nothing has picked it up
+since. The adopted go-forward direction for how DUO conditions reach an Access
+Requirement is the opposite of this design — annotate the AR directly, not derive
+its annotation from entities beneath it — see
+[`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
 
 ## What's implemented but not yet run live, or has no pipeline at all
 
@@ -134,7 +139,7 @@ can run unassisted.
 
 | Component | Use case | Data source status | Pipeline status |
 | --- | --- | --- | --- |
-| DUO-core model | Gate Synapse data access by DUO condition, scaled across programs | Real curator submissions | **Operational** (conditional-schema-generation step still 🚧) |
+| DUO-core model | Gate Synapse data access by DUO condition, scaled across programs | Real curator submissions | **Operational** (record submission); the conditional-schema-generation approach to deriving AR annotations is **deprecated, never shipped** — see `plans/ar_level_duo_annotations.md` for the adopted direction |
 | Governance Graph | Query "does this user have effective access to this resource?" | Verified against Synapse's REST API | **Implemented** — live sync tested offline only; contract-checked against sagebrain-infra's authorizer |
 | Provenance and Derivation Policy Graphs | Carry access labels onto derived content | Synapse provenance API; curated AR tiers | **Implemented** — tested offline and against a fixture |
 | Policy Fabric crosswalk | Make DUO conditions programmatically enforceable via an external system | One AR record + a static, verified binding table | **Operational, manual** — no automated trigger |

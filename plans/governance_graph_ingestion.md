@@ -135,6 +135,14 @@ open-ended "needs a check":
 
 3. DUO conditions: 100% curator-authored, and already fully schema-defined
 
+**Partially superseded (2026-09-24): `plans/ar_level_duo_annotations.md`.** The
+adopted direction is for DUO conditions to be sourced from an annotation ACT
+applies directly to the AR, not a separately curator-authored record — this
+section's conclusion that curator-authorship is a permanent structural answer
+(not just today's mechanism) no longer holds, pending a confirmed Synapse
+mechanism for the AR-level annotation. Everything below remains accurate as a
+description of what's built and functioning *today*.
+
 Confirmed directly against rest-docs.synapse.org, independent of any pilot process:
 Synapse's native `AccessRequirement` interface has **no data-use-condition fields at
 all** — `id`, `concreteType`, `accessType`, `subjectIds`,

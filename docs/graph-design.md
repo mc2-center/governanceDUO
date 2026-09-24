@@ -109,7 +109,7 @@ top of all four.
 | Layer | Answers | Ontology basis | Built by |
 |---|---|---|---|
 | **Governance** | Who holds which permission; which ARs govern an entity, direct or through the container hierarchy; submissions and approvals | W3C Web Access Control + vCard (ACLs, teams); this repo's own vocabulary for everything else | Synced from Synapse (live), or the illustrative canonical example |
-| **Conditions** | What an AR demands, as DUO terms | Data Use Ontology (DUO) | Merged in from curator-authored AR records |
+| **Conditions** | What an AR demands, as DUO terms | Data Use Ontology (DUO) | Merged in from curator-authored AR records today; adopted direction is annotating the AR directly (`plans/ar_level_duo_annotations.md`), pending a confirmed Synapse mechanism |
 | **Provenance** | What was computed from what, by which tool | W3C PROV-O | Synced from Synapse's own provenance feature |
 | **Derivation policy** | Which ARs a derived entity inherits; which combinations need review | This repository's own vocabulary | Computed from the three layers above |
 
@@ -170,8 +170,11 @@ having to re-derive the chain by hand. The full worked example, in RDF, is in
 The graph comes from three kinds of sources, described by one shared builder,
 checked before anything is trusted:
 
-- **Curators** author the one thing Synapse doesn't track in structured form: DUO
-  conditions and a data tier for each Access Requirement.
+- **Curators** author the one thing Synapse doesn't track in structured form today:
+  DUO conditions and a data tier for each Access Requirement. The adopted direction
+  is for ACT to annotate the Access Requirement directly instead, once a Synapse
+  mechanism for it is confirmed (`plans/ar_level_duo_annotations.md`) — curators
+  stay the source until then.
 - **Synapse itself** is queried for everything else — ACLs, Access Requirements,
   submissions, approvals, and provenance — by scripts that describe what they
   found; they never invent facts or materialize inheritance themselves. A stale

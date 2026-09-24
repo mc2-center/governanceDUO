@@ -153,6 +153,11 @@ the curated record's DUO rules name (an agreement document id, a region, a time
 limit). A curation placeholder such as "Pending Annotation", or the abstract
 `DUO:0000017` itself, is not a condition and mints no node.
 
+The curated-record source described here is the current mechanism, not a
+permanent one: the adopted direction is for these conditions to come from an
+annotation ACT applies directly to the AR in Synapse, once a confirmed mechanism
+exists to read it — see `plans/ar_level_duo_annotations.md`.
+
 ### Provenance layer
 
 This layer uses PROV-O directly, mirroring Synapse's provenance feature, and lives
