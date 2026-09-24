@@ -313,6 +313,11 @@ classes:
       - createdOn
       - modifiedBy
       - modifiedOn
+    slot_usage:
+      generated:
+        required: true
+      qualifiedUsage:
+        required: true
 
   Usage:
     is_a: Node
@@ -329,6 +334,15 @@ classes:
     slot_usage:
       wasExecuted:
         required: true
+    exactly_one_of:
+      - slot_conditions:
+          entity:
+            required: true
+      - slot_conditions:
+          url:
+            required: true
+          name:
+            required: true
 
   ControlLabel:
     is_a: Node
