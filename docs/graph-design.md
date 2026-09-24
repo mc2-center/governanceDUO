@@ -127,7 +127,7 @@ membership, "is this approval still active" — from the canonical graph, withou
 canonical graph storing any of it. One projection is what sagebrain-infra reads
 today (sections 6 and 7).
 
-## 4. The model, in brief
+## 4. The model
 
 Four things make up the graph's actual content:
 
@@ -165,7 +165,7 @@ file inherits that same requirement, at the same sensitivity tier, without anyon
 having to re-derive the chain by hand. The full worked example, in RDF, is in
 [Technical implementation, section 2](graph-design-implementation.md#2-the-model-in-full).
 
-## 5. How the graph is built, in brief
+## 5. How the graph is built
 
 The graph comes from three kinds of sources, described by one shared builder,
 checked before anything is trusted:
@@ -197,7 +197,7 @@ fill them in.
 The exact scripts, Makefile targets and generated files are in
 [Technical implementation, section 3](graph-design-implementation.md#3-how-the-graph-is-built).
 
-## 6. How the graph is used, in brief
+## 6. How the graph is used
 
 Once built, the graph answers a fixed set of questions — the same ones section 1
 opened with, now concretely:
@@ -221,7 +221,7 @@ so nothing changed on its side when the canonical model did.
 The literal queries — SPARQL, runnable as written against the canonical example —
 are in [Technical implementation, section 5](graph-design-implementation.md#5-using-the-graph-query-cookbook).
 
-## 7. ReBAC alignment, in brief
+## 7. ReBAC alignment
 
 sagebrain-infra decides access with a Neptune + Cedar pattern: the graph supplies the
 facts, a Cedar policy in Amazon Verified Permissions (AVP) makes the decision. The
@@ -236,7 +236,7 @@ The full query, the matching algorithm, and exactly what the canonical graph
 records versus what the projection computes for it are in
 [Technical implementation, section 4](graph-design-implementation.md#4-rebac-implementation-detail).
 
-## 8. Relationship to sagebrain-model, in brief
+## 8. Relationship to sagebrain-model
 
 The governance graph is a layer of sagebrain-model's graph, not a separate graph:
 

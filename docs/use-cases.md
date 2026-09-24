@@ -4,10 +4,10 @@ This page answers three questions this repo's other docs assume you already know
 the answer to: **what is this model for**, **where is the data supposed to come
 from**, and **is there an actual pipeline that gets it there today**. The short
 version: the DUO-core model has a real, operational (if partly in-development)
-curator submission pipeline; the Governance Graph is verified against real Synapse
-table schemas but has no populated data or export pipeline yet; the Policy Fabric
-crosswalk is operational but manually triggered; DRS interoperability is a design
-document with no data or pipeline at all. Details below.
+curator submission pipeline; the Governance Graph's live-Synapse sync is implemented
+and tested offline but hasn't been run against real Synapse credentials yet; the
+Policy Fabric crosswalk is operational but manually triggered; DRS interoperability
+is a design document with no data or pipeline at all. Details below.
 
 ## What each part is for
 
@@ -27,15 +27,16 @@ which Synapse containers it governs, which registered JSON schema encodes it.
 
 ### Governance Graph — a queryable model of *effective* access
 
-`governance_graph.yaml`'s use case is different from the DUO-core model's: it's not
-about authoring conditions, it's about **representing the resulting state** — who
-actually has what permission on a resource (an ACL, `AccessGrant`) versus what
-additional conditions must separately be satisfied (an `AccessRequirement`, bound via
-`AccessRequirementAssociation`, satisfied-or-not via `DataAccessSubmission`/
-`DataAccessSubmissionStatus`) — as one RDF graph capable of answering "does this
-specific user have effective access to this specific resource right now?" (ACL
-permits **AND** applicable ARs are satisfied). See
-[Knowledge graph representation](knowledge-graph.md) for the RDF shape itself.
+The graph layer's use case is different from the DUO-core model's: it's not about
+authoring conditions, it's about **representing the resulting state** — who
+actually has what permission on a resource (a W3C Web Access Control
+`Authorization`) versus what additional conditions must separately be satisfied (an
+`AccessRequirement`, attached directly to the entity it governs and inherited by
+walking the container hierarchy, satisfied-or-not via a recorded `Approval`) — as
+one RDF graph capable of answering "does this specific user have effective access to
+this specific resource right now?" (ACL permits **AND** applicable ARs are
+satisfied). See [Governance graph design](graph-design.md) for the model itself, and
+[Knowledge graph representation](knowledge-graph.md) for the RDF shape.
 
 ### Policy Fabric integration — making DUO conditions programmatically enforceable
 
@@ -59,11 +60,11 @@ integration wouldn't have to invent that mapping from scratch. It is explicitly 
 | Component | Intended data source | What actually populates it today |
 | --- | --- | --- |
 | DUO-core model (`AccessRequirement`/`Resource`/`Study`/`Schema`) | Program/DCC curators, submitting via a dedicated Synapse Project | **Real curator submissions** — see the pipeline below |
-| Governance Graph (`SynapseEntity`/`AccessGrant`/`Principal`/`AccessRequirementAssociation`/`DataAccessSubmission`/`DataAccessSubmissionStatus`) | Synapse's own live relational tables — `NODE`, `ACL`, `ACL_RESOURCE_ACCESS`, `ACCESS_REQUIREMENT`, `ACCESS_REQUIREMENT_PROJECT`, `DATA_ACCESS_SUBMISSION`, `DATA_ACCESS_SUBMISSION_STATUS` — every class/enum in `governance_graph.yaml` was verified column-by-column against these real Synapse schemas specifically so a future export could populate it faithfully | Hand-authored example instances (`linkml/examples/governance_graph/*.example.yaml`, built by `make governance-graph`), and `scripts/sync_governance_graph.py`, which builds the same layers from Synapse's REST API for listed entities — implemented and tested offline, not yet run against live Synapse |
+| Governance Graph (`SynapseEntity`/`Authorization`/`User`/`Team`/`AccessRequirement`/`Approval`/`DataAccessSubmission`) | Synapse's own REST API — `GET /entity/{id}/path`, `.../acl`, `.../accessRequirement`, `POST /accessRequirement/{id}/submissions`, `POST /accessApproval/search` — every class/slot was verified against these real Synapse endpoints so the sync can populate it faithfully | Illustrative example instances (`linkml/examples/graph/*.example.yaml`, built by `make governance-graph`), and `scripts/sync_governance_graph.py`, which builds the same layers from Synapse's REST API for listed entities — implemented and tested offline, not yet run against live Synapse |
 | Policy Fabric crosswalk data (`policy_fabric_bindings.yaml`) | Not per-record data at all — a static, hand-curated lookup table (21 rows, one per verified Policy Fabric `policy_card`), verified directly against `hasan7n/tmp-policies`'s own `policy.rego`/`policy_data_schema.json` files | Same — this is reference data, checked in once and updated only if Policy Fabric's own `policy_cards/` change |
 | Policy Fabric *per-record* inputs (`scripts/build_policy_fabric.py`'s actual argument) | A single existing `AccessRequirement` instance's `dataUseModifiers` and companion slots (`assetBindings`, `trustedIssuerDids`, `institutionDids`, ...) | Whatever `AccessRequirement` record a maintainer points the script at — today, always one of the hand-authored examples under `linkml/examples/` |
-| Provenance Graph (`Activity`/`Usage`) | Synapse's provenance API (`GET /entity/{id}/generatedBy`) | Hand-authored examples (`linkml/examples/provenance/`), and `scripts/sync_provenance_graph.py` for listed entities — tested offline, not yet run against live Synapse |
-| Derivation Policy Graph (`ControlLabel`/`DerivationReview`) | Computed from the provenance and governance graphs plus curated AR tiers (`scripts/build_derivation_policy.py`) | Computed from the example graphs; `DerivationRule` content is illustrative |
+| Provenance layer (`prov:Activity`/`prov:Usage`, part of the same graph schema as Governance above) | Synapse's provenance API (`GET /entity/{id}/generatedBy`) | Illustrative examples (`linkml/examples/graph/`), and `scripts/sync_provenance_graph.py` for listed entities — tested offline, not yet run against live Synapse |
+| Derivation policy layer (`ControlLabel`/`DerivationReview`, also part of the same graph schema) | Computed from the graph's governance and provenance content plus curated AR tiers (`scripts/build_derivation_policy.py`) | Computed from the example graph; `DerivationRule` content is illustrative |
 | DRS alignment (`drs_alignment.yaml`) | N/A | Nothing — no populated instances exist; it's a mapping schema plus one hand-written illustrative example in `docs/drs-interop.md` |
 
 ## The submission pipeline (what's real today)
@@ -112,17 +113,17 @@ mirrored in this repo's own `scripts/generate_duo_schema.py`) that emits the
 conditional schema — but this isn't yet a single, polished, end-to-end flow a curator
 can run unassisted.
 
-## What has no pipeline at all yet
+## What's implemented but not yet run live, or has no pipeline at all
 
-- **Governance Graph**: nothing exports live Synapse ACL/AccessRequirement state into
-  `governance_graph.yaml`'s shape. `scripts/build_governance_graph.py` only ever runs
-  against the hand-authored examples under `linkml/examples/governance_graph/`. The
-  schema is verified-correct against real Synapse table columns *in anticipation* of
-  such a pipeline, not because one exists — see
+- **Governance Graph**: `scripts/sync_governance_graph.py` and
+  `scripts/sync_provenance_graph.py` implement the live-Synapse pull and are tested
+  offline against fake Synapse clients, but neither has been run against a real
+  Synapse credential yet, so no live-populated export exists today — only the
+  illustrative canonical example (`make governance-graph`). See
   [`plans/governance_graph_ingestion.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/governance_graph_ingestion.md)
-  for a design of what that pipeline would look like, how it'd bridge to Policy
-  Fabric/DUO-core outputs, and which attributes need curator-spreadsheet input
-  instead of a live Synapse pull.
+  for the source-endpoint design this implementation follows, how it bridges to
+  Policy Fabric/DUO-core outputs, and which attributes need curator-spreadsheet
+  input instead of a live Synapse pull.
 - **Policy Fabric**: `make policy-fabric` is a manual, repo-maintainer-run command
   against one `AccessRequirement` example at a time — nothing in the curator
   submission flow above automatically triggers it when a new AR record is submitted.

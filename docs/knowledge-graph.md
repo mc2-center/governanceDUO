@@ -6,8 +6,12 @@ of one of them. Confusing them (e.g. expecting the record layer's OWL to describ
 `gov:ControlLabel`, or the graph layer's canonical export to be what
 sagebrain-infra's authorizer reads) leads to wrong assumptions, so this page walks
 through each concrete RDF output before going into any one of them. For the design
-reasoning behind this split, see [Governance graph design](graph-design.md); this
-page is the "what's actually in each file" companion to it.
+reasoning behind this split, see [Governance graph design](graph-design.md); for the
+model's exact classes and predicates, see
+[Technical implementation](graph-design-implementation.md). This page is neither —
+it's the "what's actually in each file, generated how, validated how" index, and the
+one place that also covers the record layer's own artifacts (neither of those two
+pages does).
 
 ```mermaid
 flowchart TD

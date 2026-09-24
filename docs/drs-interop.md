@@ -28,7 +28,7 @@ against a DUO code's declared conditions. **GA4GH Passports/Visas and Policy Fab
 Verifiable-Credential model are structurally analogous** — both are "present a signed,
 issuer-attested credential; evaluate its claims against a resource's declared
 policy." A DRS server's authorization layer could plausibly *be* Policy Fabric behind
-a DRS-shaped front door, with a `DataAccessSubmissionStatus.state == APPROVED` event
+a DRS-shaped front door, with a `DataAccessSubmission.state == Approved` event
 ([Knowledge graph representation](knowledge-graph.md)) as the natural trigger for
 issuing a Visa (type `ControlledAccessGrants`, value = the governed dataset's `drs://`
 URI) to the approved Principal.

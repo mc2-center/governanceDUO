@@ -11,13 +11,15 @@ schema reference and worked examples drawn from the real files in this repo.
 
 | Page | Covers |
 | --- | --- |
-| [Governance graph design](graph-design.md) | Start here: the graph as a whole — its layers, model, identifiers, how it's built and validated, how Sage Brain and sagebrain-infra's ReBAC authorizer use it, and its relationship to sagebrain-model |
+| [Governance graph design](graph-design.md) | Start here: the graph as a whole, at a conceptual level — its layers, model, how it's built and used, how Sage Brain and sagebrain-infra's ReBAC authorizer use it, and its relationship to sagebrain-model. Complete on its own; no predicate names or IRIs required |
+| [Technical implementation](graph-design-implementation.md) | The same material as the page above, at full technical depth: exact classes and predicates, identifiers/namespaces, the build pipeline's scripts and Makefile targets, ReBAC internals, and the SPARQL query cookbook |
 | [Use cases, data sources, and the submission pipeline](use-cases.md) | What each part of this model is for, where its data is meant to come from, and what's actually operational vs. design-only today |
-| [The LinkML model](linkml-model.md) | Module layout, import graph, DUO term reuse, id→URI minting, `GovernanceMixin`'s conditional rules |
-| [Knowledge graph representation](knowledge-graph.md) | The three distinct RDF artifacts this repo produces, why they differ, and how they're validated |
+| [The LinkML model](linkml-model.md) | The record layer's module layout, import graph, DUO term reuse, id→URI minting, `GovernanceMixin`'s conditional rules |
+| [Knowledge graph representation](knowledge-graph.md) | Every RDF artifact this repo produces, file by file: what generates each one, what namespace it's in, and how it's validated |
 | [Governance Graph ingestion plan](https://github.com/mc2-center/governanceDUO/blob/main/plans/governance_graph_ingestion.md) | Plan, not a docs page: which real Synapse APIs would populate the Governance Graph, why DUO conditions can't come from the same source, which attributes need curator-spreadsheet input instead, and the proposed schemas for those curator tables |
 | [Policy Fabric integration](policy-fabric.md) | `policy_fabric.yaml`/`policy_fabric_bindings.yaml`, `PolicyFabricMixin`, and an end-to-end worked example |
 | [DRS interoperability](drs-interop.md) | Design-only crosswalk to the GA4GH Data Repository Service API's object/authorization model — no running integration |
+| [Downstream changes](downstream_changes.md) | Changes the graph-layer refactor identified as needed in sagebrain-infra/sagebrain-model/w3id, recorded but not made here |
 | [Schema reference](reference/index.md) | Auto-generated (`make docs`) — every class, slot, enum, and type, each with a Mermaid diagram and, where one exists, an embedded example instance |
 
 ## Regenerating
@@ -43,6 +45,8 @@ Both targets depend on `make docs`, so `docs/reference/` is always freshly
 regenerated first — the preview can't go stale relative to the schema. This needs
 `mkdocs`, `mkdocs-material`, and `mkdocs-awesome-pages-plugin` (`pip install -r
 requirements.txt`); the site config is `mkdocs.yml` and `docs/.pages` at the repo
-root. `docs/.pages` pins the narrative pages in reading order and folds in
-`reference/` as an auto-discovered section, so new classes/slots/enums never need a
-nav update to show up.
+root. `docs/.pages` pins the narrative pages in reading order — the two overview
+pages first, then a nested "Deep reference" section for everything technical,
+including `reference/` as an auto-discovered subsection — so new classes/slots/enums
+never need a nav update to show up, but a brand-new narrative page does need adding
+to `docs/.pages` or it won't appear in the nav at all.
