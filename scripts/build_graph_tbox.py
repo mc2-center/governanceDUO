@@ -256,20 +256,40 @@ def build_owl(layer: GraphLayer, version: str) -> Graph:
 
 def add_exactly_one_of(g: Graph, layer: GraphLayer, class_name: str, shape) -> None:
     """shaclgen leaves out exactly_one_of. Each alternative here is a set of
-    required slots, so the constraint is sh:xone over "has those slots"."""
+    required slots, so the constraint is sh:xone over "has those slots" --
+    but "has those slots" alone only checks each branch's own minCount, not
+    that the OTHER branches' slots are absent. A node that sets one
+    alternative's required slot(s) plus another alternative's slot still
+    satisfies exactly one sh:property group's minCount, so sh:xone reports
+    exactly one match and passes, even though it straddles two alternatives.
+    That's not "exactly one": the hand-written pre-refactor sh:xone this
+    generator replaced also forbade a branch's slots from appearing under a
+    different branch, and that mutual exclusion was lost in the rewrite. So
+    each alternative's property-shape group also gets sh:maxCount 0 on every
+    slot that belongs to one of the OTHER alternatives in the group."""
     for group in [layer.sv.get_class(class_name).exactly_one_of or []]:
         if not group:
             continue
-        alternatives = []
+        alternative_slots = []
         for alternative in group:
             required = [n for n, cond in (alternative.slot_conditions or {}).items() if cond.required]
             if not required or len(required) != len(alternative.slot_conditions):
                 raise SystemExit(f"{class_name}: exactly_one_of alternatives must be required slots")
+            alternative_slots.append(required)
+        all_slots = {n for required in alternative_slots for n in required}
+
+        alternatives = []
+        for required in alternative_slots:
             node = BNode()
             for slot_name in required:
                 prop = BNode()
                 g.add((prop, SH.path, layer.slot_uri(layer.sv.get_slot(slot_name))))
                 g.add((prop, SH.minCount, Literal(1)))
+                g.add((node, SH.property, prop))
+            for slot_name in sorted(all_slots - set(required)):
+                prop = BNode()
+                g.add((prop, SH.path, layer.slot_uri(layer.sv.get_slot(slot_name))))
+                g.add((prop, SH.maxCount, Literal(0)))
                 g.add((node, SH.property, prop))
             alternatives.append(node)
         members = BNode()

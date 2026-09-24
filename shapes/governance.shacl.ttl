@@ -277,10 +277,22 @@ shape:AuthorizationShape a sh:NodeShape ;
             sh:order 3 ;
             sh:path acl:agentGroup ] ;
     sh:targetClass acl:Authorization ;
-    sh:xone ( [ sh:property [ sh:minCount 1 ;
+    sh:xone ( [ sh:property [ sh:maxCount 0 ;
+                        sh:path acl:agentClass ],
+                    [ sh:maxCount 0 ;
+                        sh:path acl:agentGroup ],
+                    [ sh:minCount 1 ;
                         sh:path acl:agent ] ] [ sh:property [ sh:minCount 1 ;
-                        sh:path acl:agentGroup ] ] [ sh:property [ sh:minCount 1 ;
-                        sh:path acl:agentClass ] ] ) .
+                        sh:path acl:agentGroup ],
+                    [ sh:maxCount 0 ;
+                        sh:path acl:agent ],
+                    [ sh:maxCount 0 ;
+                        sh:path acl:agentClass ] ] [ sh:property [ sh:minCount 1 ;
+                        sh:path acl:agentClass ],
+                    [ sh:maxCount 0 ;
+                        sh:path acl:agentGroup ],
+                    [ sh:maxCount 0 ;
+                        sh:path acl:agent ] ] ) .
 
 shape:ConditionShape a sh:NodeShape ;
     rdfs:comment "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." ;
@@ -813,9 +825,15 @@ shape:UsageShape a sh:NodeShape ;
             sh:path prov:entity ;
             sh:pattern "^(syn:|https://www\\.synapse\\.org/Synapse:)syn[0-9]+$" ] ;
     sh:targetClass prov:Usage ;
-    sh:xone ( [ sh:property [ sh:minCount 1 ;
+    sh:xone ( [ sh:property [ sh:maxCount 0 ;
+                        sh:path gov:name ],
+                    [ sh:maxCount 0 ;
+                        sh:path gov:url ],
+                    [ sh:minCount 1 ;
                         sh:path prov:entity ] ] [ sh:property [ sh:minCount 1 ;
                         sh:path gov:name ],
+                    [ sh:maxCount 0 ;
+                        sh:path prov:entity ],
                     [ sh:minCount 1 ;
                         sh:path gov:url ] ] ) .
 
