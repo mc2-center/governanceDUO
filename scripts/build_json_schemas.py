@@ -100,6 +100,16 @@ def _dereference(schema: dict) -> dict:
                         f"Circular $ref while flattening for Synapse: {' -> '.join(seen)} -> {def_name}"
                     )
                 target = resolve(defs[def_name], seen | {def_name})
+                # A def's own `title` names the *type* (e.g. the enum "Permission"),
+                # not the *property* using it (e.g. the accessType slot). Confirmed as a
+                # real bug live: it silently overwrote a property's title whenever that
+                # property had no local title of its own, and Synapse's bootstrap CSV
+                # picks the title as the column header -- "Permission" is not one of the
+                # Record Set's actual column names, so a real live run failed with
+                # "Permission is not a valid column name or id." Every other working
+                # schema in this ecosystem titles a property after the slot, never the
+                # range type, so the def's title is dropped here unconditionally.
+                target = {k: v for k, v in target.items() if k != "title"}
                 return {**target, **{k: resolve(v, seen) for k, v in node.items() if k != "$ref"}}
             return {k: resolve(v, seen) for k, v in node.items()}
         if isinstance(node, list):

@@ -909,7 +909,6 @@
         "REVIEW_SUBMISSIONS",
         "EXEMPTION_ELIGIBLE"
       ],
-      "title": "Permission",
       "type": "string"
     },
     "allowedAccountTypes": {
@@ -961,7 +960,6 @@
           "synapseId",
           "assetDid"
         ],
-        "title": "AssetBinding",
         "type": "object"
       },
       "type": "array"
@@ -983,7 +981,6 @@
         "ManagedACTAccessRequirement",
         "LockAccessRequirement"
       ],
-      "title": "AccessRequirementType",
       "type": "string"
     },
     "contributionDate": {
@@ -1016,7 +1013,6 @@
           "Award",
           "Other"
         ],
-        "title": "DataPermissionEnum",
         "type": "string"
       },
       "type": "array"
@@ -1032,7 +1028,6 @@
           "Private",
           "Unclassified"
         ],
-        "title": "DataTier",
         "type": "string"
       },
       "type": "array"
@@ -1075,7 +1070,6 @@
           "DUOPlus7",
           "Pending Annotation"
         ],
-        "title": "DataUseModifierEnum",
         "type": "string"
       },
       "type": "array"
@@ -1092,7 +1086,6 @@
           "Anonymized",
           "Other"
         ],
-        "title": "DeidentificationTypeEnum",
         "type": "string"
       },
       "type": "array"
@@ -1372,7 +1365,6 @@
           "ZM",
           "ZW"
         ],
-        "title": "GeographicalRegionEnum",
         "type": "string"
       },
       "type": "array"
@@ -1427,7 +1419,6 @@
           "GPL_3.0",
           "BSD_3_Clause"
         ],
-        "title": "LicenseEnum",
         "type": "string"
       },
       "type": "array"
@@ -1738,7 +1729,6 @@
           "ZM",
           "ZW"
         ],
-        "title": "GeographicalRegionEnum",
         "type": "string"
       },
       "type": "array"
