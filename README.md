@@ -11,14 +11,14 @@ workflow.
 
 | Path | Contents |
 | --- | --- |
-| [`linkml/`](linkml/governance_duo.linkml.yaml) | Source of truth: the LinkML schema (DUO governance model, Policy Fabric crosswalk, Governance Graph design), plus hand-written example instances under `linkml/examples/` |
-| [`model/`](model/) | The modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) that `linkml/` was derived from and stays aligned with |
-| [`shapes/`](shapes/) | OWL/SHACL artifacts for both schemas: `governance_duo.{owl,shacl}.ttl` (generated — `make owl`/`make shacl`) and `governance_graph.{owl,shacl}.ttl` (hand-authored) |
+| [`linkml/`](linkml/governance_duo.linkml.yaml) | The **record layer**: curated `AccessRequirement`/`Study`/`Resource`/`Schema`/`DerivationRule` records, the Policy Fabric crosswalk, and the DUO vocabulary (`governance_duo.linkml.yaml`), plus hand-written example instances under `linkml/examples/` |
+| [`linkml/graph/`](linkml/graph/governance.yaml) | The **graph layer**: `governance.yaml` + `vocabularies.yaml`, a separate, independently-versioned schema for every `gov:` term — see [Governance graph design](docs/graph-design.md) |
+| [`model/`](model/) | The modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) that the record layer was derived from and stays aligned with |
+| [`shapes/`](shapes/) | Generated OWL/SHACL for both schemas: `governance_duo.{owl,shacl}.ttl` (record layer, `make owl`/`make shacl`) and `governance.{owl,shacl}.ttl` (graph layer, `make graph-tbox`) — nothing under `shapes/` is hand-authored any more |
 | [`archive/sage-ar-model/`](archive/sage-ar-model/) | Archived, no longer built: outputs of the former schematic pipeline (the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema) |
-| [`governance_graph_export/`](governance_graph_export/) | Generated Turtle export of the worked Governance Graph example (`make governance-graph`) |
+| [`governance_graph_export/`](governance_graph_export/) | Generated Turtle: the canonical graph example (`make governance-graph`) and the `authorizer_v1` projection sagebrain-infra reads (`make projections`) |
 | [`policy_fabric_export/`](policy_fabric_export/) | Generated Policy Fabric input JSON (`make policy-fabric`) |
-| [`derivation_policy_export/`](derivation_policy_export/) | Generated Turtle export of computed `ControlLabel`/`DerivationReview` individuals (`make derivation-policy`) — see `linkml/provenance.yaml`/`linkml/derivation_policy.yaml` and `plans/prov_o_integration.md` |
-| [`access_requirement_JSON/`](access_requirement_JSON/README.md) | Per-DCC Access Requirement dictionaries and their generated conditional JSON schemas — see its own README for the format |
+| [`derivation_policy_export/`](derivation_policy_export/) | Generated Turtle export of computed `ControlLabel`/`DerivationReview` individuals (`make derivation-policy`) — see `linkml/graph/governance.yaml` and `plans/model_refactor.md` |
 | [`docs/`](docs/index.md) | The mkdocs documentation site — narrative pages plus an auto-generated schema reference (`make docs`); published to GitHub Pages via `.github/workflows/docs.yml` |
 | [`scripts/`](scripts/) | The Python build/export/validate scripts the `Makefile` drives |
 | [`plans/`](plans/) | Design plans for major changes to this repo, each with a companion `*_report.md` |
@@ -49,9 +49,13 @@ Deeper, example-backed docs on the LinkML model, its knowledge-graph representat
 the Policy Fabric integration, and a design-only GA4GH Data Repository Service (DRS)
 interoperability crosswalk — including an auto-generated schema reference
 (`make docs`) — live under [`docs/`](docs/index.md), starting at
-[`docs/index.md`](docs/index.md). The LinkML/Policy Fabric/Governance Graph sections
-below are unchanged and still apply; the docs/ pages add diagrams, worked examples,
-and full per-class/slot/enum reference on top of them.
+[`docs/index.md`](docs/index.md). The **Governance Graph alignment** section below
+is a short summary only; [Governance graph design](docs/graph-design.md) and
+[Technical implementation](docs/graph-design-implementation.md) are the current,
+authoritative source for that layer following its 2026-09 graph-layer refactor
+(`plans/model_refactor.md`). The LinkML/Policy Fabric sections below describe the
+record layer, unaffected by that refactor; the docs/ pages add diagrams, worked
+examples, and full per-class/slot/enum reference on top of them.
 
 The docs site (`mkdocs build`) is also published automatically to GitHub Pages on
 every push to `main` that touches `docs/`, `mkdocs.yml`, or `requirements.txt` (see
@@ -121,25 +125,15 @@ check caught this during review. Slots checked against OLS with no confident mat
 annotation-key/value mechanism slots, and `license`/`dataPermission`, whose SPDX/CC
 identifiers aren't OLS ontology terms) were left unmapped rather than forced.
 
-Build/validate targets (see `Makefile`; require `pip install -r requirements.txt`):
+Build/validate targets (see `Makefile`; require `pip install -r requirements.txt`).
+Record layer:
 ```
-make linkml-lint      # lint the schema (--ignore-warnings: the camelCase attribute
+make linkml-lint      # lint both schemas (--ignore-warnings: the camelCase attribute
                        # names are intentional, see above)
 make owl              # generate shapes/governance_duo.owl.ttl (scripts/build_owl.py)
 make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
 make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
-make validate-all     # every SHACL validation below plus the regression/contract
-                       # checks and the OWL 2 DL profile check (what CI runs)
-make owl-profile      # OWL 2 DL profile check (ROBOT, fetched to tools/robot.jar),
-                       # plus prov: types vs W3C PROV-O (fetched to build/)
-make owl-profile-abox # OWL 2 DL on both TBoxes merged with the exported and example
-                       # graphs (catches values typed differently from the TBox)
-make release-check    # validate-all + every published artifact carries VERSION
-make linkml-validate-examples  # linkml-validate every example (the only DUO-rules check)
-make sync-governance-check     # sync_governance_graph.py offline, against a fake Synapse
-make artifact-drift-check      # committed generated artifacts match a fresh rebuild
-                               # (run after validate-all; CI does)
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # individuals against the SHACL shapes, via pyshacl with
                        # inference disabled and the ontology passed as ont_graph —
@@ -147,6 +141,39 @@ make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # tests/validate.py requires, since RDFS entailment on
                        # rdfs:range would otherwise manufacture the very types
                        # SHACL's sh:class checks are meant to verify
+```
+Graph layer (`linkml/graph/`, independently versioned — see
+[Technical implementation](docs/graph-design-implementation.md)):
+```
+make graph-tbox        # generate shapes/governance.{owl,shacl}.ttl (scripts/build_graph_tbox.py)
+make governance-graph  # build governance_graph_export/governance_graph.ttl from the
+                        # canonical example (scripts/graph_rdf.py)
+make graph-validate    # the canonical example against the generated shapes, plus
+                        # scripts/check_graph.py's deliberate-defect/TBox-convention checks
+make derivation-policy       # compute ControlLabel/DerivationReview (scripts/build_derivation_policy.py)
+make derivation-policy-check # regression check against a committed fixture
+make projections             # run projections/authorizer_v1.rq (+ _teams.rq with TEAMS=1)
+                              # over the canonical graph (scripts/project.py)
+make projections-check       # golden diff, approval expiry, team/descendant grant checks
+make infra-contract-check    # sagebrain-infra's pinned authorizer query against the projection
+make sagebrain-contract-check SAGEBRAIN_MODEL=<path>  # opt-in: this layer inside a
+                                                       # sagebrain-model checkout
+```
+Both layers:
+```
+make validate-all     # everything above (record and graph layers alike) plus the
+                       # OWL 2 DL profile check on both TBoxes — what CI runs
+make owl-profile       # record-layer OWL 2 DL profile check (ROBOT, fetched to
+                       # tools/robot.jar), plus prov: types vs W3C PROV-O (fetched to build/)
+make graph-owl-profile # graph-layer OWL 2 DL, alone and merged with every canonical ABox
+make release-check    # validate-all + every published artifact carries its own version
+                      # (VERSION for the record layer, GRAPH_VERSION for the graph layer —
+                      # they release independently)
+make linkml-validate-examples  # linkml-validate every example (the only DUO-rules check)
+make sync-governance-check     # sync_governance_graph.py offline, against a fake Synapse
+make sync-provenance-check     # sync_provenance_graph.py offline, against a fake Synapse
+make artifact-drift-check      # committed generated artifacts match a fresh rebuild
+                               # (run after validate-all; CI does)
 ```
 Example instances validating the DUO conditional-requirement rules live under
 `linkml/examples/` (e.g. `linkml-validate -s linkml/governance_duo.linkml.yaml -C
@@ -168,14 +195,19 @@ Rather than route around this with a made-up `@base` IRI (which also needs a
 second workaround, since the dumper then binds the literal string `"@base"` itself
 as an invalid Turtle prefix), `scripts/convert_examples_to_rdf.py` instead
 temporarily rewrites each loaded instance's id to a real CURIE
-(`governanceduo:access_requirement.42`; graph-facing classes such as Activity get
-a `gov:` instance IRI instead, per `scripts/graph_iris.py`) only for the dump call — which
-`Namespaces.uri_for()` resolves directly via the schema's own already-declared
+(`governanceduo:access_requirement.42`; a curated `AccessRequirement` gets its
+shared graph-layer IRI instead, `govid:ar/<n>` via `scripts/graph_iris.py`'s
+`record_iri()` — decision R5 of `plans/model_refactor.md`) only for the dump call —
+which `Namespaces.uri_for()` resolves directly via the schema's own already-declared
 `governanceduo:` prefix, no `@base` involved — then restores the bare id
 afterward. The *stored* id in every example YAML file and every class's
 `slot_usage.id.pattern` are completely unaffected, preserving interoperability with
 SageCommonDataModel's bare-id convention everywhere except this one transient
-export step. See the script's docstring for the full explanation.
+export step. See the script's docstring for the full explanation. This script only
+ever handles record-layer examples (`AccessRequirement`/`Study`/`DerivationRule`);
+the graph layer's own examples go through a completely different, generic path —
+`scripts/graph_rdf.py` — described in
+[Technical implementation](docs/graph-design-implementation.md).
 
 The schematic pipeline's outputs (`archive/sage-ar-model/`) and its generator
 (`archive/scripts/create_json_from_model.py`) are archived and no longer built, so
@@ -252,89 +284,46 @@ literal `{"allowedCountries": ["US"], "allowedInstitutions":
 
 ## Governance Graph alignment
 
-`linkml/governance_graph.yaml` (plus `AccessTypeEnum`/`AccessRequirementConcreteTypeEnum`
-and a new `SynapseAccessRequirementMixin`, in `linkml/mixins.yaml`) captures the
-SageBrain **Governance Graph** design: a logically separate graph of ACLs and
-Access Requirements, connected to the domain/scientific metadata graph only via
-shared Synapse entity URIs. Its central point — an ACL answers "who has which
-permission on this resource?", an Access Requirement answers "what additional
-conditions must be satisfied?", and effective access needs both — is why
-governanceDUO's existing `AccessRequirement`/DUO-condition model gets a genuinely
-new **ACL/permission-grant** side (`AccessGrant`, `Principal`), not a
-reinterpretation of what already existed.
+**This section is a short summary; it is not the current source of truth.** The
+Governance Graph design described here was originally built as `AccessGrant`/
+`AccessRequirementAssociation`/`DataAccessSubmissionStatus` classes inside the
+record layer (`linkml/governance_graph.yaml`), verified column-by-column against
+Synapse's real relational tables and REST enums. A 2026-09 graph-layer refactor
+(`plans/model_refactor.md`, report in `plans/model_refactor_report.md`) replaced
+that design with a separate, independently-versioned schema,
+`linkml/graph/governance.yaml` + `vocabularies.yaml`, built on standard RDF
+vocabularies instead of bespoke classes:
 
-Every new class/enum was verified against a real source, the same discipline as
-the DUO/Policy-Fabric work above: the two "sagebrain governance graph ACL_AR data"
-CSVs (Synapse's actual `ACCESS_REQUIREMENT`/`ACL`/`NODE`/... relational table
-schemas) for column existence and type, and live lookups for the controlled
-vocabularies those CSVs name but don't enumerate — `AccessTypeEnum` (18 real
-values, shared by an ACL grant's permission *and* an AR's own governed access
-kind — same underlying Synapse type) via `rest-docs.synapse.org`,
-`AccessRequirementConcreteTypeEnum` (5 values) and `SubmissionStateEnum`
-(SUBMITTED/APPROVED/REJECTED/CANCELLED) via Java source on
-`Sage-Bionetworks/Synapse-Repository-Services`/`SynapseWebClient`. `NODE_TYPE`
-(project/folder/file/...) was **not** independently verified and is left as an
-open string rather than a fabricated enum.
+- **ACLs are W3C Web Access Control** (`acl:Authorization`), not a bespoke
+  `AccessGrant`; teams are vCard groups (`vcard:Group`).
+- **One Access Requirement is one IRI**, shared by its curated record and its
+  graph node (no `owl:sameAs` bridge, no stub class) — a curator-authored
+  `AccessRequirement` in this repo's record layer and its graph representation
+  describe the same subject.
+- **Inheritance is walked, not materialized**: `gov:benefactor`/`gov:parent` are
+  recorded once; nothing copies an ACL or AR onto every descendant the way the
+  original design did.
+- **Provenance and derivation policy** (`Activity`/`Usage`/`ControlLabel`/
+  `DerivationReview`) live in this same graph schema now, not
+  `linkml/provenance.yaml`/`linkml/derivation_policy.yaml` (deleted; only
+  `DerivationRule` stays in the record layer, as curator configuration).
+- **The namespace changed**: `https://w3id.org/synapse/governance#` (`gov:`), not
+  `https://sagebionetworks.org/governance/`. sagebrain-infra's existing authorizer
+  keeps working unchanged regardless, via a projection built specifically to
+  reproduce its exact prior contract — see "How the graph is used" in
+  [Governance graph design](docs/graph-design.md).
+- **DUO conditions are moving toward being sourced from the AR itself** (ACT
+  annotates the Access Requirement directly; entities inherit the annotation the
+  same way they inherit the AR) rather than a separately-maintained curator
+  record — see `plans/ar_level_duo_annotations.md`. This isn't wired in yet,
+  pending a confirmed Synapse mechanism.
 
-New classes are additive and deliberately separate from existing ones with a
-similar-sounding but different purpose: `SynapseEntity` (mirrors `NODE`, with real
-`parentId` hierarchy for direct-vs-inherited resolution) is distinct from
-`Resource` (a reusable resource-*type* pattern, not a concrete entity);
-`AccessRequirementAssociation`/`DataAccessSubmission`/`DataAccessSubmissionStatus`
-give the design doc's "direct vs. inherited" governance and "has the user
-satisfied this AR?" concepts an explicit, auditable home (mirroring
-`ACCESS_REQUIREMENT_PROJECT`/`DATA_ACCESS_SUBMISSION`/`DATA_ACCESS_SUBMISSION_STATUS`)
-instead of a precomputed boolean.
-
-Ontology mappings (verified via OLS where indexed) include `prov:Entity`/`prov:Agent`
-for `SynapseEntity`/`Principal`, `dcterms:isPartOf`/`creator`/`created`/`modified`/
-`contributor`/`source`/`requires` for the obvious provenance/hierarchy slots, and
-`schema:DigitalDocumentPermissionType` + **`dpv:AuthorisationProtocols`** for
-`AccessGrant` — the latter found via a documented **fallback to
-[Linked Open Vocabularies](https://lov.linkeddata.es/)** after confirming OLS has no
-entry at all for DPV (the Data Privacy Vocabulary); this fallback (validated
-against DPV, PROV, and SKOS) is now built into the `ols-term-annotator` skill
-itself as `lov-vocab-search`/`lov-term-search`. `bindingType`, submission `state`,
-and `Principal.principalType` were checked and left unmapped rather than forced.
-
-Those `prov:` mappings above are annotation-only (`skos:closeMatch`, not real graph
-structure). `linkml/provenance.yaml` turns them into real structure for entities that
-actually have derivation: `Activity`/`Usage` reuse real `prov:Activity`/`prov:Usage`/
-`prov:used`/`prov:qualifiedUsage`/`prov:entity`/`prov:generated` IRIs directly (by
-IRI, never re-minted, the same convention as the DUO terms above), grounded in
-Synapse's own real provenance feature (`Activity`/`Used`/`UsedEntity`/`UsedURL`,
-`GET /entity/{id}/generatedBy` — verified live against rest-docs.synapse.org, not
-guessed). `linkml/derivation_policy.yaml` layers a separate, explicitly non-PROV-O
-policy vocabulary (`DerivationRule`/`ControlLabel`/`DerivationReview`) on top, to
-flag composite-access-risk derivations across independently-approved
-AccessRequirements. See `plans/prov_o_integration.md` for the full design, and
-`docs/knowledge-graph.md`'s "Provenance Graph and Derivation Policy Graph" section for
-the build/validate commands.
-
-`scripts/build_governance_graph.py` exports the worked example under
-`linkml/examples/governance_graph/` (recreating the design doc's own `syn10081783`/
-`Team X`/`AR-123`/Alice scenario) as Turtle using the doc's own `gov:`/`syn:`
-predicates — run via `make governance-graph`, its output is structurally the same
-shape as the doc's own snippets (e.g. `gov:ar-association-001 a
-gov:AccessRequirementAssociation ; gov:resource syn:syn10081783 ; gov:accessRequirement
-gov:AR-42 ; gov:source gov:Synapse ; gov:bindingType gov:Inherited .` — `AR-42`, not the
-doc's own `AR-123`, since this repo's example instances reuse `access_requirement.42`,
-the AccessRequirement id already defined elsewhere in `linkml/examples/`), including
-emitting `gov:hasApproval` only from Alice's AccessApproval while it holds (APPROVED
-and unexpired as of the build), never from her Submission. The LinkML schema itself registers this same
-namespace under `sagegov:`, not `gov:` — `gov:` collides with a different,
-canonical prefix (`http://gov.genealogy.net/ontology.owl#`) `linkml-lint` flagged,
-same as `ebiswo:` vs. OBO Foundry `SWO:` earlier; the export script uses the shorter
-`gov:` CURIE in its own Turtle output regardless (both resolve to the same IRI).
-`governance_graph.yaml`'s classes/slots now declare `class_uri`/`slot_uri` under
-`sagegov:` directly, and the script resolves every predicate/type it emits from those
-declarations at runtime rather than hardcoding independent Python constants — so this
-is no longer fully independent of the schema's prefix registry the way it once was;
-see [Knowledge graph representation](docs/knowledge-graph.md) for the current
-architecture, including the `owl:sameAs` bridge the script now asserts between each
-`gov:AR-<n>` stub and its real `governanceduo:access_requirement.<n>` individual, and
-the [Governance consolidation plan](plans/governance_consolidation_and_drs_interop.md)
-for why.
+For the current model in full — every class, predicate, the build pipeline, ReBAC
+alignment, and the relationship to sagebrain-model — see
+[Governance graph design](docs/graph-design.md) and
+[Technical implementation](docs/graph-design-implementation.md). For the exact RDF
+artifact each build step produces, see
+[Knowledge graph representation](docs/knowledge-graph.md).
 
 ## Release artifacts and IRI policy
 
@@ -342,40 +331,52 @@ The governance graph is a layer of the graph defined in
 [sagebrain-model](https://github.com/Sage-Bionetworks/sagebrain-model): it is loaded
 into the same store, joined on the same IRIs, and read by sagebrain-infra's
 authorizer. This repository owns every governance-layer term and shape, and
-publishes them for other repositories to import rather than copy:
+publishes them for other repositories to import rather than copy. The two schemas
+release independently, each with its own version and published artifacts:
 
 | Artifact | What it is |
 |---|---|
-| `shapes/governance_duo.owl.ttl` | OWL generated from the LinkML schema (`make owl`) |
-| `shapes/governance_graph.owl.ttl` | Hand-written TBox for the `gov:` governance graph |
-| `shapes/governance_graph.shacl.ttl` | Shapes for the exported governance graph |
-| `shapes/provenance_layer.shacl.ttl` | Shapes for the Activity/Usage provenance layer |
+| `shapes/governance_duo.owl.ttl` / `.shacl.ttl` | Record layer, generated from `linkml/governance_duo.linkml.yaml` (`make owl`/`make shacl`), versioned `VERSION` |
+| `shapes/governance.owl.ttl` / `.shacl.ttl` | Graph layer, generated from `linkml/graph/governance.yaml` (`make graph-tbox`), versioned `GRAPH_VERSION` |
 
 Each carries an `owl:Ontology` header with `owl:versionIRI` and `owl:versionInfo`.
-The version lives in one place, `VERSION` in the `Makefile`; `make release-check`
-runs `make validate-all` and verifies every artifact carries that version (and, with
-`TAG=v<version>`, that the tag agrees). Until a release is tagged on `main`,
-consumers pin a commit hash in the raw GitHub URL; afterwards, a tag.
+`make release-check` runs `make validate-all` and verifies every artifact carries
+its own version (and, with `TAG=v<version>`, that the tag agrees with `VERSION`).
+Until a release is tagged on `main`, consumers pin a commit hash in the raw GitHub
+URL; afterwards, a tag.
 
-IRIs follow one policy, implemented in `scripts/graph_iris.py` for records written
-into the graph:
+IRIs follow one policy for the graph layer, implemented in `scripts/graph_iris.py`
+— the only place graph-layer IRIs are minted:
 
-- **`gov:`** (`https://sagebionetworks.org/governance/`, registered as `sagegov:` in
-  the LinkML schema) for graph terms and graph instances. Instances are shaped
-  `<kind>-<id>`: `gov:AR-42`, `gov:principal-2000001`, `gov:grant-001`,
-  `gov:activity-1001`, `gov:control-label-syn10081783`, `gov:derivation-review-001`.
-- **`governanceduo:`** for schema terms and LinkML record ids
-  (`governanceduo:access_requirement.42`).
-- **`syn:`** (`https://www.synapse.org/Synapse:`) for Synapse entities.
-- **External terms by their own IRIs**: `prov:` for provenance structure, `obo:DUO_`
-  for real DUO codes (`gov:DUOPlus1`–`7` for the Sage-local extensions).
+- **`gov:`** (`https://w3id.org/synapse/governance#`) for graph-layer terms:
+  classes, slots, and vocabulary concepts.
+- **`govid:`** (`https://w3id.org/synapse/governance/`) for everything the layer
+  mints, shaped `<kind>/<id>`, beside the namespace above rather than inside it:
+  `govid:ar/42`, `govid:authorization/syn10081783-9000001`,
+  `govid:control-label/syn10081783`, `govid:derivation-review/1001`.
+- **`governanceduo:`** for record-layer schema terms and non-AR record ids
+  (`governanceduo:study.mc2-jax-5xfad`) — a curated `AccessRequirement` is the one
+  exception, sharing its graph node's `govid:ar/<n>` IRI directly.
+- **`syn:`**/**`synuser:`**/**`synteam:`** (Synapse's own URLs) for entities,
+  users and teams.
+- **External terms by their own IRIs, never re-minted**: `acl:`/`vcard:`/`foaf:`
+  for the WAC ACL model, `prov:` for provenance, `obo:DUO_` for real DUO codes
+  (`gov:DUOPlus1`–`7` for the Sage-local extensions).
 
-`make owl-profile` checks the OWL artifacts against the OWL 2 DL profile, alone and
-merged, checks that every `prov:` term they declare has the type W3C PROV-O gives it
-(`scripts/check_prov_alignment.py`), and runs in CI (`.github/workflows/validate.yml`). Two deliberate gaps between
-the LinkML schema and the generated OWL are documented in `scripts/build_owl.py`: the
-`rules:` conditionals are enforced by `linkml-validate`, not expressed in the OWL, and
-a small schema-derived repair pass fills gaps in LinkML's OWL generator.
+The one deliberate exception is the `authorizer_v1` projection
+(`projections/authorizer_v1.rq`), which re-mints its output entirely under the
+pre-refactor namespace, `https://sagebionetworks.org/governance/`, to match
+sagebrain-infra's existing, unmodified authorizer contract — see
+[Governance graph design](docs/graph-design.md) for why.
+
+`make owl-profile`/`make graph-owl-profile` check both schemas' OWL against the
+OWL 2 DL profile, alone and merged with every canonical ABox, and check that
+every `prov:` term declared has the type W3C PROV-O gives it
+(`scripts/check_prov_alignment.py`); both run in CI
+(`.github/workflows/validate.yml`). Two deliberate gaps between the record-layer
+LinkML schema and its generated OWL are documented in `scripts/build_owl.py`: the
+`rules:` conditionals are enforced by `linkml-validate`, not expressed in the OWL,
+and a small schema-derived repair pass fills gaps in LinkML's OWL generator.
 
 # Materials available in this repository
 
@@ -383,7 +384,13 @@ The content below predates this repository's current `linkml/`-based model (see
 [LinkML representation](#linkml-representation) above) and, in places, links to files
 on a separate `ar-dictionary-schema` branch rather than the current model files
 described in [Repository layout](#repository-layout). It's kept for historical
-reference and for the still-relevant Synapse submission workflow.
+reference and for the Curator Record Set/CSV+`schematic` record-submission
+mechanics, which are unrelated to the model refactor and may still apply. One
+piece of it does not: deriving an AR's DUO annotation from a conditional JSON
+schema bound to a folder was never put into practice and is deprecated — the
+adopted direction is the opposite, annotating the AR itself; see
+`plans/ar_level_duo_annotations.md` and
+[Use cases and data sources](docs/use-cases.md).
 
 <details>
 <summary><b>Archive</b></summary>
@@ -434,13 +441,6 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
     - add as many rows as necessary to represent your program records, using the `+ Add` button
     - alternatively, document your entries in a CSV and use the `Upload` button to populate the grid
   - once you've finished adding information, select `Apply Changes` to store the entries
-
-- Any conditional JSON schemas generated from your inputs will be stored in the [schemas folder](https://www.synapse.org/Synapse:syn71723124) and registered in Synapse, where they can be easily accessed via their URI. 
-
-  >**Note**: when binding schemas, derivedAnnotations <u>must</u> be set to TRUE for conditional JSON statements to function in Synapse.
-
-## Creating conditional JSON schemas from database records
-:construction: *Content in development* :construction:
 
 ## Using schemas to record governance metadata (Study example)
  - **Note**: It is recommended that separate tables, Record Sets, and/or curation tasks are created within each Synapse Project under consideration.
