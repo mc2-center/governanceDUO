@@ -329,7 +329,34 @@ action (move `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED`
 folder under `syn71723047`), not something the reusable per-program/class tool
 does or should do.
 
-## Still open before implementation
+## Run live, end to end (2026-09-25)
+
+**The JSON Schema had to be fixed before it could even register.** LinkML's
+`JsonSchemaGenerator` output and Synapse's schema service disagree in four
+separate ways -- nullable-type arrays, `$defs`/`$ref` class composition
+(entirely unsupported), a boolean `additionalProperties`, and LinkML's own
+root metadata plus its 2019-09 `$schema` dialect. All four were hit, fixed,
+and confirmed live in `scripts/build_json_schemas.py` (see that script's own
+docstring and the commit that made these fixes) before registration could
+succeed. This was found only by actually attempting registration -- not
+something `make validate-all`/the artifact-drift-check would have caught,
+since neither previously exercised Synapse's schema service at all.
+
+**Registered**: `ADA.PSI-AccessRequirement` version `0.1.0` (organization
+confirmed by you as the right target -- it already matches this live project
+exactly and already held a `Study` schema).
+
+**Provisioned live**, `--program test-dcc --class-name AccessRequirement`
+(a deliberately test-labeled pilot, not a real program):
+- Folder `test-dcc` (`syn77583329`) -> `AccessRequirement` (`syn77583330`)
+- Record Set `AccessRequirement_RecordSet` (`syn77583331`), schema bound,
+  `CurationTask` + `Grid` created and exported
+- `EntityView` `AccessRequirement_FolderIndex` (`syn77583332`) -- found the
+  new folder on the very first pass, no indexing-lag re-run needed
+- `MaterializedView` `AccessRequirement_RecordSets`, `defining_sql =
+  "SELECT * FROM syn77583331"`
+
+## Still open
 
 1. **Archive the old placeholder folders** -- a one-time, separate action (not
    performed by `provision_curator_infrastructure.py`): move
@@ -337,8 +364,16 @@ does or should do.
    under `syn71723047`. Can be done by hand in the Synapse UI, or with a short
    throwaway snippet (`Folder(name="ARCHIVED", parent_id="syn71723047").store()`
    then `Folder(id=<each>).parent_id = <archived id>` / `.store()`) -- not
-   worth building into the reusable tool since it only ever runs once.
-2. **Run the tool for real, for the first `--program`/`--class-name` pair** --
-   the script itself is implemented and dry-run-verified; the first actual
-   (non-dry-run) invocation is a live write to a shared project and needs your
-   go-ahead, per this plan's own "Risks" section.
+   worth building into the reusable tool since it only ever runs once. Not yet
+   done -- the `test-dcc` pilot didn't need it (no naming collision, since old
+   folders are top-level and type-first while the new ones nest under a
+   program folder).
+2. **Register `Study`/`Resource`/`Schema`'s schemas and decide their
+   organization/rollout** -- only `AccessRequirement` has been registered and
+   piloted so far, per your explicit pilot scope. The other three classes'
+   `json_schemas/*.json` are regenerated with the same fixes but not yet
+   registered with Synapse.
+3. **Retire the `test-dcc` pilot infrastructure, or promote it** -- decide
+   whether `syn77583329`-`syn77583332` are cleaned up (this was a test) or
+   become the first real program's infrastructure once a real program name is
+   chosen.
