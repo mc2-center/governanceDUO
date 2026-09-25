@@ -111,43 +111,41 @@ LinkML-generated JSON Schema. So:
 is confirmed and wired in — there is currently no other way to get `Condition` data
 onto the graph, and removing it first would leave a hole with nothing to fill it.
 
-## Blocked on
+## Blocked on -- mostly resolved (2026-09-25)
 
 The overall mechanism is resolved (Curator Record Set bound to
-`json_schemas/AccessRequirement.json`); what's left is narrower, and entirely
-about how the sync reads that Record Set back out, not about what Record Sets are:
+`json_schemas/AccessRequirement.json`) and now **provisioned and live-piloted**,
+not just designed:
 
-1. **Which Synapse resource a Record Set actually is, precisely.** It's created
-   per curation task -- likely per program/DCC, the same per-program-folder
-   pattern `Study`/`Resource`/`Schema` submissions already use (README's
-   "Submitting metadata to the database": one subfolder per program under a
-   shared project). That means AR curation is probably **not one single, fixed
-   table** the way a per-entity API call is -- there may be one AR Record Set
-   per program. **`plans/synapse_curation_infrastructure.md` plans exactly the
-   fix for this**: a provisioning tool that keeps one unified `MaterializedView`
-   (a `UNION` over every program's AR Record Set) always current as new Record
-   Sets are created, so a sync run queries that one view, not per-program
-   tables it would otherwise have to discover.
-2. **The exact query.** Once the table(s) are known, reading a specific AR's row
-   is a Synapse Table Query (`POST /entity/{tableId}/table/query`, `SELECT * FROM
-   {tableId} WHERE <ar-id-column> = {id}`, or equivalent) -- a real, documented
-   Synapse API, but the exact column that holds the AR's id (and its type) is
-   unconfirmed, since Record Set columns come from the bound JSON Schema's own
-   property names (this repo's own `id` slot, presumably, but not yet checked
-   against a live-created Record Set).
-3. Whether a curator-filled Record Set row's shape round-trips cleanly through
-   `json_schemas/AccessRequirement.json` back into this class's own field names
-   (camelCase slot names, enum `meaning:` values for `dataUseModifiers`) without
-   translation -- likely yes, since the schema *is* generated from this class, but
-   not yet checked against a real Table Query response.
-
-None of these are design questions -- they're the same kind of "confirm the exact
-endpoint/shape against a live call" verification every other Synapse integration
-in this repo already went through (`plans/governance_graph_ingestion.md`'s own
-"Corrections from the prior pass" section is the precedent). **Next step is a
-live smoke test**: create one real (or sandboxed) AccessRequirement Record Set
-from `json_schemas/AccessRequirement.json`, fill one row, and run a Table Query
-against it.
+1. ~~Which Synapse resource a Record Set actually is, precisely.~~ **Resolved.**
+   `scripts/provision_curator_infrastructure.py` (`plans/synapse_curation_infrastructure.md`)
+   implements exactly the fix anticipated here: program-first folders, one
+   Record Set per program per class, and a unified `MaterializedView` (a
+   `UNION` over every program's Record Set for a class) kept current
+   automatically as new Record Sets are provisioned. Live-piloted end to end
+   (`--program test-dcc --class-name AccessRequirement`): folder, Record Set,
+   schema binding, `CurationTask`, `Grid`, `EntityView` folder index, and the
+   `AccessRequirement_RecordSets` `MaterializedView` (`SELECT * FROM
+   syn77583331`) were all created successfully. A sync run queries that one
+   view, not per-program tables it would otherwise have to discover.
+2. **The exact query -- partially resolved.** Reading a specific AR's row is a
+   Synapse Table Query against the unified view (`Table(id=view_id).query("SELECT
+   * FROM {view_id} WHERE id = {ar_id}", ...)`, the same non-deprecated API
+   confirmed live for direct Record Set queries earlier this session). The
+   column holding the AR's id **is confirmed to be `id`** (this class's own
+   primary-key slot, per `plans/synapse_curation_infrastructure.md`'s
+   `upsert_keys=["id"]` decision) -- not yet checked against a query filtered by
+   a real value, only an unfiltered `SELECT *` against the still-empty pilot
+   Record Set.
+3. **Still genuinely open**: whether a curator-filled Record Set row's shape
+   round-trips cleanly through `json_schemas/AccessRequirement.json` back into
+   this class's own field names (camelCase slot names, enum `meaning:` values
+   for `dataUseModifiers`) without translation. The schema-registration
+   round-trip is proven (the schema itself registers and binds correctly,
+   `plans/synapse_curation_infrastructure.md`'s "Run live, end to end"), but no
+   curator has filled in a real row yet -- the pilot Record Set is still empty.
+   This is the one remaining live-verification step before the sync script's
+   read side can be trusted.
 
 ## Code changes
 
@@ -179,14 +177,17 @@ isolated changes -- no design left to resolve):
    `--access-requirement-dir` fixture file with a fake Table Query response,
    same fake-Synapse-client pattern the rest of that fixture already uses.
 
-**Already done as part of this decision, not waiting on the Table Query
-mechanics** (pure documentation/schema-layer changes, 2026-09-25):
+**Already done**, updated as of 2026-09-25 to reflect the mechanism now being
+provisioned and live-piloted, not just designed:
 - `docs/use-cases.md`'s data-sources table and DUO-core section -- reframed
-  around the AR as authoritative source and a 100%-API goal; still shows one
-  "Gap" row, to close once the code changes above land.
-- `docs/graph-design.md`/`graph-design-implementation.md`'s "Curators author..."
-  framing -- forward-pointers added, not yet flipped to describe the new source
-  as current (correctly -- it isn't, yet).
+  around the AR as authoritative source and a 100%-API goal; rows now read
+  "Provisioned, sync pending" rather than "Gap," since the Record Set
+  mechanism itself is implemented and live-piloted -- only the sync script's
+  read side remains.
+- `docs/graph-design.md`/`graph-design-implementation.md`'s "Curators
+  author..." framing -- flipped to "ACT annotates..." now that the mechanism
+  is current, with the one remaining caveat (sync script read side not yet
+  written) stated explicitly rather than left as a forward-pointer.
 - `README.md` -- `schematic` deprecated throughout, `model/` archived,
   `make json-schemas` documented.
 

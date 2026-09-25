@@ -27,9 +27,9 @@ serves it.
 Getting there isn't one job — it's several intertwining workstreams, each feeding
 the same canonical graph rather than running independently: pulling ACLs, Access
 Requirements, submissions and approvals from Synapse's own API; capturing DUO
-conditions (today curator-authored; moving toward direct AR-level annotation, which
-folds this workstream into the Synapse pull above instead of running it separately —
-section 5); following Synapse's own provenance feature to compute what derived
+conditions (ACT now annotates the AR itself as a Curator Record Set row, provisioned
+and live-piloted — section 5 — folding this workstream into the Synapse pull above
+once the sync script's read side is written); following Synapse's own provenance feature to compute what derived
 content inherits; and projecting the result into the exact shape sagebrain-infra's
 ReBAC authorizer already expects, so none of this requires a change on its side.
 Section 2 shows how these workstreams and their owners fit together into one
@@ -115,7 +115,7 @@ one pipeline, owned across several parties:
 | Party | Role |
 |---|---|
 | **Synapse** | Source of truth for ACLs, ARs, submissions, approvals and provenance. |
-| **Curators** | Author the one thing Synapse doesn't store structurally: DUO conditions and data tier for each AR (section 4). |
+| **ACT** | Annotates the one thing Synapse doesn't store structurally: DUO conditions and data tier for each AR, directly on the AR itself as a Curator Record Set row (section 4). |
 | **governanceDUO** (this repo) | Defines the model, builds the canonical graph from Synapse and curator records, computes derivation labels, derives sagebrain-infra's authorizer contract as a projection, and publishes the versioned governance-layer ontology and shapes. |
 | **sagebrain-model** | Defines the domain graph (genes, samples, associations); imports this repository's published terms rather than copying them, and bridges its own derivation edge into PROV (section 8). |
 | **Neptune** | Holds the canonical graph, the domain graph and the projected authorizer contract together. The canonical and domain graphs join on shared IRIs; the projection is a separate, derived export in its own (old) namespace. |
@@ -130,7 +130,7 @@ top of all four.
 | Layer | Answers | Ontology basis | Built by |
 |---|---|---|---|
 | **Governance** | Who holds which permission; which ARs govern an entity, direct or through the container hierarchy; submissions and approvals | W3C Web Access Control + vCard (ACLs, teams); this repo's own vocabulary for everything else | Synced from Synapse (live), or the illustrative canonical example |
-| **Conditions** | What an AR demands, as DUO terms | Data Use Ontology (DUO) | Merged in from curator-authored AR records today; adopted direction is annotating the AR directly (`plans/ar_level_duo_annotations.md`), pending a confirmed Synapse mechanism |
+| **Conditions** | What an AR demands, as DUO terms | Data Use Ontology (DUO) | ACT annotates the AR directly, as a Curator Record Set row bound to this repo's own generated JSON Schema — provisioned and live-piloted (`plans/synapse_curation_infrastructure.md`); the sync script's read side is the one piece not yet written (`plans/ar_level_duo_annotations.md`) |
 | **Provenance** | What was computed from what, by which tool | W3C PROV-O | Synced from Synapse's own provenance feature |
 | **Derivation policy** | Which ARs a derived entity inherits; which combinations need review | This repository's own vocabulary | Computed from the three layers above |
 
@@ -191,11 +191,13 @@ having to re-derive the chain by hand. The full worked example, in RDF, is in
 The graph comes from three kinds of sources, described by one shared builder,
 checked before anything is trusted:
 
-- **Curators** author the one thing Synapse doesn't track in structured form today:
-  DUO conditions and a data tier for each Access Requirement. The adopted direction
-  is for ACT to annotate the Access Requirement directly instead, once a Synapse
-  mechanism for it is confirmed (`plans/ar_level_duo_annotations.md`) — curators
-  stay the source until then.
+- **ACT** annotates the one thing Synapse doesn't track in structured form otherwise:
+  DUO conditions and a data tier for each Access Requirement — directly on the AR
+  itself, as a row in a Curator Record Set bound to this repo's own generated JSON
+  Schema. That mechanism is provisioned and live-piloted
+  (`plans/synapse_curation_infrastructure.md`); the sync script still merges in the
+  older, separately-maintained local curator record until its Record Set read side
+  is written (`plans/ar_level_duo_annotations.md`).
 - **Synapse itself** is queried for everything else — ACLs, Access Requirements,
   submissions, approvals, and provenance — by scripts that describe what they
   found; they never invent facts or materialize inheritance themselves. A stale
@@ -211,11 +213,12 @@ checked before anything is trusted:
 
 That's four separate workstreams feeding one graph today: a curator-maintained
 record repository, a live Synapse pull, a derivation computation, and a
-projection. Once ACT's AR-level annotation lands, it drops to three — DUO
-conditions arrive in the same Synapse pull that already retrieves the AR, instead
-of needing their own separately-maintained source and submission process. That's
-the concrete shape of the simplification: one fewer moving part to keep in sync,
-not just less manual curation.
+projection. ACT's AR-level annotation mechanism has landed (provisioned and
+live-piloted); once the sync script's read side is written, it drops to three —
+DUO conditions arrive in the same Synapse pull that already retrieves the AR,
+instead of needing their own separately-maintained source and submission process.
+That's the concrete shape of the simplification: one fewer moving part to keep
+in sync, not just less manual curation.
 
 Everything generated this way is checked before it's trusted: every export
 validates against a machine-generated set of constraints (so the constraints can't
@@ -306,7 +309,7 @@ The same DUO-based records feed two other systems, each with its own page:
 | Graph-layer model, generated OWL/SHACL, validation and contract checks | Operational; run in CI |
 | Governance graph from examples | Operational; the canonical example is illustrative data |
 | Live governance and provenance sync | Implemented; tested offline, not yet run against live Synapse |
-| DUO conditions | Curator-authored; one real AR record in this repository |
+| DUO conditions | Curator Record Set mechanism provisioned and live-piloted (`test-dcc`); sync script's read side not yet written |
 | Derivation labels and reviews | Implemented and tested against a fixture; rule content is illustrative |
 | Projections (`authorizer_v1`/`authorizer_v1_teams`) | Operational; reproduces sagebrain-infra's existing authorizer contract unchanged |
 | Consumption by sagebrain-model and sagebrain-infra | Contract-checked here; see section 8 for the current check status |

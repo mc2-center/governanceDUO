@@ -22,6 +22,7 @@ workflow.
 | [`derivation_policy_export/`](derivation_policy_export/) | Generated Turtle export of computed `ControlLabel`/`DerivationReview` individuals (`make derivation-policy`) — see `linkml/graph/governance.yaml` and `plans/model_refactor.md` |
 | [`docs/`](docs/index.md) | The mkdocs documentation site — narrative pages plus an auto-generated schema reference (`make docs`); published to GitHub Pages via `.github/workflows/docs.yml` |
 | [`scripts/`](scripts/) | The Python build/export/validate scripts the `Makefile` drives |
+| [`scripts/provision_curator_infrastructure.py`](scripts/provision_curator_infrastructure.py) | Not Makefile-driven, and not read-only like everything else above: provisions real, live Synapse infrastructure (folders, Record Sets, curation tasks, a unified view) for a given program/class — see `plans/synapse_curation_infrastructure.md` |
 | [`plans/`](plans/) | Design plans for major changes to this repo, each with a companion `*_report.md` |
 | [`archive/`](archive/) | Legacy, pre-LinkML reference material kept for history — see the collapsed archive section below |
 
@@ -453,6 +454,7 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
    - [resources](https://www.synapse.org/Synapse:syn71723130)
    - [studies](https://www.synapse.org/Synapse:syn71723121)
    >**Note**: If a subfolder with the name of your program/DCC (e.g., "mc2", "elite") is not present in a folder linked above, please request that a new subfolder is created and configured to store your submissions.
+   >**Migration note**: these type-first folders are being superseded by an automated, program-first provisioning tool (`scripts/provision_curator_infrastructure.py` — folder, Record Set, curation task, and a unified queryable view, all created in one step; see `plans/synapse_curation_infrastructure.md`), live-piloted under a test program as of 2026-09-25. This section will be updated once the older folders are archived and the new tool is the documented path for every program.
 - Curation tasks associated with your program's records will be listed in the project [Metadata tab](https://www.synapse.org/Synapse:syn71723047/metadata/)
   - task names will use the format `program.dataType` (e.g., mc2.Study, adkp.Resource)
   - after accessing a task, record the requested metadata in the grid and allow it to validate

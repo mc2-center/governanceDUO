@@ -5,10 +5,13 @@ This page answers two questions this repo's other docs assume you already know:
 from**. The governing goal for the second question: every fact on the governance
 graph should be populated by a script talking to Synapse's own API, not typed by
 hand. Today there is exactly one exception to that — DUO conditions — and it's a
-gap being closed, not a permanent design: the adopted direction is for ACT to
-annotate the Access Requirement itself, read via the same API pull that already
-retrieves the AR (`plans/ar_level_duo_annotations.md`), not a separately maintained
-curator record.
+gap being closed, not a permanent design: ACT annotates the Access Requirement
+itself, as a row in a Curator Record Set bound to this repo's own generated JSON
+Schema (`scripts/provision_curator_infrastructure.py`, `scripts/build_json_schemas.py`),
+not a separately maintained local file. That Record Set mechanism is implemented
+and live-piloted (`plans/synapse_curation_infrastructure.md`); what's still
+missing is the read side — a sync script that pulls a specific AR's row back out
+(`plans/ar_level_duo_annotations.md`).
 
 ## What each part is for
 
@@ -66,7 +69,7 @@ there yet, and both are named explicitly rather than left implicit.
 
 | Component | Target source | Populated how, today |
 | --- | --- | --- |
-| DUO conditions (`Condition`/`dataUseModifiers`) | The AR itself, annotated by ACT, read in the same API pull that already retrieves the AR | **Gap.** A separately-maintained curator-authored record, merged in by `scripts/sync_governance_graph.py` — see `plans/ar_level_duo_annotations.md` for what's blocking the API-sourced version |
+| DUO conditions (`Condition`/`dataUseModifiers`) | The AR itself, annotated by ACT as a Curator Record Set row, bound to `json_schemas/AccessRequirement.json` | **Provisioned, sync pending.** The Record Set/schema mechanism is implemented and live-piloted (`plans/synapse_curation_infrastructure.md`); `scripts/sync_governance_graph.py` still merges in the older local curator-file record until the Record Set read side (`fetch_ar_record_set_row()`) is written — see `plans/ar_level_duo_annotations.md` |
 | Governance Graph (`SynapseEntity`/`Authorization`/`User`/`Team`/`AccessRequirement`/`Approval`/`DataAccessSubmission`) | Synapse's REST API — `GET /entity/{id}/path`, `.../acl`, `.../accessRequirement`, `POST /accessRequirement/{id}/submissions`, `POST /accessApproval/search` | `scripts/sync_governance_graph.py` — implemented, tested offline; not yet run against live Synapse credentials |
 | Provenance layer (`prov:Activity`/`prov:Usage`) | Synapse's provenance API, `GET /entity/{id}/generatedBy` | `scripts/sync_provenance_graph.py` — same status as above |
 | Derivation policy layer (`ControlLabel`/`DerivationReview`) | Computed from the governance and provenance layers above, plus AR data tiers | `scripts/build_derivation_policy.py` — fully computed, no separate source of its own |
@@ -84,8 +87,10 @@ provenance field; the table above is the summary.
   fake Synapse clients, not yet run against real Synapse credentials — no
   live-populated export exists today, only the illustrative canonical example
   (`make governance-graph`).
-- **DUO conditions**: the one real gap against the API-sourcing goal — see the
-  table above and [`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
+- **DUO conditions**: the Curator Record Set mechanism is implemented and
+  live-piloted; the one remaining gap against the API-sourcing goal is the sync
+  script's read side, not yet written — see the table above and
+  [`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
 - **Policy Fabric**: `make policy-fabric` is a manual, repo-maintainer-run command
   against one `AccessRequirement` example at a time — nothing triggers it
   automatically.
@@ -96,7 +101,7 @@ provenance field; the table above is the summary.
 
 | Component | Use case | Source today | Status |
 | --- | --- | --- | --- |
-| DUO conditions | Gate Synapse data access by DUO condition | Curator-authored record (the one gap against the API-sourcing goal) | **Gap** — `plans/ar_level_duo_annotations.md` is the adopted fix, blocked on a confirmed Synapse mechanism |
+| DUO conditions | Gate Synapse data access by DUO condition | Curator Record Set, bound to this repo's own generated JSON Schema | **Provisioned, sync pending** — mechanism implemented and live-piloted (`plans/synapse_curation_infrastructure.md`); `plans/ar_level_duo_annotations.md` tracks the remaining read-side sync code |
 | Governance Graph | Query "does this user have effective access to this resource?" | Synapse's REST API | **Implemented** — live sync tested offline only; contract-checked against sagebrain-infra's authorizer |
 | Provenance and Derivation Policy layers | Carry access labels onto derived content | Synapse's provenance API; computed | **Implemented** — tested offline and against a fixture |
 | Policy Fabric crosswalk | Make DUO conditions programmatically enforceable via an external system | One AR record + a static, verified binding table | **Operational, manual** — no automated trigger |
