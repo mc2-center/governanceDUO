@@ -49,13 +49,29 @@ This confirms the `synapseclient.models` surface to use throughout: `Folder`,
 `Table`/`SchemaStorageStrategy`, `MaterializedView`, and
 `synapseclient.operations.find_entity_id`.
 
-**One thing genuinely unconfirmed**: whether a Record Set is directly
-SQL-queryable by its own id (`SELECT * FROM {recordSetId}`), or whether
-`merge_tables.py`'s "copy into a companion `Table`" step is a required
-conversion, not just that team's own convention. This changes whether layer 1's
-`MaterializedView` unions Record Set ids directly or unions a set of
-kept-in-sync companion `Table`s. Confirm with a live test before building either
-way — don't assume.
+**Resolved by a live test (2026-09-25), against real Record Sets** (read-only —
+`nam-hub-models`' own `RECORD_SET_IDS`, e.g. `syn76403828`, no entities created;
+using the current, non-deprecated `synapseclient.models.Table` query API, the
+same one `merge_tables.py` itself uses elsewhere — not `syn.tableQuery()`/
+`syn.get()`, both deprecated as of 4.9.0/4.11.0):
+
+```python
+from synapseclient.models import Table
+Table(id="syn76403828").query(query="SELECT * FROM syn76403828 LIMIT 5", synapse_client=syn)
+# -> succeeds, returns the Record Set's own rows/columns directly (plus ROW_ID/ROW_VERSION)
+```
+
+**A Record Set *is* directly SQL-queryable by its own id.** No companion `Table`
+copy is required — this contradicts the initial hypothesis (that they couldn't
+be queried), and doesn't match what `merge_tables.py` does either. Since the
+direct query demonstrably works, `merge_tables.py`'s copy-into-a-`Table` step
+looks like either a workaround for a since-fixed limitation, or a
+schema-alignment step unrelated to bare queryability (its own Record Sets may
+have had inconsistent columns across programs, needing normalization before a
+`UNION` — not confirmed, and not this plan's concern to explain). **Layer 1's
+`MaterializedView` can `UNION` Record Set ids directly**:
+`defining_sql = " UNION ".join(f"SELECT * FROM {id}" for id in record_set_ids)`
+— no intermediate `Table` needed.
 
 ## Layer 2: provision a program's folder
 
@@ -68,6 +84,32 @@ mirroring the existing `requirements`/`resources`/`studies` folders README
 already documents), with one subfolder per program/DCC underneath, matching the
 existing convention exactly (`utils/make_folders.py`'s pattern, adapted to
 nest under one project rather than one-per-project).
+
+**Reviewed: program-first instead of type-first is possible, with one
+trade-off.** Both are ordinary nested `Folder`s — Synapse doesn't prefer either
+direction. The difference is entirely in how layer 1 finds "every Record Set of
+type X":
+
+- **Type-first** (above, matches the existing `requirements`/`resources`/
+  `studies` convention): layer 1 enumerates the children of *one known folder*
+  (the `AccessRequirement` type folder) to find every program's Record Set.
+  Simplest discovery path, and consistent with what's already there.
+- **Program-first** (`MC2/AccessRequirement`, `MC2/Study`, `ADKP/AccessRequirement`,
+  ...): better for a curator managing one program's full set of record types in
+  one place, but layer 1 now has to discover *every program's* folder first,
+  then find the `AccessRequirement` subfolder within each. That's not a blocker
+  — a project-scoped `EntityView` with `ViewTypeMask.FOLDER` gives a
+  live-updating, queryable index of every folder's `id`/`name`/`parentId`
+  project-wide (`SELECT id FROM {folderIndexView} WHERE name = 'AccessRequirement'`
+  finds every program's AR folder in one query) — but it's an extra piece of
+  infrastructure type-first doesn't need.
+
+Recommendation stays type-first, for consistency with the existing convention
+and because it needs no extra discovery infrastructure — but program-first is
+fully workable if DCC-facing ergonomics (one place per program) matter more
+than that consistency; the `EntityView` folder-index approach above is the way
+to build it if so. This is a workflow-ergonomics call, not a technical one —
+open for a decision either way.
 
 ## Layer 3: provision a Record Set + curation task in that folder
 
@@ -105,7 +147,7 @@ Record Sets the way an `EntityView` has for files (confirmed: `ViewTypeMask` has
 no `RECORDSET` value, so an `EntityView` can't be scoped to "every Record Set
 under this folder" directly). "Automatically wired" has to mean **the
 provisioning tool itself updates the view** as part of creating each new Record
-Set, not that Synapse does it unprompted:
+Set, not that Synapse does it unprompted -- **confirmed as the intended design**:
 
 1. `merge_tables.py`'s pattern: find every existing Record Set of this type
    under the type-level folder (`find_entity_id` per program, or a table/view
@@ -114,34 +156,62 @@ Set, not that Synapse does it unprompted:
    an existing view (same name/id) regenerates it in place, confirmed by
    `merge_tables.py`'s own docstring ("if table already exists, scope will be
    updated and table will be regenerated in-place").
-2. **The layer-3 provisioning step should call the layer-1 update as its last
-   step**, not leave it as a separate manual pass -- one tool, three ordered
+2. **Confirmed: the layer-3 provisioning step calls the layer-1 update as its
+   last step**, not left as a separate manual pass -- one tool, three ordered
    actions, not three independent tools a person has to remember to run in
    sequence.
 
 ## Proposed tool shape
 
-Given how closely this mirrors `mc2-center-dcc`'s existing scripts, there's a
-real question of **where this code should live** -- not answered here, flagged
-for a decision:
+**Resolved: this lives in governanceDUO, not `mc2-center-dcc`.** Reviewed and
+decided: this tooling is for a distinct purpose (provisioning *this repo's own*
+curated classes' infrastructure, keyed to `json_schemas/`, this repo's own
+generated artifact) from MC2's portal-metadata tooling, and may reasonably
+diverge from how `mc2-center-dcc`'s scripts work as this repo's own needs
+change -- coupling it to a different repo's per-datatype scripts risks exactly
+the kind of drift this repo has spent this whole session cleaning up elsewhere
+(stale cross-repo assumptions). This repo gains a live-Synapse-**write**
+capability it hasn't had before (`sync_governance_graph.py`/
+`sync_provenance_graph.py` only read) -- a real, deliberate expansion, not
+incidental; the "Risks" section below governs it.
 
-- **In `mc2-center-dcc`**, alongside `curator_tools/`/`utils/`/`portal_tables/`,
-  generalizing the existing per-script patterns to take a JSON Schema path/URI
-  and a class name as parameters instead of being written per-datatype. This
-  matches where the analogous, already-proven code lives today.
-- **In this repo**, since it's specifically about provisioning
-  `AccessRequirement` (and this repo's other curated classes') infrastructure,
-  and already owns `json_schemas/` generation. Would need its own
-  `synapseclient` dependency addition (not currently in `requirements.txt`) and
-  its own live-Synapse-write posture, which this repo has not had before now --
-  every existing Synapse-touching script here (`sync_governance_graph.py`,
-  `sync_provenance_graph.py`) only *reads*.
+Concretely:
 
-Recommendation: **`mc2-center-dcc`**, generalized, since it already owns this
-exact operational pattern for other datatypes and already carries the
-live-write posture and any associated access-control conventions; this repo
-stays read-only against Synapse, consistent with what it does today, and only
-supplies the schema (`json_schemas/`) the provisioning tool consumes.
+- **`requirements.txt`**: add `synapseclient>=4.9` (the version floor the
+  non-deprecated `Table.query`/`Folder`/`RecordSet`/`MaterializedView` API
+  needs; already `>=4.0` for the read-only sync scripts, so this is a floor
+  bump, not a new dependency).
+- **One script, `scripts/provision_curator_infrastructure.py`**, not three
+  separate ones -- matching the "one tool, three ordered actions" design above.
+  Follows this repo's existing script conventions (docstring-led, `warn()` for
+  non-fatal issues, argparse), and this repo's `graph_iris.py`-style discipline
+  of not hardcoding IRIs/ids inline:
+  ```
+  python scripts/provision_curator_infrastructure.py \
+      --class-name AccessRequirement --program MC2 \
+      --type-folder-id <existing "AccessRequirement" folder> \
+      --schema-uri <registered JSON Schema URI, from make json-schemas + registration> \
+      [--dry-run]
+  ```
+  Steps, in order, each logged and each individually skippable if already done
+  (idempotent -- re-running for a program that already has a folder/Record Set
+  should warn and continue, not fail or duplicate):
+  1. Layer 2: create (or find, if it already exists) `{program}` under
+     `--type-folder-id`.
+  2. Layer 3: bootstrap an empty CSV from the schema's own property titles
+     (this repo's own generated `json_schemas/{class_name}.json` -- reusing the
+     property-title-extraction approach `create_record_based_metadata_task.py`
+     already proved, not reimplementing it independently), create the
+     `RecordSet`, bind the schema, create the `CurationTask` +
+     `RecordBasedMetadataTaskProperties`, create the `Grid`.
+  3. Layer 1: enumerate every program subfolder's Record Set under
+     `--type-folder-id` (including the one just created), rebuild the
+     `MaterializedView`'s `defining_sql`, `store()` it in place.
+  - **`--dry-run`**: print every planned action (folder/Record Set/task/view
+    names and parent ids) without calling `.store()`/`.create()` on any of
+    them -- the read/plan phase and the write phase are cleanly separable, so a
+    person can review before anything live happens. Required by the "Risks"
+    section below, not optional.
 
 ## Risks -- read before any live execution
 
@@ -155,13 +225,26 @@ confirm with the user before the first real folder/Record Set/view gets
 created, the same way any destructive-or-shared-state action does. None of
 this has been executed -- this is a plan only, as asked.
 
-## Open questions to resolve before implementation
+## Resolved (2026-09-25)
 
-1. Record Set direct-SQL-query support (above) -- resolves whether layer 1
-   unions Record Sets directly or needs the companion-`Table` copy step.
-2. Where the tool lives (`mc2-center-dcc` vs. here).
-3. The AR Record Set's actual upsert/join key, confirmed against a real created
-   Record Set, not assumed from the schema alone.
-4. Per-program folder naming/discovery convention (exact name pattern
+1. ~~Record Set direct-SQL-query support.~~ **Confirmed live**: yes, directly
+   queryable by id, no companion `Table` needed.
+2. ~~Where the tool lives.~~ **This repo**, `scripts/provision_curator_infrastructure.py`.
+3. ~~Folder hierarchy.~~ **Type-first** (matches the existing convention),
+   program-first left open as a workflow-ergonomics choice, not a technical one.
+4. ~~Whether layer-3 auto-triggers the layer-1 rebuild.~~ **Confirmed**: yes,
+   one tool, ordered steps.
+
+## Still open before implementation
+
+1. The AR Record Set's actual upsert/join key, confirmed against a real created
+   Record Set, not assumed from the schema alone -- needs a live-created test
+   Record Set, not just a query against an existing unrelated one.
+2. Per-program folder naming/discovery convention (exact name pattern
    `find_entity_id` should search for), so a later sync can locate a specific
-   AR's row without a hardcoded table id.
+   AR's row without a hardcoded id -- depends on the folder-hierarchy choice
+   above being finalized.
+3. Where `--type-folder-id` for `AccessRequirement` itself comes from the first
+   time -- this plan assumes a type-level folder already exists to create
+   program subfolders under; provisioning that top-level folder itself (once,
+   manually or via this same tool with no `--program`) isn't yet described.
