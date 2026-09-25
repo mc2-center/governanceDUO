@@ -75,41 +75,34 @@ have had inconsistent columns across programs, needing normalization before a
 
 ## Layer 2: provision a program's folder
 
+**Decided: program-first**, not type-first. One folder per program/DCC at the
+top level; record-type subfolders (`AccessRequirement`, `Study`, `Resource`,
+`Schema`) are created within each program's folder to hold that class's Record
+Set:
+
 ```
-Folder(name="<program>", parent_id="<type-folder-id>").store(synapse_client=syn)
+Folder(name="<program>", parent_id="<programs-parent-id>").store(synapse_client=syn)   # once per program
+Folder(name="<class_name>", parent_id="<program-folder-id>").store(synapse_client=syn) # per program, per class
 ```
 
-One type-level folder per curated class (e.g. one "AccessRequirement" folder,
-mirroring the existing `requirements`/`resources`/`studies` folders README
-already documents), with one subfolder per program/DCC underneath, matching the
-existing convention exactly (`utils/make_folders.py`'s pattern, adapted to
-nest under one project rather than one-per-project).
+The trade-off this carries (discussed and accepted): layer 1 can no longer find
+"every Record Set of type X" by listing the children of one known folder — it
+has to discover *every program's* folder first, then find the matching
+class-named subfolder within each. Layer 1, below, covers exactly how.
 
-**Reviewed: program-first instead of type-first is possible, with one
-trade-off.** Both are ordinary nested `Folder`s — Synapse doesn't prefer either
-direction. The difference is entirely in how layer 1 finds "every Record Set of
-type X":
-
-- **Type-first** (above, matches the existing `requirements`/`resources`/
-  `studies` convention): layer 1 enumerates the children of *one known folder*
-  (the `AccessRequirement` type folder) to find every program's Record Set.
-  Simplest discovery path, and consistent with what's already there.
-- **Program-first** (`MC2/AccessRequirement`, `MC2/Study`, `ADKP/AccessRequirement`,
-  ...): better for a curator managing one program's full set of record types in
-  one place, but layer 1 now has to discover *every program's* folder first,
-  then find the `AccessRequirement` subfolder within each. That's not a blocker
-  — a project-scoped `EntityView` with `ViewTypeMask.FOLDER` gives a
-  live-updating, queryable index of every folder's `id`/`name`/`parentId`
-  project-wide (`SELECT id FROM {folderIndexView} WHERE name = 'AccessRequirement'`
-  finds every program's AR folder in one query) — but it's an extra piece of
-  infrastructure type-first doesn't need.
-
-Recommendation stays type-first, for consistency with the existing convention
-and because it needs no extra discovery infrastructure — but program-first is
-fully workable if DCC-facing ergonomics (one place per program) matter more
-than that consistency; the `EntityView` folder-index approach above is the way
-to build it if so. This is a workflow-ergonomics call, not a technical one —
-open for a decision either way.
+**Consistency with the existing production structure — resolved (2026-09-25).**
+README's "Submitting metadata to the database" documents `Study`/`Resource`/
+`Schema` folders that looked like existing production structure, type-first
+(`requirements`/`resources`/`studies`, real ids like `syn71723125`). **Per the
+user: these were placeholder content, never actually used in practice** — so
+there's no live migration to perform, just cleanup. Decision: the same project
+(`syn71723047`) is the basis for the new program-first folders for all four
+classes (`AccessRequirement`, `Study`, `Resource`, `Schema`); the old
+placeholder type-first folders are moved aside into an `ARCHIVED` folder within
+that project rather than migrated or deleted outright. This removes the
+two-hierarchies concern entirely — program-first now applies uniformly to
+every curated class from the start, and the layer-1 `EntityView` folder index
+applies the same way to all of them.
 
 ## Layer 3: provision a Record Set + curation task in that folder
 
@@ -117,26 +110,42 @@ Bootstrap an empty CSV from the schema's own property names (this repo's
 `json_schemas/<Class>.json`, not a hardcoded template), then:
 
 ```
-RecordSet(name=f"{program}_{class_name}_RecordSet", parent_id=folder_id,
-          path=<bootstrapped empty csv>, upsert_keys=[<class's id slot>]
+RecordSet(name=f"{class_name}_RecordSet", parent_id=class_folder_id,
+          path=<bootstrapped empty csv>, upsert_keys=["id"]
 ).store(synapse_client=syn)
 
 record_set.bind_schema(json_schema_uri=<registered schema uri>,
                        enable_derived_annotations=False)
 
-CurationTask(data_type=class_name, project_id=project_id,
-             instructions=<from this repo's own class docstring?>,
+CurationTask(data_type=class_name, project_id="syn71723047",
+             instructions=<synthesized from this repo's own docs, see below>,
              task_properties=RecordBasedMetadataTaskProperties(record_set_id=...)
 ).store(synapse_client=syn)
 
 Grid(record_set_id=...).create(synapse_client=syn)
 ```
 
-`upsert_keys`: for `AccessRequirement`, the natural key is whatever column
-carries the real Synapse AR's numeric id (`id`, per this class's own
-`slot_usage` pattern) -- confirm this is actually the column a curator fills in,
-not a separate Synapse-assigned row key, before relying on it as the join key
-`sync_governance_graph.py` would use to look up a specific AR's row.
+`project_id`, confirmed: `syn71723047` (the one shared project every program's
+folder lives under — same as `--programs-parent-id`, see Layer 2 and "Proposed
+tool shape" below).
+
+`instructions`, confirmed: synthesized from this repo's own docs rather than
+hand-written per class or left as a placeholder — e.g. each LinkML class's
+`description:` (already the source `gen-doc` renders into
+`docs/reference/classes/<Class>.md`), so the curation task's instructions and
+this repo's own generated documentation for that class stay in lockstep
+automatically as the schema evolves.
+
+Naming simplified from the type-first draft (`{program}_{class_name}_RecordSet`)
+to just `{class_name}_RecordSet` -- under program-first, the parent folder
+chain (`{program}/{class_name}/`) already encodes the program, so restating it
+in the Record Set's own name would be redundant.
+
+**`upsert_keys=["id"]`, confirmed** — the class's own `id` slot is the primary
+key in the schema (per this class's `slot_usage` pattern), and is what a
+curator actually fills in — not a separate Synapse-assigned row key. This is
+also the join key `sync_governance_graph.py` will use to look up a specific
+AR's row once it queries the layer-1 view.
 
 ## Layer 1: the unified view, and how "automatic wiring" actually works
 
@@ -149,14 +158,48 @@ under this folder" directly). "Automatically wired" has to mean **the
 provisioning tool itself updates the view** as part of creating each new Record
 Set, not that Synapse does it unprompted -- **confirmed as the intended design**:
 
-1. `merge_tables.py`'s pattern: find every existing Record Set of this type
-   under the type-level folder (`find_entity_id` per program, or a table/view
-   query if one already indexes them), build the `UNION`, and
+1. **Discovery, under program-first: an `EntityView` folder index, not a single
+   type-level folder listing.** Since a program-first hierarchy means every
+   program's `{class_name}` Record Set lives one level down inside that
+   program's own folder (`{program}/{class_name}/`), there's no single folder
+   whose direct children are "every program's Record Set of this type" to list
+   the way a type-first hierarchy would allow. Instead: one project-scoped
+   `EntityView` per class, `scope_ids=[<programs-parent-id>]`,
+   `view_type_mask=ViewTypeMask.FOLDER`, `add_default_columns=True` -- Synapse
+   `EntityView`s search their scope recursively (confirmed via
+   `EntityView.__doc__`: `scope_ids` are "container ids" the view indexes
+   through, matching the existing `DatasetView`/`PublicationView` precedent in
+   `create_id_folders.py`). Querying that view with `WHERE name = '{class_name}'`
+   returns every program's matching subfolder in one call; for each, look up its
+   child Record Set (`find_entity_id(name=f"{class_name}_RecordSet",
+   parent=folder_id)`) to get the ids the `UNION` needs.
+   **Confirmed live (2026-09-25), against `syn71723047`.** Created a throwaway
+   `EntityView` (`view_type_mask=ViewTypeMask.FOLDER`,
+   `scope_ids=["syn71723121"]` -- the `studies` folder, which has three real
+   nested subfolders: `elite`, `example`, `mc2`), queried it
+   (`Table(id=view.id).query("SELECT id, name, path FROM {view.id}")`), and got
+   back exactly the three nested subfolders (correctly excluding the scope root
+   itself):
+   ```
+        ROW_ID  ROW_VERSION           id     name                             path
+   0  71723050            1  syn71723050  example  ADA-PSI Records/studies/example
+   1  71723053            1  syn71723053    elite    ADA-PSI Records/studies/elite
+   2  71723056            1  syn71723056      mc2      ADA-PSI Records/studies/mc2
+   ```
+   The recursive scan works as designed. The throwaway view (`syn77582818`) was
+   deleted immediately after the query, leaving no trace in the project. One
+   gotcha caught along the way: `EntityView`'s constructor arg is
+   `include_default_columns`, not `add_default_columns`; and its default
+   columns don't include `parentId` -- `path` (e.g.
+   `"ADA-PSI Records/studies/example"`) is what's actually available to derive
+   ancestry from, not a direct parent-id column.
+2. Once the Record Set ids are known: `merge_tables.py`'s pattern applies as-is
+   -- build the `UNION`, and
    `MaterializedView(name=, parent_id=, defining_sql=).store()` -- `store()` on
    an existing view (same name/id) regenerates it in place, confirmed by
    `merge_tables.py`'s own docstring ("if table already exists, scope will be
    updated and table will be regenerated in-place").
-2. **Confirmed: the layer-3 provisioning step calls the layer-1 update as its
+3. **Confirmed: the layer-3 provisioning step calls the layer-1 update as its
    last step**, not left as a separate manual pass -- one tool, three ordered
    actions, not three independent tools a person has to remember to run in
    sequence.
@@ -189,24 +232,34 @@ Concretely:
   ```
   python scripts/provision_curator_infrastructure.py \
       --class-name AccessRequirement --program MC2 \
-      --type-folder-id <existing "AccessRequirement" folder> \
+      --programs-parent-id <project/folder every program's folder lives under> \
       --schema-uri <registered JSON Schema URI, from make json-schemas + registration> \
       [--dry-run]
   ```
+  `--programs-parent-id` replaces the earlier type-first draft's
+  `--type-folder-id`: under program-first, the program folder is the top-level
+  designation (created once, directly under this shared parent), and
+  record-type subfolders are created *within* it, not the other way around --
+  so there's no single "AccessRequirement folder" id to pass in; the class name
+  instead names the subfolder this tool creates inside each program's folder.
+
   Steps, in order, each logged and each individually skippable if already done
   (idempotent -- re-running for a program that already has a folder/Record Set
   should warn and continue, not fail or duplicate):
   1. Layer 2: create (or find, if it already exists) `{program}` under
-     `--type-folder-id`.
+     `--programs-parent-id`, then create (or find) `{class_name}` within that
+     program's folder.
   2. Layer 3: bootstrap an empty CSV from the schema's own property titles
      (this repo's own generated `json_schemas/{class_name}.json` -- reusing the
      property-title-extraction approach `create_record_based_metadata_task.py`
      already proved, not reimplementing it independently), create the
      `RecordSet`, bind the schema, create the `CurationTask` +
      `RecordBasedMetadataTaskProperties`, create the `Grid`.
-  3. Layer 1: enumerate every program subfolder's Record Set under
-     `--type-folder-id` (including the one just created), rebuild the
-     `MaterializedView`'s `defining_sql`, `store()` it in place.
+  3. Layer 1: query (or create, if it doesn't exist yet) the `{class_name}`
+     `EntityView` scoped to `--programs-parent-id` to discover every program's
+     `{class_name}` subfolder (including the one just created), resolve each to
+     its child Record Set id, rebuild the `MaterializedView`'s `defining_sql`,
+     `store()` it in place.
   - **`--dry-run`**: print every planned action (folder/Record Set/task/view
     names and parent ids) without calling `.store()`/`.create()` on any of
     them -- the read/plan phase and the write phase are cleanly separable, so a
@@ -230,21 +283,42 @@ this has been executed -- this is a plan only, as asked.
 1. ~~Record Set direct-SQL-query support.~~ **Confirmed live**: yes, directly
    queryable by id, no companion `Table` needed.
 2. ~~Where the tool lives.~~ **This repo**, `scripts/provision_curator_infrastructure.py`.
-3. ~~Folder hierarchy.~~ **Type-first** (matches the existing convention),
-   program-first left open as a workflow-ergonomics choice, not a technical one.
+3. ~~Folder hierarchy.~~ **Program-first**, confirmed: one folder per
+   program/DCC directly under a shared parent; record-type subfolders
+   (`AccessRequirement`, `Study`, `Resource`, `Schema`) created within each
+   program's folder. Discovery of "every program's Record Set of type X" uses a
+   project-scoped `EntityView` (`FOLDER` mask, queried by subfolder name), not a
+   listing of one type-level folder's children -- see Layer 1.
 4. ~~Whether layer-3 auto-triggers the layer-1 rebuild.~~ **Confirmed**: yes,
    one tool, ordered steps.
+5. ~~The AR Record Set's upsert/join key.~~ **Confirmed: `id`** -- the class's
+   own `id` slot is the schema's primary key and what a curator actually fills
+   in, not a separate Synapse-assigned row key.
+6. ~~Study/Resource/Schema folder migration.~~ **No migration needed** -- the
+   existing type-first folders were placeholder content, never used in
+   practice. Same project (`syn71723047`), old folders moved into an
+   `ARCHIVED` folder, new program-first folders built fresh for all four
+   classes uniformly.
+7. ~~The `--programs-parent-id` value.~~ **Confirmed: `syn71723047`** -- the
+   same project the placeholder folders live in.
+8. ~~`CurationTask.instructions` text source.~~ **Confirmed: synthesized from
+   this repo's own docs** (class docstrings / `docs/` content), not
+   hand-written per class or left as a placeholder.
+
+## Resolved (2026-09-25, continued)
+
+9. ~~Live-verify the `EntityView` folder-index recursive scan.~~ **Confirmed
+   live**, against `syn71723047`'s `studies` folder -- see Layer 1 above for
+   the result and the `include_default_columns`/`path`-not-`parentId` gotchas
+   caught along the way.
 
 ## Still open before implementation
 
-1. The AR Record Set's actual upsert/join key, confirmed against a real created
-   Record Set, not assumed from the schema alone -- needs a live-created test
-   Record Set, not just a query against an existing unrelated one.
-2. Per-program folder naming/discovery convention (exact name pattern
-   `find_entity_id` should search for), so a later sync can locate a specific
-   AR's row without a hardcoded id -- depends on the folder-hierarchy choice
-   above being finalized.
-3. Where `--type-folder-id` for `AccessRequirement` itself comes from the first
-   time -- this plan assumes a type-level folder already exists to create
-   program subfolders under; provisioning that top-level folder itself (once,
-   manually or via this same tool with no `--program`) isn't yet described.
+1. **Archiving the old placeholder folders and creating the fresh program-first
+   ones** -- not yet executed. Now that the `EntityView` discovery mechanism is
+   confirmed live, this is the one remaining real, visible-to-others write:
+   move `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED`
+   folder under `syn71723047`, then build the new program-first tree. Needs a
+   `--dry-run` review pass before anything is moved or created, same as any
+   other live provisioning step -- this is the actual implementation work,
+   covered by `scripts/provision_curator_infrastructure.py` once written.
