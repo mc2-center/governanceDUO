@@ -62,17 +62,19 @@ step 3). At that point:
   source. `scripts/sync_governance_graph.py`'s `add_access_requirements()` reads
   conditions directly off the AR it's already iterating, instead of looking up a
   matching file under a curator directory.
-- The conditional-JSON-schema mechanism `docs/use-cases.md`'s "submission
-  pipeline" section describes (`generate_duo_schema.py`, a conditional schema bound
-  to a folder, deriving an AR's annotation from matching entity annotations) was
-  never actually put into practice — confirmed by the user, 2026-09-24, and
+- The conditional-JSON-schema mechanism `docs/use-cases.md` used to describe under
+  a "submission pipeline" section (`generate_duo_schema.py`, a conditional schema
+  bound to a folder, deriving an AR's annotation from matching entity annotations)
+  was never actually put into practice — confirmed by the user, 2026-09-24, and
   consistent with `plans/governance_graph_ingestion.md`'s own ground rules calling
   the same framework "archived... a pilot process being superseded, not a design to
-  stay compatible with." It should be documented as deprecated/never-shipped, not
-  as an active in-development effort this decision now supersedes. This decision is
-  simply the real path DUO conditions take once it exists — there was no prior
-  working mechanism to replace. Curator Record Sets / CSV+`schematic` submission of
-  `Study`/`Resource`/`Schema` records generally is a separate, unaffected concern.
+  stay compatible with." It was never an active in-development effort this decision
+  supersedes; there was no prior working mechanism to replace. `docs/use-cases.md`
+  was rewritten (2026-09-25) to drop that section entirely and reframe around the
+  AR as the authoritative DUO source with a 100%-API-sourcing goal, rather than
+  leaving the deprecated mechanism documented as a still-current effort. Curator
+  Record Sets / CSV+`schematic` submission of `Study`/`Resource`/`Schema` records
+  generally is a separate, unaffected concern -- not part of that rewrite.
 - This is a straightforward net simplification for governanceDUO's own pipeline:
   we already fetch every AR an entity has; the change is fetching one more field
   (or set of fields) off an object we already hold, not adding a new class of
@@ -114,10 +116,12 @@ resolvable from this repo alone.
    new source covers every AR the sync needs (or keep both, warn-don't-block, for
    an AR the new mechanism hasn't been applied to yet — a migration-period
    decision to make at that time, not now).
-4. Update `docs/use-cases.md`'s DUO-core/submission-pipeline sections,
-   `docs/graph-design.md`/`graph-design-implementation.md`'s "Curators author..."
-   framing, and this plan's own status, all of which currently describe the
-   curator-authored-record design as current.
+4. Update `docs/use-cases.md`'s data-sources table (already reframed around the
+   AR as authoritative source and a 100%-API goal, 2026-09-25 -- just needs its
+   one remaining "Gap" row closed), `docs/graph-design.md`/
+   `graph-design-implementation.md`'s "Curators author..." framing, and this
+   plan's own status, all of which currently describe the curator-authored-record
+   design as current.
 5. Report, the same way `plans/model_refactor_report.md` reports on
    `plans/model_refactor.md`: what changed, exact check results, anything left
    unverified against live Synapse.

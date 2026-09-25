@@ -318,7 +318,7 @@ The same DUO-based records feed two other systems, each with its own page:
 | Every class, predicate, IRI, script and Makefile target — the same material as this page, at full technical depth | [Technical implementation](graph-design-implementation.md) |
 | The RDF artifacts themselves, file by file: what generates each one and what validates it | [Knowledge graph representation](knowledge-graph.md) |
 | Module layout and LinkML conventions | [The LinkML model](linkml-model.md) |
-| Data sources and the submission pipeline | [Use cases](use-cases.md) |
+| Use cases and where each part's data actually comes from | [Use cases and data sources](use-cases.md) |
 | Every class, slot and enum | [Schema reference](reference/index.md) |
 | Changes identified for other repositories, not made here | [Downstream changes](downstream_changes.md) |
 | The graph-layer refactor itself: what changed, why, and its verification | [`plans/model_refactor.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/model_refactor.md), [`plans/model_refactor_report.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/model_refactor_report.md) |

@@ -1,36 +1,32 @@
-# Use cases, data sources, and the submission pipeline
+# Use cases and data sources
 
-This page answers three questions this repo's other docs assume you already know
-the answer to: **what is this model for**, **where is the data supposed to come
-from**, and **is there an actual pipeline that gets it there today**. The short
-version: the DUO-core model has a real, operational record-submission pipeline
-(one earlier piece of it, deriving AR annotations from entity annotations via a
-conditional schema, was never put into practice and is deprecated); the Governance
-Graph's live-Synapse sync is implemented
-and tested offline but hasn't been run against real Synapse credentials yet; the
-Policy Fabric crosswalk is operational but manually triggered; DRS interoperability
-is a design document with no data or pipeline at all. Details below.
+This page answers two questions this repo's other docs assume you already know:
+**what is each part of this model for**, and **where does its data actually come
+from**. The governing goal for the second question: every fact on the governance
+graph should be populated by a script talking to Synapse's own API, not typed by
+hand. Today there is exactly one exception to that — DUO conditions — and it's a
+gap being closed, not a permanent design: the adopted direction is for ACT to
+annotate the Access Requirement itself, read via the same API pull that already
+retrieves the AR (`plans/ar_level_duo_annotations.md`), not a separately maintained
+curator record.
 
 ## What each part is for
 
 ### DUO-core model — gating access to Synapse data by DUO condition
 
-The core use case, per the root [`README.md`](https://github.com/mc2-center/governanceDUO/blob/main/README.md): DUO ("Data Use
-Ontology") tags let Sage Bionetworks programs semantically describe *how* a dataset
-may be used, then have Synapse automatically gate access to that data based on those
-tags. The adopted direction for how an entity ends up governed by a DUO-tagged
-**Access Requirement (AR)** is annotation on the AR itself, applied once by ACT and
-inherited by every entity the AR is assigned to — not a human manually configuring
-access per-entity, and not (an earlier, deprecated design) deriving the AR's
-annotation from tags already applied to entities beneath it; see
-[`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
-ARs come in two flavors: a **clickwrap** (the user just agrees to terms) or a
-**managed AR**,
-which can demand evidence of Authentication (training certification, profile
-validation, two-factor auth) and/or Authorization (an intended-data-use statement, a
-data use certificate, an IRB/IEC ethics approval letter). `Study`/`Resource`/`Schema`
-exist to give an AR the context it needs — which grant/data source it belongs to,
-which Synapse containers it governs, which registered JSON schema encodes it.
+DUO ("Data Use Ontology") tags let Sage Bionetworks programs semantically describe
+*how* a dataset may be used, then have Synapse automatically gate access to that
+data based on those tags. The **Access Requirement (AR)** is the authoritative
+source for this: ACT annotates the AR directly with its DUO conditions, and every
+entity the AR governs inherits the annotation the same way it inherits the AR
+itself — not a per-entity annotation, and not derived from annotations on entities
+beneath it (`plans/ar_level_duo_annotations.md`). ARs come in two flavors: a
+**clickwrap** (the user just agrees to terms) or a **managed AR**, which can demand
+evidence of Authentication (training certification, profile validation,
+two-factor auth) and/or Authorization (an intended-data-use statement, a data use
+certificate, an IRB/IEC ethics approval letter). `Study`/`Resource`/`Schema` give
+an AR the context it needs — which grant/data source it belongs to, which Synapse
+containers it governs, which registered JSON schema encodes it.
 
 ### Governance Graph — a queryable model of *effective* access
 
@@ -62,85 +58,46 @@ Repository Service API's object/authorization semantics, so that a future DRS-fa
 integration wouldn't have to invent that mapping from scratch. It is explicitly a
 **design document only** — this repo does not expose a DRS API today.
 
-## Intended data sources
+## Data sources
 
-| Component | Intended data source | What actually populates it today |
+The target for every row below is Synapse's own REST API, or a computation over
+data that itself came from that API — never a hand-typed file. Two rows aren't
+there yet, and both are named explicitly rather than left implicit.
+
+| Component | Target source | Populated how, today |
 | --- | --- | --- |
-| DUO-core model (`AccessRequirement`/`Resource`/`Study`/`Schema`) | Program/DCC curators, submitting via a dedicated Synapse Project | **Real curator submissions** — see the pipeline below |
-| Governance Graph (`SynapseEntity`/`Authorization`/`User`/`Team`/`AccessRequirement`/`Approval`/`DataAccessSubmission`) | Synapse's own REST API — `GET /entity/{id}/path`, `.../acl`, `.../accessRequirement`, `POST /accessRequirement/{id}/submissions`, `POST /accessApproval/search` — every class/slot was verified against these real Synapse endpoints so the sync can populate it faithfully | Illustrative example instances (`linkml/examples/graph/*.example.yaml`, built by `make governance-graph`), and `scripts/sync_governance_graph.py`, which builds the same layers from Synapse's REST API for listed entities — implemented and tested offline, not yet run against live Synapse |
-| Policy Fabric crosswalk data (`policy_fabric_bindings.yaml`) | Not per-record data at all — a static, hand-curated lookup table (21 rows, one per verified Policy Fabric `policy_card`), verified directly against `hasan7n/tmp-policies`'s own `policy.rego`/`policy_data_schema.json` files | Same — this is reference data, checked in once and updated only if Policy Fabric's own `policy_cards/` change |
-| Policy Fabric *per-record* inputs (`scripts/build_policy_fabric.py`'s actual argument) | A single existing `AccessRequirement` instance's `dataUseModifiers` and companion slots (`assetBindings`, `trustedIssuerDids`, `institutionDids`, ...) | Whatever `AccessRequirement` record a maintainer points the script at — today, always one of the hand-authored examples under `linkml/examples/` |
-| Provenance layer (`prov:Activity`/`prov:Usage`, part of the same graph schema as Governance above) | Synapse's provenance API (`GET /entity/{id}/generatedBy`) | Illustrative examples (`linkml/examples/graph/`), and `scripts/sync_provenance_graph.py` for listed entities — tested offline, not yet run against live Synapse |
-| Derivation policy layer (`ControlLabel`/`DerivationReview`, also part of the same graph schema) | Computed from the graph's governance and provenance content plus curated AR tiers (`scripts/build_derivation_policy.py`) | Computed from the example graph; `DerivationRule` content is illustrative |
-| DRS alignment (`drs_alignment.yaml`) | N/A | Nothing — no populated instances exist; it's a mapping schema plus one hand-written illustrative example in `docs/drs-interop.md` |
+| DUO conditions (`Condition`/`dataUseModifiers`) | The AR itself, annotated by ACT, read in the same API pull that already retrieves the AR | **Gap.** A separately-maintained curator-authored record, merged in by `scripts/sync_governance_graph.py` — see `plans/ar_level_duo_annotations.md` for what's blocking the API-sourced version |
+| Governance Graph (`SynapseEntity`/`Authorization`/`User`/`Team`/`AccessRequirement`/`Approval`/`DataAccessSubmission`) | Synapse's REST API — `GET /entity/{id}/path`, `.../acl`, `.../accessRequirement`, `POST /accessRequirement/{id}/submissions`, `POST /accessApproval/search` | `scripts/sync_governance_graph.py` — implemented, tested offline; not yet run against live Synapse credentials |
+| Provenance layer (`prov:Activity`/`prov:Usage`) | Synapse's provenance API, `GET /entity/{id}/generatedBy` | `scripts/sync_provenance_graph.py` — same status as above |
+| Derivation policy layer (`ControlLabel`/`DerivationReview`) | Computed from the governance and provenance layers above, plus AR data tiers | `scripts/build_derivation_policy.py` — fully computed, no separate source of its own |
+| Policy Fabric crosswalk table (`policy_fabric_bindings.yaml`) | Not a graph-population concern — a static, hand-verified lookup table (21 rows, one per Policy Fabric `policy_card`), checked directly against `hasan7n/tmp-policies`'s own files | Reference data, checked in once and updated only if Policy Fabric's own `policy_cards/` change |
+| Policy Fabric per-record input (`scripts/build_policy_fabric.py`'s argument) | A single `AccessRequirement`'s `dataUseModifiers` and companion slots | Whichever `AccessRequirement` a maintainer points the script at |
+| DRS alignment (`drs_alignment.yaml`) | N/A — design-only | No populated instances; one hand-written illustrative example in `docs/drs-interop.md` |
 
-## The submission pipeline (what's real today)
+`plans/governance_graph_ingestion.md` has the full source-endpoint design (which
+endpoint, in what order, under which credential) for every Governance Graph and
+provenance field; the table above is the summary.
 
-```mermaid
-flowchart TD
-    curator["Program / DCC curator"]
-    synproj["Synapse Project syn71723047\n(per-program folders: requirements / resources / studies)"]
-    task["Curation task\n(named program.dataType, e.g. mc2.Study)"]
-    records["Study / Resource / AccessRequirement / Schema\nrecords"]
+## Operational status
 
-    curator -->|"Curator Record Sets,\nor CSV + schematic CLI"| synproj
-    synproj --> task
-    task --> records
-```
-
-Two supported ways to get `Study`/`Resource`/`AccessRequirement`/`Schema` records into
-Synapse today (per the root README's collapsed archive section, "Submitting metadata
-to the database"):
-
-1. **Curator Record Sets** — bind the relevant registered JSON schema to the target
-   folder, create a Record Set + curation task, fill rows in the grid UI (or upload a
-   CSV into it), and select "Apply Changes."
-2. **CSV + `schematic` CLI** — fill a downloaded CSV template (or a Google Sheet
-   template copy) one sheet per Synapse Project, validate it
-   (`schematic model validate`), then submit it (`schematic model submit`, upsert
-   mode) to the target folder.
-
-Either way, records land in one of three per-program folders under a single, shared
-Synapse Project.
-
-**Deprecated, never put into practice: deriving an AR's DUO annotation from a
-conditional JSON schema bound to a folder.** An earlier design
-(`access_requirement_JSON/README.md`'s Data Dictionary CSV feeding an external
-script, `generate_duo_schema.py`, to emit a schema that would bind to a folder and
-derive the AR's annotation from matching entity annotations) never shipped as a
-working end-to-end flow — confirmed by the user, 2026-09-24, and consistent with
-`plans/governance_graph_ingestion.md`'s own framing of that same
-`generate_duo_schema.py` framework as "archived... a pilot process being
-superseded, not a design to stay compatible with." Don't read the root README's
-"🚧 Content in development 🚧" marker as an active effort; nothing has picked it up
-since. The adopted go-forward direction for how DUO conditions reach an Access
-Requirement is the opposite of this design — annotate the AR directly, not derive
-its annotation from entities beneath it — see
-[`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
-
-## What's implemented but not yet run live, or has no pipeline at all
-
-- **Governance Graph**: `scripts/sync_governance_graph.py` and
-  `scripts/sync_provenance_graph.py` implement the live-Synapse pull and are tested
-  offline against fake Synapse clients, but neither has been run against a real
-  Synapse credential yet, so no live-populated export exists today — only the
-  illustrative canonical example (`make governance-graph`). See
-  [`plans/governance_graph_ingestion.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/governance_graph_ingestion.md)
-  for the source-endpoint design this implementation follows, how it bridges to
-  Policy Fabric/DUO-core outputs, and which attributes need curator-spreadsheet
-  input instead of a live Synapse pull.
+- **Governance Graph and provenance sync**: implemented, tested offline against
+  fake Synapse clients, not yet run against real Synapse credentials — no
+  live-populated export exists today, only the illustrative canonical example
+  (`make governance-graph`).
+- **DUO conditions**: the one real gap against the API-sourcing goal — see the
+  table above and [`plans/ar_level_duo_annotations.md`](https://github.com/mc2-center/governanceDUO/blob/main/plans/ar_level_duo_annotations.md).
 - **Policy Fabric**: `make policy-fabric` is a manual, repo-maintainer-run command
-  against one `AccessRequirement` example at a time — nothing in the curator
-  submission flow above automatically triggers it when a new AR record is submitted.
+  against one `AccessRequirement` example at a time — nothing triggers it
+  automatically.
 - **DRS interoperability**: no pipeline, no server, no populated data — see
   [DRS interoperability](drs-interop.md)'s own "What this page is not" section.
 
 ## Summary
 
-| Component | Use case | Data source status | Pipeline status |
+| Component | Use case | Source today | Status |
 | --- | --- | --- | --- |
-| DUO-core model | Gate Synapse data access by DUO condition, scaled across programs | Real curator submissions | **Operational** (record submission); the conditional-schema-generation approach to deriving AR annotations is **deprecated, never shipped** — see `plans/ar_level_duo_annotations.md` for the adopted direction |
-| Governance Graph | Query "does this user have effective access to this resource?" | Verified against Synapse's REST API | **Implemented** — live sync tested offline only; contract-checked against sagebrain-infra's authorizer |
-| Provenance and Derivation Policy Graphs | Carry access labels onto derived content | Synapse provenance API; curated AR tiers | **Implemented** — tested offline and against a fixture |
+| DUO conditions | Gate Synapse data access by DUO condition | Curator-authored record (the one gap against the API-sourcing goal) | **Gap** — `plans/ar_level_duo_annotations.md` is the adopted fix, blocked on a confirmed Synapse mechanism |
+| Governance Graph | Query "does this user have effective access to this resource?" | Synapse's REST API | **Implemented** — live sync tested offline only; contract-checked against sagebrain-infra's authorizer |
+| Provenance and Derivation Policy layers | Carry access labels onto derived content | Synapse's provenance API; computed | **Implemented** — tested offline and against a fixture |
 | Policy Fabric crosswalk | Make DUO conditions programmatically enforceable via an external system | One AR record + a static, verified binding table | **Operational, manual** — no automated trigger |
 | DRS alignment | Forward-looking interoperability design | N/A | **Design-only** |
