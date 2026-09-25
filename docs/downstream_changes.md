@@ -11,13 +11,17 @@ sagebrain-infra keeps reading the contract it already has.
 
 None of the items below are prerequisites for anything in this repository.
 They are recorded here so the work isn't lost, and so whoever picks each one up
-in the other repository knows why it matters.
+in the other repository knows why it matters. Status, checked against each
+repository directly (2026-09-25): **sagebrain-infra** — still open, unchanged;
+**sagebrain-model** — done, on a branch not yet merged; **w3id** — still open,
+unfiled.
 
-## sagebrain-infra
+## sagebrain-infra — still open
 
-The authorizer (`src/lambda_rebac/authorize.py`, commit `fc6de51`) can, at its
-own pace, move off the pinned `authorizer_v1` compatibility contract and onto
-the canonical graph directly:
+The authorizer's `policy-engine` branch (`origin/policy-engine`) hasn't moved
+past the pinned commit, `fc6de51`, since this list was written. At its own pace,
+`src/lambda_rebac/authorize.py` can move off the pinned `authorizer_v1`
+compatibility contract and onto the canonical graph directly:
 
 - Read the current namespace (`https://w3id.org/synapse/governance#`), or keep
   reading `authorizer_v1` — either is fine as long as one of them is pinned and
@@ -45,21 +49,22 @@ the canonical graph directly:
   sagebrain-infra is corrected — this repo's copy is a verbatim mirror and
   should not diverge from it.
 
-## sagebrain-model
+## sagebrain-model — done, on a branch not yet merged to `main`
 
-- Re-point `scripts/import.sh` at this repository's single graph TBox and
-  shape set (`shapes/governance.owl.ttl`, `shapes/governance.shacl.ttl`) and
-  adopt the current namespace (`https://w3id.org/synapse/governance#`). As of
-  this repository's `HEAD`, this has been done — see sagebrain-model's own
-  `plans/governance_layer_realignment.md` — but the pin will drift again the
-  next time this repository's graph layer changes; `make sagebrain-contract-check`
-  is what catches that.
-- Drop `gov:SynapseEntity`'s `skos:closeMatch prov:Entity`, which sagebrain-model
-  previously asserted on this repository's behalf. This repository now declares
-  it directly (`linkml/graph/governance.yaml`'s `SynapseEntity.close_mappings`),
-  so sagebrain-model's own copy is a duplicate, not a gap-filler.
+Both items below are complete, verified directly against sagebrain-model's
+`governance-layer-import` branch (2026-09-25) — but that branch is not an
+ancestor of `origin/main` yet, so this counts as done-in-progress, not shipped:
 
-## w3id
+- ~~Re-point `scripts/import.sh` at this repository's single graph TBox and
+  shape set, and adopt the current namespace.~~ **Done** — see
+  `plans/governance_layer_realignment.md` on that branch. The pin will drift
+  again the next time this repository's graph layer changes regardless;
+  `make sagebrain-contract-check` is what catches that, on both sides.
+- ~~Drop `gov:SynapseEntity`'s `skos:closeMatch prov:Entity`.~~ **Done**,
+  commit `63564c0` ("sagebrain.ttl: drop the gov:SynapseEntity closeMatch
+  governanceDUO now asserts").
+
+## w3id — still open
 
 - **R1** (`plans/model_refactor.md`) chose `https://w3id.org/synapse/governance#`
   as the graph layer's namespace. Resolving it needs a w3id redirect entry (an

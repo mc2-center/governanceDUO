@@ -2,11 +2,11 @@ nav:
   - index.md
   - graph-design.md
   - use-cases.md
-  - downstream_changes.md
   - Deep reference:
       - graph-design-implementation.md
       - knowledge-graph.md
       - linkml-model.md
       - policy-fabric.md
       - drs-interop.md
+      - downstream_changes.md
       - reference
