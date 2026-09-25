@@ -117,14 +117,17 @@ The overall mechanism is resolved (Curator Record Set bound to
 `json_schemas/AccessRequirement.json`); what's left is narrower, and entirely
 about how the sync reads that Record Set back out, not about what Record Sets are:
 
-1. **Which Synapse resource a Record Set actually is, precisely.** It's a Synapse
-   Table under the hood, created per curation task -- likely per program/DCC, the
-   same per-program-folder pattern `Study`/`Resource`/`Schema` submissions already
-   use (README's "Submitting metadata to the database": one subfolder per
-   program under a shared project). That means AR curation is probably **not one
-   single, fixed table** the way a per-entity API call is -- there may be one AR
-   Record Set table per program. Unconfirmed: how a sync run resolves "which
-   table(s) hold this AR's row" given only the AR's id.
+1. **Which Synapse resource a Record Set actually is, precisely.** It's created
+   per curation task -- likely per program/DCC, the same per-program-folder
+   pattern `Study`/`Resource`/`Schema` submissions already use (README's
+   "Submitting metadata to the database": one subfolder per program under a
+   shared project). That means AR curation is probably **not one single, fixed
+   table** the way a per-entity API call is -- there may be one AR Record Set
+   per program. **`plans/synapse_curation_infrastructure.md` plans exactly the
+   fix for this**: a provisioning tool that keeps one unified `MaterializedView`
+   (a `UNION` over every program's AR Record Set) always current as new Record
+   Sets are created, so a sync run queries that one view, not per-program
+   tables it would otherwise have to discover.
 2. **The exact query.** Once the table(s) are known, reading a specific AR's row
    is a Synapse Table Query (`POST /entity/{tableId}/table/query`, `SELECT * FROM
    {tableId} WHERE <ar-id-column> = {id}`, or equivalent) -- a real, documented
