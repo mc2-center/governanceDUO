@@ -312,13 +312,33 @@ this has been executed -- this is a plan only, as asked.
    the result and the `include_default_columns`/`path`-not-`parentId` gotchas
    caught along the way.
 
+## Implemented (2026-09-25)
+
+`scripts/provision_curator_infrastructure.py` now implements all three layers
+(folders, Record Set + curation task, unified view) for a given
+`--program`/`--class-name` pair -- reviewed (an independent SME-framed pass
+caught a temp-file leak under `--dry-run`, a too-low `synapseclient` version
+floor, and this section's own scope wording, all fixed) and `--dry-run`
+live-verified against `syn71723047` with zero writes.
+
+**Scope correction, caught in review:** this script provisions *new*
+program-first infrastructure -- it does not touch, move, or archive anything.
+Earlier drafts of this section implied the script would also archive the old
+placeholder folders; that's wrong. Archiving is a separate, one-time cleanup
+action (move `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED`
+folder under `syn71723047`), not something the reusable per-program/class tool
+does or should do.
+
 ## Still open before implementation
 
-1. **Archiving the old placeholder folders and creating the fresh program-first
-   ones** -- not yet executed. Now that the `EntityView` discovery mechanism is
-   confirmed live, this is the one remaining real, visible-to-others write:
-   move `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED`
-   folder under `syn71723047`, then build the new program-first tree. Needs a
-   `--dry-run` review pass before anything is moved or created, same as any
-   other live provisioning step -- this is the actual implementation work,
-   covered by `scripts/provision_curator_infrastructure.py` once written.
+1. **Archive the old placeholder folders** -- a one-time, separate action (not
+   performed by `provision_curator_infrastructure.py`): move
+   `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED` folder
+   under `syn71723047`. Can be done by hand in the Synapse UI, or with a short
+   throwaway snippet (`Folder(name="ARCHIVED", parent_id="syn71723047").store()`
+   then `Folder(id=<each>).parent_id = <archived id>` / `.store()`) -- not
+   worth building into the reusable tool since it only ever runs once.
+2. **Run the tool for real, for the first `--program`/`--class-name` pair** --
+   the script itself is implemented and dry-run-verified; the first actual
+   (non-dry-run) invocation is a live write to a shared project and needs your
+   go-ahead, per this plan's own "Risks" section.

@@ -179,13 +179,13 @@ def provision_record_set(
     existing_id = operations.find_entity_id(name=record_set_name, parent=class_folder_id, synapse_client=syn)
     if existing_id:
         warn(f"[layer 3] Record Set '{record_set_name}' already exists ({existing_id}); "
-             "assuming its CurationTask and Grid already exist too, skipping the rest of layer 3.")
+             "assuming its CurationTask and Grid already exist too, skipping the rest of layer 3. "
+             "If a prior run created this Record Set but failed before creating its CurationTask/Grid, "
+             "this script cannot detect or repair that -- check the Synapse project manually.")
         return existing_id
 
-    csv_path = bootstrap_csv(class_name, JSON_SCHEMA_DIR)
-    instructions = curation_instructions(class_name, LINKML_SCHEMA)
     print(f"PLAN [layer 3]: CREATE RecordSet(name={record_set_name!r}, parent_id={class_folder_id}, "
-          f"path={csv_path}, upsert_keys={UPSERT_KEYS})")
+          f"path=<bootstrapped from {JSON_SCHEMA_DIR}/{class_name}.json>, upsert_keys={UPSERT_KEYS})")
     print(f"PLAN [layer 3]: BIND schema {schema_uri!r} to the new Record Set (enable_derived_annotations=False)")
     print(f"PLAN [layer 3]: CREATE CurationTask(data_type={class_name!r}, project_id={programs_parent_id}, "
           f"instructions=<{class_name}'s LinkML class description>)")
@@ -193,9 +193,16 @@ def provision_record_set(
     if dry_run:
         return None
 
-    record_set = RecordSet(
-        name=record_set_name, parent_id=class_folder_id, path=str(csv_path), upsert_keys=UPSERT_KEYS,
-    ).store(synapse_client=syn)
+    # Only touch disk once we're actually about to write -- --dry-run must be a
+    # pure read/plan pass with no side effects, not even a stray temp file.
+    csv_path = bootstrap_csv(class_name, JSON_SCHEMA_DIR)
+    instructions = curation_instructions(class_name, LINKML_SCHEMA)
+    try:
+        record_set = RecordSet(
+            name=record_set_name, parent_id=class_folder_id, path=str(csv_path), upsert_keys=UPSERT_KEYS,
+        ).store(synapse_client=syn)
+    finally:
+        csv_path.unlink(missing_ok=True)
     print(f"  -> created Record Set '{record_set_name}': {record_set.id}")
 
     record_set.bind_schema(json_schema_uri=schema_uri, enable_derived_annotations=False, synapse_client=syn)
