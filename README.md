@@ -13,8 +13,9 @@ workflow.
 | --- | --- |
 | [`linkml/`](linkml/governance_duo.linkml.yaml) | The **record layer**: curated `AccessRequirement`/`Study`/`Resource`/`Schema`/`DerivationRule` records, the Policy Fabric crosswalk, and the DUO vocabulary (`governance_duo.linkml.yaml`), plus hand-written example instances under `linkml/examples/` |
 | [`linkml/graph/`](linkml/graph/governance.yaml) | The **graph layer**: `governance.yaml` + `vocabularies.yaml`, a separate, independently-versioned schema for every `gov:` term — see [Governance graph design](docs/graph-design.md) |
-| [`model/`](model/) | The modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) that the record layer was derived from and stays aligned with |
+| [`json_schemas/`](json_schemas/) | Generated Synapse Curator-compatible JSON Schema, one per curated class (`AccessRequirement`/`Study`/`Resource`/`Schema`, `make json-schemas`, `scripts/build_json_schemas.py`) — bind one to a folder to drive a Record Set |
 | [`shapes/`](shapes/) | Generated OWL/SHACL for both schemas: `governance_duo.{owl,shacl}.ttl` (record layer, `make owl`/`make shacl`) and `governance.{owl,shacl}.ttl` (graph layer, `make graph-tbox`) — nothing under `shapes/` is hand-authored any more |
+| [`archive/model/`](archive/model/) | Archived: the modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) the record layer was originally derived from. `schematic` itself is deprecated; LinkML is the sole source of truth now — nothing generates from these CSVs any more |
 | [`archive/sage-ar-model/`](archive/sage-ar-model/) | Archived, no longer built: outputs of the former schematic pipeline (the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema) |
 | [`governance_graph_export/`](governance_graph_export/) | Generated Turtle: the canonical graph example (`make governance-graph`) and the `authorizer_v1` projection sagebrain-infra reads (`make projections`) |
 | [`policy_fabric_export/`](policy_fabric_export/) | Generated Policy Fabric input JSON (`make policy-fabric`) |
@@ -24,11 +25,11 @@ workflow.
 | [`plans/`](plans/) | Design plans for major changes to this repo, each with a companion `*_report.md` |
 | [`archive/`](archive/) | Legacy, pre-LinkML reference material kept for history — see the collapsed archive section below |
 
-All generated artifacts above can be rebuilt from `linkml/` and `model/` via the
+All generated artifacts above can be rebuilt from `linkml/` alone via the
 `Makefile` (`pip install -r requirements.txt` first); see `make linkml-lint`,
 `make owl`/`shacl`/`example-rdf`/`shacl-validate`, `make policy-fabric`,
-`make governance-graph`/`governance-graph-validate`, `make validate-all`, and
-`make docs`/`docs-build`/`docs-serve`.
+`make json-schemas`, `make governance-graph`/`governance-graph-validate`,
+`make validate-all`, and `make docs`/`docs-build`/`docs-serve`.
 
 # Resources
  - [GA4GH Products](https://www.ga4gh.org/product/data-use-ontology-duo/)
@@ -65,23 +66,28 @@ the repo settings (source: GitHub Actions) it's served at
 
 # LinkML representation
 
-In addition to the schematic CSV model, this repository maintains a
-[LinkML](https://github.com/linkml/linkml-model) representation under `linkml/`,
-entry point `linkml/governance_duo.linkml.yaml`. It is architecturally aligned with
+This repository's record layer is a [LinkML](https://github.com/linkml/linkml-model)
+schema under `linkml/`, entry point `linkml/governance_duo.linkml.yaml`, and is the
+**sole source of truth** for its model. It is architecturally aligned with
 [SageCommonDataModel](https://github.com/Sage-Bionetworks/SageCommonDataModel): one
 file per entity (`access_requirement.yaml`, `resource.yaml`, `schema.yaml`,
 `study.yaml`), a shared abstract `BaseEntity` + `slot_usage`-narrowed `id` slot
 (`base_entity.yaml`), and cross-cutting concerns factored into `props.yaml`
 (generic cross-class slots/enums) and `mixins.yaml` (`GovernanceMixin` — the DUO data-
 use-modifier vocabulary plus the conditional-requirement rules that enforce it;
-`ContributionMixin` — contributor tracking).
+`ContributionMixin` — contributor tracking). It was originally derived from a
+[`schematic`](https://github.com/Sage-Bionetworks/schematic)-style modular CSV model
+(`archive/model/*.model.csv`); both `schematic` and that CSV model are now archived
+and deprecated — nothing generates from them, and the LinkML schema is not obligated
+to stay aligned with them going forward.
 
-The schematic CSV keeps class-prefixed identifier attribute names
+The archived schematic CSV kept class-prefixed identifier attribute names
 (`AccessRequirement_id`, `Resource_id`, `Schema_id`, `Study_id`) because schematic's
 model CSV has one flat, global `Attribute` namespace with no per-class scoping — four
-classes can't share a bare `id` attribute there without colliding. The LinkML schema
+classes couldn't share a bare `id` attribute there without colliding. The LinkML schema
 uses one shared `id` slot on `BaseEntity`, narrowed per class via `slot_usage`
-(including a `Pattern` also mirrored back onto the corresponding CSV row).
+(a legacy from that CSV convention, kept because it still works well, not because
+anything requires it now).
 
 Real Data Use Ontology (DUO) terms are reused by IRI (`meaning: DUO:0000007`, etc.) —
 never re-minted — matching the "reuse external terms by IRI" convention
@@ -134,6 +140,9 @@ make owl              # generate shapes/governance_duo.owl.ttl (scripts/build_ow
 make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
 make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
+make json-schemas      # generate json_schemas/{AccessRequirement,Study,Resource,Schema}.json
+                       # (scripts/build_json_schemas.py, LinkML's own JsonSchemaGenerator --
+                       # no schematic dependency); bind one to a folder to drive a Record Set
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
                        # individuals against the SHACL shapes, via pyshacl with
                        # inference disabled and the ontology passed as ont_graph —
@@ -384,13 +393,23 @@ The content below predates this repository's current `linkml/`-based model (see
 [LinkML representation](#linkml-representation) above) and, in places, links to files
 on a separate `ar-dictionary-schema` branch rather than the current model files
 described in [Repository layout](#repository-layout). It's kept for historical
-reference and for the Curator Record Set/CSV+`schematic` record-submission
-mechanics, which are unrelated to the model refactor and may still apply. One
-piece of it does not: deriving an AR's DUO annotation from a conditional JSON
-schema bound to a folder was never put into practice and is deprecated — the
-adopted direction is the opposite, annotating the AR itself; see
-`plans/ar_level_duo_annotations.md` and
-[Use cases and data sources](docs/use-cases.md).
+reference. Two pieces of it are superseded, not just historical:
+
+- **`schematic` is deprecated.** The CSV-based submission workflow described below
+  (download/generate a CSV, validate and submit it via the `schematic` CLI) is no
+  longer how records get into Synapse. **Curator Record Sets, bound to a JSON
+  Schema generated straight from the LinkML model (`make json-schemas`,
+  `json_schemas/`), are now the sole submission mechanism** for every class —
+  including `AccessRequirement`, so a Record Set built against its schema is also
+  where DUO conditions are captured (see the next point).
+- **Deriving an AR's DUO annotation from a conditional JSON schema bound to a
+  folder** (the mechanism the "Creating conditional JSON schemas" step below once
+  described) was never put into practice and is deprecated. The adopted direction
+  instead treats the `AccessRequirement` Curator Record Set itself as the DUO
+  source: it's populated the same way as any other class, and the graph reads its
+  DUO fields from there rather than deriving them from annotations on entities
+  beneath it. See `plans/ar_level_duo_annotations.md` and
+  [Use cases and data sources](docs/use-cases.md).
 
 <details>
 <summary><b>Archive</b></summary>
@@ -405,11 +424,10 @@ At Sage, we extended DUO modifiers for our use cases and incorporated [derived a
 
 _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms) and/or a managed access requirement (i.e., the user must provide evidence). Managed ARs may require evidence in the form of **Authentication** (e.g., training certification, profile validation, two-factor authorization) and/or **Authorization** (e.g., intended data use (IDU) statement, data use certificate (DUC), ethics approval letter from an institutional review board (IRB) or independent ethics committee (IEC))._
 
- - The modular data model CSV source files are available under `model/schematic`
- - All model artifacts can be generated from the top-level directory using the included `Makefile`, provided the schematic python package is available in your environment. To run the `Makefile`, use the following command: 
-   ```
-   make CONFIG=path/to/your/config.yml
-   ```
+ - The modular data model CSV source files are archived under `archive/model/`
+   (the `schematic`-driven Makefile targets that once generated artifacts from them
+   were removed along with the rest of the schematic pipeline; see `Makefile`'s own
+   top comment)
  - The entirety of the Sage Governance-related metadata model is available in two formats:
    - [CSV](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.model.csv) (column format compatible with Curator tools / schematic)
    - [JSON-LD](https://github.com/mc2-center/governanceDUO/blob/ar-dictionary-schema/sage-ar.model.jsonld)
@@ -444,33 +462,13 @@ _*ARs are applied in the form of a clickwrap (i.e., the user must agree to terms
 
 ## Using schemas to record governance metadata (Study example)
  - **Note**: It is recommended that separate tables, Record Sets, and/or curation tasks are created within each Synapse Project under consideration.
- - Implementation options:
-   - <details>
-     <summary>Using Curator to create Record Sets</summary>
-	 
-	 ### Example workflow
-	 
-	 - Bind the selected schema to the folder where you intend to store the associated Record Set
-	 - Create a Record Set and record-based curation task using either the applicable schema URI or a path to a local version of the JSON schema
-	 - Select the curation task from the `Metadata` tab
-	 - Add Study information, one Study per row
-	   - If it isn't clear how to define a Study for your project, the examples in section **What should be considered a Study?** may be helpful.
-	</details>
-   
-   - <details>
-     <summary>Create records externaly and upload to Synapse (via schematic)</summary>
-	 
-	 ### Example workflow
-	 
-	 - Download an empty CSV template, generate your own template, or make a Google sheet template copy, using the following link: [Study v4.1.0](https://docs.google.com/spreadsheets/d/1j5-JexPB3p767Vs7ITVuiSGDRWaSR1xDtGPyqn90evE/copy)
-	 - Add Study information, one Study per row, *one sheet per Synapse Project*
-	   - If it isn't clear how to define a Study for your Project(s), the examples in section **What should be considered a Study?** may be helpful.
-	 - If your Study entries aren't already in CSV format, download or convert to CSV
-	 - Validate your Study CSV
-	   - (Suggested) Use schematic: `schematic model -c config.yml validate -mp /path/to/Study.csv -dt Study`
-	 - Upload the validated Study CSV(s) to a folder in your Synapse Project(s)
-	   - (Suggested) Use schematic: `schematic model -c config.yml submit -mp /path/to/Study.csv -d {target folder Synapse Id} -mrt table_and_file -tm upsert -tcn display_name`
-	</details>
+ - Curator Record Sets are the sole mechanism (schematic-CLI CSV submission is
+   deprecated — see "Materials available in this repository" above):
+   - Bind the selected schema (generated by `make json-schemas`) to the folder where you intend to store the associated Record Set
+   - Create a Record Set and record-based curation task using either the applicable schema URI or a path to a local version of the JSON schema
+   - Select the curation task from the `Metadata` tab
+   - Add Study information, one Study per row
+     - If it isn't clear how to define a Study for your project, the examples in section **What should be considered a Study?** may be helpful.
 
 <n></n>
 

@@ -9,7 +9,7 @@ search:
 
 
 
-_ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the source CSV (model/shared.model.csv) duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it._
+_ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the source CSV (archive/model/shared.model.csv) duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it._
 
 
 
@@ -314,8 +314,8 @@ implements:
 - rdfs:Literal
 description: ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin
   slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the
-  source CSV (model/shared.model.csv) duplicated this same value list under both attributes;
-  this schema keeps one enum and points both slots at it.
+  source CSV (archive/model/shared.model.csv) duplicated this same value list under
+  both attributes; this schema keeps one enum and points both slots at it.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:

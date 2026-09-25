@@ -5,9 +5,11 @@ description: >-
   SageCommonDataModel's mixins.yaml (ProvenanceMixin pattern). Imports only
   linkml:types and props — never an entity file — to avoid import cycles.
   Enum permissible_value descriptions and DUO shorthand codes (annotations.duo_shorthand,
-  e.g. GRU, HMB) are sourced from ../model/valid_values.csv, the repo's standalone
-  controlled-vocabulary reference (not one of the four class model/*.model.csv files
-  collated into sage-ar.model.csv, so it wasn't part of the earlier CSV rename).
+  e.g. GRU, HMB) were originally curated against ../archive/model/valid_values.csv,
+  the repo's former standalone controlled-vocabulary reference (not one of the
+  four class model/*.model.csv files collated into sage-ar.model.csv, so it wasn't
+  part of the earlier CSV rename). This LinkML schema is the sole source of truth
+  now; the schematic CSV model is archived (schematic itself is deprecated).
 prefixes:
   governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
   linkml: https://w3id.org/linkml/
@@ -661,11 +663,11 @@ enums:
     implements:
       - rdfs:Literal
     description: >-
-      model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the
-      standalone CV reference model/valid_values.csv previously documented
-      Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch
-      has been fixed (valid_values.csv now matches shared.model.csv's spelling, the
-      attribute's actual schematic Valid Values).
+      The archived archive/model/shared.model.csv's license Valid Values list read
+      Apache_2.0/GPL_3.0; the standalone CV reference archive/model/valid_values.csv
+      previously documented Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two
+      licenses -- that mismatch was fixed there before both files were archived.
+      This LinkML enum is the current source of truth for these values.
     permissible_values:
       CC0:
         description: "Creative Commons Zero license, allowing for the free use of the data."

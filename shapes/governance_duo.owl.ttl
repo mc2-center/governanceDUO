@@ -374,7 +374,7 @@ governanceduo:LicenseEnum a rdfs:Datatype ;
     rdfs:label "LicenseEnum" ;
     owl:equivalentClass [ a rdfs:Datatype ;
             owl:oneOf ( "CC0" "CC_BY" "CC_BY_NC" "CC_BY_ND" "CC_BY_SA" "CC_BY_NC_ND" "CC_BY_NC_SA" "Apache_2.0" "MIT" "GPL_3.0" "BSD_3_Clause" ) ] ;
-    skos:definition "model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the standalone CV reference model/valid_values.csv previously documented Apache_2/GPL_3 (no \".0\"/\"3.0\" suffix) for the same two licenses -- that mismatch has been fixed (valid_values.csv now matches shared.model.csv's spelling, the attribute's actual schematic Valid Values)." ;
+    skos:definition "The archived archive/model/shared.model.csv's license Valid Values list read Apache_2.0/GPL_3.0; the standalone CV reference archive/model/valid_values.csv previously documented Apache_2/GPL_3 (no \".0\"/\"3.0\" suffix) for the same two licenses -- that mismatch was fixed there before both files were archived. This LinkML enum is the current source of truth for these values." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values "Apache_2.0",
         "BSD_3_Clause",
@@ -1315,7 +1315,7 @@ governanceduo:GeographicalRegionEnum a rdfs:Datatype ;
     rdfs:label "GeographicalRegionEnum" ;
     owl:equivalentClass [ a rdfs:Datatype ;
             owl:oneOf ( "AD" "AE" "AF" "AG" "AI" "AL" "AM" "AO" "AQ" "AR" "AS" "AT" "AU" "AW" "AX" "AZ" "BA" "BB" "BD" "BE" "BF" "BG" "BH" "BI" "BJ" "BL" "BM" "BN" "BO" "BQ" "BR" "BS" "BT" "BV" "BW" "BY" "BZ" "CA" "CC" "CD" "CF" "CG" "CH" "CI" "CK" "CL" "CM" "CN" "CO" "CR" "CU" "CV" "CW" "CX" "CY" "CZ" "DE" "DJ" "DK" "DM" "DO" "DZ" "EC" "EE" "EG" "EH" "ER" "ES" "ET" "FI" "FJ" "FK" "FM" "FO" "FR" "GA" "GB" "GD" "GE" "GF" "GG" "GH" "GI" "GL" "GM" "GN" "GP" "GQ" "GR" "GS" "GT" "GU" "GW" "GY" "HK" "HM" "HN" "HR" "HT" "HU" "ID" "IE" "IL" "IM" "IN" "IO" "IQ" "IR" "IS" "IT" "JE" "JM" "JO" "JP" "KE" "KG" "KH" "KI" "KM" "KN" "KP" "KR" "KW" "KY" "KZ" "LA" "LB" "LC" "LI" "LK" "LR" "LS" "LT" "LU" "LV" "LY" "MA" "MC" "MD" "ME" "MF" "MG" "MH" "MK" "ML" "MM" "MN" "MO" "MP" "MQ" "MR" "MS" "MT" "MU" "MV" "MW" "MX" "MY" "MZ" "NA" "NC" "NE" "NF" "NG" "NI" "NL" "NO" "NP" "NR" "NU" "NZ" "OM" "PA" "PE" "PF" "PG" "PH" "PK" "PL" "PM" "PN" "PR" "PS" "PT" "PW" "PY" "QA" "RE" "RO" "RS" "RU" "RW" "SA" "SB" "SC" "SD" "SE" "SG" "SH" "SI" "SJ" "SK" "SL" "SM" "SN" "SO" "SR" "SS" "ST" "SV" "SX" "SY" "SZ" "TC" "TD" "TF" "TG" "TH" "TJ" "TK" "TL" "TM" "TN" "TO" "TR" "TT" "TV" "TW" "TZ" "UA" "UG" "UM" "US" "UY" "UZ" "VA" "VC" "VE" "VG" "VI" "VN" "VU" "WF" "WS" "YE" "YT" "ZA" "ZM" "ZW" ) ] ;
-    skos:definition "ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the source CSV (model/shared.model.csv) duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it." ;
+    skos:definition "ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the source CSV (archive/model/shared.model.csv) duplicated this same value list under both attributes; this schema keeps one enum and points both slots at it." ;
     skos:inScheme governanceduo:governance_duo ;
     linkml:permissible_values "AD",
         "AE",
@@ -1719,7 +1719,7 @@ governanceduo:BaseEntity a owl:Class ;
 
 dcterms:identifier a owl:DatatypeProperty ;
     rdfs:label "id" ;
-    skos:definition "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml/governance_graph.yaml (SynapseEntity/AccessGrant/AccessRequirementAssociation/DataAccessSubmission). The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare \"id\" attribute there without colliding." ;
+    skos:definition "A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml -- the record layer's own four curated classes. (The graph layer's classes, e.g. SynapseEntity, aren't part of this: they mint IRIs a completely different way, via scripts/graph_iris.py, not a slot_usage id pattern -- see plans/model_refactor.md.) The archived schematic CSV source (archive/model/*.model.csv) kept class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes couldn't share a bare \"id\" attribute there without colliding." ;
     skos:inScheme governanceduo:governance_duo .
 
 governanceduo:DataUseModifierEnum a owl:Class ;

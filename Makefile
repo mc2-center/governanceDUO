@@ -114,6 +114,15 @@ shacl-validate: owl shacl example-rdf
 policy-fabric:
 	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
 
+# One Synapse Curator-compatible JSON Schema per curated class (AccessRequirement,
+# Study, Resource, Schema), from LinkML's own JsonSchemaGenerator -- no dependency
+# on schematic, deprecated (README's "Materials available in this repository").
+# GovernanceMixin's DUO-conditional rules compile into these schemas' own
+# allOf/if/then, so binding one to a folder and creating a Record Set from it
+# prompts a curator for the right companion fields as they select DUO codes.
+json-schemas:
+	python3 scripts/build_json_schemas.py --schema ${LINKML_SCHEMA} --out-dir json_schemas
+
 # The worked example is built as of a fixed time (2026-01-01), inside its
 # AccessApproval's validity window, so the export doesn't change as the calendar
 # passes the approval's expiredOn. A live sync judges expiry as of the sync.
@@ -223,8 +232,8 @@ linkml-validate-examples:
 # Clears the generated directories first, so a committed file no generator
 # produces any more shows up as missing.
 artifact-drift-check:
-	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf derivation_policy_export
-	$(MAKE) owl shacl example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf projections derivation-policy
+	rm -rf docs/reference policy_fabric_export linkml/examples/rdf linkml/examples/derivation_policy/rdf linkml/examples/graph/rdf derivation_policy_export json_schemas
+	$(MAKE) owl shacl example-rdf derivation-policy-example-rdf governance-graph docs policy-fabric graph-tbox graph-example-rdf projections derivation-policy json-schemas
 	python3 scripts/check_artifact_drift.py
 
 validate-all: shacl-validate governance-graph-validate derivation-policy-validate sync-provenance-check sync-governance-check derivation-policy-check infra-contract-check projections-check linkml-validate-examples owl-profile graph-validate graph-owl-profile

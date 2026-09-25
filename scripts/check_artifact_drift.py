@@ -47,6 +47,7 @@ BYTE_EXACT = [
     "shapes/governance.owl.ttl",
     "docs/reference/**/*.md",
     "policy_fabric_export/*.json",
+    "json_schemas/*.json",
 ]
 GRAPH_EQUAL = [
     "shapes/governance_duo.shacl.ttl",
@@ -67,6 +68,7 @@ GENERATED_DIRS = [
     "linkml/examples/derivation_policy/rdf",
     "linkml/examples/graph/rdf",
     "derivation_policy_export",
+    "json_schemas",
 ]
 REFINEMENT_ROUNDS = 4
 # SHACL list-valued parameters whose member order carries no meaning.

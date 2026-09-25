@@ -51,8 +51,8 @@ enums:
     description: >-
       ISO 3166-1 alpha-2 country codes. Shared by the shared/GovernanceMixin slots
       geographicalRestriction (DUO:0000022) and sourceGeography (DUOPlus1) — the
-      source CSV (model/shared.model.csv) duplicated this same value list under both
-      attributes; this schema keeps one enum and points both slots at it.
+      source CSV (archive/model/shared.model.csv) duplicated this same value list
+      under both attributes; this schema keeps one enum and points both slots at it.
     permissible_values:
       AD:
         description: "Andorra"

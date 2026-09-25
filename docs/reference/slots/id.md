@@ -6,7 +6,7 @@ search:
 # Slot: id 
 
 
-_A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml/governance_graph.yaml (SynapseEntity/AccessGrant/AccessRequirementAssociation/DataAccessSubmission). The schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes cannot share a bare "id" attribute there without colliding._
+_A unique identifier for this record. Narrowed per class via `slot_usage` in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml -- the record layer's own four curated classes. (The graph layer's classes, e.g. SynapseEntity, aren't part of this: they mint IRIs a completely different way, via scripts/graph_iris.py, not a slot_usage id pattern -- see plans/model_refactor.md.) The archived schematic CSV source (archive/model/*.model.csv) kept class-prefixed attribute names (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic's model CSV has one flat, global Attribute namespace with no per-class scoping equivalent to slot_usage, so four classes couldn't share a bare "id" attribute there without colliding._
 
 
 
@@ -99,13 +99,14 @@ URI: [dcterms:identifier](http://purl.org/dc/terms/identifier)
 ```yaml
 name: id
 description: 'A unique identifier for this record. Narrowed per class via `slot_usage`
-  in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml/governance_graph.yaml
-  (SynapseEntity/AccessGrant/AccessRequirementAssociation/DataAccessSubmission). The
-  schematic CSV source (../model/*.model.csv) keeps class-prefixed attribute names
-  (AccessRequirement_id, Resource_id, Schema_id, Study_id) instead: schematic''s model
-  CSV has one flat, global Attribute namespace with no per-class scoping equivalent
-  to slot_usage, so four classes cannot share a bare "id" attribute there without
-  colliding.'
+  in access_requirement.yaml/resource.yaml/schema.yaml/study.yaml -- the record layer''s
+  own four curated classes. (The graph layer''s classes, e.g. SynapseEntity, aren''t
+  part of this: they mint IRIs a completely different way, via scripts/graph_iris.py,
+  not a slot_usage id pattern -- see plans/model_refactor.md.) The archived schematic
+  CSV source (archive/model/*.model.csv) kept class-prefixed attribute names (AccessRequirement_id,
+  Resource_id, Schema_id, Study_id) instead: schematic''s model CSV has one flat,
+  global Attribute namespace with no per-class scoping equivalent to slot_usage, so
+  four classes couldn''t share a bare "id" attribute there without colliding.'
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 slot_uri: dcterms:identifier

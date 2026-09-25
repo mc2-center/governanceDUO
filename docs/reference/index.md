@@ -151,7 +151,7 @@ Name: governance_duo
 | [DerivationReviewStatus](enums/DerivationReviewStatus.md) | Where a DerivationReview stands |
 | [DrsAuthTypeEnum](enums/DrsAuthTypeEnum.md) | Mirrors DRS's Authorizations |
 | [GeographicalRegionEnum](enums/GeographicalRegionEnum.md) | ISO 3166-1 alpha-2 country codes |
-| [LicenseEnum](enums/LicenseEnum.md) | model/shared |
+| [LicenseEnum](enums/LicenseEnum.md) | The archived archive/model/shared |
 | [Permission](enums/Permission.md) | A Synapse ACCESS_TYPE (org |
 | [StudyIndexDateEnum](enums/StudyIndexDateEnum.md) |  |
 | [SubmissionState](enums/SubmissionState.md) | A DataAccessSubmission's state (DataAccessSubmissionState), verified against ... |

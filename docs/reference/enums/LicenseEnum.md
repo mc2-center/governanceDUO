@@ -9,7 +9,7 @@ search:
 
 
 
-_model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0; the standalone CV reference model/valid_values.csv previously documented Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch has been fixed (valid_values.csv now matches shared.model.csv's spelling, the attribute's actual schematic Valid Values)._
+_The archived archive/model/shared.model.csv's license Valid Values list read Apache_2.0/GPL_3.0; the standalone CV reference archive/model/valid_values.csv previously documented Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch was fixed there before both files were archived. This LinkML enum is the current source of truth for these values._
 
 
 
@@ -73,11 +73,11 @@ URI: [governanceduo:enum/LicenseEnum](https://w3id.org/sage-bionetworks/governan
 name: LicenseEnum
 implements:
 - rdfs:Literal
-description: model/shared.model.csv's license Valid Values list Apache_2.0/GPL_3.0;
-  the standalone CV reference model/valid_values.csv previously documented Apache_2/GPL_3
-  (no ".0"/"3.0" suffix) for the same two licenses -- that mismatch has been fixed
-  (valid_values.csv now matches shared.model.csv's spelling, the attribute's actual
-  schematic Valid Values).
+description: The archived archive/model/shared.model.csv's license Valid Values list
+  read Apache_2.0/GPL_3.0; the standalone CV reference archive/model/valid_values.csv
+  previously documented Apache_2/GPL_3 (no ".0"/"3.0" suffix) for the same two licenses
+  -- that mismatch was fixed there before both files were archived. This LinkML enum
+  is the current source of truth for these values.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 permissible_values:
