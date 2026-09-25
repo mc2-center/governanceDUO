@@ -346,34 +346,56 @@ since neither previously exercised Synapse's schema service at all.
 confirmed by you as the right target -- it already matches this live project
 exactly and already held a `Study` schema).
 
-**Provisioned live**, `--program test-dcc --class-name AccessRequirement`
-(a deliberately test-labeled pilot, not a real program):
-- Folder `test-dcc` (`syn77583329`) -> `AccessRequirement` (`syn77583330`)
-- Record Set `AccessRequirement_RecordSet` (`syn77583331`), schema bound,
-  `CurationTask` + `Grid` created and exported
-- `EntityView` `AccessRequirement_FolderIndex` (`syn77583332`) -- found the
-  new folder on the very first pass, no indexing-lag re-run needed
-- `MaterializedView` `AccessRequirement_RecordSets`, `defining_sql =
-  "SELECT * FROM syn77583331"`
+**First provisioning attempt (`syn77583329`-`syn77583332`) was broken, caught
+and fixed live.** A second bug in `_dereference()` let a referenced enum's own
+`title` (e.g. `"Permission"`, the *type* `accessType` ranges over) overwrite
+the *property's* title (`accessType` itself) whenever the property had no
+local title of its own -- affecting exactly two slots,
+`accessType`/`concreteType`. Since the bootstrap CSV uses each property's title
+as its column header, the Record Set was seeded with columns literally named
+`Permission`/`AccessRequirementType`. This didn't fail immediately -- it
+surfaced ~10 minutes later as a failed `MaterializedView` build ("one or more
+of its dependencies are in the failed state") and a table-query error
+(`"Permission is not a valid column name or id"`). Fixed by dropping a def's
+`title` unconditionally when flattening a `$ref` (every other working schema
+in this ecosystem titles a property after the slot, never the range type).
+**The broken pilot was deleted live** (`CurationTask` 7944, `Folder`
+`syn77583329` cascading to its children, `EntityView` `syn77583332`,
+`MaterializedView` `syn77583337`) rather than left in place or patched
+around -- see the commit fixing `_dereference()` for the full story.
+
+**Re-registered and re-provisioned successfully**: `ADA.PSI-AccessRequirement`
+version `0.1.1` (the corrected schema; `0.1.0` stays registered as a harmless,
+superseded version -- nothing binds to it). `--program test-dcc --class-name
+AccessRequirement`, clean this time:
+- Folder `test-dcc` (`syn77583505`) -> `AccessRequirement` (`syn77583506`)
+- Record Set `AccessRequirement_RecordSet` (`syn77583508`), schema bound,
+  `CurationTask` + `Grid` created and exported -- **queried successfully**,
+  correct columns (`accessType`, `concreteType`, no stray enum-named columns)
+- `EntityView` `AccessRequirement_FolderIndex` (`syn77583511`)
+- `MaterializedView` `AccessRequirement_RecordSets` (`syn77583521`),
+  `defining_sql = "SELECT * FROM syn77583508"` -- **queried successfully**,
+  correct columns, 0 rows (the Record Set is still empty; no curator has
+  filled in a row yet)
 
 ## Still open
 
 1. **Archive the old placeholder folders** -- a one-time, separate action (not
    performed by `provision_curator_infrastructure.py`): move
    `requirements`/`resources`/`studies`/`schemas` into an `ARCHIVED` folder
-   under `syn71723047`. Can be done by hand in the Synapse UI, or with a short
-   throwaway snippet (`Folder(name="ARCHIVED", parent_id="syn71723047").store()`
-   then `Folder(id=<each>).parent_id = <archived id>` / `.store()`) -- not
-   worth building into the reusable tool since it only ever runs once. Not yet
-   done -- the `test-dcc` pilot didn't need it (no naming collision, since old
-   folders are top-level and type-first while the new ones nest under a
-   program folder).
+   under `syn71723047`. Not yet done -- the `test-dcc` pilot didn't need it (no
+   naming collision, since old folders are top-level and type-first while the
+   new ones nest under a program folder).
 2. **Register `Study`/`Resource`/`Schema`'s schemas and decide their
    organization/rollout** -- only `AccessRequirement` has been registered and
    piloted so far, per your explicit pilot scope. The other three classes'
    `json_schemas/*.json` are regenerated with the same fixes but not yet
    registered with Synapse.
 3. **Retire the `test-dcc` pilot infrastructure, or promote it** -- decide
-   whether `syn77583329`-`syn77583332` are cleaned up (this was a test) or
+   whether `syn77583505`-`syn77583521` are cleaned up (this was a test) or
    become the first real program's infrastructure once a real program name is
    chosen.
+4. **A live curator-filled-row round-trip** -- the pilot Record Set is still
+   empty; nobody has entered a real row through the Grid UI yet, so the one
+   remaining unverified step (`plans/ar_level_duo_annotations.md`'s "Blocked
+   on" item 3) is still open.
