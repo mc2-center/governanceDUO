@@ -875,6 +875,32 @@
           "requiredProfileStatuses"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "items": {
+              "const": "DUO:0000021"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IRBKey": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        "required": [
+          "IRBKey"
+        ]
+      }
     }
   ],
   "description": "Information that is relevant to resource access conditions.",
@@ -883,6 +909,14 @@
       "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
       "items": {
         "pattern": "^access_requirement\\.\\d+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "IRBKey": {
+      "description": "The IRB record id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "items": {
+        "pattern": "^irb\\.[A-Za-z0-9_-]+$",
         "type": "string"
       },
       "type": "array"

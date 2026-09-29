@@ -1,0 +1,79 @@
+{
+  "$id": "https://w3id.org/sage-bionetworks/governance-duo/governance_duo",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "An Institutional Review Board (or equivalent Ethics Review Board) approval record: the body that granted it, its protocol identifier, and the studies/projects/access requirements it covers.",
+  "properties": {
+    "AccessRequirementKey": {
+      "description": "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "items": {
+        "pattern": "^access_requirement\\.\\d+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "StudyKey": {
+      "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "items": {
+        "pattern": "^study\\.[A-Za-z0-9_-]+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contributionDate": {
+      "description": "The date on which the access requirement was added.",
+      "type": "string"
+    },
+    "contributorName": {
+      "description": "The name of the person who added this access requirement.",
+      "type": "string"
+    },
+    "id": {
+      "description": "A unique identifier for the IRB approval record.",
+      "pattern": "^irb\\.[A-Za-z0-9_-]+$",
+      "type": "string"
+    },
+    "irbApprovalDate": {
+      "description": "The date this IRB approval was granted.",
+      "type": "string"
+    },
+    "irbApprovalStatus": {
+      "description": "The current status of this IRB approval.",
+      "enum": [
+        "Approved",
+        "Pending",
+        "Expired",
+        "Withdrawn"
+      ],
+      "type": "string"
+    },
+    "irbAssociatedProjects": {
+      "description": "Synapse Project id(s) this IRB approval covers directly, for cases not already reachable through a linked Study record. Provide multiple values as a comma-separated list.",
+      "items": {
+        "pattern": "^syn\\d+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "irbExpirationDate": {
+      "description": "The date this IRB approval expires, if applicable.",
+      "type": "string"
+    },
+    "irbName": {
+      "description": "The name of the reviewing IRB or Ethics Review Board (e.g. \"Mount Sinai IRB\").",
+      "type": "string"
+    },
+    "irbProtocolNumber": {
+      "description": "The IRB's own protocol or registration number for this approval, as assigned by the reviewing board.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "irbProtocolNumber",
+    "irbName",
+    "contributorName",
+    "contributionDate",
+    "id"
+  ],
+  "title": "governance_duo",
+  "type": "object"
+}

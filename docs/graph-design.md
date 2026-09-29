@@ -165,7 +165,9 @@ Four things make up the graph's actual content:
   condition is a Data Use Ontology (DUO) term, or a Sage-local extension of one, with
   whatever parameters a curator recorded (a disease, a region, a time limit). This
   is the one layer Synapse itself has no structured place for, which is why curators
-  author it directly.
+  author it directly. A dataset needing two separate IRB approvals is two
+  `Condition` instances on one Access Requirement, both `DUO:0000021`, differing
+  only in `approvingIRB` (the record-layer `IRB` IRI that granted each one).
 - **Provenance** answers "what was this computed from?", using the W3C PROV-O
   vocabulary directly: an activity used some inputs and generated some outputs; which
   input was the tool that ran versus the data it consumed is the one fact this layer

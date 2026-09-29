@@ -202,6 +202,7 @@ classes:
       - dataUseTerm
       - diseaseContext
       - conditionDetail
+      - approvingIRB
       - description
 
   Approval:
@@ -541,6 +542,11 @@ slots:
     slot_uri: gov:forStudy
     range: uriorcurie
     description: The study (a record-layer Study IRI) the requirement is for.
+  approvingIRB:
+    slot_uri: gov:approvingIRB
+    range: uriorcurie
+    description: >-
+      The IRB (a record-layer IRB IRI) that approves this condition.
   language:
     slot_uri: gov:language
     description: The requirement's consent language.

@@ -875,10 +875,44 @@
           "requiredProfileStatuses"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "dataUseModifiers": {
+            "items": {
+              "const": "DUO:0000021"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "dataUseModifiers"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IRBKey": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        "required": [
+          "IRBKey"
+        ]
+      }
     }
   ],
   "description": "Representation of a Synapse Access Requirement and its relationships to entities, grants, and projects.",
   "properties": {
+    "IRBKey": {
+      "description": "The IRB record id(s) associated with this object. Provide multiple values as a comma-separated list.",
+      "items": {
+        "pattern": "^irb\\.[A-Za-z0-9_-]+$",
+        "type": "string"
+      },
+      "type": "array"
+    },
     "StudyKey": {
       "description": "The Study id(s) associated with this object. Provide multiple values as a comma-separated list.",
       "items": {

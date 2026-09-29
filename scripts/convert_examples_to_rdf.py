@@ -62,7 +62,9 @@ import graph_iris
 # example filename (without .example.yaml) -> target LinkML class name
 EXAMPLE_CLASSES = {
     "access_requirement": "AccessRequirement",
+    "access_requirement_two_irbs": "AccessRequirement",
     "study": "Study",
+    "irb": "IRB",
     "derivation_rule": "DerivationRule",
 }
 

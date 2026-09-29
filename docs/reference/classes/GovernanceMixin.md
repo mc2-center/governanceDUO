@@ -104,6 +104,8 @@ URI: [governanceduo:class/GovernanceMixin](https://w3id.org/sage-bionetworks/gov
         
       GovernanceMixin : institutionSpecificRestriction
         
+      GovernanceMixin : IRBKey
+        
       GovernanceMixin : license
         
           
@@ -191,6 +193,7 @@ URI: [governanceduo:class/GovernanceMixin](https://w3id.org/sage-bionetworks/gov
 | [approvedUsers](../slots/approvedUsers.md) | * <br/> [String](../types/String.md) | Identifier(s) of specifically approved users | direct |
 | [allowedAccountTypes](../slots/allowedAccountTypes.md) | * <br/> [String](../types/String.md) | Account type(s) permitted to access the data (checked against UserPlatformCre... | direct |
 | [requiredProfileStatuses](../slots/requiredProfileStatuses.md) | * <br/> [String](../types/String.md) | Profile status value(s) a requester's account must have (checked against User... | direct |
+| [IRBKey](../slots/IRBKey.md) | * <br/> [String](../types/String.md) | The IRB record id(s) associated with this object | direct |
 
 
 
@@ -490,6 +493,14 @@ URI: [governanceduo:class/GovernanceMixin](https://w3id.org/sage-bionetworks/gov
 
 
 
+### 
+
+| Rule Applied | Preconditions | Postconditions | Elseconditions |
+|--------------|---------------|----------------|----------------|
+| slot_conditions |```{'dataUseModifiers': {'equals_string': 'DUO:0000021'}}``` |```{'IRBKey': {'required': True}}``` | |
+
+
+
 
 
 
@@ -568,6 +579,7 @@ slots:
 - approvedUsers
 - allowedAccountTypes
 - requiredProfileStatuses
+- IRBKey
 rules:
 - preconditions:
     slot_conditions:
@@ -918,6 +930,16 @@ rules:
     slot_conditions:
       requiredProfileStatuses:
         name: requiredProfileStatuses
+        required: true
+- preconditions:
+    slot_conditions:
+      dataUseModifiers:
+        name: dataUseModifiers
+        equals_string: DUO:0000021
+  postconditions:
+    slot_conditions:
+      IRBKey:
+        name: IRBKey
         required: true
 
 ```
@@ -1331,6 +1353,22 @@ attributes:
     - GovernanceMixin
     range: string
     multivalued: true
+  IRBKey:
+    name: IRBKey
+    annotations:
+      foreign_key:
+        tag: foreign_key
+        value: true
+    description: The IRB record id(s) associated with this object. Provide multiple
+      values as a comma-separated list.
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    owner: GovernanceMixin
+    domain_of:
+    - GovernanceMixin
+    range: string
+    multivalued: true
+    pattern: ^irb\.[A-Za-z0-9_-]+$
 rules:
 - preconditions:
     slot_conditions:
@@ -1681,6 +1719,16 @@ rules:
     slot_conditions:
       requiredProfileStatuses:
         name: requiredProfileStatuses
+        required: true
+- preconditions:
+    slot_conditions:
+      dataUseModifiers:
+        name: dataUseModifiers
+        equals_string: DUO:0000021
+  postconditions:
+    slot_conditions:
+      IRBKey:
+        name: IRBKey
         required: true
 
 ```

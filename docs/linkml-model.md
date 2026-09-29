@@ -90,6 +90,7 @@ the record layer (`governance_duo.linkml.yaml` and its imports).
 | [`access_requirement.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/access_requirement.yaml) | `AccessRequirement` | `is_a BaseEntity` + all 4 mixins above; id pattern `^access_requirement\.\d+$` |
 | [`resource.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/resource.yaml) | `Resource` | `is_a BaseEntity` + `GovernanceMixin`; id pattern `^resource\.[A-Za-z0-9]+$` |
 | [`study.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/study.yaml) | `Study` | `is_a BaseEntity` + `GovernanceMixin`; id pattern `^study\.[A-Za-z0-9_-]+$`; several slots carry caDSR `cde_id` annotations |
+| [`irb.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/irb.yaml) | `IRB` — a first-class IRB approval record (protocol number, name, status, the `AccessRequirement`/`Study` it covers) | `is_a BaseEntity` + `ContributionMixin`; id pattern `^irb\.[A-Za-z0-9_-]+$`; `IRBApprovalStatusEnum` |
 | [`schema.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/schema.yaml) | `Schema` (registered JSON-schema records) | `is_a BaseEntity`; id pattern `^schema\.[A-Za-z0-9_-]+$` |
 | [`policy_fabric.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/policy_fabric.yaml) | Policy Fabric crosswalk schema — see [Policy Fabric integration](policy-fabric.md) | `PolicyCardBinding`, `CredentialRequirement`, `ReferenceValueSource`, `CredentialTypeEnum` |
 | [`drs_alignment.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/drs_alignment.yaml) | Design-only GA4GH DRS interoperability crosswalk — see [DRS interoperability](drs-interop.md) | `DrsObjectMapping`, `DrsAuthorizationBinding`, `DrsAuthTypeEnum` |
@@ -133,8 +134,10 @@ mechanism at all — every graph-layer IRI is minted by `scripts/graph_iris.py`;
 ## `GovernanceMixin`'s conditional rules
 
 `GovernanceMixin` carries the DUO data-use-modifier vocabulary (`dataUseModifiers`)
-plus ~35 `rules:` entries that make companion slots required whenever a specific DUO
-code is present. For example:
+plus ~36 `rules:` entries that make companion slots required whenever a specific DUO
+code is present (including `DUO:0000021`, "Ethics Approval Required", requiring the
+new `IRBKey` slot — see `linkml/irb.yaml`'s `IRB` class for the corresponding
+first-class IRB record). For example:
 
 ```yaml
 rules:

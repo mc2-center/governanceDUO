@@ -305,17 +305,6 @@ governanceduo:AssetBinding a owl:Class ;
     skos:definition "One (Synapse entity id -> Policy Fabric Asset DID) pairing. Mirrors the Django Asset model's `did` field (unique per Asset) in tmp-policies/tools/asset_registry. A plain string, not a typed `range: SynapseEntity`, for synapseId: importing governance_graph.yaml (where SynapseEntity is defined) into this leaf file would create the same import cycle base_entity.yaml/props.yaml/mixins.yaml are designed to avoid (governance_graph.yaml already depends on mixins.yaml transitively, through access_requirement.yaml)." ;
     skos:inScheme governanceduo:governance_duo .
 
-governanceduo:ContributionMixin a owl:Class ;
-    rdfs:label "ContributionMixin" ;
-    rdfs:subClassOf [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:contributorName ],
-        [ a owl:Restriction ;
-            owl:cardinality 1 ;
-            owl:onProperty governanceduo:contributionDate ] ;
-    skos:definition "Contribution/authorship tracking. Only AccessRequirement uses this today, but it is factored out here (rather than inlined) so any class that later needs the same fields reuses it instead of duplicating — mirroring SageCommonDataModel's practice of factoring cross-cutting concerns out of individual entity files even before a second consumer exists." ;
-    skos:inScheme governanceduo:governance_duo .
-
 governanceduo:CredentialRequirement a owl:Class ;
     rdfs:label "CredentialRequirement" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -369,6 +358,60 @@ governanceduo:DrsAuthTypeEnum a rdfs:Datatype ;
         "BearerAuth",
         "None",
         "PassportAuth" .
+
+governanceduo:IRB a owl:Class ;
+    rdfs:label "IRB" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^study\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty governanceduo:StudyKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:irbExpirationDate ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:AccessRequirementKey ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:irbApprovalDate ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty dcterms:identifier ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty governanceduo:irbApprovalStatus ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^syn\\d+$" ] ) ] ;
+            owl:onProperty governanceduo:irbAssociatedProjects ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^irb\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty dcterms:identifier ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:irbProtocolNumber ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:irbName ],
+        governanceduo:BaseEntity,
+        governanceduo:ContributionMixin ;
+    skos:definition "An Institutional Review Board (or equivalent Ethics Review Board) approval record: the body that granted it, its protocol identifier, and the studies/projects/access requirements it covers." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:IRBKey a owl:DatatypeProperty ;
+    rdfs:label "IRBKey" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "^irb\\.[A-Za-z0-9_-]+$" ] ) ] ;
+    skos:definition "The IRB record id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:governance_duo ;
+    governanceduo:foreign_key true .
 
 governanceduo:LicenseEnum a rdfs:Datatype ;
     rdfs:label "LicenseEnum" ;
@@ -812,6 +855,40 @@ governanceduo:institutionSpecificRestriction a owl:DatatypeProperty ;
     skos:definition "Institutions with specific restrictions associated with the access requirement. Provide the institution ROR ID in format ROR:id. Provide multiple entries as a comma-separated list. ROR IDs can be found here: https://ror.org/search" ;
     skos:inScheme governanceduo:governance_duo ;
     skos:note "Required when dataUseModifiers contains DUO:0000028 — see GovernanceMixin rules." .
+
+governanceduo:irbApprovalDate a owl:DatatypeProperty ;
+    rdfs:label "irbApprovalDate" ;
+    skos:definition "The date this IRB approval was granted." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:irbApprovalStatus a owl:ObjectProperty ;
+    rdfs:label "irbApprovalStatus" ;
+    rdfs:range governanceduo:IRBApprovalStatusEnum ;
+    skos:definition "The current status of this IRB approval." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:irbAssociatedProjects a owl:DatatypeProperty ;
+    rdfs:label "irbAssociatedProjects" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "^syn\\d+$" ] ) ] ;
+    skos:definition "Synapse Project id(s) this IRB approval covers directly, for cases not already reachable through a linked Study record. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:irbExpirationDate a owl:DatatypeProperty ;
+    rdfs:label "irbExpirationDate" ;
+    skos:definition "The date this IRB approval expires, if applicable." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:irbName a owl:DatatypeProperty ;
+    rdfs:label "irbName" ;
+    skos:definition "The name of the reviewing IRB or Ethics Review Board (e.g. \"Mount Sinai IRB\")." ;
+    skos:inScheme governanceduo:governance_duo .
+
+governanceduo:irbProtocolNumber a owl:DatatypeProperty ;
+    rdfs:label "irbProtocolNumber" ;
+    skos:definition "The IRB's own protocol or registration number for this approval, as assigned by the reviewing board." ;
+    skos:inScheme governanceduo:governance_duo .
 
 governanceduo:isTwoFaRequired a owl:DatatypeProperty ;
     rdfs:label "isTwoFaRequired" ;
@@ -1263,6 +1340,17 @@ sagegov:DUOPlus7 a owl:Class ;
     skos:definition "Attribution conditions are associated with this Study. If providing this term, please provide the attribution statement in column attribution." ;
     governanceduo:sage_extension true .
 
+governanceduo:ContributionMixin a owl:Class ;
+    rdfs:label "ContributionMixin" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:contributorName ],
+        [ a owl:Restriction ;
+            owl:cardinality 1 ;
+            owl:onProperty governanceduo:contributionDate ] ;
+    skos:definition "Contribution/authorship tracking. Only AccessRequirement uses this today, but it is factored out here (rather than inlined) so any class that later needs the same fields reuses it instead of duplicating — mirroring SageCommonDataModel's practice of factoring cross-cutting concerns out of individual entity files even before a second consumer exists." ;
+    skos:inScheme governanceduo:governance_duo .
+
 <https://w3id.org/sage-bionetworks/governance-duo/DataUseModifierEnum#Pending%20Annotation> a owl:Class ;
     rdfs:label "Pending Annotation" ;
     rdfs:subClassOf governanceduo:DataUseModifierEnum ;
@@ -1567,6 +1655,22 @@ governanceduo:GeographicalRegionEnum a rdfs:Datatype ;
         "ZM",
         "ZW" .
 
+<https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Approved> a owl:Class ;
+    rdfs:label "Approved" ;
+    rdfs:subClassOf governanceduo:IRBApprovalStatusEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Expired> a owl:Class ;
+    rdfs:label "Expired" ;
+    rdfs:subClassOf governanceduo:IRBApprovalStatusEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Pending> a owl:Class ;
+    rdfs:label "Pending" ;
+    rdfs:subClassOf governanceduo:IRBApprovalStatusEnum .
+
+<https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Withdrawn> a owl:Class ;
+    rdfs:label "Withdrawn" ;
+    rdfs:subClassOf governanceduo:IRBApprovalStatusEnum .
+
 governanceduo:SchemaKey a owl:DatatypeProperty ;
     rdfs:label "SchemaKey" ;
     rdfs:range [ a rdfs:Datatype ;
@@ -1620,16 +1724,6 @@ xsd:float a rdfs:Datatype .
 
 xsd:integer a rdfs:Datatype .
 
-governanceduo:AccessRequirementKey a owl:DatatypeProperty ;
-    rdfs:label "AccessRequirementKey" ;
-    rdfs:range [ a rdfs:Datatype ;
-            owl:onDatatype xsd:string ;
-            owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
-    skos:definition "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
-    skos:inScheme governanceduo:governance_duo ;
-    skos:note "Deliberately an untyped string, not range: AccessRequirement: giving it a real typed range would require importing access_requirement.yaml into this file, but this file (like mixins.yaml) is a leaf that imports only linkml:types specifically so it can never import an entity file and risk an import cycle (see the schema-level description above). governance_graph.yaml can afford real typed ranges for its own cross-references (e.g. accessRequirement: range: AccessRequirement) because it is a single, later-loaded file that already imports everything it references -- this file cannot follow that pattern without breaking its own leaf-file guarantee. Same rationale applies to StudyKey below and to ResourceKey (schema.yaml)/SchemaKey (resource.yaml). The pattern above (matching AccessRequirement.id's own slot_usage pattern in access_requirement.yaml) is the cycle-free substitute: it catches a malformed id without needing a typed range at all -- the same approach already used for entityIdList in that same file. See plans/identifier_update.md." ;
-    governanceduo:foreign_key true .
-
 governanceduo:GovernanceMixin a owl:Class ;
     rdfs:label "GovernanceMixin" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -1671,6 +1765,11 @@ governanceduo:GovernanceMixin a owl:Class ;
                     owl:withRestrictions ( [ xsd:pattern "MONDO:\\d{7}" ] ) ] ;
             owl:onProperty governanceduo:diseaseSpecificResearch ],
         [ a owl:Restriction ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^irb\\.[A-Za-z0-9_-]+$" ] ) ] ;
+            owl:onProperty governanceduo:IRBKey ],
+        [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty governanceduo:timeLimitOnUse ],
         [ a owl:Restriction ;
@@ -1687,6 +1786,20 @@ governanceduo:GovernanceMixin a owl:Class ;
     skos:definition "DUO-based data-use-modifier vocabulary and its conditional-requirement rules, shared by every class whose schematic DependsOn list includes dataUseModifiers (AccessRequirement, Resource, Study — confirmed against the generated (now archived) archive/sage-ar-model/*.json, which resolves the full field set via schematic's own dependency expansion)." ;
     skos:inScheme governanceduo:governance_duo .
 
+gov:DataTier a owl:Class .
+
+xsd:boolean a rdfs:Datatype .
+
+governanceduo:AccessRequirementKey a owl:DatatypeProperty ;
+    rdfs:label "AccessRequirementKey" ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "^access_requirement\\.\\d+$" ] ) ] ;
+    skos:definition "The Access Requirement id(s) associated with this object. Provide multiple values as a comma-separated list." ;
+    skos:inScheme governanceduo:governance_duo ;
+    skos:note "Deliberately an untyped string, not range: AccessRequirement: giving it a real typed range would require importing access_requirement.yaml into this file, but this file (like mixins.yaml) is a leaf that imports only linkml:types specifically so it can never import an entity file and risk an import cycle (see the schema-level description above). governance_graph.yaml can afford real typed ranges for its own cross-references (e.g. accessRequirement: range: AccessRequirement) because it is a single, later-loaded file that already imports everything it references -- this file cannot follow that pattern without breaking its own leaf-file guarantee. Same rationale applies to StudyKey below and to ResourceKey (schema.yaml)/SchemaKey (resource.yaml). The pattern above (matching AccessRequirement.id's own slot_usage pattern in access_requirement.yaml) is the cycle-free substitute: it catches a malformed id without needing a typed range at all -- the same approach already used for entityIdList in that same file. See plans/identifier_update.md." ;
+    governanceduo:foreign_key true .
+
 governanceduo:StudyKey a owl:DatatypeProperty ;
     rdfs:label "StudyKey" ;
     rdfs:range [ a rdfs:Datatype ;
@@ -1696,10 +1809,6 @@ governanceduo:StudyKey a owl:DatatypeProperty ;
     skos:inScheme governanceduo:governance_duo ;
     governanceduo:foreign_key true .
 
-gov:DataTier a owl:Class .
-
-xsd:boolean a rdfs:Datatype .
-
 governanceduo:synapseId a owl:DatatypeProperty ;
     rdfs:label "synapseId" ;
     rdfs:range [ a rdfs:Datatype ;
@@ -1708,9 +1817,18 @@ governanceduo:synapseId a owl:DatatypeProperty ;
     skos:definition "A Synapse entity id. Reused across contexts that reference one specific Synapse entity: an AssetBinding registering it as a Policy Fabric Asset (this file), or a DrsObjectMapping crosswalking it to a DRS DrsObject (drs_alignment.yaml)." ;
     skos:inScheme governanceduo:governance_duo .
 
+governanceduo:IRBApprovalStatusEnum a owl:Class ;
+    rdfs:label "IRBApprovalStatusEnum" ;
+    owl:unionOf ( <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Approved> <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Pending> <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Expired> <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Withdrawn> ) ;
+    skos:inScheme governanceduo:governance_duo ;
+    linkml:permissible_values <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Approved>,
+        <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Expired>,
+        <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Pending>,
+        <https://w3id.org/sage-bionetworks/governance-duo/IRBApprovalStatusEnum#Withdrawn> .
+
 governanceduo:BaseEntity a owl:Class ;
     rdfs:label "BaseEntity" ;
-    rdfs:subClassOf [ owl:unionOf ( governanceduo:AccessRequirement governanceduo:DerivationRule governanceduo:Resource governanceduo:Schema governanceduo:Study ) ],
+    rdfs:subClassOf [ owl:unionOf ( governanceduo:AccessRequirement governanceduo:DerivationRule governanceduo:IRB governanceduo:Resource governanceduo:Schema governanceduo:Study ) ],
         [ a owl:Restriction ;
             owl:cardinality 1 ;
             owl:onProperty dcterms:identifier ] ;

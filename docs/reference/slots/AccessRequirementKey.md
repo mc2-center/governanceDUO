@@ -28,6 +28,7 @@ URI: [governanceduo:slot/AccessRequirementKey](https://w3id.org/sage-bionetworks
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  no  |
 | [Schema](../classes/Schema.md) | Information that is relevant to resource access conditions |  no  |
 | [Study](../classes/Study.md) | Studies associated with a grant |  no  |
+| [IRB](../classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |  no  |
 
 
 
@@ -41,7 +42,7 @@ URI: [governanceduo:slot/AccessRequirementKey](https://w3id.org/sage-bionetworks
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [Resource](../classes/Resource.md), [Schema](../classes/Schema.md), [Study](../classes/Study.md) |
+| Domain Of | [Resource](../classes/Resource.md), [Schema](../classes/Schema.md), [Study](../classes/Study.md), [IRB](../classes/IRB.md) |
 
 ### Cardinality and Requirements
 
@@ -131,6 +132,7 @@ domain_of:
 - Resource
 - Schema
 - Study
+- IRB
 range: string
 multivalued: true
 pattern: ^access_requirement\.\d+$

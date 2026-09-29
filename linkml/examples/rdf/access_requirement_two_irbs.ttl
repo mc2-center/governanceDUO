@@ -1,0 +1,12 @@
+@prefix DUO: <http://purl.obolibrary.org/obo/DUO_> .
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+
+<https://w3id.org/synapse/governance/ar/201> a governanceduo:AccessRequirement ;
+    governanceduo:IRBKey "irb.jax-002",
+        "irb.mount-sinai-001" ;
+    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
+    governanceduo:contributionDate "2026-09-28" ;
+    governanceduo:contributorName "Jane Doe" ;
+    governanceduo:dataUseModifiers DUO:0000021 ;
+    governanceduo:entityIdList "syn12345678" .
+

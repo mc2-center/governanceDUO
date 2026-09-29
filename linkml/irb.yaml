@@ -1,0 +1,70 @@
+id: https://w3id.org/sage-bionetworks/governance-duo/irb
+name: governance_duo_irb
+description: LinkML representation of the IRB (Institutional Review Board) component.
+prefixes:
+  governanceduo: https://w3id.org/sage-bionetworks/governance-duo/
+  linkml: https://w3id.org/linkml/
+default_prefix: governanceduo
+default_range: string
+imports:
+  - linkml:types
+  - base_entity
+  - mixins
+  - props
+classes:
+  IRB:
+    description: >-
+      An Institutional Review Board (or equivalent Ethics Review Board)
+      approval record: the body that granted it, its protocol identifier,
+      and the studies/projects/access requirements it covers.
+    is_a: BaseEntity
+    mixins:
+      - ContributionMixin
+    tree_root: true
+    slot_usage:
+      id:
+        description: A unique identifier for the IRB approval record.
+        pattern: '^irb\.[A-Za-z0-9_-]+$'
+        examples:
+          - value: irb.mount-sinai-001
+    slots:
+      - AccessRequirementKey
+      - StudyKey
+      - irbProtocolNumber
+      - irbName
+      - irbApprovalStatus
+      - irbApprovalDate
+      - irbExpirationDate
+      - irbAssociatedProjects
+slots:
+  irbProtocolNumber:
+    description: >-
+      The IRB's own protocol or registration number for this approval, as
+      assigned by the reviewing board.
+    required: true
+  irbName:
+    description: >-
+      The name of the reviewing IRB or Ethics Review Board (e.g. "Mount
+      Sinai IRB").
+    required: true
+  irbApprovalStatus:
+    description: The current status of this IRB approval.
+    range: IRBApprovalStatusEnum
+  irbApprovalDate:
+    description: The date this IRB approval was granted.
+  irbExpirationDate:
+    description: The date this IRB approval expires, if applicable.
+  irbAssociatedProjects:
+    description: >-
+      Synapse Project id(s) this IRB approval covers directly, for cases not
+      already reachable through a linked Study record. Provide multiple
+      values as a comma-separated list.
+    multivalued: true
+    pattern: '^syn\d+$'
+enums:
+  IRBApprovalStatusEnum:
+    permissible_values:
+      Approved: {}
+      Pending: {}
+      Expired: {}
+      Withdrawn: {}

@@ -87,6 +87,16 @@
     gov:domain "genomics" ;
     gov:hasCondition <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007> .
 
+<https://w3id.org/synapse/governance/ar/42/condition/DUO_0000021_jax> a gov:Condition ;
+    gov:approvingIRB <https://w3id.org/sage-bionetworks/governance-duo/irb.jax-002> ;
+    gov:dataUseTerm DUO:0000021 ;
+    gov:description "Ethics Approval Required — JAX IRB." .
+
+<https://w3id.org/synapse/governance/ar/42/condition/DUO_0000021_mount-sinai> a gov:Condition ;
+    gov:approvingIRB <https://w3id.org/sage-bionetworks/governance-duo/irb.mount-sinai-001> ;
+    gov:dataUseTerm DUO:0000021 ;
+    gov:description "Ethics Approval Required — Mount Sinai IRB." .
+
 <https://w3id.org/synapse/governance/ar/99> a gov:AccessRequirement ;
     gov:accessType gov:Download ;
     gov:name "Illustrative second managed access requirement" ;
@@ -171,7 +181,9 @@ synuser:1000001 a gov:User .
 
 <https://w3id.org/synapse/governance/ar/42> a gov:AccessRequirement ;
     gov:accessType gov:Download ;
-    gov:hasCondition <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007> ;
+    gov:hasCondition <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000007>,
+        <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000021_jax>,
+        <https://w3id.org/synapse/governance/ar/42/condition/DUO_0000021_mount-sinai> ;
     gov:name "Illustrative disease-specific managed access requirement" ;
     gov:requirementType gov:ManagedACTRequirement ;
     gov:versionNumber 1 .

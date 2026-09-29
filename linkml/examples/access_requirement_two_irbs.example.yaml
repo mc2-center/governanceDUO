@@ -1,0 +1,7 @@
+id: access_requirement.201
+contributorName: Jane Doe
+contributionDate: "2026-09-28"
+StudyKey: [study.mc2-jax-5xfad]
+entityIdList: [syn12345678]
+dataUseModifiers: [DUO:0000021]
+IRBKey: [irb.mount-sinai-001, irb.jax-002]

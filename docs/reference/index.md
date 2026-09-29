@@ -16,6 +16,7 @@ Name: governance_duo
 | [BaseEntity](classes/BaseEntity.md) | Abstract root shared by every governanceDUO class |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AccessRequirement](classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[DerivationRule](classes/DerivationRule.md) | A policy row keyed by a combination of DataTierEnum values, answering "may th... |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[IRB](classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Resource](classes/Resource.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Schema](classes/Schema.md) | Information that is relevant to resource access conditions |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Study](classes/Study.md) | Studies associated with a grant |
@@ -80,6 +81,13 @@ Name: governance_duo
 | [inputDataTiers](slots/inputDataTiers.md) | The combination of input DataTier values this rule governs |
 | [institutionDids](slots/institutionDids.md) | Institutions with specific restrictions associated with the access requiremen... |
 | [institutionSpecificRestriction](slots/institutionSpecificRestriction.md) | Institutions with specific restrictions associated with the access requiremen... |
+| [irbApprovalDate](slots/irbApprovalDate.md) | The date this IRB approval was granted |
+| [irbApprovalStatus](slots/irbApprovalStatus.md) | The current status of this IRB approval |
+| [irbAssociatedProjects](slots/irbAssociatedProjects.md) | Synapse Project id(s) this IRB approval covers directly, for cases not alread... |
+| [irbExpirationDate](slots/irbExpirationDate.md) | The date this IRB approval expires, if applicable |
+| [IRBKey](slots/IRBKey.md) | The IRB record id(s) associated with this object |
+| [irbName](slots/irbName.md) | The name of the reviewing IRB or Ethics Review Board (e |
+| [irbProtocolNumber](slots/irbProtocolNumber.md) | The IRB's own protocol or registration number for this approval, as assigned ... |
 | [isTwoFaRequired](slots/isTwoFaRequired.md) | Whether two-factor authentication is required (ACCESS_REQUIREMENT |
 | [keyIsMultivalued](slots/keyIsMultivalued.md) | True if this referenceValueKey's own policy_data_schema |
 | [license](slots/license.md) | The license under which the data associated with the access requirement is sh... |
@@ -151,6 +159,7 @@ Name: governance_duo
 | [DerivationReviewStatus](enums/DerivationReviewStatus.md) | Where a DerivationReview stands |
 | [DrsAuthTypeEnum](enums/DrsAuthTypeEnum.md) | Mirrors DRS's Authorizations |
 | [GeographicalRegionEnum](enums/GeographicalRegionEnum.md) | ISO 3166-1 alpha-2 country codes |
+| [IRBApprovalStatusEnum](enums/IRBApprovalStatusEnum.md) |  |
 | [LicenseEnum](enums/LicenseEnum.md) | The archived archive/model/shared |
 | [Permission](enums/Permission.md) | A Synapse ACCESS_TYPE (org |
 | [StudyIndexDateEnum](enums/StudyIndexDateEnum.md) |  |

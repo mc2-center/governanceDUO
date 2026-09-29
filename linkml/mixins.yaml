@@ -727,6 +727,7 @@ classes:
       - approvedUsers
       - allowedAccountTypes
       - requiredProfileStatuses
+      - IRBKey
     rules:
       - preconditions:
           slot_conditions:
@@ -1007,6 +1008,14 @@ classes:
         postconditions:
           slot_conditions:
             requiredProfileStatuses:
+              required: true
+      - preconditions:
+          slot_conditions:
+            dataUseModifiers:
+              equals_string: DUO:0000021
+        postconditions:
+          slot_conditions:
+            IRBKey:
               required: true
   ContributionMixin:
     mixin: true

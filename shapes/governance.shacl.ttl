@@ -309,17 +309,22 @@ shape:ConditionShape a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
             sh:path gov:conditionDetail ],
-        [ sh:description "A MONDO disease the condition names." ;
+        [ sh:description "The IRB (a record-layer IRB IRI) that approves this condition." ;
+            sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 1 ;
-            sh:path gov:diseaseContext ;
-            sh:pattern "^(MONDO:|http://purl\\.obolibrary\\.org/obo/MONDO_)[0-9]{7}$" ],
+            sh:order 3 ;
+            sh:path gov:approvingIRB ],
         [ sh:datatype xsd:string ;
             sh:description "A free-text description." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 3 ;
-            sh:path gov:description ] ;
+            sh:order 4 ;
+            sh:path gov:description ],
+        [ sh:description "A MONDO disease the condition names." ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gov:diseaseContext ;
+            sh:pattern "^(MONDO:|http://purl\\.obolibrary\\.org/obo/MONDO_)[0-9]{7}$" ] ;
     sh:targetClass gov:Condition .
 
 shape:ControlLabelShape a sh:NodeShape ;

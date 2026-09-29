@@ -161,6 +161,8 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
         
       AccessRequirement : institutionSpecificRestriction
         
+      AccessRequirement : IRBKey
+        
       AccessRequirement : isTwoFaRequired
         
       AccessRequirement : license
@@ -264,6 +266,7 @@ URI: [governanceduo:class/AccessRequirement](https://w3id.org/sage-bionetworks/g
 | [approvedUsers](../slots/approvedUsers.md) | * <br/> [String](../types/String.md) | Identifier(s) of specifically approved users | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [allowedAccountTypes](../slots/allowedAccountTypes.md) | * <br/> [String](../types/String.md) | Account type(s) permitted to access the data (checked against UserPlatformCre... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [requiredProfileStatuses](../slots/requiredProfileStatuses.md) | * <br/> [String](../types/String.md) | Profile status value(s) a requester's account must have (checked against User... | [GovernanceMixin](../classes/GovernanceMixin.md) |
+| [IRBKey](../slots/IRBKey.md) | * <br/> [String](../types/String.md) | The IRB record id(s) associated with this object | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [contributorName](../slots/contributorName.md) | 1 <br/> [String](../types/String.md) | The name of the person who added this access requirement | [ContributionMixin](../classes/ContributionMixin.md) |
 | [contributionDate](../slots/contributionDate.md) | 1 <br/> [String](../types/String.md) | The date on which the access requirement was added | [ContributionMixin](../classes/ContributionMixin.md) |
 | [assetBindings](../slots/assetBindings.md) | * <br/> [AssetBinding](../classes/AssetBinding.md) | Policy Fabric Asset-registry DID(s), each paired with the Synapse entity id i... | [PolicyFabricMixin](../classes/PolicyFabricMixin.md) |
@@ -361,6 +364,18 @@ trustedIssuerDids:
   - did:example:sage_bionetworks_issuer
 
 ```
+### Example: AccessRequirement-003-two-irbs
+
+```yaml
+id: access_requirement.201
+contributorName: Jane Doe
+contributionDate: "2026-09-28"
+StudyKey: [study.mc2-jax-5xfad]
+entityIdList: [syn12345678]
+dataUseModifiers: [DUO:0000021]
+IRBKey: [irb.mount-sinai-001, irb.jax-002]
+
+```
 
 
 
@@ -436,6 +451,7 @@ attributes:
     - AccessRequirement
     - Resource
     - Schema
+    - IRB
     range: string
     multivalued: true
     pattern: ^study\.[A-Za-z0-9_-]+$
@@ -847,6 +863,22 @@ attributes:
     - GovernanceMixin
     range: string
     multivalued: true
+  IRBKey:
+    name: IRBKey
+    annotations:
+      foreign_key:
+        tag: foreign_key
+        value: true
+    description: The IRB record id(s) associated with this object. Provide multiple
+      values as a comma-separated list.
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    owner: AccessRequirement
+    domain_of:
+    - GovernanceMixin
+    range: string
+    multivalued: true
+    pattern: ^irb\.[A-Za-z0-9_-]+$
   contributorName:
     name: contributorName
     description: The name of the person who added this access requirement.

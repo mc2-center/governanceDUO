@@ -44,6 +44,14 @@ slots:
     pattern: '^study\.[A-Za-z0-9_-]+$'
     annotations:
       foreign_key: true
+  IRBKey:
+    description: >-
+      The IRB record id(s) associated with this object. Provide multiple
+      values as a comma-separated list.
+    multivalued: true
+    pattern: '^irb\.[A-Za-z0-9_-]+$'
+    annotations:
+      foreign_key: true
 enums:
   GeographicalRegionEnum:
     implements:

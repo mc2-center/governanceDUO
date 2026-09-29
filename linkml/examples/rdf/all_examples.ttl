@@ -3,6 +3,16 @@
 @prefix sagegov: <https://sagebionetworks.org/governance/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+governanceduo:irb.mount-sinai-001 a governanceduo:IRB ;
+    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
+    governanceduo:contributionDate "2026-09-28" ;
+    governanceduo:contributorName "Jane Doe" ;
+    governanceduo:irbApprovalDate "2026-01-15" ;
+    governanceduo:irbApprovalStatus "Approved" ;
+    governanceduo:irbExpirationDate "2027-01-15" ;
+    governanceduo:irbName "Mount Sinai IRB" ;
+    governanceduo:irbProtocolNumber "MSSM-IRB-2026-0142" .
+
 governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
     governanceduo:dataUseModifiers sagegov:DUOPlus1 ;
     governanceduo:grantNumber "U54AG079754" ;
@@ -14,6 +24,15 @@ governanceduo:study.mc2-jax-5xfad a governanceduo:Study ;
     governanceduo:studyName "MC2 Center Pilot Study" ;
     governanceduo:studyParticipantNumber "25.0"^^xsd:float ;
     governanceduo:studySampleNumber "40.0"^^xsd:float .
+
+<https://w3id.org/synapse/governance/ar/201> a governanceduo:AccessRequirement ;
+    governanceduo:IRBKey "irb.jax-002",
+        "irb.mount-sinai-001" ;
+    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
+    governanceduo:contributionDate "2026-09-28" ;
+    governanceduo:contributorName "Jane Doe" ;
+    governanceduo:dataUseModifiers DUO:0000021 ;
+    governanceduo:entityIdList "syn12345678" .
 
 <https://w3id.org/synapse/governance/ar/42> a governanceduo:AccessRequirement ;
     governanceduo:StudyKey "study.mc2-jax-5xfad" ;

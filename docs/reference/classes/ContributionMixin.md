@@ -26,6 +26,8 @@ URI: [governanceduo:class/ContributionMixin](https://w3id.org/sage-bionetworks/g
     click ContributionMixin href "../../classes/ContributionMixin/"
       ContributionMixin <|-- AccessRequirement
         click AccessRequirement href "../../classes/AccessRequirement/"
+      ContributionMixin <|-- IRB
+        click IRB href "../../classes/IRB/"
       
       ContributionMixin : contributionDate
         
@@ -60,6 +62,7 @@ URI: [governanceduo:class/ContributionMixin](https://w3id.org/sage-bionetworks/g
 | mixed into | description |
 | --- | --- |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |
+| [IRB](../classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |
 
 
 

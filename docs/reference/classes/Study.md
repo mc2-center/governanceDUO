@@ -108,6 +108,8 @@ URI: [governanceduo:class/Study](https://w3id.org/sage-bionetworks/governance-du
         
       Study : institutionSpecificRestriction
         
+      Study : IRBKey
+        
       Study : license
         
           
@@ -252,6 +254,7 @@ URI: [governanceduo:class/Study](https://w3id.org/sage-bionetworks/governance-du
 | [approvedUsers](../slots/approvedUsers.md) | * <br/> [String](../types/String.md) | Identifier(s) of specifically approved users | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [allowedAccountTypes](../slots/allowedAccountTypes.md) | * <br/> [String](../types/String.md) | Account type(s) permitted to access the data (checked against UserPlatformCre... | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [requiredProfileStatuses](../slots/requiredProfileStatuses.md) | * <br/> [String](../types/String.md) | Profile status value(s) a requester's account must have (checked against User... | [GovernanceMixin](../classes/GovernanceMixin.md) |
+| [IRBKey](../slots/IRBKey.md) | * <br/> [String](../types/String.md) | The IRB record id(s) associated with this object | [GovernanceMixin](../classes/GovernanceMixin.md) |
 | [id](../slots/id.md) | 1 <br/> [String](../types/String.md) | A unique primary key that enables record updates using schematic (schematic s... | [BaseEntity](../classes/BaseEntity.md) |
 
 
@@ -411,6 +414,7 @@ attributes:
     - Resource
     - Schema
     - Study
+    - IRB
     range: string
     multivalued: true
     pattern: ^access_requirement\.\d+$
@@ -982,6 +986,22 @@ attributes:
     - GovernanceMixin
     range: string
     multivalued: true
+  IRBKey:
+    name: IRBKey
+    annotations:
+      foreign_key:
+        tag: foreign_key
+        value: true
+    description: The IRB record id(s) associated with this object. Provide multiple
+      values as a comma-separated list.
+    from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
+    rank: 1000
+    owner: Study
+    domain_of:
+    - GovernanceMixin
+    range: string
+    multivalued: true
+    pattern: ^irb\.[A-Za-z0-9_-]+$
   id:
     name: id
     annotations:

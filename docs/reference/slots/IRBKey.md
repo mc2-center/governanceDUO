@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: StudyKey 
+# Slot: IRBKey 
 
 
-_The Study id(s) associated with this object. Provide multiple values as a comma-separated list._
+_The IRB record id(s) associated with this object. Provide multiple values as a comma-separated list._
 
 
 
@@ -14,7 +14,7 @@ _The Study id(s) associated with this object. Provide multiple values as a comma
 
 
 
-URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-duo/slot/StudyKey)
+URI: [governanceduo:slot/IRBKey](https://w3id.org/sage-bionetworks/governance-duo/slot/IRBKey)
 <!-- no inheritance hierarchy -->
 
 
@@ -25,10 +25,10 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [GovernanceMixin](../classes/GovernanceMixin.md) | DUO-based data-use-modifier vocabulary and its conditional-requirement rules,... |  no  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  no  |
-| [Schema](../classes/Schema.md) | Information that is relevant to resource access conditions |  no  |
-| [IRB](../classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |  no  |
+| [Study](../classes/Study.md) | Studies associated with a grant |  no  |
 
 
 
@@ -42,7 +42,7 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 | Property | Value |
 | --- | --- |
 | Range | [String](../types/String.md) |
-| Domain Of | [AccessRequirement](../classes/AccessRequirement.md), [Resource](../classes/Resource.md), [Schema](../classes/Schema.md), [IRB](../classes/IRB.md) |
+| Domain Of | [GovernanceMixin](../classes/GovernanceMixin.md) |
 
 ### Cardinality and Requirements
 
@@ -53,7 +53,7 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 
 | Property | Value |
 | --- | --- |
-| Regex Pattern | `^study\.[A-Za-z0-9_-]+$` |
+| Regex Pattern | `^irb\.[A-Za-z0-9_-]+$` |
 
 
 
@@ -91,8 +91,8 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | governanceduo:StudyKey |
-| native | governanceduo:StudyKey |
+| self | governanceduo:IRBKey |
+| native | governanceduo:IRBKey |
 
 
 
@@ -101,23 +101,20 @@ URI: [governanceduo:slot/StudyKey](https://w3id.org/sage-bionetworks/governance-
 
 <details>
 ```yaml
-name: StudyKey
+name: IRBKey
 annotations:
   foreign_key:
     tag: foreign_key
     value: true
-description: The Study id(s) associated with this object. Provide multiple values
+description: The IRB record id(s) associated with this object. Provide multiple values
   as a comma-separated list.
 from_schema: https://w3id.org/sage-bionetworks/governance-duo/governance_duo
 rank: 1000
 domain_of:
-- AccessRequirement
-- Resource
-- Schema
-- IRB
+- GovernanceMixin
 range: string
 multivalued: true
-pattern: ^study\.[A-Za-z0-9_-]+$
+pattern: ^irb\.[A-Za-z0-9_-]+$
 
 ```
 </details></div>

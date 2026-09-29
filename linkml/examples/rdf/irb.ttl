@@ -1,0 +1,12 @@
+@prefix governanceduo: <https://w3id.org/sage-bionetworks/governance-duo/> .
+
+governanceduo:irb.mount-sinai-001 a governanceduo:IRB ;
+    governanceduo:StudyKey "study.mc2-jax-5xfad" ;
+    governanceduo:contributionDate "2026-09-28" ;
+    governanceduo:contributorName "Jane Doe" ;
+    governanceduo:irbApprovalDate "2026-01-15" ;
+    governanceduo:irbApprovalStatus "Approved" ;
+    governanceduo:irbExpirationDate "2027-01-15" ;
+    governanceduo:irbName "Mount Sinai IRB" ;
+    governanceduo:irbProtocolNumber "MSSM-IRB-2026-0142" .
+

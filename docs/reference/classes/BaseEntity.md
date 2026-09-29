@@ -34,6 +34,8 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
         click Schema href "../../classes/Schema/"
       BaseEntity <|-- Study
         click Study href "../../classes/Study/"
+      BaseEntity <|-- IRB
+        click IRB href "../../classes/IRB/"
       BaseEntity <|-- DerivationRule
         click DerivationRule href "../../classes/DerivationRule/"
       
@@ -52,6 +54,7 @@ URI: [governanceduo:class/BaseEntity](https://w3id.org/sage-bionetworks/governan
     * [Resource](../classes/Resource.md) [ [GovernanceMixin](../classes/GovernanceMixin.md)]
     * [Schema](../classes/Schema.md)
     * [Study](../classes/Study.md) [ [GovernanceMixin](../classes/GovernanceMixin.md)]
+    * [IRB](../classes/IRB.md) [ [ContributionMixin](../classes/ContributionMixin.md)]
     * [DerivationRule](../classes/DerivationRule.md)
 
 

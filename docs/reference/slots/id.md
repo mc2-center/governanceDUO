@@ -30,6 +30,7 @@ URI: [dcterms:identifier](http://purl.org/dc/terms/identifier)
 | [Resource](../classes/Resource.md) | Information that is relevant to resource access conditions |  yes  |
 | [Schema](../classes/Schema.md) | Information that is relevant to resource access conditions |  yes  |
 | [Study](../classes/Study.md) | Studies associated with a grant |  yes  |
+| [IRB](../classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |  yes  |
 | [DerivationRule](../classes/DerivationRule.md) | A policy row keyed by a combination of DataTierEnum values, answering "may th... |  yes  |
 
 

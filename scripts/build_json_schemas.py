@@ -54,7 +54,7 @@ SCHEMA = "linkml/governance_duo.linkml.yaml"
 # The record-layer classes populated through curation (tree_root: true and
 # curator-facing -- PolicyCardBindingCollection is also tree_root but is
 # reference data, not a curation target, so it's left out).
-CURATOR_CLASSES = ["AccessRequirement", "Study", "Resource", "Schema"]
+CURATOR_CLASSES = ["AccessRequirement", "Study", "Resource", "Schema", "IRB"]
 
 
 def _drop_boolean_additional_properties(node):

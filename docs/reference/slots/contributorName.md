@@ -27,6 +27,7 @@ URI: [governanceduo:slot/contributorName](https://w3id.org/sage-bionetworks/gove
 | --- | --- | --- |
 | [ContributionMixin](../classes/ContributionMixin.md) | Contribution/authorship tracking |  yes  |
 | [AccessRequirement](../classes/AccessRequirement.md) | Representation of a Synapse Access Requirement and its relationships to entit... |  no  |
+| [IRB](../classes/IRB.md) | An Institutional Review Board (or equivalent Ethics Review Board) approval re... |  no  |
 
 
 

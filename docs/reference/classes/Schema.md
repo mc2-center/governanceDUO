@@ -199,6 +199,7 @@ attributes:
     - Resource
     - Schema
     - Study
+    - IRB
     range: string
     multivalued: true
     pattern: ^access_requirement\.\d+$
@@ -217,6 +218,7 @@ attributes:
     - AccessRequirement
     - Resource
     - Schema
+    - IRB
     range: string
     multivalued: true
     pattern: ^study\.[A-Za-z0-9_-]+$

@@ -30,7 +30,9 @@ from pathlib import Path
 EXAMPLE_MAP = {
     "access_requirement.example.yaml": "AccessRequirement-001.yaml",
     "access_requirement_policy_fabric.example.yaml": "AccessRequirement-002-policy-fabric.yaml",
+    "access_requirement_two_irbs.example.yaml": "AccessRequirement-003-two-irbs.yaml",
     "study.example.yaml": "Study-001.yaml",
+    "irb.example.yaml": "IRB-001.yaml",
     "derivation_policy/derivation_rule.example.yaml": "DerivationRule-001.yaml",
 }
 

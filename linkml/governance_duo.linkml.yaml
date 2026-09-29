@@ -53,5 +53,6 @@ imports:
   - resource
   - schema
   - study
+  - irb
   - derivation_policy
   - drs_alignment

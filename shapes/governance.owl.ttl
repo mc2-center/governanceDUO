@@ -201,6 +201,12 @@ gov:affiliatedWith a owl:ObjectProperty ;
     owl:versionInfo "0.2.0" ;
     skos:definition "A site the user, request or project is affiliated with." .
 
+gov:approvingIRB a owl:ObjectProperty ;
+    rdfs:label "approvingIRB" ;
+    rdfs:domain gov:Condition ;
+    owl:versionInfo "0.2.0" ;
+    skos:definition "The IRB (a record-layer IRB IRI) that approves this condition." .
+
 gov:arType a owl:DatatypeProperty ;
     rdfs:label "arType" ;
     rdfs:domain gov:IRBRequirement ;
@@ -968,11 +974,6 @@ gov:AccessRequirementTypeScheme a skos:ConceptScheme ;
         gov:SelfSignRequirement,
         gov:TermsOfUseRequirement .
 
-gov:Condition a owl:Class ;
-    rdfs:label "Condition" ;
-    owl:versionInfo "0.2.0" ;
-    skos:definition "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." .
-
 gov:DataTierScheme a skos:ConceptScheme ;
     rdfs:label "DataTier scheme" ;
     owl:versionInfo "0.2.0" ;
@@ -1003,6 +1004,11 @@ gov:AccessRequirementType a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     owl:versionInfo "0.2.0" ;
     skos:definition "An Access Requirement's Synapse concreteType, by its short class name." .
+
+gov:Condition a owl:Class ;
+    rdfs:label "Condition" ;
+    owl:versionInfo "0.2.0" ;
+    skos:definition "One data-use condition of an Access Requirement: a DUO term, with the parameters the curated record gives it -- the disease(s) for DUO:0000007 as MONDO IRIs, anything else (an agreement document id, a region, a time limit) as recorded." .
 
 gov:ControlLabel a owl:Class ;
     rdfs:label "ControlLabel" ;

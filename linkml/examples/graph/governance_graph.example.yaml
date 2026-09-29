@@ -68,6 +68,8 @@ accessRequirements:
     versionNumber: 1
     hasCondition:
       - govid:ar/42/condition/DUO_0000007
+      - govid:ar/42/condition/DUO_0000021_mount-sinai
+      - govid:ar/42/condition/DUO_0000021_jax
   - id: govid:ar/99
     name: Illustrative second managed access requirement
     requirementType: ManagedACTAccessRequirement
@@ -82,6 +84,14 @@ conditions:
     description: >-
       Disease Specific Research - This data use permission indicates that use is
       allowed provided it is related to the specified disease.
+  - id: govid:ar/42/condition/DUO_0000021_mount-sinai
+    dataUseTerm: DUO:0000021
+    approvingIRB: https://w3id.org/sage-bionetworks/governance-duo/irb.mount-sinai-001
+    description: Ethics Approval Required — Mount Sinai IRB.
+  - id: govid:ar/42/condition/DUO_0000021_jax
+    dataUseTerm: DUO:0000021
+    approvingIRB: https://w3id.org/sage-bionetworks/governance-duo/irb.jax-002
+    description: Ethics Approval Required — JAX IRB.
 
 templates:
   - id: govid:ar-template/genomics
