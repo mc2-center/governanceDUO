@@ -13,3 +13,4 @@ tools/robot.jar
 
 # `make owl-profile` reports and other scratch build output
 build/
+.DS_Store
