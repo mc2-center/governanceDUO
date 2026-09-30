@@ -29,7 +29,10 @@ evidence of Authentication (training certification, profile validation,
 two-factor auth) and/or Authorization (an intended-data-use statement, a data use
 certificate, an IRB/IEC ethics approval letter). `Study`/`Resource`/`Schema` give
 an AR the context it needs — which grant/data source it belongs to, which Synapse
-containers it governs, which registered JSON schema encodes it.
+containers it governs, which registered JSON schema encodes it — and, when
+`dataUseModifiers` includes `DUO:0000021` ("Ethics Approval Required"), the
+first-class `IRB` record its new `IRBKey` companion slot points to documents the
+approval itself (protocol number, reviewing board, status, dates).
 
 ### Governance Graph — a queryable model of *effective* access
 

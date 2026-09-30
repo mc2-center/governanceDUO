@@ -9,6 +9,15 @@ keeps the legacy schematic CSV pipeline and Synapse submission workflow in a
 collapsed archive section; the pages here go deeper, with a full auto-generated
 schema reference and worked examples drawn from the real files in this repo.
 
+![The governance graph's four content layers, plus projections built on top](assets/graph-design/governance-layers.png)
+
+![The pipeline that builds and reads those layers, and who reads the result](assets/graph-design/governance-architecture.png)
+
+*Slide-ready versions of the same figures are in
+[`docs/assets/graph-design/governance-pipeline-slide.md`](https://github.com/mc2-center/governanceDUO/blob/main/docs/assets/graph-design/governance-pipeline-slide.md).
+See [Governance graph design, sections 2–4](graph-design.md#2-where-it-sits-in-sage-brain)
+for the full explanation of each layer and how the pipeline is built.*
+
 | Page | Covers |
 | --- | --- |
 | [Governance graph design](graph-design.md) | Start here: the graph as a whole, at a conceptual level — its layers, model, how it's built and used, how Sage Brain and sagebrain-infra's ReBAC authorizer use it, and its relationship to sagebrain-model. Complete on its own; no predicate names or IRIs required |

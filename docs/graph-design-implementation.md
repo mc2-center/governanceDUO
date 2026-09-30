@@ -76,7 +76,7 @@ Every constraint on a reused term lives in the SHACL, not the OWL.
 | `DataAccessRequest` | `gov:DataAccessRequest` | Governance | `accessRequirement`, `researchProject` |
 | `DataAccessSubmission` | `gov:DataAccessSubmission` | Governance | `accessRequirement`, `state`, `requirementVersion` |
 | `ResearchProject` | `gov:ResearchProject` | Governance | `projectLead`, `intendedDataUseStatement` |
-| `Condition` | `gov:Condition` | Conditions | `dataUseTerm`, `diseaseContext`, `conditionDetail` |
+| `Condition` | `gov:Condition` | Conditions | `dataUseTerm`, `diseaseContext`, `conditionDetail`, `approvingIRB` |
 | `Activity` | `prov:Activity` | Provenance | `generated`, `qualifiedUsage` |
 | `Usage` | `prov:Usage` | Provenance | `entity` / `url`+`name` (exactly one), `wasExecuted` |
 | `ControlLabel` | `gov:ControlLabel` | Derivation policy | `subject`, `dataTier`, `sourceAccessRequirements`, `computedFrom` |
@@ -150,8 +150,14 @@ extensions (source geography, data tier, license, attribution, ...), each declar
 `rdfs:subClassOf DUO:0000017`. `gov:diseaseContext` holds MONDO IRIs for
 disease-specific terms; `gov:conditionDetail` holds any other companion parameter
 the curated record's DUO rules name (an agreement document id, a region, a time
-limit). A curation placeholder such as "Pending Annotation", or the abstract
-`DUO:0000017` itself, is not a condition and mints no node.
+limit). `gov:approvingIRB` holds the record-layer `IRB` IRI that approved a
+`DUO:0000021` ("Ethics Approval Required") condition specifically — since it's a
+slot on `Condition` itself rather than on the AR, two separately-approved
+`DUO:0000021` conditions (differing only in `approvingIRB`) can attach to the
+same AR via the already-unbounded `gov:hasCondition`, the structural fix for a
+dataset needing two IRB approvals. A curation placeholder such as "Pending
+Annotation", or the abstract `DUO:0000017` itself, is not a condition and mints
+no node.
 
 The curated-record source described here is the current mechanism, not a
 permanent one: the adopted direction is for these conditions to come from an

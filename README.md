@@ -11,9 +11,9 @@ workflow.
 
 | Path | Contents |
 | --- | --- |
-| [`linkml/`](linkml/governance_duo.linkml.yaml) | The **record layer**: curated `AccessRequirement`/`Study`/`Resource`/`Schema`/`DerivationRule` records, the Policy Fabric crosswalk, and the DUO vocabulary (`governance_duo.linkml.yaml`), plus hand-written example instances under `linkml/examples/` |
+| [`linkml/`](linkml/governance_duo.linkml.yaml) | The **record layer**: curated `AccessRequirement`/`Study`/`Resource`/`Schema`/`IRB`/`DerivationRule` records, the Policy Fabric crosswalk, and the DUO vocabulary (`governance_duo.linkml.yaml`), plus hand-written example instances under `linkml/examples/` |
 | [`linkml/graph/`](linkml/graph/governance.yaml) | The **graph layer**: `governance.yaml` + `vocabularies.yaml`, a separate, independently-versioned schema for every `gov:` term — see [Governance graph design](docs/graph-design.md) |
-| [`json_schemas/`](json_schemas/) | Generated Synapse Curator-compatible JSON Schema, one per curated class (`AccessRequirement`/`Study`/`Resource`/`Schema`, `make json-schemas`, `scripts/build_json_schemas.py`) — bind one to a folder to drive a Record Set |
+| [`json_schemas/`](json_schemas/) | Generated Synapse Curator-compatible JSON Schema, one per curated class (`AccessRequirement`/`Study`/`Resource`/`Schema`/`IRB`, `make json-schemas`, `scripts/build_json_schemas.py`) — bind one to a folder to drive a Record Set |
 | [`shapes/`](shapes/) | Generated OWL/SHACL for both schemas: `governance_duo.{owl,shacl}.ttl` (record layer, `make owl`/`make shacl`) and `governance.{owl,shacl}.ttl` (graph layer, `make graph-tbox`) — nothing under `shapes/` is hand-authored any more |
 | [`archive/model/`](archive/model/) | Archived: the modular [`schematic`](https://github.com/Sage-Bionetworks/schematic)-style CSV data model (one file per class, `shared.model.csv`, `valid_values.csv`) the record layer was originally derived from. `schematic` itself is deprecated; LinkML is the sole source of truth now — nothing generates from these CSVs any more |
 | [`archive/sage-ar-model/`](archive/sage-ar-model/) | Archived, no longer built: outputs of the former schematic pipeline (the collated CSV and JSON-LD, per-class Synapse JSON schemas, and the AR conditional validation schema) |
@@ -141,7 +141,7 @@ make owl              # generate shapes/governance_duo.owl.ttl (scripts/build_ow
 make shacl            # generate shapes/governance_duo.shacl.ttl (linkml gen-shacl)
 make example-rdf      # convert linkml/examples/*.example.yaml to RDF individuals
                        # under linkml/examples/rdf/ (scripts/convert_examples_to_rdf.py)
-make json-schemas      # generate json_schemas/{AccessRequirement,Study,Resource,Schema}.json
+make json-schemas      # generate json_schemas/{AccessRequirement,Study,Resource,Schema,IRB}.json
                        # (scripts/build_json_schemas.py, LinkML's own JsonSchemaGenerator --
                        # no schematic dependency); bind one to a folder to drive a Record Set
 make shacl-validate   # validate BOTH governance_duo.owl.ttl and the example RDF
@@ -214,7 +214,7 @@ afterward. The *stored* id in every example YAML file and every class's
 `slot_usage.id.pattern` are completely unaffected, preserving interoperability with
 SageCommonDataModel's bare-id convention everywhere except this one transient
 export step. See the script's docstring for the full explanation. This script only
-ever handles record-layer examples (`AccessRequirement`/`Study`/`DerivationRule`);
+ever handles record-layer examples (`AccessRequirement`/`Study`/`IRB`/`DerivationRule`);
 the graph layer's own examples go through a completely different, generic path —
 `scripts/graph_rdf.py` — described in
 [Technical implementation](docs/graph-design-implementation.md).
@@ -322,11 +322,14 @@ vocabularies instead of bespoke classes:
   keeps working unchanged regardless, via a projection built specifically to
   reproduce its exact prior contract — see "How the graph is used" in
   [Governance graph design](docs/graph-design.md).
-- **DUO conditions are moving toward being sourced from the AR itself** (ACT
-  annotates the Access Requirement directly; entities inherit the annotation the
-  same way they inherit the AR) rather than a separately-maintained curator
-  record — see `plans/ar_level_duo_annotations.md`. This isn't wired in yet,
-  pending a confirmed Synapse mechanism.
+- **DUO conditions are sourced from the AR itself**: ACT annotates the Access
+  Requirement directly, as a row in a Curator Record Set bound to this repo's
+  own generated JSON Schema — provisioned and live-piloted
+  (`plans/synapse_curation_infrastructure.md`) — and entities inherit the
+  annotation the same way they inherit the AR, rather than from a
+  separately-maintained curator record. The one piece not yet written is the
+  sync script's read side (`fetch_ar_record_set_row()`) — see
+  `plans/ar_level_duo_annotations.md`.
 
 For the current model in full — every class, predicate, the build pipeline, ReBAC
 alignment, and the relationship to sagebrain-model — see

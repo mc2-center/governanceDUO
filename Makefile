@@ -115,7 +115,7 @@ policy-fabric:
 	python3 scripts/build_policy_fabric.py linkml/examples/access_requirement_policy_fabric.example.yaml --out-dir policy_fabric_export
 
 # One Synapse Curator-compatible JSON Schema per curated class (AccessRequirement,
-# Study, Resource, Schema), from LinkML's own JsonSchemaGenerator -- no dependency
+# Study, Resource, Schema, IRB), from LinkML's own JsonSchemaGenerator -- no dependency
 # on schematic, deprecated (README's "Materials available in this repository").
 # GovernanceMixin's DUO-conditional rules compile into these schemas' own
 # allOf/if/then, so binding one to a folder and creating a Record Set from it

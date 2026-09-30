@@ -13,7 +13,7 @@ the model. The **graph layer** (`linkml/graph/governance.yaml` +
 `base_entity.yaml` and `props.yaml` are deliberately leaves, importing only
 `linkml:types`. `mixins.yaml` imports `props` and, since the graph-layer refactor
 (`plans/model_refactor.md`), also `linkml/graph/vocabularies.yaml` directly — see
-below. None of the three import one of the four entity files, so they can never
+below. None of the three import any of the entity files, so they can never
 form an import cycle with them.
 
 ```mermaid
@@ -27,7 +27,9 @@ graph LR
     ar[access_requirement.yaml]
     res[resource.yaml]
     study[study.yaml]
+    irb[irb.yaml]
     schema[schema.yaml]
+    dp[derivation_policy.yaml]
     drs[drs_alignment.yaml]
     umbrella[governance_duo.linkml.yaml]
 
@@ -50,9 +52,16 @@ graph LR
     study --> base
     study --> mixins
     study --> props
+    irb --> types
+    irb --> base
+    irb --> mixins
+    irb --> props
     schema --> types
     schema --> base
     schema --> props
+    dp --> types
+    dp --> base
+    dp --> mixins
     drs --> types
     drs --> mixins
     drs --> pf
@@ -64,7 +73,9 @@ graph LR
     umbrella --> ar
     umbrella --> res
     umbrella --> study
+    umbrella --> irb
     umbrella --> schema
+    umbrella --> dp
     umbrella --> drs
 ```
 
@@ -92,6 +103,7 @@ the record layer (`governance_duo.linkml.yaml` and its imports).
 | [`study.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/study.yaml) | `Study` | `is_a BaseEntity` + `GovernanceMixin`; id pattern `^study\.[A-Za-z0-9_-]+$`; several slots carry caDSR `cde_id` annotations |
 | [`irb.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/irb.yaml) | `IRB` — a first-class IRB approval record (protocol number, name, status, the `AccessRequirement`/`Study` it covers) | `is_a BaseEntity` + `ContributionMixin`; id pattern `^irb\.[A-Za-z0-9_-]+$`; `IRBApprovalStatusEnum` |
 | [`schema.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/schema.yaml) | `Schema` (registered JSON-schema records) | `is_a BaseEntity`; id pattern `^schema\.[A-Za-z0-9_-]+$` |
+| [`derivation_policy.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/derivation_policy.yaml) | `DerivationRule` — curator configuration for which data-tier combinations may be derived from together and what tier results; illustrative only, no real source enumerates it yet | `is_a BaseEntity`; id pattern `^derivation_rule\.[A-Za-z0-9_-]+$` |
 | [`policy_fabric.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/policy_fabric.yaml) | Policy Fabric crosswalk schema — see [Policy Fabric integration](policy-fabric.md) | `PolicyCardBinding`, `CredentialRequirement`, `ReferenceValueSource`, `CredentialTypeEnum` |
 | [`drs_alignment.yaml`](https://github.com/mc2-center/governanceDUO/blob/main/linkml/drs_alignment.yaml) | Design-only GA4GH DRS interoperability crosswalk — see [DRS interoperability](drs-interop.md) | `DrsObjectMapping`, `DrsAuthorizationBinding`, `DrsAuthTypeEnum` |
 

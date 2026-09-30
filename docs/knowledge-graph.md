@@ -15,7 +15,7 @@ pages does).
 
 ```mermaid
 flowchart TD
-    recordSchema["linkml/governance_duo.linkml.yaml\n(record layer: curated AR/Study/\nDerivationRule, DUO core)"]
+    recordSchema["linkml/governance_duo.linkml.yaml\n(record layer: curated AR/Study/\nIRB/DerivationRule, DUO core)"]
     recordExamples["linkml/examples/*.example.yaml"]
     graphSchema["linkml/graph/governance.yaml +\nvocabularies.yaml (graph layer)"]
     graphExamples["linkml/examples/graph/*.example.yaml"]
@@ -47,7 +47,7 @@ flowchart TD
 `make shacl` (LinkML's stock `gen-shacl`) both generate directly from
 `linkml/governance_duo.linkml.yaml` — no instance data. Since the graph-layer
 refactor, this schema holds only the **record layer**: curated `AccessRequirement`,
-`Study` and `DerivationRule` records and the DUO core (`GovernanceMixin`'s
+`Study`, `IRB` and `DerivationRule` records and the DUO core (`GovernanceMixin`'s
 `dataUseModifiers` and its companion fields). It no longer contains
 `ControlLabel`/`DerivationReview` or any `prov:` class — those moved to the graph
 layer (`linkml/graph/governance.yaml`) in the refactor
@@ -105,9 +105,9 @@ because LinkML's SHACL and OWL generators can't correctly express a rule's
 
 `make example-rdf` (`scripts/convert_examples_to_rdf.py`) is a faithful, generic
 LinkML-instance-to-RDF dump of `linkml/examples/*.example.yaml` — record examples
-only (`AccessRequirement`, `Study`, `DerivationRule`; the pre-refactor governance-
-graph/provenance/derivation-review examples are gone, their facts folded into the
-graph layer's own canonical example). Subjects are minted through
+only (`AccessRequirement`, `Study`, `IRB`, `DerivationRule`; the pre-refactor
+governance-graph/provenance/derivation-review examples are gone, their facts
+folded into the graph layer's own canonical example). Subjects are minted through
 `graph_iris.record_iri()`: every record keeps the record namespace
 (`governanceduo:<id>`) **except a curated Access Requirement, which lands on its
 graph node's own IRI** (R5 of `plans/model_refactor.md`) — no `owl:sameAs` bridge,
